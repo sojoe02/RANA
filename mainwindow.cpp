@@ -1,3 +1,5 @@
+#include <QApplication>
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -31,4 +33,9 @@ void MainWindow::advanceProgess()
 {
 
 
+}
+
+void MainWindow::on_exitButton_clicked()
+{
+    QApplication::quit();
 }

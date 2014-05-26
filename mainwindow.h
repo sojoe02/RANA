@@ -19,6 +19,8 @@ private slots:
 
     void on_generateButton_clicked();
 
+    void on_exitButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     void advanceProgess();
