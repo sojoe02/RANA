@@ -30,7 +30,7 @@ private:
 
     void advanceProgess();
 
-    QImage *image;
+    static QImage *image;
     QGraphicsScene scene;
 
 };

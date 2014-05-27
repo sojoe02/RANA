@@ -39,4 +39,5 @@ bool util_toNumber(T& t,const std::string& s,
 
 
 
+
 #endif // UTILITY_H

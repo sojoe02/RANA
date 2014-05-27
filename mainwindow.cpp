@@ -5,6 +5,10 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "physics/maphandler.h"
+
+QImage *MainWindow::image = NULL;
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -51,6 +55,7 @@ void MainWindow::on_browseMapButton_clicked()
             (this, tr("Open File"),QDir::currentPath());
 
     if(!fileName.isEmpty()){
+        delete image;
         image = new QImage(fileName);
         if(image->isNull()){
             QMessageBox::information(this,tr("Image Viewer"),
@@ -61,6 +66,8 @@ void MainWindow::on_browseMapButton_clicked()
         //ui->imageLabel->setPixmap(QPixmap::fromImage(*image));
         scene.addPixmap(QPixmap::fromImage(*image));
         ui->graphicsView->show();
+        mapHandler::setImage(image);
+
 
 
         //scaleFactor = 1.0;
