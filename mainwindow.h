@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QtGui>
+#include <QGraphicsScene>
 
 namespace Ui {
 class MainWindow;
@@ -21,9 +23,16 @@ private slots:
 
     void on_exitButton_clicked();
 
+    void on_browseMapButton_clicked();
+
 private:
     Ui::MainWindow *ui;
+
     void advanceProgess();
+
+    QImage *image;
+    QGraphicsScene scene;
+
 };
 
 #endif // MAINWINDOW_H

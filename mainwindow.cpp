@@ -1,4 +1,7 @@
 #include <QApplication>
+#include <QtGui>
+#include <QFileDialog>
+#include <QMessageBox>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -12,6 +15,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->progressBar->setMaximum(100);
     ui->progressBar->setMinimum(0);
     ui->progressBar->setValue(0);
+
+    ui->graphicsView->setScene(&scene);
 
 }
 
@@ -38,4 +43,31 @@ void MainWindow::advanceProgess()
 void MainWindow::on_exitButton_clicked()
 {
     QApplication::quit();
+}
+
+void MainWindow::on_browseMapButton_clicked()
+{
+    QString fileName = QFileDialog::getOpenFileName
+            (this, tr("Open File"),QDir::currentPath());
+
+    if(!fileName.isEmpty()){
+        image = new QImage(fileName);
+        if(image->isNull()){
+            QMessageBox::information(this,tr("Image Viewer"),
+                                     tr("Cannot Load %1.").arg(fileName));
+            return;
+        }
+
+        //ui->imageLabel->setPixmap(QPixmap::fromImage(*image));
+        scene.addPixmap(QPixmap::fromImage(*image));
+        ui->graphicsView->show();
+
+
+        //scaleFactor = 1.0;
+
+    }
+
+
+
+
 }

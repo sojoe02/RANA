@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>601</width>
-    <height>420</height>
+    <width>598</width>
+    <height>407</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,14 +18,14 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="tab_3">
        <attribute name="title">
         <string>Input</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_2">
-        <item row="5" column="0">
+        <item row="4" column="0">
          <widget class="QLabel" name="label_5">
           <property name="toolTip">
            <string>Number of microsteps pr second</string>
@@ -38,14 +38,14 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="3">
+        <item row="0" column="3">
          <widget class="QLineEdit" name="lineEdit"/>
         </item>
-        <item row="0" column="3">
-         <widget class="QLineEdit" name="mapPathInput"/>
-        </item>
-        <item row="5" column="3">
+        <item row="4" column="3">
          <widget class="QSpinBox" name="timeResSpinBox">
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
           <property name="accelerated">
            <bool>true</bool>
           </property>
@@ -63,14 +63,14 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="4">
+        <item row="0" column="4">
          <widget class="QPushButton" name="browseLuaAgentButton">
           <property name="text">
            <string>Browse</string>
           </property>
          </widget>
         </item>
-        <item row="8" column="3">
+        <item row="7" column="3">
          <spacer name="verticalSpacer_2">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -86,35 +86,31 @@
           </property>
          </spacer>
         </item>
-        <item row="9" column="0">
+        <item row="8" column="0">
          <widget class="QLabel" name="label_8">
           <property name="text">
            <string>Commands:</string>
           </property>
          </widget>
         </item>
-        <item row="4" column="3">
+        <item row="3" column="3">
          <widget class="QSpinBox" name="c2AgentSpinBox">
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
           <property name="maximum">
            <number>1000</number>
           </property>
          </widget>
         </item>
-        <item row="0" column="4">
-         <widget class="QPushButton" name="browseMapButton">
-          <property name="text">
-           <string>Browse</string>
-          </property>
-         </widget>
-        </item>
-        <item row="9" column="4">
+        <item row="8" column="4">
          <widget class="QPushButton" name="runButton">
           <property name="text">
            <string>Execute</string>
           </property>
          </widget>
         </item>
-        <item row="7" column="0">
+        <item row="6" column="0">
          <widget class="QLabel" name="label_6">
           <property name="toolTip">
            <string>Number of mirosteps pr macrostep</string>
@@ -124,28 +120,31 @@
           </property>
          </widget>
         </item>
-        <item row="4" column="0">
+        <item row="3" column="0">
          <widget class="QLabel" name="label_4">
           <property name="text">
            <string>C++2 agent amount:</string>
           </property>
          </widget>
         </item>
-        <item row="3" column="3">
+        <item row="2" column="3">
          <widget class="QSpinBox" name="c1AgentSpinBox">
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
           <property name="maximum">
            <number>1000</number>
           </property>
          </widget>
         </item>
-        <item row="1" column="0">
+        <item row="0" column="0">
          <widget class="QLabel" name="label">
           <property name="text">
            <string>Lua Agent Path:</string>
           </property>
          </widget>
         </item>
-        <item row="9" column="3">
+        <item row="8" column="3">
          <widget class="QListWidget" name="listWidget">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -171,8 +170,11 @@
           </item>
          </widget>
         </item>
-        <item row="7" column="3">
+        <item row="6" column="3">
          <widget class="QSpinBox" name="macroSpinBox">
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
           <property name="maximum">
            <number>1000000000</number>
           </property>
@@ -184,42 +186,38 @@
           </property>
          </widget>
         </item>
-        <item row="3" column="0">
+        <item row="2" column="0">
          <widget class="QLabel" name="label_3">
           <property name="text">
            <string>C++1 agent amount:</string>
           </property>
          </widget>
         </item>
-        <item row="2" column="0">
+        <item row="1" column="0">
          <widget class="QLabel" name="label_2">
           <property name="text">
            <string>Lua agent amount:</string>
           </property>
          </widget>
         </item>
-        <item row="7" column="4">
+        <item row="6" column="4">
          <widget class="QPushButton" name="generateButton">
           <property name="text">
            <string>Generate</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="0">
-         <widget class="QLabel" name="label_7">
-          <property name="text">
-           <string>Map file:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="3">
+        <item row="1" column="3">
          <widget class="QSpinBox" name="luaSpinBox">
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
           <property name="maximum">
            <number>1000</number>
           </property>
          </widget>
         </item>
-        <item row="7" column="1">
+        <item row="6" column="1">
          <widget class="Line" name="line">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -242,6 +240,34 @@
        <attribute name="title">
         <string>Tab 2</string>
        </attribute>
+       <layout class="QGridLayout" name="gridLayout_4">
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string>Image file:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QPushButton" name="browseMapButton">
+          <property name="text">
+           <string>Browse</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="mapPathInput"/>
+        </item>
+        <item row="2" column="0" colspan="3">
+         <widget class="QGraphicsView" name="graphicsView"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_4">
+       <attribute name="title">
+        <string>Page</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_6"/>
       </widget>
      </widget>
     </item>
