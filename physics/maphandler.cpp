@@ -15,7 +15,7 @@ void mapHandler::setImage(QImage *argImage)
 
 void mapHandler::getPixelInfo(int argX, int argY, int *argValue)
 {
-    if (image !=NULL)
+    if (image !=NULL && sizeof(*argValue)!=4 )
     {
         QRgb info = image->pixel(argX, argY);
         argValue[0] = qRed(info);

@@ -15,6 +15,7 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
+    void write_output(const char *argMsg);
     ~MainWindow();
 
 private slots:

@@ -5,9 +5,8 @@ class Output
 {
 public:
     static Output* Inst();
-    void kprintf(const char* msg, ...){
 
-    }
+    void kprintf(const char* msg, ...);
 
     void updateStatus(unsigned long long ms, unsigned long long eventInit,
                       unsigned long long internalEvents, unsigned long long externalEvents){

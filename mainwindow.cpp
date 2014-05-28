@@ -73,8 +73,9 @@ void MainWindow::on_browseMapButton_clicked()
         //scaleFactor = 1.0;
 
     }
+}
 
-
-
-
+void MainWindow::write_output(const char *argMsg)
+{
+    ui->outputTextEdit->append(QString::fromStdString(argMsg));
 }
