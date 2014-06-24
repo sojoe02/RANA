@@ -9,8 +9,8 @@ QRectF agentItem::boundingRect() const
 {
     //Still needs to be implemented properly so it really depicts size of
     // graphical representation of the agent.
-    qreal penWidth = 1;
-    return QRectF(0,0,10,10);
+    //qreal penWidth = 1;
+    return QRectF(x(),y(),10,10);
 }
 
 void agentItem::paint(QPainter *painter,

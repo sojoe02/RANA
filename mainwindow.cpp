@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->graphicsView->setScene(&scene);
 
     updatePosition(3,200,200);
+    updatePosition(4,30,100);
 
 }
 
@@ -32,6 +33,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_generateButton_clicked()
 {
+    updatePosition(3,300,200);
     //if(ui->progressBar->value()==100)
     //{
     //    ui->progressBar->setValue(0);
@@ -91,12 +93,19 @@ void MainWindow::updatePosition(int Id, int x, int y)
         /*scene.addEllipse(x-2, y-2, 4, 4,
                                  QPen(Qt::black,1,Qt::SolidLine,Qt::RoundCap,Qt::RoundJoin),
                                 QBrush(Qt::SolidPattern));*/
+        //scene.addItem(gfxItem);
+        gfxItem->setX(x);
+        gfxItem->setY(y);
         scene.addItem(gfxItem);
+
         graphAgents.insert(Id, gfxItem);
     } else
     {
         QMap<int, agentItem*>::const_iterator i = graphAgents.find(Id);
         agentItem *gfxItem = i.value();
+        gfxItem->setX(x);
+        gfxItem->setY(y);
+
         //gfxItem->setRect(x-2, y-2, 4, 4);
     }
 
