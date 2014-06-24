@@ -18,6 +18,7 @@ Output* Output::Inst()
 
 Output::Output()
 {
+
 }
 
 void Output::kprintf(const char* msg, ...)
@@ -29,6 +30,4 @@ void Output::kprintf(const char* msg, ...)
     sprintf(buffer, msg, args);
 
     va_end(args);
-
-
 }

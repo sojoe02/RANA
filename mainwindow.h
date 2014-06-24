@@ -2,8 +2,11 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QtGui>
+#include <QtWidgets>
 #include <QGraphicsScene>
+#include <map>
+
+#include "graphics/agentItem.h"
 
 namespace Ui {
 class MainWindow;
@@ -26,6 +29,9 @@ private slots:
 
     void on_browseMapButton_clicked();
 
+    void updatePosition(int Id, int x, int y);
+
+
 private:
     Ui::MainWindow *ui;
 
@@ -33,6 +39,7 @@ private:
 
     static QImage *image;
     QGraphicsScene scene;
+    QMap<int, agentItem* > graphAgents;
 
 };
 

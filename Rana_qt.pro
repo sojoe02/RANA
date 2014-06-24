@@ -25,7 +25,9 @@ SOURCES += main.cpp\
     agentengine/agents/nestene.cpp \
     agentengine/agentdomain.cpp \
     output.cpp \
-    physics/maphandler.cpp
+    physics/maphandler.cpp \
+    control.cpp \
+    graphics/agentItem.cpp
 
 HEADERS  += mainwindow.h \
     physics/phys.h \
@@ -41,7 +43,9 @@ HEADERS  += mainwindow.h \
     ID.h \
     utility.h \
     output.h \
-    physics/maphandler.h
+    physics/maphandler.h \
+    control.h \
+    graphics/agentItem.h
 
 FORMS    += mainwindow.ui
 

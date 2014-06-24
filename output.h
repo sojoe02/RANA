@@ -21,6 +21,10 @@ public:
 
     }
 
+    void updatePosition(int id, double x, double y);
+
+
+
 private:
     Output();
     static Output* output;
