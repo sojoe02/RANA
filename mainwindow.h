@@ -40,6 +40,7 @@ private:
     static QImage *image;
     QGraphicsScene scene;
     QMap<int, agentItem* > graphAgents;
+    QPixmap map;
 
 };
 

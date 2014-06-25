@@ -25,3 +25,5 @@ void mapHandler::getPixelInfo(int argX, int argY, int *argValue)
     }
 }
 
+
+

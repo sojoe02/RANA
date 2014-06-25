@@ -68,14 +68,16 @@ void MainWindow::on_browseMapButton_clicked()
         }
 
         //ui->imageLabel->setPixmap(QPixmap::fromImage(*image));
-        scene.addPixmap(QPixmap::fromImage(*image));
-        ui->graphicsView->show();
+        //map.fromImage(*image);
+        //scene.addPixmap(QPixmap::fromImage(*image));
+        map = QPixmap(fileName);
+        scene.setSceneRect(map.rect());
+        scene.setBackgroundBrush(map.scaled(map.size()));
+
+        ui->graphicsView->setMaximumSize(map.width()+10,map.height()+10);
+
+
         mapHandler::setImage(image);
-
-
-
-        //scaleFactor = 1.0;
-
     }
 }
 
@@ -105,7 +107,6 @@ void MainWindow::updatePosition(int Id, int x, int y)
         agentItem *gfxItem = i.value();
         gfxItem->setX(x);
         gfxItem->setY(y);
-
         //gfxItem->setRect(x-2, y-2, 4, 4);
     }
 
