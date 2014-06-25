@@ -3,16 +3,21 @@
 
 #include <QtGui>
 
+#include "utility.h"
+#include "mainwindow.h"
+
+class MainWindow;
 class mapHandler
 {
 public:
-    mapHandler();
+    mapHandler(MainWindow *parent);
     static void setImage(QImage *argImage);
-    static void getPixelInfo(int argX, int argY, int *argValue);
-    static void setPixelInfo(int argX, int argY, int *argValue);
+    static rgba *getPixelInfo(int argX, int argY);
+    static void setPixelInfo(int argX, int argY, rgba argValue);
 
 private:
     static QImage *image;
+    static MainWindow* parent;
 };
 
 #endif // MAPHANDLER_H

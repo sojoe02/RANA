@@ -37,7 +37,12 @@ bool util_toNumber(T& t,const std::string& s,
 	return !(iss >> f >> t).fail();
 }
 
-
+struct rgba{
+    int red;
+    int green;
+    int blue;
+    int alpha;
+};
 
 
 #endif // UTILITY_H

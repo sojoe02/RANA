@@ -56,11 +56,13 @@ void MainWindow::on_exitButton_clicked()
 void MainWindow::on_browseMapButton_clicked()
 {
     QString fileName = QFileDialog::getOpenFileName
-            (this, tr("Open File"),QDir::currentPath());
+            (this, tr("Open Map File"),QDir::currentPath(),tr("Image Files (*.png *.jpg *.bmp)"));
+
+    ui->mapPathLineEdit->setText(fileName);
 
     if(!fileName.isEmpty()){
         delete image;
-        image = new QImage(fileName);
+        image = new QImage(ui->mapPathLineEdit->text());
         if(image->isNull()){
             QMessageBox::information(this,tr("Image Viewer"),
                                      tr("Cannot Load %1.").arg(fileName));
@@ -70,13 +72,11 @@ void MainWindow::on_browseMapButton_clicked()
         //ui->imageLabel->setPixmap(QPixmap::fromImage(*image));
         //map.fromImage(*image);
         //scene.addPixmap(QPixmap::fromImage(*image));
-        map = QPixmap(fileName);
+        //map = QPixmap(fileName);
+        map.convertFromImage(*image);
         scene.setSceneRect(map.rect());
         scene.setBackgroundBrush(map.scaled(map.size()));
-
         ui->graphicsView->setMaximumSize(map.width()+10,map.height()+10);
-
-
         mapHandler::setImage(image);
     }
 }
@@ -84,6 +84,11 @@ void MainWindow::on_browseMapButton_clicked()
 void MainWindow::write_output(const char *argMsg)
 {
     ui->outputTextEdit->append(QString::fromStdString(argMsg));
+}
+
+void MainWindow::updateMap()
+{
+
 }
 
 void MainWindow::updatePosition(int Id, int x, int y)

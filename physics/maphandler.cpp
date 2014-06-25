@@ -2,9 +2,11 @@
 
 
 QImage *mapHandler::image = NULL;
+MainWindow *mapHandler::parent = NULL;
 
-mapHandler::mapHandler()
+mapHandler::mapHandler(MainWindow *parent)
 {
+    parent = parent;
 }
 
 void mapHandler::setImage(QImage *argImage)
@@ -13,15 +15,31 @@ void mapHandler::setImage(QImage *argImage)
 
 }
 
-void mapHandler::getPixelInfo(int argX, int argY, int *argValue)
+rgba* mapHandler::getPixelInfo(int argX, int argY)
 {
-    if (image !=NULL && sizeof(*argValue)!=4 )
+    if (image !=NULL)
     {
         QRgb info = image->pixel(argX, argY);
-        argValue[0] = qRed(info);
-        argValue[1] = qGreen(info);
-        argValue[2] = qBlue(info);
-        argValue[3] = qAlpha(info);
+        rgba* values = new rgba;
+        values->red = qRed(info);
+        values->green = qGreen(info);
+        values->blue = qBlue(info);
+        values->alpha = 0;
+        //beware of potentional memory leak!
+        return values;
+
+    } else
+        return NULL;
+}
+
+void mapHandler::setPixelInfo(int argX, int argY, rgba argValue)
+{
+    if (image != NULL && image->width() >= argX && image->height() >= argY)
+    {
+        QRgb value;
+        value = qRgb(argValue.red, argValue.green, argValue.red);
+        image->setPixel(argX, argY, value);
+        parent->updateMap();
     }
 }
 

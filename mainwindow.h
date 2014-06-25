@@ -19,6 +19,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     void write_output(const char *argMsg);
+    void updateMap();
     ~MainWindow();
 
 private slots:
@@ -30,6 +31,8 @@ private slots:
     void on_browseMapButton_clicked();
 
     void updatePosition(int Id, int x, int y);
+
+
 
 
 private:
