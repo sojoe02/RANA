@@ -9,7 +9,6 @@
 
 QImage *MainWindow::image = NULL;
 
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -20,9 +19,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->progressBar->setMinimum(0);
     ui->progressBar->setValue(0);
     ui->graphicsView->setScene(&scene);
-
-    updatePosition(3,200,200);
-    updatePosition(4,30,100);
 
 }
 
@@ -56,7 +52,8 @@ void MainWindow::on_exitButton_clicked()
 void MainWindow::on_browseMapButton_clicked()
 {
     QString fileName = QFileDialog::getOpenFileName
-            (this, tr("Open Map File"),QDir::currentPath(),tr("Image Files (*.png *.jpg *.bmp)"));
+            (this, tr("Open Map File"),QDir::currentPath(),
+             tr("Image Files (*.png *.jpg *.bmp)"));
 
     ui->mapPathLineEdit->setText(fileName);
 
@@ -79,6 +76,9 @@ void MainWindow::on_browseMapButton_clicked()
         ui->graphicsView->setMaximumSize(map.width()+10,map.height()+10);
         mapHandler::setImage(image);
     }
+
+    updatePosition(3,200,200);
+    updatePosition(4,30,100);
 }
 
 void MainWindow::write_output(const char *argMsg)
@@ -88,23 +88,18 @@ void MainWindow::write_output(const char *argMsg)
 
 void MainWindow::updateMap()
 {
-
+    scene.setBackgroundBrush(map.scaled(map.size()));
 }
 
 void MainWindow::updatePosition(int Id, int x, int y)
 {
     if(!graphAgents.contains(Id))
     {
-
         agentItem *gfxItem = new agentItem(QString::number(Id));
-        /*scene.addEllipse(x-2, y-2, 4, 4,
-                                 QPen(Qt::black,1,Qt::SolidLine,Qt::RoundCap,Qt::RoundJoin),
-                                QBrush(Qt::SolidPattern));*/
-        //scene.addItem(gfxItem);
+
         gfxItem->setX(x);
         gfxItem->setY(y);
         scene.addItem(gfxItem);
-
         graphAgents.insert(Id, gfxItem);
     } else
     {
@@ -112,7 +107,16 @@ void MainWindow::updatePosition(int Id, int x, int y)
         agentItem *gfxItem = i.value();
         gfxItem->setX(x);
         gfxItem->setY(y);
-        //gfxItem->setRect(x-2, y-2, 4, 4);
     }
 
+}
+
+void MainWindow::refreshPopulation(std::list<agentInfo> infolist){
+
+    std::list<agentInfo>::iterator itr;
+
+    for(itr = infolist.begin(); itr != infolist.end(); itr++)
+    {
+        updatePosition(itr->id, itr->x, itr->y);
+    }
 }

@@ -1,16 +1,17 @@
 #ifndef CONTROL_H
 #define CONTROL_H
 
-#include<list>
-#include<QtGui>
+#include <list>
+#include <QtGui>
 
+#include "mainwindow.h"
 #include "agentengine/agentdomain.h"
 
 class Control
 {
 public:
 
-    Control();
+    Control(MainWindow* mainwindow);
 
     bool checkEnvPresence();
 
@@ -38,7 +39,7 @@ public:
 private:
 
     AgentDomain *agentDomain;
-
+    MainWindow *mainwindow;
 
 };
 

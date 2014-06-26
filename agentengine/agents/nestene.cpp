@@ -120,28 +120,19 @@ void Nestene::populateSquaredListener(int listenerSize){
 /**
  * Get the X and Y positions of all actors
  * Retrieves the information from all actors, writes the information to the lists given.
- * @param sylist y positions of all Screamer autons
- * @param sxlist x positions of all Screamer autons
- * @param lylist y positions of all Listener autons
- * @param lxlist x positions of all Listener autons
- * @param aylist y positions of all Lua autons
- * @param axlist x positions of all Lua autons
+ * @param agentinfo address of array that holds the info needed for graphic rendering.
  */
-void Nestene::retrievePopPos(std::list<double> &sylist, std::list<double> &sxlist,
-		std::list<double> &lylist, std::list<double> &lxlist,
-		std::list<double> &aylist, std::list<double> &axlist){	
+void Nestene::retrievePopPos(std::list<agentInfo> &infolist){
 
-	for(itScreamers = screamers.begin(); itScreamers !=screamers.end(); itScreamers++){
-		sylist.push_back(itScreamers->second.getPosY());
-		sxlist.push_back(itScreamers->second.getPosX());
-	}	
-	for(itListeners = listeners.begin(); itListeners !=listeners.end(); itListeners++){
-		lylist.push_back(itListeners->second.getPosY());
-		lxlist.push_back(itListeners->second.getPosX());
-	}	
-	for(itLUAs = LUAs.begin(); itLUAs !=LUAs.end(); itLUAs++){
-		aylist.push_back(itLUAs->second.getPosY());
-		axlist.push_back(itLUAs->second.getPosX());
+    for(itLUAs = LUAs.begin(); itLUAs !=LUAs.end(); itLUAs++){
+
+        agentInfo info;
+
+        info.id = itLUAs->second.getID();
+        info.y = itLUAs->second.getPosY();
+        info.x = itLUAs->second.getPosX();
+
+        infolist.push_back(info);
 	}
 }
 

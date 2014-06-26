@@ -26,7 +26,8 @@
 #include <list>
 #include <string>
 
-#include"nestene.h"
+#include "nestene.h"
+#include "utility.h"
 
 class Nestene;
 class Master
@@ -75,9 +76,9 @@ class Master
 		void addExternalEventPtr(EventQueue::eEvent *eEvent);
 
 		void printStatus();
-		void retrievePopPos(std::list<double> &sylist, std::list<double> &sxlist,
-				std::list<double> &lylist, std::list<double> &lxlist,
-				std::list<double> &aylist, std::list<double> &axlist);
+
+        std::list<agentInfo> retrievePopPos();
+
 		void saveExternalEvents(std::string filename);
 
 		void simDone();

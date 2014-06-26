@@ -33,6 +33,7 @@
 #include "autonscreamer.h"
 #include "autonLUA.h"
 #include "master.h"
+#include "utility.h"
 
 class Master;
 class AutonListener;
@@ -55,9 +56,8 @@ class Nestene
 		std::list<EventQueue::iEvent> responsePhase();
 		void endPhase();
 
-		void retrievePopPos(std::list<double> &sylist, std::list<double> &sxlist,
-				std::list<double> &lylist, std::list<double> &lxlist,
-				std::list<double> &aylist, std::list<double> &axlist);
+        void retrievePopPos(std::list<agentInfo> &infolist);
+
 		int initAmount;
 
 		void simDone();

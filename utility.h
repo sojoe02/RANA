@@ -44,5 +44,11 @@ struct rgba{
     int alpha;
 };
 
+struct agentInfo{
+    int x;
+    int y;
+    int id;
+};
+
 
 #endif // UTILITY_H

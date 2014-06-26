@@ -2,8 +2,8 @@
 
 #include "agentengine/agentdomain.h"
 
-Control::Control()
-    :agentDomain(NULL)
+Control::Control(MainWindow* mainwindow)
+    :agentDomain(NULL), mainwindow(mainwindow)
 {
 
 }
@@ -14,7 +14,7 @@ void Control::generateEnvironment(QImage *map, double scale,
 {
     delete agentDomain;
 
-    agentDomain = new AgentDomain();
+    agentDomain = new AgentDomain(mainwindow);
 
     agentDomain->generateEnvironment(map->width(),map->height(),1,0,0,
                                      agentAmount,timeRes,macroRes,agentPath

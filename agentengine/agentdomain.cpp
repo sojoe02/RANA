@@ -27,13 +27,14 @@
 #include "output.h"
 #include "ID.h"
 
+
 using std::chrono::duration_cast;
 using std::chrono::milliseconds;
 using std::chrono::seconds;
 using std::chrono::steady_clock;
 
-AgentDomain::AgentDomain()
-	:mapGenerated(false), stop(false)
+AgentDomain::AgentDomain(MainWindow *mainwindow)
+    :mapGenerated(false), stop(false), mainwindow(mainwindow)
 	 {
 		 Phys::seedMersenne();
 }
@@ -64,8 +65,8 @@ void AgentDomain::generateEnvironment(double width, double height, int resolutio
 
 	this->timeResolution = timeResolution;
 	this->macroFactor = macroFactor;
-	macroResolution = macroFactor * timeResolution;
 
+	macroResolution = macroFactor * timeResolution;
 
 	Phys::setTimeRes(timeResolution);
 	Phys::setCTime(0);
@@ -73,6 +74,7 @@ void AgentDomain::generateEnvironment(double width, double height, int resolutio
 	Phys::setEnvironment(width, height);
 
 	master.generateMap(width,height,resolution,timeResolution, macroResolution);
+
 	mapWidth = width;
 	mapHeight = height;
 
@@ -142,27 +144,18 @@ void AgentDomain::generateSquaredListenerEnvironment(double width, double height
 /**
  * Retrieval of auton positions.
  * Will write the positions of all autons to the std::lists given as arguments.
- * @param sylist y positions of all Screamer autons
- * @param sxlist x positions of all Screamer autons
- * @param lylist y positions of all Listener autons
- * @param lxlist x positions of all Listener autons
- * @param aylist y positions of all Lua autons
- * @param axlist x positions of all Lua autons
  */
-void AgentDomain::retrievePopPos(std::list<double> &sylist, std::list<double> &sxlist,
-		std::list<double> &lylist, std::list<double> &lxlist,
-		std::list<double> &aylist, std::list<double> &axlist,
-		double &width, double &height){
+void AgentDomain::retrievePopPos(){
 
-	master.retrievePopPos(sylist, sxlist, lylist, lxlist, aylist, axlist);
-	width = mapWidth;
-	height = mapHeight;
+    mainwindow->refreshPopulation(master.retrievePopPos());
+
+
 }
 
 /**
  * Runs the simulation.
  * Start a simulation run, this will run a simulation, width the defined macro and micro
- * precision, the sun can be cancelled via the atomic boolean stop. The run will 
+ * precision, the simulation can be cancelled via the atomic boolean stop. The run will
  * update the progress bar and status window in the running panel.
  * @param time the amount of seconds the simulation will simulate.
  */

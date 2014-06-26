@@ -25,13 +25,15 @@
 #include<iostream>
 #include<mutex>
 #include<atomic>
-#include "agents/master.h"
 
+#include "agents/master.h"
+#include "mainwindow.h"
+#include "utility.h"
 
 class AgentDomain
 {
 	public:
-		AgentDomain();
+        AgentDomain(MainWindow *mainwindow);
 		~AgentDomain();
 
 		/*
@@ -48,9 +50,7 @@ class AgentDomain
 		void generateSquaredListenerEnvironment(double width, double height, int resolution,int LUASize,double timeResolution, int macroFactor);
 
 
-		void retrievePopPos(std::list<double> &sylist, std::list<double> &sxlist,
-				std::list<double> &lylist, std::list<double> &lxlist,
-				std::list<double> &aylist, std::list<double> &axlist, double &width, double &height);
+        void retrievePopPos();
 
 		void runSimulation(int time);
 
@@ -59,7 +59,8 @@ class AgentDomain
 		void saveExternalEvents(std::string filename);
 		void updateStatus();
 
-	private:		
+    private:
+
 		bool mapGenerated;
 		Master master;
 		double timeResolution;
@@ -69,11 +70,11 @@ class AgentDomain
 		unsigned long long iterations;
 		unsigned long long i;
 
-
 		//Atomic thread controllers:
 		std::atomic_bool stop;
 		std::mutex stopMutex;
 
+        MainWindow *mainwindow;
 };
 
 #endif // AGENTDOMAIN_H

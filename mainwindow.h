@@ -7,6 +7,7 @@
 #include <map>
 
 #include "graphics/agentItem.h"
+#include "utility.h"
 
 namespace Ui {
 class MainWindow;
@@ -21,6 +22,8 @@ public:
     void write_output(const char *argMsg);
     void updateMap();
     ~MainWindow();
+
+    void refreshPopulation(std::list<agentInfo> infolist);
 
 private slots:
 

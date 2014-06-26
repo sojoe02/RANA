@@ -39,7 +39,7 @@ void mapHandler::setPixelInfo(int argX, int argY, rgba argValue)
         QRgb value;
         value = qRgb(argValue.red, argValue.green, argValue.red);
         image->setPixel(argX, argY, value);
-        parent->updateMap();
+        //parent->updateMap();
     }
 }
 

@@ -100,14 +100,15 @@ void Master::generateMap(double width, double height, int resolution, double tim
  * @param aylist y positions of all Lua autons
  * @param axlist x positions of all Lua autons
  */
-void Master::retrievePopPos(std::list<double> &sylist, std::list<double> &sxlist,
-		std::list<double> &lylist, std::list<double> &lxlist,
-		std::list<double> &aylist, std::list<double> &axlist){
+std::list<agentInfo> Master::retrievePopPos(){
+
+    std::list<agentInfo> agentinfo;
 
 	for(itNest = nestenes.begin(); itNest !=nestenes.end(); itNest++){
-		itNest->retrievePopPos(sylist,sxlist,lylist,lxlist,aylist,axlist);		
+        itNest->retrievePopPos(agentinfo);
 	}	
 
+    return agentinfo;
 }
 
 /**
