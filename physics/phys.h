@@ -32,6 +32,11 @@ class Phys
 		Phys(){
 		};
 
+        static double getTimeRes();
+        static int getMacroFactor();
+        static void setMacroFactor(int macroFactor);
+        static void setCTime(unsigned long long ctime);
+
 		static unsigned long long speedOfSound(double x_origin, double y_origin,
 				double x_dest, double y_dest);
 
@@ -45,16 +50,17 @@ class Phys
 		static void incTime();
 		static void seedMersenne();
 		static void setTimeRes(double timeResolution);
-		static double getTimeRes();
-		static int getMacroFactor();
-		static void setMacroFactor(int macroFactor);
-		static void setCTime(unsigned long long ctime);
+
 		static double getMersenneFloat(double min, double max);
 		static uint64_t getMersenneInteger(uint64_t min, uint64_t max);
 
 		static void setEnvironment(double x, double y);
 		static double getEnvX();
 		static double getEnvY();
+
+        static void move(double v, double posX, double posY,
+                         double desX, double desY,
+                         double &newX, double &newY);
 
 	private:
 		static double env_x;
@@ -69,6 +75,8 @@ class Phys
 		static MyRNG rng;
 
 };
+
+
 
 
 

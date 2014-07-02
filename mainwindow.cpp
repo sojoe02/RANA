@@ -65,7 +65,6 @@ void MainWindow::on_browseMapButton_clicked()
                                      tr("Cannot Load %1.").arg(fileName));
             return;
         }
-
         //ui->imageLabel->setPixmap(QPixmap::fromImage(*image));
         //map.fromImage(*image);
         //scene.addPixmap(QPixmap::fromImage(*image));
@@ -74,7 +73,8 @@ void MainWindow::on_browseMapButton_clicked()
         scene.setSceneRect(map.rect());
         scene.setBackgroundBrush(map.scaled(map.size()));
         ui->graphicsView->setMaximumSize(map.width()+10,map.height()+10);
-        mapHandler::setImage(image);
+
+        MapHandler::setImage(image);
     }
 
     updatePosition(3,200,200);
@@ -111,7 +111,8 @@ void MainWindow::updatePosition(int Id, int x, int y)
 
 }
 
-void MainWindow::refreshPopulation(std::list<agentInfo> infolist){
+void MainWindow::refreshPopulation(std::list<agentInfo> infolist)
+{
 
     std::list<agentInfo>::iterator itr;
 

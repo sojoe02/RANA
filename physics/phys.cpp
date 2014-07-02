@@ -111,7 +111,21 @@ double Phys::getEnvX(){
 }
 
 double Phys::getEnvY(){
-	return env_y;
+    return env_y;
+}
+
+void Phys::move(double v, double posX, double posY,
+                double desX, double desY,
+                double &newX, double &newY)
+{
+    double vf = v*(Phys::macroFactor * Phys::timeResolution);
+    double angle = atan2(desX-posX, desY-posY);
+
+    double vX = vf * sin(angle);
+    double vY = vf * cos(angle);
+
+    newX = vX + posX;
+    newY = vY + posY;
 }
 
 double Phys::getMersenneFloat(double min=0, double max=1){
