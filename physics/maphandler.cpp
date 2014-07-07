@@ -16,7 +16,6 @@ MapHandler::MapHandler(MainWindow *parent)
 void MapHandler::setImage(QImage *argImage)
 {
     image = argImage;
-
 }
 
 rgba* MapHandler::getPixelInfo(int argX, int argY)
@@ -68,8 +67,8 @@ MATRICE MapHandler::radialScan( int radius, char channel)
             for(int y =0; y < radius; y++)
             {
                 angle = atan2(x,y);
-                dx = sin(angle) * radius;
-                dy = cos(angle) * radius;
+                dx = cos(angle) * radius;
+                dy = sin(angle) * radius;
 
                 if(abs(dx + 0.5) > radius || abs(dy + 0.5) > radius)
                 {
@@ -81,6 +80,8 @@ MATRICE MapHandler::radialScan( int radius, char channel)
         MapHandler::radialMasks[radius] = mask;
     }
     mask = MapHandler::radialMasks[radius];
+
+    //perform the actual scan:
 
     for(int x = 0; x < radius ; x++)
     {

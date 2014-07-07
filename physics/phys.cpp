@@ -121,8 +121,8 @@ void Phys::move(double v, double posX, double posY,
     double vf = v*(Phys::macroFactor * Phys::timeResolution);
     double angle = atan2(desX-posX, desY-posY);
 
-    double vX = vf * sin(angle);
-    double vY = vf * cos(angle);
+    double vX = vf * cos(angle);
+    double vY = vf * sin(angle);
 
     newX = vX + posX;
     newY = vY + posY;

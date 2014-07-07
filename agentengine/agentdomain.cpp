@@ -19,14 +19,15 @@
 //along with RANA.  If not, see <http://www.gnu.org/licenses/>.
 //
 //--end_license--
+
 #include <chrono>
 #include <climits>
+
 #include "agentdomain.h"
 #include "agents/master.h"
 #include "../physics/phys.h"
 #include "output.h"
 #include "ID.h"
-
 
 using std::chrono::duration_cast;
 using std::chrono::milliseconds;
@@ -199,6 +200,7 @@ void AgentDomain::runSimulation(int time){
 		if(duration_cast<milliseconds>(end-start).count() > 350){
 			master.printStatus();
 			Output::Inst()->progressBar(cMacroStep,iterations);
+            retrievePopPos();
 			//Output::Inst()->kprintf("i is not : %d\n", i );
 			start = end;
 		}

@@ -6,6 +6,7 @@
 #include "output.h"
 
 Output* Output::output;
+MainWindow* Output::mainWindow;
 
 Output* Output::Inst()
 {
@@ -29,5 +30,18 @@ void Output::kprintf(const char* msg, ...)
     char buffer[256];
     sprintf(buffer, msg, args);
 
+    mainWindow->write_output(buffer);
+
     va_end(args);
+}
+
+void Output::progressBar(unsigned long long current, unsigned long long maximum)
+{
+    int progress = (current * 100)/maximum;
+    mainWindow->advanceProgess(progress);
+}
+
+void Output::setMainWindow(MainWindow *mainwindow)
+{
+    Output::mainWindow = mainwindow;
 }

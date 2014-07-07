@@ -1,6 +1,8 @@
 #ifndef OUTPUT_H
 #define OUTPUT_H
 
+#include "mainwindow.h"
+
 class Output
 {
 public:
@@ -17,17 +19,16 @@ public:
 
     }
 
-    void progressBar(unsigned long long current, unsigned long long maximum){
-
-    }
+    void progressBar(unsigned long long current, unsigned long long maximum);
 
     void updatePosition(int id, double x, double y);
 
-
+    void setMainWindow(MainWindow *mainwindow);
 
 private:
     Output();
     static Output* output;
+    static MainWindow* mainWindow;
 };
 
 #endif // OUTPUT_H

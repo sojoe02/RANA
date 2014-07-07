@@ -6,6 +6,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "physics/maphandler.h"
+#include "physics/phys.h"
 
 QImage *MainWindow::image = NULL;
 
@@ -38,10 +39,9 @@ void MainWindow::on_generateButton_clicked()
 
 }
 
-void MainWindow::advanceProgess()
+void MainWindow::advanceProgess(int percentage)
 {
-
-
+    ui->progressBar->setValue(percentage);
 }
 
 void MainWindow::on_exitButton_clicked()
@@ -75,11 +75,45 @@ void MainWindow::on_browseMapButton_clicked()
         ui->graphicsView->setMaximumSize(map.width()+10,map.height()+10);
 
         MapHandler::setImage(image);
+
+        //Phys::setEnvironment(image->width(),image->height());
     }
 
     updatePosition(3,200,200);
     updatePosition(4,30,100);
 }
+
+void MainWindow::on_generateMap_clicked()
+{
+    if(image != NULL)
+        delete image;
+
+    image = new QImage(ui->pxSpinBox->value(), ui->pySpinBox->value(),
+                       QImage::Format_RGB32);
+
+    image->fill(Qt::GlobalColor::white);
+
+    QRgb value = qRgb(0,0,0);
+
+    for(int x = 0; x < image->width(); x++)
+    {
+        for(int y = 0; y < image->height(); y++)
+        {
+            if(Phys::getMersenneFloat(0,1) < ui->densityDoubleSpinBox->value())
+            {
+                image->setPixel(x,y, value);
+            }
+        }
+    }
+    map.convertFromImage(*image);
+    scene.setSceneRect(map.rect());
+    scene.setBackgroundBrush(map.scaled(map.size()));
+
+    ui->graphicsView->setMaximumSize(map.width()+10,map.height()+10);
+
+    Phys::setEnvironment(image->width(),image->height());
+}
+
 
 void MainWindow::write_output(const char *argMsg)
 {
@@ -113,7 +147,6 @@ void MainWindow::updatePosition(int Id, int x, int y)
 
 void MainWindow::refreshPopulation(std::list<agentInfo> infolist)
 {
-
     std::list<agentInfo>::iterator itr;
 
     for(itr = infolist.begin(); itr != infolist.end(); itr++)
@@ -121,3 +154,4 @@ void MainWindow::refreshPopulation(std::list<agentInfo> infolist)
         updatePosition(itr->id, itr->x, itr->y);
     }
 }
+

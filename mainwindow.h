@@ -9,6 +9,7 @@
 #include "graphics/agentItem.h"
 #include "utility.h"
 
+
 namespace Ui {
 class MainWindow;
 }
@@ -21,9 +22,11 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     void write_output(const char *argMsg);
     void updateMap();
+
     ~MainWindow();
 
-    void refreshPopulation(std::list<agentInfo> infolist);
+    void refreshPopulation(std::list<agentInfo> infolist);  
+    void advanceProgess(int percentage);
 
 private slots:
 
@@ -35,8 +38,7 @@ private slots:
 
     void updatePosition(int Id, int x, int y);
 
-
-
+    void on_generateMap_clicked();
 
 private:
     Ui::MainWindow *ui;

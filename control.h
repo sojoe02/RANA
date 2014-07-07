@@ -17,6 +17,8 @@ public:
 
     void runSimulation(int runTime);
 
+    void stopSimulation();
+
     /**
      * @brief generateEnvironment
      * Generates a new environment, an environment is needed to
