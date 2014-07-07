@@ -35,8 +35,7 @@ void Control::generateEnvironment(QImage *map, double scale,
     agentDomain = new AgentDomain(mainwindow);
 
     agentDomain->generateEnvironment(map->width(),map->height(),1,0,0,
-                                     agentAmount,timeRes,macroRes,agentPath
-                                     );
+                                     agentAmount,timeRes,macroRes,agentPath);
     //retrieve and update the positions:
 
 }

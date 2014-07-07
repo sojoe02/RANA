@@ -40,6 +40,10 @@ private slots:
 
     void on_generateMap_clicked();
 
+    void on_zoomInPushButton_clicked();
+
+    void on_zoomOutPushButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 
@@ -49,6 +53,8 @@ private:
     QGraphicsScene scene;
     QMap<int, agentItem* > graphAgents;
     QPixmap map;
+
+    double factor;
 
 };
 
