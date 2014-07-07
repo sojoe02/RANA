@@ -67,12 +67,12 @@ void MainWindow::on_browseMapButton_clicked()
         }
         //ui->imageLabel->setPixmap(QPixmap::fromImage(*image));
         //map.fromImage(*image);
-        //scene.addPixmap(QPixmap::fromImage(*image));
+        scene.addPixmap(QPixmap::fromImage(*image));
         //map = QPixmap(fileName);
-        map.convertFromImage(*image);
-        scene.setSceneRect(map.rect());
-        scene.setBackgroundBrush(map.scaled(map.size()));
-        ui->graphicsView->setMaximumSize(map.width()+10,map.height()+10);
+        //map.convertFromImage(*image);
+        //scene.setSceneRect(map.rect());
+        //scene.setBackgroundBrush(map.scaled(map.size()));
+        //ui->graphicsView->setMaximumSize(map.width()+10,map.height()+10);
 
         MapHandler::setImage(image);
 
@@ -105,14 +105,20 @@ void MainWindow::on_generateMap_clicked()
             }
         }
     }
-    map.convertFromImage(*image);
-    scene.setSceneRect(map.rect());
-    scene.setBackgroundBrush(map.scaled(map.size()));
 
-    int scrollbarWidth = qApp->style()->pixelMetric(QStyle::PM_ScrollBarExtent);
+    //ui->imageLabel->setPixmap(QPixmap::fromImage(*image));
+    //map.fromImage(*image);
+    scene.addPixmap(QPixmap::fromImage(*image));
+    //map = QPixmap(fileName);
+    //map.convertFromImage(*image);
+    //scene.setSceneRect(map.rect());
+    //scene.setBackgroundBrush(map.scaled(map.size()));
 
-    ui->graphicsView->setMaximumSize(map.width()+ scrollbarWidth,
-                                     map.height()+ scrollbarWidth);
+    //int scrollbarWidth = qApp->style()->pixelMetric(QStyle::PM_ScrollBarExtent);
+
+    //ui->graphicsView->setMaximumSize(map.width()+ scrollbarWidth,
+    //                                 map.height()+ scrollbarWidth);
+
 
     Phys::setEnvironment(image->width(),image->height());
 }
@@ -125,7 +131,7 @@ void MainWindow::write_output(const char *argMsg)
 
 void MainWindow::updateMap()
 {
-    scene.setBackgroundBrush(map.scaled(map.size()));
+    //scene.setBackgroundBrush(map.scaled(map.size()));
 }
 
 void MainWindow::updatePosition(int Id, int x, int y)
@@ -158,36 +164,24 @@ void MainWindow::refreshPopulation(std::list<agentInfo> infolist)
     }
 }
 
-
-void MainWindow::on_zoomInPushButton_clicked()
+void MainWindow::wheelEvent(QWheelEvent* event)
 {
+    ui->graphicsView->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+    // Scale the view / do the zoom
+    double scaleFactor = 1.15;
 
-    factor = factor + 0.25;
+    if(event->delta() > 0) {
+        // Zoom in
+        factor = .15 + factor;
+        ui->graphicsView-> scale(scaleFactor, scaleFactor);
+
+    } else {
+        // Zooming out
+        factor =  factor - .15;
+        ui->graphicsView->scale(1.0 / scaleFactor, 1.0 / scaleFactor);
+    }
 
     ui->zoomLabel->setText(QString().setNum(factor*100));
-
-    int scrollbarWidth = qApp->style()->pixelMetric(QStyle::PM_ScrollBarExtent);
-
-    ui->graphicsView->setMaximumSize(map.width() * factor + scrollbarWidth,
-                                     map.height() * factor + scrollbarWidth);
-
-    ui->graphicsView->scale(1.25,1.25);
-
 }
 
-void MainWindow::on_zoomOutPushButton_clicked()
-{
-    if(factor > 1)
-    {
-        factor = factor - 0.25;
 
-        ui->zoomLabel->setText(QString().setNum(factor*100));
-
-        int scrollbarWidth = qApp->style()->pixelMetric(QStyle::PM_ScrollBarExtent);
-
-        ui->graphicsView->setMaximumSize(map.width() * factor + scrollbarWidth,
-                                         map.height() * factor + scrollbarWidth);
-
-        ui->graphicsView->scale(0.75,0.75);
-    }
-}

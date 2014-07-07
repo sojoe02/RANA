@@ -28,6 +28,8 @@ public:
     void refreshPopulation(std::list<agentInfo> infolist);  
     void advanceProgess(int percentage);
 
+public slots:
+    void wheelEvent(QWheelEvent *event);
 private slots:
 
     void on_generateButton_clicked();
@@ -40,9 +42,6 @@ private slots:
 
     void on_generateMap_clicked();
 
-    void on_zoomInPushButton_clicked();
-
-    void on_zoomOutPushButton_clicked();
 
 private:
     Ui::MainWindow *ui;
