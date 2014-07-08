@@ -32,6 +32,7 @@
 #include "ID.h"
 #include "autonLUA.h"
 #include "../../physics/phys.h"
+#include "../../physics/gridmovement.h"
 #include "../../physics/maphandler.h"
 
  
@@ -98,6 +99,7 @@
 	posY = lua_tonumber(L,-1);
 	lua_settop(L,0);
 
+    GridMovement::addPos(posX,posY);
 }
 
 AutonLUA::~AutonLUA(){
@@ -113,60 +115,73 @@ AutonLUA::~AutonLUA(){
  * @return internal event.
  */
 EventQueue::iEvent* AutonLUA::handleEvent(EventQueue::eEvent *event){
-	if(nofile)
-		return NULL;
+//	if(nofile)
+//		return NULL;
 
-	lua_settop(L,0);	
+//	lua_settop(L,0);
 
-	int isnum;
-	//set the lua function:
-	lua_getglobal(L,"handleExternalEvent");
-	//push required arguments for eventhandling to the stack:
-	lua_pushnumber(L,event->origin->getPosX());
-	lua_pushnumber(L,event->origin->getPosY());
-	//push events ID to the stack:
-	lua_pushnumber(L,event->id);
-	//push propagation speed to the stack:
-	lua_pushnumber(L,event->propagationSpeed);
-	//push the events description string to the stack
-	lua_pushstring(L,event->desc.c_str());
-	//push the table to the stack
-	lua_pushstring(L,event->table.c_str());
-	//make the function call with 5 arguments and 3 results
-	if(lua_pcall(L,6,3,0)!=LUA_OK)
-		Output::Inst()->kprintf("error on handleEvent:\t %s\n",lua_tostring(L,-1));
+//	int isnum;
+//	//set the lua function:
+//	lua_getglobal(L,"handleExternalEvent");
+//	//push required arguments for eventhandling to the stack:
+//	lua_pushnumber(L,event->origin->getPosX());
+//	lua_pushnumber(L,event->origin->getPosY());
+//	//push events ID to the stack:
+//	lua_pushnumber(L,event->id);
+//	//push propagation speed to the stack:
+//	lua_pushnumber(L,event->propagationSpeed);
+//	//push the events description string to the stack
+//	lua_pushstring(L,event->desc.c_str());
+//	//push the table to the stack
+//	lua_pushstring(L,event->table.c_str());
+//	//make the function call with 5 arguments and 3 results
+//	if(lua_pcall(L,6,3,0)!=LUA_OK)
+//		Output::Inst()->kprintf("error on handleEvent:\t %s\n",lua_tostring(L,-1));
 
-	//Test if the handleevent method returns a null string
-	std::string nullValue ="null";
-	std::string validator = lua_tostring(L,-1);
+//	//Test if the handleevent method returns a null string
+//	std::string nullValue ="null";
+//	std::string validator = lua_tostring(L,-1);
 
-	if(nullValue.compare(validator)==0)
-		return NULL;
-	//Generate the internal event:
-	EventQueue::iEvent *ievent = new EventQueue::iEvent();
-	//first set the two pointers to 'this' and the external event that spurred it:
-	ievent->origin = this;
-	ievent->event = event;
+//	if(nullValue.compare(validator)==0)
+//		return NULL;
+//	//Generate the internal event:
+//	EventQueue::iEvent *ievent = new EventQueue::iEvent();
+//	//first set the two pointers to 'this' and the external event that spurred it:
+//	ievent->origin = this;
+//	ievent->event = event;
 
-	//activation time:
-	double activationTime = lua_tonumberx(L,-1, &isnum);
-	if(!isnum){
-		Output::Inst()->kprintf("LUA function handleEvent activation must be a number");
-		delete ievent;
-		return NULL;
-	} else ievent->activationTime = activationTime;
+//	//activation time:
+//	double activationTime = lua_tonumberx(L,-1, &isnum);
+//	if(!isnum){
+//		Output::Inst()->kprintf("LUA function handleEvent activation must be a number");
+//		delete ievent;
+//		return NULL;
+//	} else ievent->activationTime = activationTime;
 
-	unsigned long long id = lua_tonumberx(L,-2, &isnum);
-	if(!isnum){
-		Output::Inst()->kprintf("LUA function hendleExternal id must be a number");
-		delete ievent;
-		return NULL;
-	} else ievent->id = id;
+//	unsigned long long id = lua_tonumberx(L,-2, &isnum);
+//	if(!isnum){
+//		Output::Inst()->kprintf("LUA function hendleExternal id must be a number");
+//		delete ievent;
+//		return NULL;
+//	} else ievent->id = id;
 
-	//the description string:
-	ievent->desc = lua_tostring(L,-3);
+//	//the description string:
+//	ievent->desc = lua_tostring(L,-3);
 
-	//the table string:	
+//	//the table string:
+
+    //calculate arrivaltime:
+
+    EventQueue::iEvent *ievent = new EventQueue::iEvent();
+
+    ievent->origin = this;
+    ievent->event = event;
+    ievent->activationTime =
+            Phys::speedOfSound(event->origin->getPosX(), event->origin->getPosY(),
+                               posX, posY, event->propagationSpeed);
+    ievent->id = ID::generateEventID();
+    ievent->desc = "standard";
+
 	return ievent;
 }
 
