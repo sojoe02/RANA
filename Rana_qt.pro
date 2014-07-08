@@ -27,7 +27,8 @@ SOURCES += main.cpp\
     output.cpp \
     physics/maphandler.cpp \
     control.cpp \
-    graphics/agentItem.cpp
+    graphics/agentItem.cpp \
+    physics/gridmovement.cpp
 
 HEADERS  += mainwindow.h \
     physics/phys.h \
@@ -45,7 +46,8 @@ HEADERS  += mainwindow.h \
     output.h \
     physics/maphandler.h \
     control.h \
-    graphics/agentItem.h
+    graphics/agentItem.h \
+    physics/gridmovement.h
 
 FORMS    += mainwindow.ui
 

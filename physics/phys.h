@@ -26,9 +26,11 @@
 #include <random>
 #include <chrono>
 
+
 class Phys
 {
 	public:
+
 		Phys(){
 		};
 
@@ -62,17 +64,24 @@ class Phys
                          double desX, double desY,
                          double &newX, double &newY);
 
-	private:
+
+
+
+
+private:
+
 		static double env_x;
 		static double env_y;
 
 		static int macroFactor;
 		static double timeResolution;
 		static unsigned long long c_timeStep;
+
 		//random distribution 0-INT_MAX
 		static std::uniform_int_distribution<uint64_t> uint_dist;
 		typedef std::mt19937_64 MyRNG;
-		static MyRNG rng;
+        static MyRNG rng;
+
 
 };
 

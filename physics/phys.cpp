@@ -40,6 +40,7 @@ double Phys::env_x = 0;
 double Phys::env_y = 0;
 
 
+
 void Phys::seedMersenne(){
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 	rng.seed(seed);
@@ -113,6 +114,7 @@ double Phys::getEnvX(){
 double Phys::getEnvY(){
     return env_y;
 }
+
 
 void Phys::move(double v, double posX, double posY,
                 double desX, double desY,
