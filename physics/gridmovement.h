@@ -1,7 +1,7 @@
 #ifndef GRIDMOVEMENT_H
 #define GRIDMOVEMENT_H
 
-#include <unordered_set>
+#include <vector>
 
 class GridMovement
 {
@@ -11,12 +11,14 @@ public:
 
     static void addPos(int x, int y);
     static void updatePos(int oldX, int oldY, int newX, int newY);
-    bool checkCollision(int ID, int newX, int newY);
+    bool checkCollision(int newX, int newY);
 
+    void initGrid(int height, int width);
 private:
 
-    static std::unordered_set<int> gridPosY;
-    static std::unordered_set<int> gridPosX;
+    //maps that contain the amount of agent at a givin x,y position
+    static std::vector< std::vector<int> > gridPos;
+
 
 };
 
