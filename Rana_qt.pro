@@ -49,6 +49,7 @@ HEADERS  += mainwindow.h \
     graphics/agentItem.h \
     physics/gridmovement.h
 
+
 FORMS    += mainwindow.ui
 
 unix: CONFIG += link_pkgconfig

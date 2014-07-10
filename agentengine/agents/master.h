@@ -29,6 +29,7 @@
 #include "nestene.h"
 #include "utility.h"
 
+
 class Nestene;
 class Master
 {
@@ -36,8 +37,8 @@ class Master
 		/*
 		  resolution is microseconds pr. turn
 		*/
-		Master();
-		~Master();
+        Master();
+        ~Master();
 		/*
 		   height of map
 		   width of map

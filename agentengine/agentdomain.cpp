@@ -24,8 +24,8 @@
 #include <climits>
 
 #include "agentdomain.h"
-#include "agents/master.h"
 #include "../physics/phys.h"
+#include "../physics/gridmovement.h"
 #include "output.h"
 #include "ID.h"
 
@@ -34,10 +34,11 @@ using std::chrono::milliseconds;
 using std::chrono::seconds;
 using std::chrono::steady_clock;
 
-AgentDomain::AgentDomain(MainWindow *mainwindow)
-    :mapGenerated(false), stop(false), mainwindow(mainwindow)
+AgentDomain::AgentDomain()
+    :mapGenerated(false), stop(false)
 	 {
 		 Phys::seedMersenne();
+         masteragent = new Master();
 }
 
 AgentDomain::~AgentDomain(){
@@ -74,12 +75,12 @@ void AgentDomain::generateEnvironment(double width, double height, int resolutio
 	Phys::setMacroFactor(macroFactor);
 	Phys::setEnvironment(width, height);
 
-	master.generateMap(width,height,resolution,timeResolution, macroResolution);
+    masteragent->generateMap(width,height,resolution,timeResolution, macroResolution);
 
 	mapWidth = width;
 	mapHeight = height;
 
-	master.populateSystem(listenerSize, screamerSize, LUASize, filename);
+    masteragent->populateSystem(listenerSize, screamerSize, LUASize, filename);
 	mapGenerated = true;
 }
 
@@ -102,14 +103,14 @@ void AgentDomain::generateSquaredEnvironment(double width, double height, int re
 	Phys::setEnvironment(width, height);
 
 
-	master.generateMap(width,height,resolution,timeResolution, macroResolution);
+    masteragent->generateMap(width,height,resolution,timeResolution, macroResolution);
 
 	//std::string filename = "frog.lua";
 
 	mapWidth = width;
 	mapHeight = height;
 
-	master.populateSquareSystem(LUASize, filename);
+    masteragent->populateSquareSystem(LUASize, filename);
 	mapGenerated = true;
 }
 /**
@@ -130,14 +131,14 @@ void AgentDomain::generateSquaredListenerEnvironment(double width, double height
 	Phys::setEnvironment(width, height);
 
 
-	master.generateMap(width,height,resolution,timeResolution, macroResolution);
+    masteragent->generateMap(width,height,resolution,timeResolution, macroResolution);
 
 	//std::string filename = "frog.lua";
 
 	mapWidth = width;
 	mapHeight = height;
 
-	master.populateSquareListenerSystem(listenerSize);
+    masteragent->populateSquareListenerSystem(listenerSize);
 	mapGenerated = true;
 }
 
@@ -148,7 +149,7 @@ void AgentDomain::generateSquaredListenerEnvironment(double width, double height
  */
 void AgentDomain::retrievePopPos(){
 
-    mainwindow->refreshPopulation(master.retrievePopPos());
+    //mainwindow->refreshPopulation(master.retrievePopPos());
 
 
 }
@@ -180,15 +181,15 @@ void AgentDomain::runSimulation(int time){
 		Phys::setCTime(i);
 
 		if(i == cMicroStep && cMicroStep != ULLONG_MAX){
-			master.microStep(i);		
+            masteragent->microStep(i);
 			//Output::Inst()->kprintf("i is now %lld\n", i);
 		}		
 		if(i == cMacroStep){
-			master.macroStep(i);
+            masteragent->macroStep(i);
 			cMacroStep +=macroFactor;
 		}		
 		i = cMacroStep;
-		cMicroStep = master.getNextMicroTmu();
+        cMicroStep = masteragent->getNextMicroTmu();
 
 		if( i > cMicroStep){
 			i = cMicroStep;
@@ -198,7 +199,7 @@ void AgentDomain::runSimulation(int time){
 		auto end = steady_clock::now();
 
 		if(duration_cast<milliseconds>(end-start).count() > 350){
-			master.printStatus();
+            masteragent->printStatus();
 			Output::Inst()->progressBar(cMacroStep,iterations);
             retrievePopPos();
 			//Output::Inst()->kprintf("i is not : %d\n", i );
@@ -209,14 +210,15 @@ void AgentDomain::runSimulation(int time){
 			break;
 		}
 	}
-	master.simDone();
-	master.printStatus();
+    masteragent->simDone();
+    masteragent->printStatus();
 	Output::Inst()->progressBar(i,iterations);
 	auto endsim = steady_clock::now();
 	duration_cast<seconds>(start2-endsim).count();
 	Output::Inst()->kprintf("Simulation run took:\t %llu[s] "
 			, duration_cast<seconds>(endsim - start2).count()			
 			);
+
 
 }
 
@@ -234,5 +236,5 @@ void AgentDomain::stopSimulation(){
  * @see EventQueue::saveEEventData
  */
 void AgentDomain::saveExternalEvents(std::string filename){
-	master.saveExternalEvents(filename);
+    masteragent->saveExternalEvents(filename);
 }

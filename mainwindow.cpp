@@ -7,6 +7,8 @@
 #include "ui_mainwindow.h"
 #include "physics/maphandler.h"
 #include "physics/phys.h"
+#include "physics/gridmovement.h"
+
 
 QImage *MainWindow::image = NULL;
 
@@ -20,6 +22,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->progressBar->setMinimum(0);
     ui->progressBar->setValue(0);
     ui->graphicsView->setScene(&scene);
+
+    control = new Control(this);
 
 }
 
@@ -93,7 +97,7 @@ void MainWindow::on_generateMap_clicked()
 
     image->fill(Qt::GlobalColor::white);
 
-    QRgb value = qRgb(0,0,0);
+    QRgb value = qRgb(0,0,255);
 
     for(int x = 0; x < image->width(); x++)
     {
@@ -121,6 +125,7 @@ void MainWindow::on_generateMap_clicked()
 
 
     Phys::setEnvironment(image->width(),image->height());
+    GridMovement::initGrid(image->width(), image->height());
 }
 
 

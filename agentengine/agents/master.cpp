@@ -28,13 +28,14 @@
 #include <time.h>
 #include <algorithm>
 
-#include "utility.h"
 #include "master.h"
+
+#include "utility.h"
 #include "../../physics/phys.h"
 
 #include "output.h"
 
-	Master::Master()
+    Master::Master()
 :eEventInitAmount(0), responseAmount(0), externalDistroAmount(0), tmu(0)
 {
 	//Output::Inst()->kprintf("Initiating master\n");

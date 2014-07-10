@@ -25,15 +25,18 @@
 #include<iostream>
 #include<mutex>
 #include<atomic>
+#include<sys/types.h>
 
 #include "agents/master.h"
+#include "../agentengine/agents/doctor.h"
 #include "mainwindow.h"
 #include "utility.h"
 
+class Master;
 class AgentDomain
 {
 	public:
-        AgentDomain(MainWindow *mainwindow);
+        AgentDomain();
 		~AgentDomain();
 
 		/*
@@ -62,7 +65,8 @@ class AgentDomain
     private:
 
 		bool mapGenerated;
-		Master master;
+        Doctor doctor;
+        Master *masteragent;
 		double timeResolution;
 		double macroResolution;
 		int macroFactor;
@@ -74,7 +78,7 @@ class AgentDomain
 		std::atomic_bool stop;
 		std::mutex stopMutex;
 
-        MainWindow *mainwindow;
+        //MainWindow *mainwindow;
 };
 
 #endif // AGENTDOMAIN_H

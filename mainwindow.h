@@ -8,8 +8,9 @@
 
 #include "graphics/agentItem.h"
 #include "utility.h"
+#include "control.h"
 
-
+class Control;
 namespace Ui {
 class MainWindow;
 }
@@ -54,6 +55,8 @@ private:
     QPixmap map;
 
     double factor;
+
+    Control *control;
 
 };
 

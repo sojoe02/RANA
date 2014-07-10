@@ -7,6 +7,8 @@
 #include "mainwindow.h"
 #include "agentengine/agentdomain.h"
 
+class AgentDomain;
+class MainWindow;
 class Control
 {
 public:

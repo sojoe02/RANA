@@ -11,9 +11,9 @@ public:
 
     static void addPos(int x, int y);
     static void updatePos(int oldX, int oldY, int newX, int newY);
-    bool checkCollision(int newX, int newY);
+    static bool checkCollision(int newX, int newY);
 
-    void initGrid(int height, int width);
+    static void initGrid(int height, int width);
 private:
 
     //maps that contain the amount of agent at a givin x,y position
