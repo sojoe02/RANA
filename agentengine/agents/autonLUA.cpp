@@ -63,6 +63,8 @@
 	lua_register(L, "l_getMersenneFloat", l_getMersenneFloat);
 	lua_register(L, "l_getMersenneInteger", l_getMersenneInteger);
 	lua_register(L, "l_getEnvironmentSize", l_getEnvironmentSize); 
+    lua_register(L, "l_modifyMap", l_modifyMap);
+    lua_register(L, "l_checkMap", l_checkMap);
 	//Load the LUA frog:
 	//std::string pre = "../src/frog.lua";
 	//std::string file = pre;
@@ -499,8 +501,35 @@ int AutonLUA::l_getMersenneInteger(lua_State *L){
 }
 //MAP NAVIGATION AND MANIPULATION FUNCTIONS:
 
+int AutonLUA::l_modifyMap(lua_State *L)
+{
+    int x = lua_tonumber(L, -5);
+    int y = lua_tonumber(L, -4);
+
+    rgba color;
+
+    color.red = lua_tonumber(L, -3);
+    color.green = lua_tonumber(L, -2);
+    color.blue = lua_tonumber(L, -1);
+    color.alpha = 0;
+
+    MapHandler::setPixelInfo(x, y, color);
+}
+
+int AutonLUA::l_checkMap(lua_State *L)
+{
+    int x = lua_tonumber(L, -2);
+    int y = lua_tonumber(L, -1);
+
+    rgba color = MapHandler::getPixelInfo(x, y);
+
+    lua_pushnumber(L, color.red);
+    lua_pushnumber(L, color.green);
+    lua_pushnumber(L, color.blue);
+}
 
 //int AutonLUA::gridMove(lua_State *L){
 
 //}
+
 

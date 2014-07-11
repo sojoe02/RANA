@@ -18,7 +18,7 @@ public:
 
     MapHandler(MainWindow *parent);
     static void setImage(QImage *argImage);
-    static rgba *getPixelInfo(int argX, int argY);
+    static rgba getPixelInfo(int argX, int argY);
     static void setPixelInfo(int argX, int argY, rgba argValue);
 
     static MATRICE radialScan(int radius, char channel);

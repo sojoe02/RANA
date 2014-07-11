@@ -18,21 +18,27 @@ void MapHandler::setImage(QImage *argImage)
     image = argImage;
 }
 
-rgba* MapHandler::getPixelInfo(int argX, int argY)
+rgba MapHandler::getPixelInfo(int argX, int argY)
 {
+    rgba values;
     if (image !=NULL)
     {
         QRgb info = image->pixel(argX, argY);
-        rgba* values = new rgba;
-        values->red = qRed(info);
-        values->green = qGreen(info);
-        values->blue = qBlue(info);
-        values->alpha = 0;
-        //beware of potentional memory leak!
-        return values;
 
-    } else
-        return NULL;
+        values.red = qRed(info);
+        values.green = qGreen(info);
+        values.blue = qBlue(info);
+        values.alpha = 0;
+        //beware of potentional memory leak!
+
+    }else{
+        values.red = 256;
+        values.green = 256;
+        values.blue = 256;
+        values.alpha = 256;
+    }
+
+    return values;
 }
 
 void MapHandler::setPixelInfo(int argX, int argY, rgba argValue)

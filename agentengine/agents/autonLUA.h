@@ -64,8 +64,10 @@ class AutonLUA : public Auton
 		static int l_getMersenneFloat(lua_State *L);
 		static int l_getMersenneInteger(lua_State *L);
 		static int l_getEnvironmentSize(lua_State *L);	
+        static int l_modifyMap(lua_State *L);
+        static int l_checkMap(lua_State *L);
 
-	private:
+private:
 			//function to receive an event from nestene responsible for this auton, returns an internal Event 'thinking':
 			EventQueue::iEvent* handleEvent(EventQueue::eEvent* event);
 			EventQueue::eEvent* actOnEvent(EventQueue::iEvent *event);
