@@ -35,7 +35,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_generateButton_clicked()
 {
-    double timeRes = ui->timeResSpinBox->value();
+    double timeRes = 1/ui->timeResSpinBox->value();
     double macroRes = ui->macroSpinBox->value();
     int agentAmount = ui->luaSpinBox->value();
     QString agentPath = ui->agentPathLineEdit->text();

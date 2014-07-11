@@ -138,7 +138,7 @@
         <item row="16" column="0" colspan="2">
          <widget class="QWidget" name="widget_3" native="true">
           <layout class="QGridLayout" name="gridLayout_2">
-           <item row="9" column="2">
+           <item row="7" column="2">
             <widget class="QSpinBox" name="macroSpinBox">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -163,18 +163,18 @@
            <item row="5" column="1">
             <widget class="QLabel" name="label_2">
              <property name="text">
-              <string>Lua agent amount</string>
+              <string>Agent Amount</string>
              </property>
             </widget>
            </item>
-           <item row="14" column="1">
+           <item row="11" column="1">
             <widget class="QLabel" name="label_10">
              <property name="text">
               <string/>
              </property>
             </widget>
            </item>
-           <item row="8" column="1">
+           <item row="6" column="1">
             <widget class="QLabel" name="label_5">
              <property name="toolTip">
               <string>Number of microsteps pr second</string>
@@ -187,30 +187,7 @@
              </property>
             </widget>
            </item>
-           <item row="7" column="1">
-            <widget class="QLabel" name="label_4">
-             <property name="text">
-              <string>C++2 agent amount</string>
-             </property>
-            </widget>
-           </item>
-           <item row="6" column="2">
-            <widget class="QSpinBox" name="c1AgentSpinBox">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-             <property name="maximum">
-              <number>1000</number>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="6">
+           <item row="1" column="3">
             <widget class="QPushButton" name="browseLuaAgentButton">
              <property name="text">
               <string>Browse</string>
@@ -220,47 +197,17 @@
            <item row="1" column="1">
             <widget class="QLabel" name="label">
              <property name="text">
-              <string>Lua Agent Path</string>
+              <string>Agent Path</string>
              </property>
             </widget>
            </item>
-           <item row="6" column="1">
-            <widget class="QLabel" name="label_3">
-             <property name="text">
-              <string>C++1 agent amount</string>
-             </property>
-            </widget>
-           </item>
-           <item row="7" column="2">
-            <widget class="QSpinBox" name="c2AgentSpinBox">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-             <property name="maximum">
-              <number>1000</number>
-             </property>
-            </widget>
-           </item>
-           <item row="9" column="1">
+           <item row="7" column="1">
             <widget class="QLabel" name="label_6">
              <property name="toolTip">
               <string>Number of mirosteps pr macrostep</string>
              </property>
              <property name="text">
-              <string>Macro Factor:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="11" column="1">
-            <widget class="QLabel" name="label_9">
-             <property name="text">
-              <string>Map Scale(m2/px)</string>
+              <string>Macro Factor</string>
              </property>
             </widget>
            </item>
@@ -290,7 +237,7 @@
              </property>
             </widget>
            </item>
-           <item row="8" column="2">
+           <item row="6" column="2">
             <widget class="QSpinBox" name="timeResSpinBox">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -318,17 +265,17 @@
              </property>
             </widget>
            </item>
-           <item row="12" column="1">
+           <item row="9" column="1">
             <widget class="QLabel" name="label_7">
              <property name="text">
               <string>Map Path</string>
              </property>
             </widget>
            </item>
-           <item row="12" column="2">
+           <item row="9" column="2">
             <widget class="QLineEdit" name="mapPathLineEdit"/>
            </item>
-           <item row="12" column="6">
+           <item row="9" column="3">
             <widget class="QPushButton" name="browseMapButton">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -341,43 +288,21 @@
              </property>
             </widget>
            </item>
-           <item row="11" column="2" colspan="5">
-            <widget class="QDoubleSpinBox" name="mapScaleDoubleSpinBox">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="layoutDirection">
-              <enum>Qt::LeftToRight</enum>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-             <property name="singleStep">
-              <double>0.100000000000000</double>
-             </property>
-             <property name="value">
-              <double>1.000000000000000</double>
-             </property>
-            </widget>
-           </item>
-           <item row="13" column="6">
+           <item row="10" column="3">
             <widget class="QPushButton" name="generateMap">
              <property name="text">
               <string>Generate Map</string>
              </property>
             </widget>
            </item>
-           <item row="13" column="1">
+           <item row="10" column="1">
             <widget class="QLabel" name="label_11">
              <property name="text">
               <string>Map Generation(%,px,py)</string>
              </property>
             </widget>
            </item>
-           <item row="13" column="2">
+           <item row="10" column="2">
             <widget class="QWidget" name="widget_5" native="true">
              <layout class="QHBoxLayout" name="horizontalLayout_3">
               <item>
@@ -431,7 +356,14 @@
              </layout>
             </widget>
            </item>
-           <item row="10" column="2">
+           <item row="8" column="1">
+            <widget class="QLabel" name="label_13">
+             <property name="text">
+              <string>Runtime(s)</string>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="2">
             <widget class="QSpinBox" name="runTimeSpinBox">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -456,13 +388,6 @@
              </property>
              <property name="value">
               <number>3600</number>
-             </property>
-            </widget>
-           </item>
-           <item row="10" column="1">
-            <widget class="QLabel" name="label_13">
-             <property name="text">
-              <string>Runtimu(s):</string>
              </property>
             </widget>
            </item>
