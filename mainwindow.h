@@ -61,6 +61,7 @@ private:
 
     Control *control;
 
+    void defineMap();
 };
 
 #endif // MAINWINDOW_H

@@ -66,6 +66,8 @@ class AutonLUA : public Auton
 		static int l_getEnvironmentSize(lua_State *L);	
         static int l_modifyMap(lua_State *L);
         static int l_checkMap(lua_State *L);
+        static int l_gridMove(lua_State *L);
+        static int l_checkCollision(lua_State *L);
 
 private:
 			//function to receive an event from nestene responsible for this auton, returns an internal Event 'thinking':

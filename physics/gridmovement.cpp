@@ -32,10 +32,7 @@ bool GridMovement::updatePos(int oldX, int oldY, int newX, int newY)
 
 
 
-bool GridMovement::checkCollision(int newX, int newY)
+int GridMovement::checkCollision(int newX, int newY)
 {
-    if(GridMovement::gridPos[newX][newY] > 0)
-        return true;
-    else return false;
-
+    return GridMovement::gridPos[newX][newY];
 }

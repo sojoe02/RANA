@@ -65,6 +65,8 @@
 	lua_register(L, "l_getEnvironmentSize", l_getEnvironmentSize); 
     lua_register(L, "l_modifyMap", l_modifyMap);
     lua_register(L, "l_checkMap", l_checkMap);
+    lua_register(L, "l_checkCollision", l_checkCollision);
+    lua_register(L, "l_gridMove", l_gridMove);
 	//Load the LUA frog:
 	//std::string pre = "../src/frog.lua";
 	//std::string file = pre;
@@ -526,6 +528,27 @@ int AutonLUA::l_checkMap(lua_State *L)
     lua_pushnumber(L, color.red);
     lua_pushnumber(L, color.green);
     lua_pushnumber(L, color.blue);
+}
+
+int AutonLUA::l_gridMove(lua_State *L)
+{
+
+    int oldX = lua_tonumber(L, -4);
+    int oldY = lua_tonumber(L, -3);
+    int newX = lua_tonumber(L, -2);
+    int newY = lua_tonumber(L, -1);
+
+    GridMovement::updatePos(oldX, oldY, newX, newY);
+}
+
+int AutonLUA::l_checkCollision(lua_State *L)
+{
+    int x = lua_tonumber(L, -2);
+    int y = lua_tonumber(L, -1);
+
+    int agentAmount = GridMovement::checkCollision(x, y);
+
+    lua_pushnumber(L, agentAmount);
 }
 
 //int AutonLUA::gridMove(lua_State *L){

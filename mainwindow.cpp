@@ -72,20 +72,7 @@ void MainWindow::on_browseMapButton_clicked()
                                      tr("Cannot Load %1.").arg(fileName));
             return;
         }
-        //ui->imageLabel->setPixmap(QPixmap::fromImage(*image));
-
-        mapItem.fromImage(*mapImage);
-        scene.addPixmap(mapItem);
-
-        //map = QPixmap(fileName);
-        //map.convertFromImage(*image);
-        //scene.setSceneRect(map.rect());
-        //scene.setBackgroundBrush(map.scaled(map.size()));
-        //ui->graphicsView->setMaximumSize(map.width()+10,map.height()+10);
-
-        MapHandler::setImage(mapImage);
-
-        //Phys::setEnvironment(image->width(),image->height());
+        defineMap();
     }
 
 }
@@ -113,24 +100,8 @@ void MainWindow::on_generateMap_clicked()
         }
     }
 
-    //ui->imageLabel->setPixmap(QPixmap::fromImage(*image));
-    mapItem.fromImage(*mapImage);
-    scene.addPixmap(mapItem);
-    //map = QPixmap(fileName);
-    //map.convertFromImage(*image);
-    //scene.setSceneRect(map.rect());
-    //scene.setBackgroundBrush(map.scaled(map.size()));
-
-    //int scrollbarWidth = qApp->style()->pixelMetric(QStyle::PM_ScrollBarExtent);
-
-    //ui->graphicsView->setMaximumSize(map.width()+ scrollbarWidth,
-    //                                 map.height()+ scrollbarWidth);
-
-
-    Phys::setEnvironment(mapImage->width(),mapImage->height());
-    GridMovement::initGrid(mapImage->width(), mapImage->height());
+    defineMap();
 }
-
 
 void MainWindow::write_output(const char *argMsg)
 {
@@ -195,8 +166,6 @@ void MainWindow::wheelEvent(QWheelEvent* event)
     ui->zoomLabel->setText(QString().setNum(factor*100));
 }
 
-
-
 void MainWindow::on_browseLuaAgentButton_clicked()
 {
     QString fileName = QFileDialog::getOpenFileName
@@ -210,4 +179,15 @@ void MainWindow::on_browseLuaAgentButton_clicked()
 void MainWindow::on_runButton_clicked()
 {
     control->runSimulation(ui->runTimeSpinBox->value());
+}
+
+void MainWindow::defineMap()
+{
+
+    mapItem.fromImage(*mapImage);
+    scene.addPixmap(mapItem);
+
+    MapHandler::setImage(mapImage);
+    Phys::setEnvironment(mapImage->width(),mapImage->height());
+    GridMovement::initGrid(mapImage->width(), mapImage->height());
 }

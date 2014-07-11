@@ -11,7 +11,7 @@ public:
 
     static void addPos(int x, int y);
     static bool updatePos(int oldX, int oldY, int newX, int newY);
-    static bool checkCollision(int newX, int newY);
+    static int checkCollision(int newX, int newY);
 
     static void initGrid(int height, int width);
 private:
