@@ -497,6 +497,8 @@ int AutonLUA::l_getMersenneInteger(lua_State *L){
 	lua_pushnumber(L,number);
 	return 1;
 }
+//MAP NAVIGATION AND MANIPULATION FUNCTIONS:
+
 
 //int AutonLUA::gridMove(lua_State *L){
 

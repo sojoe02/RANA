@@ -22,7 +22,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     void write_output(const char *argMsg);
-    void updateMap();
+    void updateMap(QImage *image);
 
     ~MainWindow();
 
@@ -43,16 +43,19 @@ private slots:
 
     void on_generateMap_clicked();
 
+    void on_browseLuaAgentButton_clicked();
+
+    void on_runButton_clicked();
 
 private:
     Ui::MainWindow *ui;
 
     void advanceProgess();
 
-    static QImage *image;
+    QImage *mapImage;
     QGraphicsScene scene;
     QMap<int, agentItem* > graphAgents;
-    QPixmap map;
+    QPixmap mapItem;
 
     double factor;
 

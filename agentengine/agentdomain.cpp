@@ -34,8 +34,8 @@ using std::chrono::milliseconds;
 using std::chrono::seconds;
 using std::chrono::steady_clock;
 
-AgentDomain::AgentDomain()
-    :mapGenerated(false), stop(false)
+AgentDomain::AgentDomain(Control *control)
+    :control(control), mapGenerated(false), stop(false)
 	 {
 		 Phys::seedMersenne();
          masteragent = new Master();
@@ -63,7 +63,8 @@ void AgentDomain::interpret(std::string function){
  */
 void AgentDomain::generateEnvironment(double width, double height, int resolution,
 		int listenerSize, int screamerSize, int LUASize,
-		double timeResolution, int macroFactor, std::string filename){
+        double timeResolution, int macroFactor, std::string filename)
+{
 
 	this->timeResolution = timeResolution;
 	this->macroFactor = macroFactor;
@@ -81,6 +82,7 @@ void AgentDomain::generateEnvironment(double width, double height, int resolutio
 	mapHeight = height;
 
     masteragent->populateSystem(listenerSize, screamerSize, LUASize, filename);
+    retrievePopPos();
 	mapGenerated = true;
 }
 
@@ -149,7 +151,7 @@ void AgentDomain::generateSquaredListenerEnvironment(double width, double height
  */
 void AgentDomain::retrievePopPos(){
 
-    //mainwindow->refreshPopulation(master.retrievePopPos());
+    control->refreshPopPos(masteragent->retrievePopPos());
 
 
 }
@@ -201,6 +203,7 @@ void AgentDomain::runSimulation(int time){
 		if(duration_cast<milliseconds>(end-start).count() > 350){
             masteragent->printStatus();
 			Output::Inst()->progressBar(cMacroStep,iterations);
+
             retrievePopPos();
 			//Output::Inst()->kprintf("i is not : %d\n", i );
 			start = end;

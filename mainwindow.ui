@@ -33,7 +33,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Execute</string>
+          <string>Run</string>
          </property>
         </widget>
        </item>
@@ -117,7 +117,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_3">
        <attribute name="title">
@@ -167,6 +167,13 @@
              </property>
             </widget>
            </item>
+           <item row="14" column="1">
+            <widget class="QLabel" name="label_10">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
            <item row="8" column="1">
             <widget class="QLabel" name="label_5">
              <property name="toolTip">
@@ -203,6 +210,13 @@
              </property>
             </widget>
            </item>
+           <item row="1" column="6">
+            <widget class="QPushButton" name="browseLuaAgentButton">
+             <property name="text">
+              <string>Browse</string>
+             </property>
+            </widget>
+           </item>
            <item row="1" column="1">
             <widget class="QLabel" name="label">
              <property name="text">
@@ -210,10 +224,10 @@
              </property>
             </widget>
            </item>
-           <item row="1" column="6">
-            <widget class="QPushButton" name="browseLuaAgentButton">
+           <item row="6" column="1">
+            <widget class="QLabel" name="label_3">
              <property name="text">
-              <string>Browse</string>
+              <string>C++1 agent amount</string>
              </property>
             </widget>
            </item>
@@ -233,13 +247,6 @@
              </property>
             </widget>
            </item>
-           <item row="6" column="1">
-            <widget class="QLabel" name="label_3">
-             <property name="text">
-              <string>C++1 agent amount</string>
-             </property>
-            </widget>
-           </item>
            <item row="9" column="1">
             <widget class="QLabel" name="label_6">
              <property name="toolTip">
@@ -247,6 +254,13 @@
              </property>
              <property name="text">
               <string>Macro Factor:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="11" column="1">
+            <widget class="QLabel" name="label_9">
+             <property name="text">
+              <string>Map Scale(m2/px)</string>
              </property>
             </widget>
            </item>
@@ -273,13 +287,6 @@
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
-             </property>
-            </widget>
-           </item>
-           <item row="10" column="1">
-            <widget class="QLabel" name="label_9">
-             <property name="text">
-              <string>Map Scale(m2/px)</string>
              </property>
             </widget>
            </item>
@@ -311,17 +318,17 @@
              </property>
             </widget>
            </item>
-           <item row="11" column="2">
-            <widget class="QLineEdit" name="mapPathLineEdit"/>
-           </item>
-           <item row="11" column="1">
+           <item row="12" column="1">
             <widget class="QLabel" name="label_7">
              <property name="text">
               <string>Map Path</string>
              </property>
             </widget>
            </item>
-           <item row="11" column="6">
+           <item row="12" column="2">
+            <widget class="QLineEdit" name="mapPathLineEdit"/>
+           </item>
+           <item row="12" column="6">
             <widget class="QPushButton" name="browseMapButton">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -334,7 +341,7 @@
              </property>
             </widget>
            </item>
-           <item row="10" column="2" colspan="5">
+           <item row="11" column="2" colspan="5">
             <widget class="QDoubleSpinBox" name="mapScaleDoubleSpinBox">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -356,14 +363,21 @@
              </property>
             </widget>
            </item>
-           <item row="13" column="1">
-            <widget class="QLabel" name="label_10">
+           <item row="13" column="6">
+            <widget class="QPushButton" name="generateMap">
              <property name="text">
-              <string/>
+              <string>Generate Map</string>
              </property>
             </widget>
            </item>
-           <item row="12" column="2">
+           <item row="13" column="1">
+            <widget class="QLabel" name="label_11">
+             <property name="text">
+              <string>Map Generation(%,px,py)</string>
+             </property>
+            </widget>
+           </item>
+           <item row="13" column="2">
             <widget class="QWidget" name="widget_5" native="true">
              <layout class="QHBoxLayout" name="horizontalLayout_3">
               <item>
@@ -417,17 +431,38 @@
              </layout>
             </widget>
            </item>
-           <item row="12" column="6">
-            <widget class="QPushButton" name="generateMap">
-             <property name="text">
-              <string>Generate Map</string>
+           <item row="10" column="2">
+            <widget class="QSpinBox" name="runTimeSpinBox">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+             <property name="accelerated">
+              <bool>true</bool>
+             </property>
+             <property name="minimum">
+              <number>1</number>
+             </property>
+             <property name="maximum">
+              <number>31536000</number>
+             </property>
+             <property name="singleStep">
+              <number>60</number>
+             </property>
+             <property name="value">
+              <number>3600</number>
              </property>
             </widget>
            </item>
-           <item row="12" column="1">
-            <widget class="QLabel" name="label_11">
+           <item row="10" column="1">
+            <widget class="QLabel" name="label_13">
              <property name="text">
-              <string>Map Generation(%,px,py)</string>
+              <string>Runtimu(s):</string>
              </property>
             </widget>
            </item>

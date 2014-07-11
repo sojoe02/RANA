@@ -1,7 +1,8 @@
-#include <QApplication>
+﻿#include <QApplication>
 #include <QtGui>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <string>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -10,11 +11,11 @@
 #include "physics/gridmovement.h"
 
 
-QImage *MainWindow::image = NULL;
+//QImage *MainWindow::mapItem = NULL;
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow),factor(1)
+    QMainWindow(parent), ui(new Ui::MainWindow),factor(1),
+    mapImage(NULL)
 {
     ui->setupUi(this);
 
@@ -34,12 +35,14 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_generateButton_clicked()
 {
-    updatePosition(3,300,200);
-    //if(ui->progressBar->value()==100)
-    //{
-    //    ui->progressBar->setValue(0);
-    //}
-    //ui->progressBar->setValue(ui->progressBar->value()+10);
+    double timeRes = ui->timeResSpinBox->value();
+    double macroRes = ui->macroSpinBox->value();
+    int agentAmount = ui->luaSpinBox->value();
+    QString agentPath = ui->agentPathLineEdit->text();
+    std::string stringPath = agentPath.toUtf8().constData();
+
+    control->generateEnvironment(mapImage, 1,timeRes,macroRes,
+                                 agentAmount,stringPath);
 
 }
 
@@ -62,57 +65,57 @@ void MainWindow::on_browseMapButton_clicked()
     ui->mapPathLineEdit->setText(fileName);
 
     if(!fileName.isEmpty()){
-        delete image;
-        image = new QImage(ui->mapPathLineEdit->text());
-        if(image->isNull()){
+        delete mapImage;
+        mapImage = new QImage(ui->mapPathLineEdit->text());
+        if(mapImage->isNull()){
             QMessageBox::information(this,tr("Image Viewer"),
                                      tr("Cannot Load %1.").arg(fileName));
             return;
         }
         //ui->imageLabel->setPixmap(QPixmap::fromImage(*image));
-        //map.fromImage(*image);
-        scene.addPixmap(QPixmap::fromImage(*image));
+
+        mapItem.fromImage(*mapImage);
+        scene.addPixmap(mapItem);
+
         //map = QPixmap(fileName);
         //map.convertFromImage(*image);
         //scene.setSceneRect(map.rect());
         //scene.setBackgroundBrush(map.scaled(map.size()));
         //ui->graphicsView->setMaximumSize(map.width()+10,map.height()+10);
 
-        MapHandler::setImage(image);
+        MapHandler::setImage(mapImage);
 
         //Phys::setEnvironment(image->width(),image->height());
     }
 
-    updatePosition(3,200,200);
-    updatePosition(4,30,100);
 }
 
 void MainWindow::on_generateMap_clicked()
 {
-    if(image != NULL)
-        delete image;
+    if(mapImage != NULL)
+        delete mapImage;
 
-    image = new QImage(ui->pxSpinBox->value(), ui->pySpinBox->value(),
+    mapImage = new QImage(ui->pxSpinBox->value(), ui->pySpinBox->value(),
                        QImage::Format_RGB32);
 
-    image->fill(Qt::GlobalColor::white);
+    mapImage->fill(Qt::GlobalColor::white);
 
     QRgb value = qRgb(0,0,255);
 
-    for(int x = 0; x < image->width(); x++)
+    for(int x = 0; x < mapImage->width(); x++)
     {
-        for(int y = 0; y < image->height(); y++)
+        for(int y = 0; y < mapImage->height(); y++)
         {
             if(Phys::getMersenneFloat(0,1) < ui->densityDoubleSpinBox->value())
             {
-                image->setPixel(x,y, value);
+                mapImage->setPixel(x,y, value);
             }
         }
     }
 
     //ui->imageLabel->setPixmap(QPixmap::fromImage(*image));
-    //map.fromImage(*image);
-    scene.addPixmap(QPixmap::fromImage(*image));
+    mapItem.fromImage(*mapImage);
+    scene.addPixmap(mapItem);
     //map = QPixmap(fileName);
     //map.convertFromImage(*image);
     //scene.setSceneRect(map.rect());
@@ -124,8 +127,8 @@ void MainWindow::on_generateMap_clicked()
     //                                 map.height()+ scrollbarWidth);
 
 
-    Phys::setEnvironment(image->width(),image->height());
-    GridMovement::initGrid(image->width(), image->height());
+    Phys::setEnvironment(mapImage->width(),mapImage->height());
+    GridMovement::initGrid(mapImage->width(), mapImage->height());
 }
 
 
@@ -134,8 +137,9 @@ void MainWindow::write_output(const char *argMsg)
     ui->outputTextEdit->append(QString::fromStdString(argMsg));
 }
 
-void MainWindow::updateMap()
+void MainWindow::updateMap(QImage *image)
 {
+    mapImage = image;
     //scene.setBackgroundBrush(map.scaled(map.size()));
 }
 
@@ -156,6 +160,8 @@ void MainWindow::updatePosition(int Id, int x, int y)
         gfxItem->setX(x);
         gfxItem->setY(y);
     }
+    //update the map:
+    mapItem.fromImage(*mapImage);
 
 }
 
@@ -190,3 +196,18 @@ void MainWindow::wheelEvent(QWheelEvent* event)
 }
 
 
+
+void MainWindow::on_browseLuaAgentButton_clicked()
+{
+    QString fileName = QFileDialog::getOpenFileName
+            (this, tr("Open Map File"),QDir::currentPath(),
+             tr("Lua Files (*.lua)"));
+
+    ui->agentPathLineEdit->setText(fileName);
+
+}
+
+void MainWindow::on_runButton_clicked()
+{
+    control->runSimulation(ui->runTimeSpinBox->value());
+}

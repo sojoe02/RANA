@@ -6,6 +6,7 @@
 
 #include "mainwindow.h"
 #include "agentengine/agentdomain.h"
+#include "utility.h"
 
 class AgentDomain;
 class MainWindow;
@@ -39,6 +40,8 @@ public:
     std::list<double[3]> updatePositions();
 
     void saveExternalEvents(std::string filename);
+
+    void refreshPopPos(std::list<agentInfo> infolist);
 
 private:
 

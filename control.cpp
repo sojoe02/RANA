@@ -1,5 +1,7 @@
 #include "control.h"
 #include "mainwindow.h"
+#include "output.h"
+
 
 
 Control::Control(MainWindow* mainwindow)
@@ -31,11 +33,16 @@ void Control::generateEnvironment(QImage *map, double scale,
 {
    delete agentDomain;
 
-    agentDomain = new AgentDomain();
+   agentDomain = new AgentDomain(this);
 
    agentDomain->generateEnvironment(map->width(),map->height(),1,0,0,
                                     agentAmount,timeRes,macroRes,agentPath);
    //retrieve and update the positions:
 
+}
+
+void Control::refreshPopPos(std::list<agentInfo> infolist)
+{
+    mainwindow->refreshPopulation(infolist);
 }
 

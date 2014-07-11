@@ -31,12 +31,14 @@
 #include "../agentengine/agents/doctor.h"
 #include "mainwindow.h"
 #include "utility.h"
+#include "control.h"
 
+class Control;
 class Master;
 class AgentDomain
 {
 	public:
-        AgentDomain();
+        AgentDomain(Control *control);
 		~AgentDomain();
 
 		/*
@@ -67,6 +69,7 @@ class AgentDomain
 		bool mapGenerated;
         Doctor doctor;
         Master *masteragent;
+        Control *control;
 		double timeResolution;
 		double macroResolution;
 		int macroFactor;
