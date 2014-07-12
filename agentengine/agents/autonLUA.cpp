@@ -29,6 +29,7 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
+
 #include "ID.h"
 #include "autonLUA.h"
 #include "../../physics/phys.h"
@@ -48,7 +49,8 @@
 	/*
 	 * Setup up the LUA stack:
 	 */
-	L = luaL_newstate();
+    L = luaL_newstate();
+
 	luaL_openlibs(L);
 	/*
 	 * Register all the physics wrapper functions:

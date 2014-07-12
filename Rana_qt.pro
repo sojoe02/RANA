@@ -12,6 +12,7 @@ TARGET = Rana_qt
 TEMPLATE = app
 
 
+
 SOURCES += main.cpp\
         mainwindow.cpp \
     eventqueue.cpp \
@@ -50,9 +51,30 @@ HEADERS  += mainwindow.h \
     physics/gridmovement.h
 
 
+
 FORMS    += mainwindow.ui
 
 unix: CONFIG += link_pkgconfig
 unix: PKGCONFIG += lua
 
 QMAKE_CXXFLAGS += -std=c++11
+
+
+
+#win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../Binaries-LuaDist-batteries-0.9.8-Windows-x86/Binaries-LuaDist-batteries-0.9.8-Windows-x86/lib/ -lliblua
+#else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../Binaries-LuaDist-batteries-0.9.8-Windows-x86/Binaries-LuaDist-batteries-0.9.8-Windows-x86/lib/ -llibluad
+#else:unix: LIBS += -L$$PWD/../../Binaries-LuaDist-batteries-0.9.8-Windows-x86/Binaries-LuaDist-batteries-0.9.8-Windows-x86/lib/ -lliblua
+
+#INCLUDEPATH += $$PWD/../../Binaries-LuaDist-batteries-0.9.8-Windows-x86/Binaries-LuaDist-batteries-0.9.8-Windows-x86/include
+#DEPENDPATH += $$PWD/../../Binaries-LuaDist-batteries-0.9.8-Windows-x86/Binaries-LuaDist-batteries-0.9.8-Windows-x86/include
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../ -llua52
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../ -llua52
+
+INCLUDEPATH += $$PWD/../../include
+DEPENDPATH += $$PWD/../../include
+
+win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../../liblua52.a
+else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../../liblua52.a
+else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../../lua52.lib
+else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../../lua52.lib

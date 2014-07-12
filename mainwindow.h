@@ -53,9 +53,10 @@ private:
     void advanceProgess();
 
     QImage *mapImage;
+    QGraphicsItem *mapItem;
     QGraphicsScene scene;
     QMap<int, agentItem* > graphAgents;
-    QPixmap mapItem;
+
 
     double factor;
 

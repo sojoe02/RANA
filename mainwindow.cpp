@@ -15,7 +15,7 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow),factor(1),
-    mapImage(NULL)
+    mapImage(NULL), mapItem(NULL)
 {
     ui->setupUi(this);
 
@@ -82,12 +82,14 @@ void MainWindow::on_generateMap_clicked()
     if(mapImage != NULL)
         delete mapImage;
 
+    delete mapItem;
+
     mapImage = new QImage(ui->pxSpinBox->value(), ui->pySpinBox->value(),
                        QImage::Format_RGB32);
 
     mapImage->fill(Qt::GlobalColor::white);
 
-    QRgb value = qRgb(0,0,255);
+    QRgb value = qRgb(0,0,200);
 
     for(int x = 0; x < mapImage->width(); x++)
     {
@@ -100,7 +102,9 @@ void MainWindow::on_generateMap_clicked()
         }
     }
 
-    defineMap();
+   defineMap();
+
+
 }
 
 void MainWindow::write_output(const char *argMsg)
@@ -132,7 +136,7 @@ void MainWindow::updatePosition(int Id, int x, int y)
         gfxItem->setY(y);
     }
     //update the map:
-    mapItem.fromImage(*mapImage);
+    //mapItem.fromImage(*mapImage);
 
 }
 
@@ -183,11 +187,20 @@ void MainWindow::on_runButton_clicked()
 
 void MainWindow::defineMap()
 {
+    if(mapItem != NULL)
+        delete mapItem;
 
-    mapItem.fromImage(*mapImage);
-    scene.addPixmap(mapItem);
+    mapItem = new QGraphicsPixmapItem(QPixmap::fromImage(*mapImage));
+
+    scene.addItem(mapItem);
+
+    //mapItem.fromImage(*mapImage);
+    //scene.addPixmap(mapItem);
+
+    //updatePosition(1,50,50);
 
     MapHandler::setImage(mapImage);
     Phys::setEnvironment(mapImage->width(),mapImage->height());
     GridMovement::initGrid(mapImage->width(), mapImage->height());
+
 }
