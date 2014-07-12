@@ -21,7 +21,7 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
-    void write_output(const char *argMsg);
+    void write_output(QString argMsg);
     void updateMap(QImage *image);
 
     ~MainWindow();

@@ -3,6 +3,7 @@
 
 #include "mainwindow.h"
 
+
 class MainWindow;
 class Output
 {

@@ -9,6 +9,7 @@
 #include "physics/maphandler.h"
 #include "physics/phys.h"
 #include "physics/gridmovement.h"
+#include "output.h"
 
 
 //QImage *MainWindow::mapItem = NULL;
@@ -25,7 +26,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->graphicsView->setScene(&scene);
 
     control = new Control(this);
-
 }
 
 MainWindow::~MainWindow()
@@ -35,15 +35,22 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_generateButton_clicked()
 {
-    double timeRes = 1/ui->timeResSpinBox->value();
-    double macroRes = ui->macroSpinBox->value();
-    int agentAmount = ui->luaSpinBox->value();
-    QString agentPath = ui->agentPathLineEdit->text();
-    std::string stringPath = agentPath.toUtf8().constData();
+    QFile path(ui->agentPathLineEdit->text());
+    if(path.exists())
+    {
 
-    control->generateEnvironment(mapImage, 1,timeRes,macroRes,
-                                 agentAmount,stringPath);
+        double timeRes = 1/ui->timeResSpinBox->value();
+        double macroRes = ui->macroSpinBox->value();
+        int agentAmount = ui->luaSpinBox->value();
+        QString agentPath = ui->agentPathLineEdit->text();
+        std::string stringPath = agentPath.toUtf8().constData();
 
+        //control->generateEnvironment(mapImage, 1,timeRes,macroRes,
+         //                            agentAmount,stringPath);
+        Output::Inst()->kprintf("generating environment, %d, %s",
+                                agentAmount, stringPath.c_str());
+    } else
+        Output::Inst()->kprintf("valid path not given");
 }
 
 void MainWindow::advanceProgess(int percentage)
@@ -101,15 +108,12 @@ void MainWindow::on_generateMap_clicked()
             }
         }
     }
-
    defineMap();
-
-
 }
 
-void MainWindow::write_output(const char *argMsg)
+void MainWindow::write_output(QString argMsg)
 {
-    ui->outputTextEdit->append(QString::fromStdString(argMsg));
+    ui->outputTextEdit->append(argMsg);
 }
 
 void MainWindow::updateMap(QImage *image)
@@ -135,9 +139,11 @@ void MainWindow::updatePosition(int Id, int x, int y)
         gfxItem->setX(x);
         gfxItem->setY(y);
     }
+    delete mapItem;
+    mapItem = new QGraphicsPixmapItem(QPixmap::fromImage(*mapImage));
+    scene.addItem(mapItem);
     //update the map:
     //mapItem.fromImage(*mapImage);
-
 }
 
 void MainWindow::refreshPopulation(std::list<agentInfo> infolist)
@@ -182,6 +188,7 @@ void MainWindow::on_browseLuaAgentButton_clicked()
 
 void MainWindow::on_runButton_clicked()
 {
+
     control->runSimulation(ui->runTimeSpinBox->value());
 }
 
@@ -191,16 +198,9 @@ void MainWindow::defineMap()
         delete mapItem;
 
     mapItem = new QGraphicsPixmapItem(QPixmap::fromImage(*mapImage));
-
     scene.addItem(mapItem);
-
-    //mapItem.fromImage(*mapImage);
-    //scene.addPixmap(mapItem);
-
-    //updatePosition(1,50,50);
 
     MapHandler::setImage(mapImage);
     Phys::setEnvironment(mapImage->width(),mapImage->height());
     GridMovement::initGrid(mapImage->width(), mapImage->height());
-
 }

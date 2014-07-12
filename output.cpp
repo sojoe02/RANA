@@ -4,6 +4,7 @@
 #include <stdio.h>
 
 #include "output.h"
+#include "QDebug"
 
 Output* Output::output;
 MainWindow* Output::mainWindow;
@@ -27,10 +28,13 @@ void Output::kprintf(const char* msg, ...)
     va_list args;
     va_start(args, msg);
 
-    char buffer[256];
-    sprintf(buffer, msg, args);
+    char buffer[1024];
+    vsprintf(buffer, msg, args);
 
-    mainWindow->write_output(buffer);
+    qDebug() << buffer << "\n";
+    QString string(buffer);
+
+    mainWindow->write_output(string);
 
     va_end(args);
 }
