@@ -38,19 +38,19 @@ void MainWindow::on_generateButton_clicked()
     QFile path(ui->agentPathLineEdit->text());
     if(path.exists())
     {
-
         double timeRes = 1/ui->timeResSpinBox->value();
         double macroRes = ui->macroSpinBox->value();
         int agentAmount = ui->luaSpinBox->value();
         QString agentPath = ui->agentPathLineEdit->text();
         std::string stringPath = agentPath.toUtf8().constData();
 
-        //control->generateEnvironment(mapImage, 1,timeRes,macroRes,
-         //                            agentAmount,stringPath);
+        control->generateEnvironment(mapImage, 1,timeRes, macroRes,
+                                     agentAmount,stringPath);
+
         Output::Inst()->kprintf("generating environment, %d, %s",
                                 agentAmount, stringPath.c_str());
     } else
-        Output::Inst()->kprintf("valid path not given");
+        Output::Inst()->kprintf("Cannot generate Environment: Valid path not given");
 }
 
 void MainWindow::advanceProgess(int percentage)
@@ -81,7 +81,6 @@ void MainWindow::on_browseMapButton_clicked()
         }
         defineMap();
     }
-
 }
 
 void MainWindow::on_generateMap_clicked()

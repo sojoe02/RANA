@@ -50,7 +50,6 @@ class EventQueue
 		//define the external Event:
 		struct eEvent {
 			unsigned long long id;
-			double duration; //in TMU units
 			double propagationSpeed;
 			Auton *origin;
 			double posX;
@@ -58,6 +57,7 @@ class EventQueue
 			std::string table;
 			std::string desc;
 			unsigned long long activationTime;
+            int targetID;
 			//double funcArray[11];
 		};
 
@@ -73,7 +73,7 @@ class EventQueue
 		//define the data event, precisely the same as events:
 		struct dataEvent{
 			unsigned long long id;
-			double duration;
+            int targetID;
 			unsigned long long activationTime;
 			double propagationSpeed;
 			double originX;

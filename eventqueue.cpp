@@ -311,7 +311,7 @@ void EventQueue::saveEEventData(std::string name, std::string luaFileName,
 				dataEvent devent;
 				devent.id = tmp->id;
 				devent.activationTime = tmp->activationTime;
-				devent.duration = tmp->duration;
+                devent.targetID = tmp->targetID;
 				devent.originX = tmp->posX;
 				devent.originY = tmp->posY;
 				devent.originID = tmp->origin->getID();

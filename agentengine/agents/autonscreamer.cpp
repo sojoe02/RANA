@@ -47,7 +47,7 @@ EventQueue::eEvent *AutonScreamer::initEvent(double macroResolution, unsigned lo
 	if( random < (0.1 * macroResolution) ){
 		EventQueue::eEvent *event = new EventQueue::eEvent();
 		event->desc = "callEvent";
-		event->duration = 5;
+        event->targetID = 0;
 		event->id = ID::generateEventID();
 		event->activationTime = tmu+1;
 		event->origin = this;

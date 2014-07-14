@@ -53,7 +53,7 @@ EventQueue::eEvent* AutonListener::initEvent(double macroResolution, unsigned lo
 		eventInitiated = true;
 		EventQueue::eEvent *event = new EventQueue::eEvent();
 		event->desc = "callEvent";
-		event->duration = 5;
+        event->targetID = 0;
 		event->id = ID::generateEventID();
 		event->activationTime = tmu+1;
 		event->origin = this;
@@ -65,7 +65,7 @@ EventQueue::eEvent* AutonListener::actOnEvent(EventQueue::iEvent *event){
 
 	EventQueue::eEvent *sendEvent = new EventQueue::eEvent();
 	sendEvent->desc = "callEvent";
-	sendEvent->duration = 5;
+    sendEvent->targetID = 0;
 	sendEvent->id = ID::generateEventID();
 	sendEvent->activationTime = event->activationTime+1;
 	sendEvent->origin = this;

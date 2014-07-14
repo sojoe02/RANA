@@ -153,7 +153,6 @@ void AgentDomain::retrievePopPos(){
 
     control->refreshPopPos(masteragent->retrievePopPos());
 
-
 }
 
 /**
