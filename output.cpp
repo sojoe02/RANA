@@ -31,8 +31,8 @@ void Output::kprintf(const char* msg, ...)
     char buffer[1024];
     vsprintf(buffer, msg, args);
 
-    qDebug() << buffer << "\n";
     QString string(buffer);
+
 
     mainWindow->write_output(string);
 

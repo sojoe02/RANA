@@ -243,9 +243,9 @@ EventQueue::eEvent* AutonLUA::initEvent(){
     sendEvent->desc = lua_tostring(L,-2);
     sendEvent->table = lua_tostring(L,-3);
 
-    lua_tonumberx(L,-3, &isnum);
+    lua_tonumberx(L,-4, &isnum);
     if(!isnum){
-        Output::Inst()->kprintf("LUA function hendleExternal propagation speed must be a number\n");
+        Output::Inst()->kprintf("LUA function handleExternal propagation speed must be a number\n");
         delete sendEvent;
         return NULL;
     } else sendEvent->propagationSpeed = lua_tonumber(L,-4);

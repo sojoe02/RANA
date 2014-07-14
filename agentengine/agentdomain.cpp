@@ -164,7 +164,8 @@ void AgentDomain::retrievePopPos(){
  */
 void AgentDomain::runSimulation(int time){
 	stop = false;
-    Output::Inst()->kprintf("Running Simulation of: %i[s], with resolution of %f \n", time, timeResolution);
+    Output::Inst()->kprintf("Running Simulation of: %i[s], with resolution of %f \n",
+                            time, timeResolution);
 
 	unsigned long long iterations = (double)time/timeResolution;
 	Output::Inst()->clearProgressBar();
@@ -177,47 +178,45 @@ void AgentDomain::runSimulation(int time){
 	unsigned long long cMicroStep = ULLONG_MAX;
 	unsigned long long i = 0, j = 0;
 
-	for(i = 0; i < iterations;){
-
-		Phys::setCTime(i);
-
-		if(i == cMicroStep && cMicroStep != ULLONG_MAX){
+    for(i = 0; i < iterations;){
+        Phys::setCTime(i);
+        if(i == cMicroStep && cMicroStep != ULLONG_MAX){
             masteragent->microStep(i);
-			//Output::Inst()->kprintf("i is now %lld\n", i);
-		}		
-		if(i == cMacroStep){
+              //Output::Inst()->kprintf("i is now %lld\n", i);
+        }
+        if(i == cMacroStep){
             masteragent->macroStep(i);
-			cMacroStep +=macroFactor;
-		}		
-		i = cMacroStep;
+            cMacroStep +=macroFactor;
+        }
+        i = cMacroStep;
         cMicroStep = masteragent->getNextMicroTmu();
 
-		if( i > cMicroStep){
-			i = cMicroStep;
-		}	
+        if( i > cMicroStep){
+            i = cMicroStep;
+        }
 			
-		//Update the status and progress bar screens:		
-		auto end = steady_clock::now();
+//		//Update the status and progress bar screens:
+        auto end = steady_clock::now();
 
         if(duration_cast<milliseconds>(end-start).count() > 250){
             masteragent->printStatus();
-			Output::Inst()->progressBar(cMacroStep,iterations);
+            Output::Inst()->progressBar(cMacroStep,iterations);
             retrievePopPos();
-			start = end;
-		}
-		if(stop == true){
-			Output::Inst()->kprintf("Stopping simulator at microstep %llu \n", i);
-			break;
-		}
-	}
+            start = end;
+        }
+        if(stop == true){
+            Output::Inst()->kprintf("Stopping simulator at microstep %llu \n", i);
+            break;
+        }
+    }
     masteragent->simDone();
     masteragent->printStatus();
-	Output::Inst()->progressBar(i,iterations);
-	auto endsim = steady_clock::now();
-	duration_cast<seconds>(start2-endsim).count();
-	Output::Inst()->kprintf("Simulation run took:\t %llu[s] "
-			, duration_cast<seconds>(endsim - start2).count()			
-			);
+    Output::Inst()->progressBar(i,iterations);
+    auto endsim = steady_clock::now();
+    duration_cast<seconds>(start2-endsim).count();
+    Output::Inst()->kprintf("Simulation run took:\t %llu[s] "
+            , duration_cast<seconds>(endsim - start2).count()
+            );
 
 
 }

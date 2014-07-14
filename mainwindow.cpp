@@ -38,7 +38,7 @@ void MainWindow::on_generateButton_clicked()
     QFile path(ui->agentPathLineEdit->text());
     if(path.exists())
     {
-        double timeRes = 1/ui->timeResSpinBox->value();
+        double timeRes = 1/(double)ui->timeResSpinBox->value();
         double macroRes = ui->macroSpinBox->value();
         int agentAmount = ui->luaSpinBox->value();
         QString agentPath = ui->agentPathLineEdit->text();
@@ -112,6 +112,8 @@ void MainWindow::on_generateMap_clicked()
 
 void MainWindow::write_output(QString argMsg)
 {
+
+    printf("%s\n", argMsg.toUtf8().constData());
     ui->outputTextEdit->append(argMsg);
 }
 
@@ -123,10 +125,17 @@ void MainWindow::updateMap(QImage *image)
 
 void MainWindow::updatePosition(int Id, int x, int y)
 {
+
+    delete mapItem;
+    mapItem = new QGraphicsPixmapItem(QPixmap::fromImage(*mapImage));
+    scene.addItem(mapItem);
+    mapItem->setZValue(1);
+
     if(!graphAgents.contains(Id))
     {
         agentItem *gfxItem = new agentItem(QString::number(Id));
 
+        gfxItem->setZValue(2);
         gfxItem->setX(x);
         gfxItem->setY(y);
         scene.addItem(gfxItem);
@@ -138,9 +147,6 @@ void MainWindow::updatePosition(int Id, int x, int y)
         gfxItem->setX(x);
         gfxItem->setY(y);
     }
-    delete mapItem;
-    mapItem = new QGraphicsPixmapItem(QPixmap::fromImage(*mapImage));
-    scene.addItem(mapItem);
     //update the map:
     //mapItem.fromImage(*mapImage);
 }
