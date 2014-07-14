@@ -4,10 +4,11 @@
 #include <stdio.h>
 
 #include "output.h"
-#include "QDebug"
+
 
 Output* Output::output;
 MainWindow* Output::mainWindow;
+std::mutex Output::lock;
 
 Output* Output::Inst()
 {
@@ -25,6 +26,7 @@ Output::Output()
 
 void Output::kprintf(const char* msg, ...)
 {
+    //lock.lock();
     va_list args;
     va_start(args, msg);
 
@@ -33,16 +35,16 @@ void Output::kprintf(const char* msg, ...)
 
     QString string(buffer);
 
-
     mainWindow->write_output(string);
 
     va_end(args);
+    //lock.unlock();
 }
 
 void Output::progressBar(unsigned long long current, unsigned long long maximum)
 {
     int progress = (current * 100)/maximum;
-    mainWindow->advanceProgess(progress);
+    //mainWindow->advanceProgess(progress);
 }
 
 void Output::setMainWindow(MainWindow *mainwindow)

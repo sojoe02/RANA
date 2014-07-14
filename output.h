@@ -1,7 +1,11 @@
 #ifndef OUTPUT_H
 #define OUTPUT_H
 
+#include <QtGui>
+
+#include <mutex>
 #include "mainwindow.h"
+
 
 
 class MainWindow;
@@ -31,6 +35,7 @@ private:
     Output();
     static Output* output;
     static MainWindow* mainWindow;
+    static std::mutex lock;
 };
 
 #endif // OUTPUT_H

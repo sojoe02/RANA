@@ -24,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->progressBar->setMinimum(0);
     ui->progressBar->setValue(0);
     ui->graphicsView->setScene(&scene);
+    ui->runButton->hide();
 
     control = new Control(this);
 }
@@ -35,22 +36,26 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_generateButton_clicked()
 {
-    QFile path(ui->agentPathLineEdit->text());
-    if(path.exists())
-    {
-        double timeRes = 1/(double)ui->timeResSpinBox->value();
-        double macroRes = ui->macroSpinBox->value();
-        int agentAmount = ui->luaSpinBox->value();
-        QString agentPath = ui->agentPathLineEdit->text();
-        std::string stringPath = agentPath.toUtf8().constData();
+    if(mapItem != NULL){
+        QFile path(ui->agentPathLineEdit->text());
+        if(path.exists())
+        {
+            double timeRes = 1/(double)ui->timeResSpinBox->value();
+            double macroRes = ui->macroSpinBox->value();
+            int agentAmount = ui->luaSpinBox->value();
+            QString agentPath = ui->agentPathLineEdit->text();
+            std::string stringPath = agentPath.toUtf8().constData();
 
-        control->generateEnvironment(mapImage, 1,timeRes, macroRes,
-                                     agentAmount,stringPath);
+            control->generateEnvironment(mapImage, 1,timeRes, macroRes,
+                                         agentAmount,stringPath);
 
-        Output::Inst()->kprintf("generating environment, %d, %s",
-                                agentAmount, stringPath.c_str());
+            Output::Inst()->kprintf("generating environment, %d, %s",
+                                    agentAmount, stringPath.c_str());
+            ui->runButton->show();
+        } else
+            Output::Inst()->kprintf("Cannot generate Environment: Valid path not given");
     } else
-        Output::Inst()->kprintf("Cannot generate Environment: Valid path not given");
+        Output::Inst()->kprintf("No map has been loaded, puuulease do that mmkay?");
 }
 
 void MainWindow::advanceProgess(int percentage)
@@ -112,13 +117,18 @@ void MainWindow::on_generateMap_clicked()
 
 void MainWindow::write_output(QString argMsg)
 {
+    QCoreApplication::postEvent(ui->outputTextEdit, new QEvent(QEvent::UpdateRequest),
+                                Qt::LowEventPriority);
 
-    printf("%s\n", argMsg.toUtf8().constData());
-    ui->outputTextEdit->append(argMsg);
+    QMetaObject::invokeMethod(ui->outputTextEdit, "append", Q_ARG(QString, argMsg));
+
+    //the below is not thread safe!!!!
+    //ui->outputTextEdit->append("otehunaoetuhaso.cuhas");
 }
 
 void MainWindow::updateMap(QImage *image)
 {
+
     mapImage = image;
     //scene.setBackgroundBrush(map.scaled(map.size()));
 }
@@ -194,7 +204,14 @@ void MainWindow::on_browseLuaAgentButton_clicked()
 void MainWindow::on_runButton_clicked()
 {
 
-    control->runSimulation(ui->runTimeSpinBox->value());
+    if(control->isRunning()){
+        control->stopSimulation();
+    } else
+        control->runSimulation(ui->runTimeSpinBox->value());
+}
+
+void MainWindow::changeRunButton(QString text){
+    ui->runButton->setText(text);
 }
 
 void MainWindow::defineMap()

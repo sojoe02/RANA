@@ -182,7 +182,7 @@ void AgentDomain::runSimulation(int time){
         Phys::setCTime(i);
         if(i == cMicroStep && cMicroStep != ULLONG_MAX){
             masteragent->microStep(i);
-              //Output::Inst()->kprintf("i is now %lld\n", i);
+            //Output::Inst()->kprintf("i is now %lld\n", i);
         }
         if(i == cMacroStep){
             masteragent->macroStep(i);
@@ -216,7 +216,7 @@ void AgentDomain::runSimulation(int time){
     duration_cast<seconds>(start2-endsim).count();
     Output::Inst()->kprintf("Simulation run took:\t %llu[s] "
             , duration_cast<seconds>(endsim - start2).count()
-            );
+    );
 
 
 }

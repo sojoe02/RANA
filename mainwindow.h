@@ -21,15 +21,21 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
-    void write_output(QString argMsg);
+
     void updateMap(QImage *image);
 
     ~MainWindow();
 
-    void refreshPopulation(std::list<agentInfo> infolist);  
+    void changeRunButton(QString text);
+
+    void refreshPopulation(std::list<agentInfo> infolist);
     void advanceProgess(int percentage);
+    void write_output(QString argMsg);
 
 public slots:
+
+
+
     void wheelEvent(QWheelEvent *event);
 private slots:
 
@@ -56,6 +62,7 @@ private:
     QGraphicsItem *mapItem;
     QGraphicsScene scene;
     QMap<int, agentItem* > graphAgents;
+    QMutex lock;
 
 
     double factor;

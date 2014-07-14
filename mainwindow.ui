@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>673</width>
-    <height>521</height>
+    <height>681</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -414,12 +414,6 @@
          <widget class="QTextEdit" name="outputTextEdit"/>
         </item>
        </layout>
-      </widget>
-      <widget class="QWidget" name="tab">
-       <attribute name="title">
-        <string>Output</string>
-       </attribute>
-       <layout class="QGridLayout" name="gridLayout"/>
       </widget>
       <widget class="QWidget" name="tab_2">
        <attribute name="title">

@@ -1,8 +1,18 @@
 #ifndef CONTROL_H
 #define CONTROL_H
 
-#include <list>
+
 #include <QtGui>
+
+//STL libraries:
+#include <thread>
+#include <mutex>
+#include <string>
+#include <memory>
+#include <atomic>
+#include <list>
+
+#include <QThread>
 
 #include "mainwindow.h"
 #include "agentengine/agentdomain.h"
@@ -43,10 +53,22 @@ public:
 
     void refreshPopPos(std::list<agentInfo> infolist);
 
+    bool isGenerated();
+    bool isRunning();
+
 private:
 
     AgentDomain *agentDomain;
     MainWindow *mainwindow;
+
+    bool running;
+    bool generated;
+    bool stopped;
+
+    std::thread* runThread;
+
+    static void runSimulationThread(Control *control,
+                                    AgentDomain *agentDomain , int runTime);
 
 };
 
