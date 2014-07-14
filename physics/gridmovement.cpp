@@ -7,7 +7,7 @@ int GridMovement::height;
 
 void GridMovement::initGrid(int height, int width)
 {
-   std::vector< std::vector<int>> tmpPos(width, std::vector<int>(height));
+   std::vector< std::vector<int> > tmpPos(width, std::vector<int>(height));
    GridMovement::gridPos = tmpPos;
    GridMovement::width = width;
    GridMovement::height = height;

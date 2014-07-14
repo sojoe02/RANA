@@ -165,7 +165,7 @@ void AgentDomain::retrievePopPos(){
  */
 void AgentDomain::runSimulation(int time){
 	stop = false;
-	//Output::Inst()->kprintf("Running Simulation of: %i[s], with resolution of %f \n", time, timeResolution);
+    Output::Inst()->kprintf("Running Simulation of: %i[s], with resolution of %f \n", time, timeResolution);
 
 	unsigned long long iterations = (double)time/timeResolution;
 	Output::Inst()->clearProgressBar();
@@ -200,12 +200,10 @@ void AgentDomain::runSimulation(int time){
 		//Update the status and progress bar screens:		
 		auto end = steady_clock::now();
 
-		if(duration_cast<milliseconds>(end-start).count() > 350){
+        if(duration_cast<milliseconds>(end-start).count() > 250){
             masteragent->printStatus();
 			Output::Inst()->progressBar(cMacroStep,iterations);
-
             retrievePopPos();
-			//Output::Inst()->kprintf("i is not : %d\n", i );
 			start = end;
 		}
 		if(stop == true){
