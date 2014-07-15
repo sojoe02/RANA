@@ -29,14 +29,17 @@ public:
     void changeRunButton(QString text);
 
     void advanceProgess(int percentage);
-    void write_output(QString argMsg);
-    void updateMap(std::list<agentInfo> infolist);
+
     void runButtonHide();
+
+    void updateMap(std::list<agentInfo> infolist);
+
+    void write_output(QString argMsg);
+    void write_status(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents);
 
 public slots:
 
     void wheelEvent(QWheelEvent *event);
-
 
 private slots:
 
@@ -54,16 +57,22 @@ private slots:
 
     void on_updateMap(std::list<agentInfo> infolist);
 
+    void on_udateStatus(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents);
+
+    void on_writeOutput(QString string);
+
+
 
 signals:
 
     void map_updateSignal(std::list<agentInfo> infolist);
+    void writeStringSignal(QString something);
+    void writeStatusSignal(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents);
 
 private:
     Ui::MainWindow *ui;
 
     void updatePosition(int Id, int x, int y);
-
     void advanceProgess();
 
     QImage *mapImage;

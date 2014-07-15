@@ -17,9 +17,7 @@ public:
     void kprintf(const char* msg, ...);
 
     void updateStatus(unsigned long long ms, unsigned long long eventInit,
-                      unsigned long long internalEvents, unsigned long long externalEvents){
-
-    }
+                      unsigned long long internalEvents, unsigned long long externalEvents);
 
     void clearProgressBar(){
 
@@ -30,7 +28,6 @@ public:
     void updatePosition(int id, double x, double y);
 
     void setMainWindow(MainWindow *mainwindow);
-
 
 
 private:

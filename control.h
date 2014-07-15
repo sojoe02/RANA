@@ -52,7 +52,6 @@ public:
     std::list<double[3]> updatePositions();
 
     void saveExternalEvents(std::string filename);
-
     void refreshPopPos(std::list<agentInfo> infolist);
 
     bool isGenerated();

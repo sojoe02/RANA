@@ -19,11 +19,10 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow),factor(1),
     mapImage(NULL), mapItem(NULL)
 {
-
     scene = new QGraphicsScene();
+    this->setWindowTitle("RANA QT version 1.0");
 
     ui->setupUi(this);
-
     ui->progressBar->setMaximum(100);
     ui->progressBar->setMinimum(0);
     ui->progressBar->setValue(0);
@@ -35,6 +34,11 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(this,SIGNAL(map_updateSignal(std::list<agentInfo>)),
                      this,SLOT(on_updateMap(std::list<agentInfo>)));
 
+    QObject::connect(this,SIGNAL(writeStringSignal(QString)),
+                     this,SLOT(on_writeOutput(QString)));
+
+    QObject::connect(this,SIGNAL(writeStatusSignal(unsigned long long,unsigned long long,unsigned long long,unsigned long long)),
+                     this,SLOT(on_udateStatus(unsigned long long,unsigned long long,unsigned long long,unsigned long long)));
 
 }
 
@@ -124,14 +128,31 @@ void MainWindow::on_generateMap_clicked()
 
    defineMap();
 }
+void MainWindow::on_writeOutput(QString string)
+{
+    ui->outputTextEdit->append(string);
+}
 
 void MainWindow::write_output(QString argMsg)
 {
-    QCoreApplication::postEvent(ui->outputTextEdit, new QEvent(QEvent::UpdateRequest),
-                                Qt::LowEventPriority);
+    //QCoreApplication::postEvent(ui->outputTextEdit, new QEvent(QEvent::UpdateRequest),
+      //                          Qt::LowEventPriority);
 
-    QMetaObject::invokeMethod(ui->outputTextEdit, "append", Q_ARG(QString, argMsg));
+    //QMetaObject::invokeMethod(ui->outputTextEdit, "append", Q_ARG(QString, argMsg));
+    emit writeStringSignal(argMsg);
 
+}
+void MainWindow::on_udateStatus(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents)
+{
+    ui->label_status1->setText(QString().setNum(ms));
+    ui->label_status2->setText(QString().setNum(eventInit));
+    ui->label_status3->setText(QString().setNum(internalEvents));
+    ui->label_status4->setText(QString().setNum(externalEvents));
+}
+
+void MainWindow::write_status(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents)
+{
+    emit writeStatusSignal(ms, eventInit, internalEvents, externalEvents);
 }
 
 void MainWindow::updateMap(std::list<agentInfo> infolist)
@@ -172,8 +193,11 @@ void MainWindow::on_updateMap(std::list<agentInfo> infolist)
             gfxItem->setX(x);
             gfxItem->setY(y);
         }
-    }   
+    }
 }
+
+
+
 
 void MainWindow::wheelEvent(QWheelEvent* event)
 {

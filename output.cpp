@@ -41,6 +41,11 @@ void Output::kprintf(const char* msg, ...)
     //lock.unlock();
 }
 
+void Output::updateStatus(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents)
+{
+    mainWindow->write_status(ms, eventInit, internalEvents, externalEvents);
+}
+
 void Output::progressBar(unsigned long long current, unsigned long long maximum)
 {
     int progress = (current * 100)/maximum;
