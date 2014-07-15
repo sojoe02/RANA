@@ -44,7 +44,7 @@ void Output::kprintf(const char* msg, ...)
 void Output::progressBar(unsigned long long current, unsigned long long maximum)
 {
     int progress = (current * 100)/maximum;
-    //mainWindow->advanceProgess(progress);
+    mainWindow->advanceProgess(progress);
 }
 
 void Output::setMainWindow(MainWindow *mainwindow)

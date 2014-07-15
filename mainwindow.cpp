@@ -4,6 +4,7 @@
 #include <QMessageBox>
 #include <string>
 
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "physics/maphandler.h"
@@ -18,15 +19,23 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow),factor(1),
     mapImage(NULL), mapItem(NULL)
 {
+
+    scene = new QGraphicsScene();
+
     ui->setupUi(this);
 
     ui->progressBar->setMaximum(100);
     ui->progressBar->setMinimum(0);
     ui->progressBar->setValue(0);
-    ui->graphicsView->setScene(&scene);
+    ui->graphicsView->setScene(scene);
     ui->runButton->hide();
 
     control = new Control(this);
+
+    QObject::connect(this,SIGNAL(map_updateSignal(std::list<agentInfo>)),
+                     this,SLOT(on_updateMap(std::list<agentInfo>)));
+
+
 }
 
 MainWindow::~MainWindow()
@@ -45,7 +54,6 @@ void MainWindow::on_generateButton_clicked()
             int agentAmount = ui->luaSpinBox->value();
             QString agentPath = ui->agentPathLineEdit->text();
             std::string stringPath = agentPath.toUtf8().constData();
-
             control->generateEnvironment(mapImage, 1,timeRes, macroRes,
                                          agentAmount,stringPath);
 
@@ -60,7 +68,10 @@ void MainWindow::on_generateButton_clicked()
 
 void MainWindow::advanceProgess(int percentage)
 {
-    ui->progressBar->setValue(percentage);
+    QCoreApplication::postEvent(scene, new QEvent(QEvent::UpdateRequest),
+                                Qt::LowEventPriority);
+    QMetaObject::invokeMethod(ui->progressBar, "setValue", Q_ARG(int, percentage));
+    //ui->progressBar->setValue(percentage);
 }
 
 void MainWindow::on_exitButton_clicked()
@@ -93,14 +104,12 @@ void MainWindow::on_generateMap_clicked()
     if(mapImage != NULL)
         delete mapImage;
 
-    delete mapItem;
-
     mapImage = new QImage(ui->pxSpinBox->value(), ui->pySpinBox->value(),
                        QImage::Format_RGB32);
 
     mapImage->fill(Qt::GlobalColor::white);
 
-    QRgb value = qRgb(0,0,200);
+    QRgb value = qRgb(0,0,255);
 
     for(int x = 0; x < mapImage->width(); x++)
     {
@@ -112,6 +121,7 @@ void MainWindow::on_generateMap_clicked()
             }
         }
     }
+
    defineMap();
 }
 
@@ -122,53 +132,47 @@ void MainWindow::write_output(QString argMsg)
 
     QMetaObject::invokeMethod(ui->outputTextEdit, "append", Q_ARG(QString, argMsg));
 
-    //the below is not thread safe!!!!
-    //ui->outputTextEdit->append("otehunaoetuhaso.cuhas");
 }
 
-void MainWindow::updateMap(QImage *image)
+void MainWindow::updateMap(std::list<agentInfo> infolist)
 {
-
-    mapImage = image;
-    //scene.setBackgroundBrush(map.scaled(map.size()));
+    emit map_updateSignal(infolist);
 }
 
-void MainWindow::updatePosition(int Id, int x, int y)
-{
 
-    delete mapItem;
-    mapItem = new QGraphicsPixmapItem(QPixmap::fromImage(*mapImage));
-    scene.addItem(mapItem);
+
+void MainWindow::on_updateMap(std::list<agentInfo> infolist)
+{
+    Output::Inst()->kprintf("updating map fired...");
+
+    mapItem->setPixmap(QPixmap::fromImage(*mapImage));
     mapItem->setZValue(1);
 
-    if(!graphAgents.contains(Id))
-    {
-        agentItem *gfxItem = new agentItem(QString::number(Id));
-
-        gfxItem->setZValue(2);
-        gfxItem->setX(x);
-        gfxItem->setY(y);
-        scene.addItem(gfxItem);
-        graphAgents.insert(Id, gfxItem);
-    } else
-    {
-        QMap<int, agentItem*>::const_iterator i = graphAgents.find(Id);
-        agentItem *gfxItem = i.value();
-        gfxItem->setX(x);
-        gfxItem->setY(y);
-    }
-    //update the map:
-    //mapItem.fromImage(*mapImage);
-}
-
-void MainWindow::refreshPopulation(std::list<agentInfo> infolist)
-{
     std::list<agentInfo>::iterator itr;
 
     for(itr = infolist.begin(); itr != infolist.end(); itr++)
     {
-        updatePosition(itr->id, itr->x, itr->y);
-    }
+        int x = itr->x;
+        int y = itr->y;
+        int Id = itr->id;
+
+        if(!graphAgents.contains(Id))
+        {
+            agentItem *gfxItem = new agentItem(QString::number(Id));
+            gfxItem->setZValue(2);
+            gfxItem->setX(x);
+            gfxItem->setY(y);
+            scene->addItem(gfxItem);
+
+            graphAgents.insert(Id, gfxItem);
+        } else
+        {
+            QMap<int, agentItem*>::const_iterator i = graphAgents.find(Id);
+            agentItem *gfxItem = i.value();
+            gfxItem->setX(x);
+            gfxItem->setY(y);
+        }
+    }   
 }
 
 void MainWindow::wheelEvent(QWheelEvent* event)
@@ -198,31 +202,37 @@ void MainWindow::on_browseLuaAgentButton_clicked()
              tr("Lua Files (*.lua)"));
 
     ui->agentPathLineEdit->setText(fileName);
-
 }
 
 void MainWindow::on_runButton_clicked()
 {
-
     if(control->isRunning()){
         control->stopSimulation();
     } else
         control->runSimulation(ui->runTimeSpinBox->value());
 }
 
-void MainWindow::changeRunButton(QString text){
+void MainWindow::changeRunButton(QString text)
+{
     ui->runButton->setText(text);
+}
+
+void MainWindow::runButtonHide()
+{
+    ui->runButton->hide();
 }
 
 void MainWindow::defineMap()
 {
-    if(mapItem != NULL)
-        delete mapItem;
-
-    mapItem = new QGraphicsPixmapItem(QPixmap::fromImage(*mapImage));
-    scene.addItem(mapItem);
+    if(mapItem == NULL)
+    {
+        mapItem = new QGraphicsPixmapItem(QPixmap::fromImage(*mapImage));
+        scene->addItem(mapItem);
+    }else
+        mapItem->setPixmap(QPixmap::fromImage(*mapImage));
 
     MapHandler::setImage(mapImage);
     Phys::setEnvironment(mapImage->width(),mapImage->height());
     GridMovement::initGrid(mapImage->width(), mapImage->height());
 }
+

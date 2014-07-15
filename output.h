@@ -31,6 +31,8 @@ public:
 
     void setMainWindow(MainWindow *mainwindow);
 
+
+
 private:
     Output();
     static Output* output;

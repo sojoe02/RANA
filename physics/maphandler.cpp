@@ -15,7 +15,7 @@ MapHandler::MapHandler(MainWindow *parent)
 
 void MapHandler::setImage(QImage *argImage)
 {
-    image = argImage;
+    MapHandler::image = argImage;
 }
 
 rgba MapHandler::getPixelInfo(int argX, int argY)
@@ -48,7 +48,7 @@ void MapHandler::setPixelInfo(int argX, int argY, rgba argValue)
         QRgb value;
         value = qRgb(argValue.red, argValue.green, argValue.red);
         image->setPixel(argX, argY, value);
-        parent->updateMap(image);
+        //parent->updateMapImage(image);
     }
 }
 

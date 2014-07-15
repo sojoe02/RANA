@@ -5,43 +5,38 @@
 
 
 Control::Control(MainWindow* mainwindow)
-    : agentDomain(NULL), mainwindow(mainwindow),runThread(NULL),
+    : agentDomain(NULL), mainwindow(mainwindow),
       running(false), generated(false), stopped(true)
 {
-
+    runner = new Runner();
+    connect(runner, SIGNAL(simulationDone()), this, SLOT(simDone()));
 }
 
-void Control::runSimulation(int runTime)
+Control::~Control()
 {
-    if(agentDomain != NULL && runThread == NULL)
-    {
-        mainwindow->changeRunButton("Stop");
-        Output::Inst()->kprintf("Starting simulation thread");
-        running = true;
-        runThread = new std::thread(runSimulationThread,this, agentDomain, runTime);
-    } else
-        Output::Inst()->kprintf("You need an evironment to run...");
+    runThread->quit();
+    runThread->wait();
+}
 
+void Control::runSimulation(unsigned long long runTime)
+{
+    running = true;
+    mainwindow->changeRunButton("Stop");
+    runner->setParameters(agentDomain, runTime);
+    runner->start();
 }
 
 void Control::stopSimulation()
 {
-    if(agentDomain != NULL && runThread != NULL)
-   {
-       Output::Inst()->kprintf("Stopping Simulation");
-       agentDomain->stopSimulation();
-       runThread->join();
-       delete runThread;
-       runThread = NULL;
-       mainwindow->changeRunButton("Run");
-    }
+    agentDomain->stopSimulation();
 }
 
 void Control::generateEnvironment(QImage *map, double scale,
                                   double timeRes, double macroRes,
                                   int agentAmount, std::string agentPath)
 {
-    if(runThread == NULL){
+    if(!running)
+    {
         Output::Inst()->kprintf("Generating environment");
         delete agentDomain;
 
@@ -52,26 +47,27 @@ void Control::generateEnvironment(QImage *map, double scale,
     } else
         Output::Inst()->kprintf("Simulation thread is running, so you need to stop it");
    //retrieve and update the positions:
+}
 
+void Control::simDone()
+{
+    if(agentDomain != NULL)
+        delete agentDomain;
+
+    agentDomain = NULL;
+    running = false;
+    mainwindow->runButtonHide();
+    Output::Inst()->kprintf("Simulation Done");
 }
 
 void Control::refreshPopPos(std::list<agentInfo> infolist)
 {
-    mainwindow->refreshPopulation(infolist);
+    mainwindow->updateMap(infolist);
 }
 
-void Control::runSimulationThread(Control *control,
-                                  AgentDomain *agentDomain, int runTime)
-{
-    agentDomain->runSimulation(runTime);
-    control->running = false;
-}
 
 
 bool Control::isRunning()
 {
-     if(runThread != NULL)
-         return true;
-     else
-         return false;
+    return running;
 }

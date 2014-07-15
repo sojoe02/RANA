@@ -31,7 +31,8 @@ SOURCES += main.cpp\
     physics/maphandler.cpp \
     control.cpp \
     graphics/agentItem.cpp \
-    physics/gridmovement.cpp
+    physics/gridmovement.cpp \
+    runner.cpp
 
 HEADERS  += mainwindow.h \
     physics/phys.h \
@@ -50,7 +51,8 @@ HEADERS  += mainwindow.h \
     physics/maphandler.h \
     control.h \
     graphics/agentItem.h \
-    physics/gridmovement.h
+    physics/gridmovement.h \
+    runner.h
 
 
 

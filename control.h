@@ -5,30 +5,32 @@
 #include <QtGui>
 
 //STL libraries:
-#include <thread>
-#include <mutex>
 #include <string>
-#include <memory>
-#include <atomic>
 #include <list>
 
-#include <QThread>
+#include <QObject>
 
 #include "mainwindow.h"
 #include "agentengine/agentdomain.h"
 #include "utility.h"
+#include "runner.h"
 
+class Runner;
 class AgentDomain;
 class MainWindow;
-class Control
+class Control : public QObject
 {
+    Q_OBJECT
+
+
 public:
 
     Control(MainWindow* mainwindow);
+    ~Control();
 
     bool checkEnvPresence();
 
-    void runSimulation(int runTime);
+    void runSimulation(unsigned long long runTime);
 
     void stopSimulation();
 
@@ -56,19 +58,24 @@ public:
     bool isGenerated();
     bool isRunning();
 
+
+public slots:
+    void simDone();
+
+signals:
+    void runOperate();
+
 private:
 
     AgentDomain *agentDomain;
     MainWindow *mainwindow;
+    Runner *runner;
+    QThread *runThread;
 
     bool running;
     bool generated;
     bool stopped;
 
-    std::thread* runThread;
-
-    static void runSimulationThread(Control *control,
-                                    AgentDomain *agentDomain , int runTime);
 
 };
 

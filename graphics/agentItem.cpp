@@ -1,5 +1,6 @@
 #include "agentItem.h"
 
+
 agentItem::agentItem(QString id) :
     id(id)
 {
