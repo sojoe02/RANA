@@ -85,7 +85,7 @@ class Master
 		void simDone();
 
 	private:
-		unsigned long long tmu;
+
 
 		std::vector<Nestene> nestenes;
 		std::vector<Nestene>::iterator itNest;
@@ -111,8 +111,10 @@ class Master
 
 		EventQueue *eventQueue;
 
-		unsigned long long eEventInitAmount;
+        unsigned long long eEventInitAmount;
+        unsigned long long responseAmount;
 		unsigned long long externalDistroAmount;
-		unsigned long long responseAmount;
+        unsigned long long tmu;
+
 };
 #endif // MASTER_H

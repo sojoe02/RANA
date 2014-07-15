@@ -319,8 +319,9 @@ EventQueue::eEvent* AutonLUA::actOnEvent(EventQueue::iEvent *ievent){
         sendEvent->posY = posY;
 
         distroEEvent(sendEvent);
-    } else
-        return NULL;
+    }
+
+    return NULL;
 
 
 }

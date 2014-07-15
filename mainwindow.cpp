@@ -15,6 +15,7 @@
 
 //QImage *MainWindow::mapItem = NULL;
 
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow),factor(1),
     mapImage(NULL), mapItem(NULL)
@@ -31,8 +32,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     control = new Control(this);
 
-    QObject::connect(this,SIGNAL(map_updateSignal(std::list<agentInfo>)),
-                     this,SLOT(on_updateMap(std::list<agentInfo>)));
+    qRegisterMetaType<INFOLIST>("INFOLIST");
+
+    QObject::connect(this,SIGNAL(map_updateSignal(INFOLIST)),
+                     this,SLOT(on_updateMap(INFOLIST)));
 
     QObject::connect(this,SIGNAL(writeStringSignal(QString)),
                      this,SLOT(on_writeOutput(QString)));
@@ -72,9 +75,9 @@ void MainWindow::on_generateButton_clicked()
 
 void MainWindow::advanceProgess(int percentage)
 {
-    QCoreApplication::postEvent(scene, new QEvent(QEvent::UpdateRequest),
-                                Qt::LowEventPriority);
-    QMetaObject::invokeMethod(ui->progressBar, "setValue", Q_ARG(int, percentage));
+    //QCoreApplication::postEvent(scene, new QEvent(QEvent::UpdateRequest),
+      //                          Qt::LowEventPriority);
+    //QMetaObject::invokeMethod(ui->progressBar, "setValue", Q_ARG(int, percentage));
     //ui->progressBar->setValue(percentage);
 }
 
@@ -162,14 +165,14 @@ void MainWindow::updateMap(std::list<agentInfo> infolist)
 
 
 
-void MainWindow::on_updateMap(std::list<agentInfo> infolist)
+void MainWindow::on_updateMap(INFOLIST infolist)
 {
     Output::Inst()->kprintf("updating map fired...");
 
     mapItem->setPixmap(QPixmap::fromImage(*mapImage));
     mapItem->setZValue(1);
 
-    std::list<agentInfo>::iterator itr;
+    INFOLIST::iterator itr;
 
     for(itr = infolist.begin(); itr != infolist.end(); itr++)
     {

@@ -10,6 +10,8 @@
 #include "utility.h"
 #include "control.h"
 
+typedef std::list<agentInfo> INFOLIST;
+
 class Control;
 namespace Ui {
 class MainWindow;
@@ -55,7 +57,7 @@ private slots:
 
     void on_runButton_clicked();
 
-    void on_updateMap(std::list<agentInfo> infolist);
+    void on_updateMap(INFOLIST infolist);
 
     void on_udateStatus(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents);
 
@@ -65,7 +67,7 @@ private slots:
 
 signals:
 
-    void map_updateSignal(std::list<agentInfo> infolist);
+    void map_updateSignal(INFOLIST infolist);
     void writeStringSignal(QString something);
     void writeStatusSignal(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents);
 
@@ -74,14 +76,14 @@ private:
 
     void updatePosition(int Id, int x, int y);
     void advanceProgess();
-
+    double factor;
     QImage *mapImage;
     QGraphicsPixmapItem *mapItem;
     QGraphicsScene *scene;
     QMap<int, agentItem* > graphAgents;
     QMutex lock;
 
-    double factor;
+
 
     Control *control;
 

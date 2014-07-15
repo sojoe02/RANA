@@ -66,10 +66,11 @@ class AgentDomain
 
     private:
 
+        Control *control;
 		bool mapGenerated;
         Doctor doctor;
         Master *masteragent;
-        Control *control;
+
 		double timeResolution;
 		double macroResolution;
 		int macroFactor;
