@@ -23,12 +23,15 @@ MainWindow::MainWindow(QWidget *parent) :
     scene = new QGraphicsScene();
     this->setWindowTitle("RANA QT version 1.0");
 
+
     ui->setupUi(this);
     ui->progressBar->setMaximum(100);
     ui->progressBar->setMinimum(0);
     ui->progressBar->setValue(0);
     ui->graphicsView->setScene(scene);
     ui->runButton->hide();
+
+
 
     control = new Control(this);
 
@@ -42,6 +45,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QObject::connect(this,SIGNAL(writeStatusSignal(unsigned long long,unsigned long long,unsigned long long,unsigned long long)),
                      this,SLOT(on_udateStatus(unsigned long long,unsigned long long,unsigned long long,unsigned long long)));
+
 
 }
 
@@ -75,9 +79,9 @@ void MainWindow::on_generateButton_clicked()
 
 void MainWindow::advanceProgess(int percentage)
 {
-    //QCoreApplication::postEvent(scene, new QEvent(QEvent::UpdateRequest),
-      //                          Qt::LowEventPriority);
-    //QMetaObject::invokeMethod(ui->progressBar, "setValue", Q_ARG(int, percentage));
+    QCoreApplication::postEvent(scene, new QEvent(QEvent::UpdateRequest),
+                                Qt::LowEventPriority);
+    QMetaObject::invokeMethod(ui->progressBar, "setValue", Q_ARG(int, percentage));
     //ui->progressBar->setValue(percentage);
 }
 

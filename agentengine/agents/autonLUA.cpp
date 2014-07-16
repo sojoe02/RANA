@@ -177,18 +177,21 @@ EventQueue::iEvent* AutonLUA::handleEvent(EventQueue::eEvent *event){
     //	//the table string:
 
     //calculate arrivaltime:
+    if (event->targetID == 0 || event->targetID == ID)
+    {
+        EventQueue::iEvent *ievent = new EventQueue::iEvent();
 
-    EventQueue::iEvent *ievent = new EventQueue::iEvent();
+        ievent->origin = this;
+        ievent->event = event;
+        ievent->activationTime =
+                Phys::speedOfSound(event->origin->getPosX(), event->origin->getPosY(),
+                                   posX, posY, event->propagationSpeed);
+        ievent->id = ID::generateEventID();
+        ievent->desc = "standard";
 
-    ievent->origin = this;
-    ievent->event = event;
-    ievent->activationTime =
-            Phys::speedOfSound(event->origin->getPosX(), event->origin->getPosY(),
-                               posX, posY, event->propagationSpeed);
-    ievent->id = ID::generateEventID();
-    ievent->desc = "standard";
-
-    return ievent;
+        return ievent;
+    } else
+        return NULL;
 }
 
 /**
@@ -257,6 +260,7 @@ EventQueue::eEvent* AutonLUA::initEvent(){
     //		sendEvent->id, sendEvent->desc.c_str(), sendEvent->table.c_str());
     return sendEvent;
 }
+
 /**
  * Handler for internal events.
  * Will send all relevant event data to the LUA script which will then
@@ -271,55 +275,52 @@ EventQueue::eEvent* AutonLUA::actOnEvent(EventQueue::iEvent *ievent){
 
 
     //If the event isn't broadcast and the targetID is not mine
+    lua_settop(L,0);
+    int isnum;
+    //set the lua function:
+    lua_getglobal(L,"handleInternalEvent");
+    //push required arguments for eventhandling to the stack:
+    lua_pushnumber(L,ievent->event->origin->getPosX());
+    lua_pushnumber(L,ievent->event->origin->getPosY());
+    //push events ID to the stack:
+    lua_pushnumber(L,ievent->event->origin->getID());
+    //push the events description string to the stack
+    lua_pushstring(L,ievent->event->desc.c_str());
+    //push the table to the stack
+    lua_pushstring(L,ievent->event->table.c_str());
+    //make the function call with 5 arguments and 6 returnvalues
+    if(lua_pcall(L,5,4,0)!=LUA_OK)
+        Output::Inst()->kprintf("error on 'handleInternalEvent':\t %s\n",lua_tostring(L,-1));
 
-    if (ievent->event->targetID == 0 || ievent->event->targetID == ID)
-    {
-        lua_settop(L,0);
-        int isnum;
-        //set the lua function:
-        lua_getglobal(L,"handleInternalEvent");
-        //push required arguments for eventhandling to the stack:
-        lua_pushnumber(L,ievent->event->origin->getPosX());
-        lua_pushnumber(L,ievent->event->origin->getPosY());
-        //push events ID to the stack:
-        lua_pushnumber(L,ievent->event->origin->getID());
-        //push the events description string to the stack
-        lua_pushstring(L,ievent->event->desc.c_str());
-        //push the table to the stack
-        lua_pushstring(L,ievent->event->table.c_str());
-        //make the function call with 5 arguments and 6 returnvalues
-        if(lua_pcall(L,5,4,0)!=LUA_OK)
-            Output::Inst()->kprintf("error on 'handleInternalEvent':\t %s\n",lua_tostring(L,-1));
+    //Test if the handleevent method returns a null string
+    std::string nullValue = "null";
+    std::string validator = lua_tostring(L,-1);
+    if(nullValue.compare(validator)==0)
+        return NULL;
+    //Generate the internal event:
+    EventQueue::eEvent* sendEvent = new EventQueue::eEvent();
+    //first set the two pointers to 'this' and the external event that spurred it:
+    sendEvent->origin = this;
+    sendEvent->activationTime = Phys::getCTime();
+    sendEvent->id = ID::generateEventID();
 
-        //Test if the handleevent method returns a null string
-        std::string nullValue = "null";
-        std::string validator = lua_tostring(L,-1);
-        if(nullValue.compare(validator)==0)
-            return NULL;
-        //Generate the internal event:
-        EventQueue::eEvent* sendEvent = new EventQueue::eEvent();
-        //first set the two pointers to 'this' and the external event that spurred it:
-        sendEvent->origin = this;
-        sendEvent->activationTime = Phys::getCTime();
-        sendEvent->id = ID::generateEventID();
+    //the description string:
+    sendEvent->targetID = lua_tonumber(L, -1);
+    sendEvent->desc = lua_tostring(L,-2);
+    sendEvent->table = lua_tostring(L,-3);
 
-        //the description string:
-        sendEvent->targetID = lua_tonumber(L, -1);
-        sendEvent->desc = lua_tostring(L,-2);
-        sendEvent->table = lua_tostring(L,-3);
+    lua_tonumberx(L,-4, &isnum);
+    if(!isnum){
+        Output::Inst()->kprintf("LUA function 'handleInternalEvent' propagation speed must be a number\n");
+        delete sendEvent;
+        return NULL;
+    } else sendEvent->propagationSpeed = lua_tonumber(L,-6);
 
-        lua_tonumberx(L,-4, &isnum);
-        if(!isnum){
-            Output::Inst()->kprintf("LUA function 'handleInternalEvent' propagation speed must be a number\n");
-            delete sendEvent;
-            return NULL;
-        } else sendEvent->propagationSpeed = lua_tonumber(L,-6);
+    sendEvent->posX = posX;
+    sendEvent->posY = posY;
 
-        sendEvent->posX = posX;
-        sendEvent->posY = posY;
+    distroEEvent(sendEvent);
 
-        distroEEvent(sendEvent);
-    }
 
     return NULL;
 
@@ -471,6 +472,7 @@ int AutonLUA::l_modifyMap(lua_State *L)
     color.alpha = 0;
 
     MapHandler::setPixelInfo(x, y, color);
+    return 0;
 }
 
 int AutonLUA::l_checkMap(lua_State *L)
@@ -483,6 +485,7 @@ int AutonLUA::l_checkMap(lua_State *L)
     lua_pushnumber(L, color.red);
     lua_pushnumber(L, color.green);
     lua_pushnumber(L, color.blue);
+    return 3;
 }
 
 int AutonLUA::l_gridMove(lua_State *L)
@@ -494,6 +497,7 @@ int AutonLUA::l_gridMove(lua_State *L)
     int newY = lua_tonumber(L, -1);
 
     GridMovement::updatePos(oldX, oldY, newX, newY);
+    return 0;
 }
 
 int AutonLUA::l_checkCollision(lua_State *L)
@@ -504,6 +508,7 @@ int AutonLUA::l_checkCollision(lua_State *L)
     int agentAmount = GridMovement::checkCollision(x, y);
 
     lua_pushnumber(L, agentAmount);
+    return 1;
 }
 
 //int AutonLUA::gridMove(lua_State *L){

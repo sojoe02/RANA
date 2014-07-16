@@ -44,6 +44,7 @@ AgentDomain::AgentDomain(Control *control)
 AgentDomain::~AgentDomain(){
 	ID::resetSystem();
 	Phys::setCTime(0);
+    delete masteragent;
 }
 /**
  * Checks if an environment has been generated.

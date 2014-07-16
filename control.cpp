@@ -56,6 +56,7 @@ void Control::simDone()
 
     agentDomain = NULL;
     running = false;
+    mainwindow->changeRunButton("Run");
     mainwindow->runButtonHide();
     Output::Inst()->kprintf("Simulation Done");
 }
