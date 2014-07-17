@@ -3,7 +3,7 @@
 
 #include <QtGui>
 
-#include <mutex>
+#include <atomic>
 #include "mainwindow.h"
 
 
@@ -28,6 +28,8 @@ public:
     void updatePosition(int id, double x, double y);
 
     void setMainWindow(MainWindow *mainwindow);
+
+    static std::atomic<int> DelayValue;
 
 
 private:

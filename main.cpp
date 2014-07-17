@@ -16,6 +16,7 @@ unsigned long long ID::nID = 0;
 int main(int argc, char *argv[])
 {
     Phys::seedMersenne();
+    Output::DelayValue = 0;
 
     QApplication a(argc, argv);
     MainWindow *w = new MainWindow();

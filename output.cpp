@@ -9,6 +9,7 @@
 Output* Output::output;
 MainWindow* Output::mainWindow;
 std::mutex Output::lock;
+std::atomic<int> Output::DelayValue;
 
 Output* Output::Inst()
 {

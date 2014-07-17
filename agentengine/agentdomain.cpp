@@ -22,6 +22,7 @@
 
 #include <chrono>
 #include <climits>
+#include <thread>
 
 #include "agentdomain.h"
 #include "../physics/phys.h"
@@ -163,7 +164,8 @@ void AgentDomain::retrievePopPos(){
  * update the progress bar and status window in the running panel.
  * @param time the amount of seconds the simulation will simulate.
  */
-void AgentDomain::runSimulation(int time){
+void AgentDomain::runSimulation(int time)
+{
 	stop = false;
     Output::Inst()->kprintf("Running Simulation of: %i[s], with resolution of %f \n",
                             time, timeResolution);
@@ -178,33 +180,44 @@ void AgentDomain::runSimulation(int time){
 	unsigned long long cMicroStep = ULLONG_MAX;
 	unsigned long long i = 0, j = 0;
 
-    for(i = 0; i < iterations;){
+    for(i = 0; i < iterations;)
+    {
         Phys::setCTime(i);
-        if(i == cMicroStep && cMicroStep != ULLONG_MAX){
+        if(i == cMicroStep && cMicroStep != ULLONG_MAX)
+        {
             masteragent->microStep(i);
             //Output::Inst()->kprintf("i is now %lld", i);
         }
-        if(i == cMacroStep){
+        if(i == cMacroStep)
+        {
             masteragent->macroStep(i);
             cMacroStep +=macroFactor;
+            int delay = Output::DelayValue.load();
+            if(delay != 0)
+            {
+                std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+            }
         }
         i = cMacroStep;
         cMicroStep = masteragent->getNextMicroTmu();
 
-        if( i > cMicroStep){
+        if( i > cMicroStep)
+        {
             i = cMicroStep;
         }
-			
-//		//Update the status and progress bar screens:
+
+        //		//Update the status and progress bar screens:
         auto end = steady_clock::now();
 
-        if(duration_cast<milliseconds>(end-start).count() > 250){
+        if(duration_cast<milliseconds>(end-start).count() > 250)
+        {
             masteragent->printStatus();
             Output::Inst()->progressBar(cMacroStep,iterations);
             retrievePopPos();
             start = end;
         }
-        if(stop == true){
+        if(stop.load() == true)
+        {
             Output::Inst()->kprintf("Stopping simulator at microstep %llu \n", i);
             break;
         }
@@ -215,8 +228,8 @@ void AgentDomain::runSimulation(int time){
     auto endsim = steady_clock::now();
     duration_cast<seconds>(start2-endsim).count();
     Output::Inst()->kprintf("Simulation run took:\t %llu[s] "
-            , duration_cast<seconds>(endsim - start2).count()
-    );
+                            , duration_cast<seconds>(endsim - start2).count()
+                            );
 }
 
 /**

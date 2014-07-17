@@ -23,15 +23,12 @@ MainWindow::MainWindow(QWidget *parent) :
     scene = new QGraphicsScene();
     this->setWindowTitle("RANA QT version 1.0");
 
-
     ui->setupUi(this);
     ui->progressBar->setMaximum(100);
     ui->progressBar->setMinimum(0);
     ui->progressBar->setValue(0);
     ui->graphicsView->setScene(scene);
     ui->runButton->hide();
-
-
 
     control = new Control(this);
 
@@ -267,3 +264,8 @@ void MainWindow::defineMap()
     GridMovement::initGrid(mapImage->width(), mapImage->height());
 }
 
+
+void MainWindow::on_delaySpinBox_valueChanged(int arg1)
+{
+    Output::DelayValue = arg1;
+}

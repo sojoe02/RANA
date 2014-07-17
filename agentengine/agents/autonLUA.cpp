@@ -496,8 +496,11 @@ int AutonLUA::l_gridMove(lua_State *L)
     int newX = lua_tonumber(L, -2);
     int newY = lua_tonumber(L, -1);
 
-    GridMovement::updatePos(oldX, oldY, newX, newY);
-    return 0;
+    bool moved = GridMovement::updatePos(oldX, oldY, newX, newY);
+
+    lua_pushboolean(L, moved);
+
+    return 1;
 }
 
 int AutonLUA::l_checkCollision(lua_State *L)

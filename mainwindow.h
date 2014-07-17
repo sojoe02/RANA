@@ -65,6 +65,8 @@ private slots:
 
 
 
+    void on_delaySpinBox_valueChanged(int arg1);
+
 signals:
 
     void map_updateSignal(INFOLIST infolist);
