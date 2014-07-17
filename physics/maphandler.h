@@ -20,12 +20,15 @@ public:
     static void setImage(QImage *argImage);
     static rgba getPixelInfo(int argX, int argY);
     static void setPixelInfo(int argX, int argY, rgba argValue);
-
     static MATRICE radialScan(int radius, char channel);
+
+signals:
+
+    void map_changed();
 
 private:
     static QImage *image;
-    static MainWindow* parent;
+    static MainWindow *parent;
     static std::map<int, MATRICE> radialMasks;
 };
 

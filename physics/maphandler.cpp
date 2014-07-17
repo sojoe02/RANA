@@ -28,7 +28,7 @@ rgba MapHandler::getPixelInfo(int argX, int argY)
         values.red = qRed(info);
         values.green = qGreen(info);
         values.blue = qBlue(info);
-        values.alpha = 0;
+        values.alpha = 255;
         //beware of potentional memory leak!
 
     }else{
@@ -46,9 +46,13 @@ void MapHandler::setPixelInfo(int argX, int argY, rgba argValue)
     if (image != NULL && image->width() >= argX && image->height() >= argY)
     {
         QRgb value;
-        value = qRgb(argValue.red, argValue.green, argValue.red);
+        //Output::Inst()->kprintf("%i, %i, %i",argValue.red, argValue.green, argValue.blue);
+        int red = argValue.red;
+        int green = argValue.green;
+        int blue = argValue.blue;
+
+        value = qRgb(red,green,blue);
         image->setPixel(argX, argY, value);
-        //parent->updateMapImage(image);
     }
 }
 
