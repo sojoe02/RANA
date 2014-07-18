@@ -20,7 +20,7 @@ public:
     static void setImage(QImage *argImage);
     static rgba getPixelInfo(int argX, int argY);
     static void setPixelInfo(int argX, int argY, rgba argValue);
-    static MATRICE radialScan(int radius, char channel);
+    static MATRICE radialScan(int radius, char channel, int posX, int posY);
 
 signals:
 

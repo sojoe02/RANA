@@ -52,8 +52,8 @@ class AutonLUA : public Auton
 		static int l_generateEventID(lua_State *L);
 		
 		/**
-		 * Defining the LUA physics wrapper functions. 
-		 * This will enable the LUA auton to call physics function frog phys.h, to 
+         * Defining the LUA wrapper functions.
+         * This will enable the LUA auton to call physics function phys.h, to
 		 * calculate speed of sound etc.
 		 */
 		static int l_speedOfSound(lua_State *L);
@@ -68,6 +68,7 @@ class AutonLUA : public Auton
         static int l_checkMap(lua_State *L);
         static int l_gridMove(lua_State *L);
         static int l_checkCollision(lua_State *L);
+        static int l_scanRadial(lua_State *L);
 
 private:
 			//function to receive an event from nestene responsible for this auton, returns an internal Event 'thinking':

@@ -505,13 +505,40 @@ int AutonLUA::l_gridMove(lua_State *L)
 
 int AutonLUA::l_checkCollision(lua_State *L)
 {
-    int x = lua_tonumber(L, -2);
-    int y = lua_tonumber(L, -1);
+    int posX = lua_tonumber(L, -2);
+    int posY = lua_tonumber(L, -1);
 
-    int agentAmount = GridMovement::checkCollision(x, y);
+    int agentAmount = GridMovement::checkCollision(posX, posY);
 
     lua_pushnumber(L, agentAmount);
+
     return 1;
+}
+
+int AutonLUA::l_scanRadial(lua_State *L)
+{
+
+
+    int radius = lua_tonumber(L, -4);
+    std::string channel = lua_tostring(L, -3);
+    int posX = lua_tonumber(L, -2);
+    int posY = lua_tonumber(L, -1);
+
+    MATRICE result = MapHandler::radialScan(radius, channel.at(1), posX, posY);
+
+    lua_newtable(L);
+    for (int i = 0; i < radius*2+1; i++)
+    {
+        for(int j = 0; j < radius*2+1; j++)
+        {
+            lua_pushnumber(L, j*i);
+            lua_pushnumber(L, result[i][j]);
+            lua_rawset(L, -3);
+        }
+    }
+
+   return 1;
+
 }
 
 //int AutonLUA::gridMove(lua_State *L){
