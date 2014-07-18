@@ -19,7 +19,7 @@ void GridMovement::addPos(int x, int y)
 {
     Output::Inst()->kprintf("x%i, y%d", x, y);
 
-   GridMovement::gridPos[x][y] = 1;
+   GridMovement::gridPos[x][y] += 1;
 }
 
 bool GridMovement::updatePos(int oldX, int oldY, int newX, int newY)

@@ -24,25 +24,27 @@ end
 --Determine whether or not this Auton will initiate an event.
 function initiateEvent()
 
-		newPosX = l_getMersenneInteger(0,200)
-		newPosY = l_getMersenneInteger(0,200)
-		
-		l_modifyMap(newPosX, newPosY,0,0,250)
-		r,g,b = l_checkMap(newPosX, newPosY)
-		--l_debug("color "..r..","..g..","..b)
-		calltable = {name = "communication", index = 2, arg1 = callStrength}
-		s_calltable = serializeTbl(calltable) 
+		s_calltable = "empty" 
 		desc = "sound"
 		id = l_generateEventID()
 		propagationSpeed = 50000
 		
 		targetID = 0;
 		
-		l_gridMove(posX, posY, newPosX, newPosY)
-		posX = newPosX
-		posY = newPosY
+		i = l_checkCollision(posX, posY)
 
-		int
+		if ID == 1 then
+			l_debug("agents at my position".. i)
+		end
+
+		newPosX = 150
+		newPosY = 150
+		
+		if l_gridMove(posX, posY, newPosX, newPosY) == true then
+			posX = newPosX
+			posY = newPosY
+		end
+
 
 		return propagationSpeed, s_calltable, desc, targetID
 		

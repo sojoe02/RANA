@@ -21,8 +21,9 @@ void agentItem::paint(QPainter *painter,
     QRectF rect = boundingRect();
     QPen pen (Qt::black, 3);
     painter->setPen(pen);
+    painter->drawPoint(0,0);
     //painter->drawRect(rect);
-    painter->setFont(QFont("Arial", 8));
+    painter->setFont(QFont("Arial", 6));
     painter->drawText(rect, Qt::AlignCenter, id);
 }
 

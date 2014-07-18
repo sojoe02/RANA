@@ -213,7 +213,11 @@ void AgentDomain::runSimulation(int time)
         {
             masteragent->printStatus();
             Output::Inst()->progressBar(cMacroStep,iterations);
+            //int delay = Output::DelayValue.load();
+
+            //if(delay != 0)
             retrievePopPos();
+
             start = end;
         }
         if(stop.load() == true)

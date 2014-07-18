@@ -168,7 +168,7 @@ void MainWindow::updateMap(std::list<agentInfo> infolist)
 
 void MainWindow::on_updateMap(INFOLIST infolist)
 {
-    Output::Inst()->kprintf("updating map fired...");
+    //Output::Inst()->kprintf("updating map fired...");
 
     mapItem->setPixmap(QPixmap::fromImage(*mapImage));
     mapItem->setZValue(1);
