@@ -19,11 +19,15 @@ void agentItem::paint(QPainter *painter,
                       QWidget *widget)
 {
     QRectF rect = boundingRect();
-    QPen pen (Qt::black, 3);
+    QPen pen (Qt::white, 1);
     painter->setPen(pen);
     painter->drawPoint(0,0);
+    painter->drawPoint(1,1);
+    painter->drawPoint(-1,-1);
+    painter->drawPoint(1,-1);
+    painter->drawPoint(-1,1);
     //painter->drawRect(rect);
-    painter->setFont(QFont("Arial", 6));
+    painter->setFont(QFont("Arial", 4));
     painter->drawText(rect, Qt::AlignCenter, id);
 }
 

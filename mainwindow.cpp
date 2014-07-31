@@ -71,7 +71,7 @@ void MainWindow::on_generateButton_clicked()
         } else
             Output::Inst()->kprintf("Cannot generate Environment: Valid path not given");
     } else
-        Output::Inst()->kprintf("No map has been loaded, puuulease do that mmkay?");
+        Output::Inst()->kprintf("No map has been loaded, please do that...");
 }
 
 void MainWindow::advanceProgess(int percentage)
@@ -117,16 +117,30 @@ void MainWindow::on_generateMap_clicked()
 
     mapImage->fill(Qt::GlobalColor::white);
 
-    QRgb value = qRgb(0,0,255);
+    QRgb value = qRgb(0,0,0);
 
     for(int x = 0; x < mapImage->width(); x++)
     {
         for(int y = 0; y < mapImage->height(); y++)
         {
-            if(Phys::getMersenneFloat(0,1) < ui->densityDoubleSpinBox->value())
+            int Bvalue = 0;
+            int Gvalue = 0;
+            int Rvalue = 0;
+
+            if(Phys::getMersenneFloat(0,1) < ui->RdoubleSpinBox->value())
             {
-                mapImage->setPixel(x,y, value);
+                Rvalue = 255;
             }
+            if(Phys::getMersenneFloat(0,1) < ui->GDoubleSpinBox->value())
+            {
+                Gvalue = 255;
+            }
+            if(Phys::getMersenneFloat(0,1) < ui->BDoubleSpinBox->value())
+            {
+                Bvalue = 255;
+            }
+            value = qRgb(Rvalue,Gvalue,Bvalue);
+            mapImage->setPixel(x,y, value);
         }
     }
 
