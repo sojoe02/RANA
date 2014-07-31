@@ -9,7 +9,7 @@ void GridMovement::initGrid(int height, int width)
 {
    std::vector< std::vector<int> > tmpPos(width, std::vector<int>(height));
    GridMovement::gridPos = tmpPos;
-   Output::Inst()->kprintf("width %i, height", GridMovement::gridPos.size());
+   //Output::Inst()->kprintf("width %i, height", GridMovement::gridPos.size());
    GridMovement::width = width;
    GridMovement::height = height;
 }
@@ -17,8 +17,7 @@ void GridMovement::initGrid(int height, int width)
 
 void GridMovement::addPos(int x, int y)
 {
-    Output::Inst()->kprintf("x%i, y%d", x, y);
-
+   //Output::Inst()->kprintf("x%i, y%d", x, y);
    GridMovement::gridPos[x][y] += 1;
 }
 

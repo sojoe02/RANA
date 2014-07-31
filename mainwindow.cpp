@@ -59,8 +59,8 @@ void MainWindow::on_generateButton_clicked()
     }
     graphAgents.clear();
 
-
     if(mapItem != NULL){
+        ui->progressBar->setValue(0);
         QFile path(ui->agentPathLineEdit->text());
         if(path.exists())
         {
@@ -280,6 +280,7 @@ void MainWindow::defineMap()
     }else
         mapItem->setPixmap(QPixmap::fromImage(*mapImage));
 
+    Output::Inst()->kprintf("Map information generated");
     MapHandler::setImage(mapImage);
     Phys::setEnvironment(mapImage->width(),mapImage->height());
     GridMovement::initGrid(mapImage->width(), mapImage->height());
