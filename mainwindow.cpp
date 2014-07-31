@@ -53,6 +53,13 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_generateButton_clicked()
 {
+    for(auto iter=graphAgents.begin(); iter!=graphAgents.end(); ++iter) {
+        scene->removeItem(*iter);
+        //delete *iter;
+    }
+    graphAgents.clear();
+
+
     if(mapItem != NULL){
         QFile path(ui->agentPathLineEdit->text());
         if(path.exists())

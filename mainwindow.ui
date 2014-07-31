@@ -374,7 +374,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>ZoomLabel</string>
+           <string>100</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
