@@ -51,7 +51,7 @@ function initCollector(x, y, id, macroFactor, timeResolution)
 end
 
 -- Handling of an external event
-function handleExternalEvent(origX, origY, eventID, eventPropagationSpeed ,eventDesc , eventTable)
+function handleEvent(origX, origY, eventID, eventPropagationSpeed ,eventDesc , eventTable)
 	
 	if eventDesc == "data" then
 		loadstring("ctable="..eventTable)()

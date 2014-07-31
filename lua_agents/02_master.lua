@@ -4,7 +4,7 @@
 function initAuton(x, y, id, macroFactor, timeResolution)	
 
 	--dofile([[C:/Users/Sojoe/Documents/qt/rana/RANA_QT/lua_agents/01_agent.lua]]) 
-	dofile([[/home/sojoe/qtProjects/Rana_qt/lua_agents/01_agent.lua]])
+	dofile([[/home/sojoe/qtProjects/Rana_qt/lua_agents/02_pawn.lua]])
 
 	initAgent(x,y,id, macroFactor,timeResolution)
 	

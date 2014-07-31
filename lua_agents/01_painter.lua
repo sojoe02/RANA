@@ -15,8 +15,6 @@ function initAuton(x, y, id, macroFactor, timeResolution)
 	timeRes = timeResolution
 
 	l_debug("Agent #: " .. id .. " has been initialized")
-    
-	l_modifyMap(10,10,255,0,0)
 
 end
 

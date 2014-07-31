@@ -15,7 +15,7 @@ function initAuton(x, y, id, macroFactor, timeResolution)
 end
 
 -- Event Handling:
-function handleInternalEvent(origX, origY, origID, origDesc, origTable)
+function handleEvent(origX, origY, origID, origDesc, origTable)
 	--make a response:
 
 	return 0,0,0,"null"
