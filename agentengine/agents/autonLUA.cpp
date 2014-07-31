@@ -278,7 +278,7 @@ EventQueue::eEvent* AutonLUA::actOnEvent(EventQueue::iEvent *ievent){
     lua_settop(L,0);
     int isnum;
     //set the lua function:
-    lua_getglobal(L,"handleInternalEvent");
+    lua_getglobal(L,"handleEvent");
     //push required arguments for eventhandling to the stack:
     lua_pushnumber(L,ievent->event->origin->getPosX());
     lua_pushnumber(L,ievent->event->origin->getPosY());
