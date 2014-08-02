@@ -29,6 +29,7 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
+#include "output.h"
 
 #include "ID.h"
 #include "autonLUA.h"

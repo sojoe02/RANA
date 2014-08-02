@@ -27,12 +27,12 @@
 #include <list>
 #include <string>
 
-
+#include "master.h"
 #include "eventqueue.h"
 #include "autonlistener.h"
 #include "autonscreamer.h"
 #include "autonLUA.h"
-#include "master.h"
+
 #include "utility.h"
 
 class Master;

@@ -78,10 +78,11 @@ void Master::generateMap(double width, double height, int resolution, double tim
 			double posY = height/resolution*j;
 			double posX = width/resolution*i;
 
-			tmp = SSTR(posY);
-			id = SSTR(posX);
+            char buffer[512];
 
-			id.append(tmp);
+            sprintf(buffer,"%f%f",posX,posY);
+
+            id = buffer;
 
 			Nestene nest = Nestene(posX,posY,width/resolution,height/resolution, this);
 

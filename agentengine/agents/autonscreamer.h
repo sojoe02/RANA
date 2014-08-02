@@ -23,7 +23,7 @@
 #define AUTONSCREAMER_H
 
 #include "auton.h"
-#include "nestene.h"
+//#include "nestene.h"
 
 class Nestene;
 class AutonScreamer : public Auton

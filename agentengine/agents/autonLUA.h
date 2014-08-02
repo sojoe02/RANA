@@ -29,11 +29,10 @@
 #include "lualib.h"
 
 #include "auton.h"
-#include "nestene.h"
-#include "output.h"
+//#include "nestene.h"
+//#include "output.h"
 
 class Nestene;
-
 class AutonLUA : public Auton
 {
 	public:

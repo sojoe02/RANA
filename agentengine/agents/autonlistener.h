@@ -22,8 +22,8 @@
 #ifndef AUTONLISTENER_H
 #define AUTONLISTENER_H
 
+//#include "nestene.h"
 #include "auton.h"
-#include "nestene.h"
 
 class Nestene;
 class AutonListener : public Auton

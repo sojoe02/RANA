@@ -26,6 +26,7 @@
 #include <list>
 #include <string>
 
+#include "eventqueue.h"
 #include "nestene.h"
 #include "utility.h"
 

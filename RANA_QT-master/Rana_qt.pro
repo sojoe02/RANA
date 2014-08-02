@@ -56,17 +56,13 @@ HEADERS  += mainwindow.h \
 FORMS    += mainwindow.ui
 
 CONFIG += c++11
+QMAKE_CXXFLAGS += -std=c++11 -mmacosx-version-min=10.7
 
-unix: CONFIG += link_pkgconfig
-unix: PKGCONFIG += lua
+LIBS += -stdlib=libc++ -mmacosx-version-min=10.7
+LIBS += -L$$PWD/../lua-5.2_MacOS107_lib/ -llua52
 
-macx: QMAKE_CXXFLAGS += -std=c++11 -mmacosx-version-min=10.7
+INCLUDEPATH += $$PWD/../lua-5.2_MacOS107_lib/include
+DEPENDPATH += $$PWD/../lua-5.2_MacOS107_lib/include
 
-macx: LIBS += -stdlib=libc++ -mmacosx-version-min=10.7
-macx: LIBS += -L$$PWD/../lua-5.2_MacOS107_lib/ -llua52
-
-macx: INCLUDEPATH += $$PWD/../lua-5.2_MacOS107_lib/include
-macx: DEPENDPATH += $$PWD/../lua-5.2_MacOS107_lib/include
-
-macx: PRE_TARGETDEPS += $$PWD/../lua-5.2_MacOS107_lib/liblua52.a
-
+PRE_TARGETDEPS += $$PWD/../lua-5.2_MacOS107_lib/liblua52.a
+DYLD_LIBRARY_PATH += $$PWD/../lua-5.2_MacOS107_lib/liblua52.dylib
