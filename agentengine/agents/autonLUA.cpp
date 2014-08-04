@@ -106,7 +106,7 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
     posY = lua_tonumber(L,-1);
     lua_settop(L,0);
 
-    GridMovement::addPos(posX,posY);
+    GridMovement::addPos(posX,posY,ID);
 }
 
 AutonLUA::~AutonLUA(){
@@ -499,8 +499,8 @@ int AutonLUA::l_gridMove(lua_State *L)
     int newX = lua_tonumber(L, -2);
     int newY = lua_tonumber(L, -1);
 
-    bool moved = GridMovement::updatePos(oldX, oldY, newX, newY);
-
+    //bool moved = GridMovement::updatePos(oldX, oldY, newX, newY);
+bool moved = false;
     lua_pushboolean(L, moved);
 
     return 1;

@@ -31,6 +31,6 @@ To compile RANA using Ubuntu do the following:
 3. Install lua v5.2, via **"apt-get install lua5.2"**.
 4. Install liblua5.2dev, via **"apt-get install lua5.2-dev"**.
 5. Install git.
-6. Execute **"git clone https://github.com/sojoe02/RANA__QT.git"** in a wanted parent directory.
+6. Execute **"git clone https://github.com/sojoe02/RANA_QT.git"** in a wanted parent directory.
 7. Checkout whatever branch you want, e.g. **"git checkout MAS2014"**.
 8. Change the line **"unix: PKGCONFIG += lua"** to **"unix: PKGCONFIG += lua5.2"**.
