@@ -322,6 +322,8 @@ EventQueue::eEvent* AutonLUA::actOnEvent(EventQueue::iEvent *ievent){
 
     distroEEvent(sendEvent);
 
+    delete ievent;
+
 
     return NULL;
 

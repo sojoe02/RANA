@@ -19,6 +19,7 @@ private:
 
     QString id;
 
+
 };
 
 #endif // AGENTITEM_H

@@ -31,3 +31,5 @@ void agentItem::paint(QPainter *painter,
     painter->drawText(rect, Qt::AlignCenter, id);
 }
 
+
+
