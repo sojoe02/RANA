@@ -178,6 +178,7 @@ EventQueue::iEvent* AutonLUA::handleEvent(EventQueue::eEvent *event){
     //	//the table string:
 
     //calculate arrivaltime:
+    //Output::Inst()->kprintf("%s", event->desc.c_str());
     if (event->targetID == 0 || event->targetID == ID)
     {
         EventQueue::iEvent *ievent = new EventQueue::iEvent();
@@ -186,9 +187,13 @@ EventQueue::iEvent* AutonLUA::handleEvent(EventQueue::eEvent *event){
         ievent->event = event;
         ievent->activationTime =
                 Phys::speedOfSound(event->origin->getPosX(), event->origin->getPosY(),
-                                   posX, posY, event->propagationSpeed);
+                                   posX, posY, event->propagationSpeed) + 1;
+
+        //Output::Inst()->kprintf("%s", event->desc.c_str());
+
         ievent->id = ID::generateEventID();
         ievent->desc = "standard";
+
 
         return ievent;
     } else
@@ -291,18 +296,19 @@ EventQueue::eEvent* AutonLUA::actOnEvent(EventQueue::iEvent *ievent){
     lua_pushstring(L,ievent->event->table.c_str());
     //make the function call with 5 arguments and 6 returnvalues
     if(lua_pcall(L,5,4,0)!=LUA_OK)
-        Output::Inst()->kprintf("error on 'handleInternalEvent':\t %s\n",lua_tostring(L,-1));
+        Output::Inst()->kprintf("error on 'handleEvent':\t %s\n",lua_tostring(L,-1));
 
     //Test if the handleevent method returns a null string
     std::string nullValue = "null";
     std::string validator = lua_tostring(L,-1);
     if(nullValue.compare(validator)==0)
         return NULL;
+
     //Generate the internal event:
     EventQueue::eEvent* sendEvent = new EventQueue::eEvent();
     //first set the two pointers to 'this' and the external event that spurred it:
     sendEvent->origin = this;
-    sendEvent->activationTime = Phys::getCTime();
+    sendEvent->activationTime = Phys::getCTime() + 1;
     sendEvent->id = ID::generateEventID();
 
     //the description string:
@@ -315,18 +321,17 @@ EventQueue::eEvent* AutonLUA::actOnEvent(EventQueue::iEvent *ievent){
         Output::Inst()->kprintf("LUA function 'handleInternalEvent' propagation speed must be a number\n");
         delete sendEvent;
         return NULL;
-    } else sendEvent->propagationSpeed = lua_tonumber(L,-6);
+    } else sendEvent->propagationSpeed = lua_tonumber(L,-4);
 
     sendEvent->posX = posX;
     sendEvent->posY = posY;
 
     distroEEvent(sendEvent);
 
-    delete ievent;
+    //delete ievent;
 
 
     return NULL;
-
 
 }
 
