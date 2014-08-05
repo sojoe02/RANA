@@ -3,7 +3,6 @@
 #include "gridmovement.h"
 #include "output.h"
 
-typedef std::list<int> pList;
 
 std::vector< std::vector<int> > GridMovement::gridPos;
 std::map< std::string, pList > GridMovement::posMap;
@@ -92,19 +91,16 @@ bool GridMovement::updatePos(int oldX, int oldY, int newX, int newY, int id)
     return true;
 }
 
-int GridMovement::checkPosition(int x, int y)
+pList GridMovement::checkPosition(int x, int y)
 {
     char buffer[64];
     sprintf(buffer,"%i,%i",x,y);
     std::string index = buffer;
 
-    auto it = posMap.find(index);
+    pList *tmp = &posMap.find(index)->second;
 
-    //if(it != posMap.end())
-    //{
-     //   return *it->second;
-    //}
-    return 0;
+    return *tmp;
+
 }
 
 

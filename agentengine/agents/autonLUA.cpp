@@ -186,9 +186,9 @@ EventQueue::iEvent* AutonLUA::handleEvent(EventQueue::eEvent *event){
         ievent->event = event;
         ievent->activationTime =
                 Phys::speedOfSound(event->origin->getPosX(), event->origin->getPosY(),
-                                   posX, posY, event->propagationSpeed);
+                                   posX, posY, event->propagationSpeed) + 1;
         ievent->id = ID::generateEventID();
-        ievent->desc = "standard";
+        ievent->desc = "std";
 
         return ievent;
     } else
