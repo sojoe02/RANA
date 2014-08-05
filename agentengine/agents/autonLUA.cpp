@@ -68,8 +68,7 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
     lua_register(L, "l_getEnvironmentSize", l_getEnvironmentSize);
     lua_register(L, "l_modifyMap", l_modifyMap);
     lua_register(L, "l_checkMap", l_checkMap);
-    lua_register(L, "l_checkCollision", l_checkCollision);
-    lua_register(L, "l_gridMove", l_gridMove);
+    lua_register(L, "l_checkPosition", l_checkPosition);
     //Load the LUA frog:
     //std::string pre = "../src/frog.lua";
     //std::string file = pre;
@@ -82,8 +81,8 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
     }
     //init the LUA frog:
     lua_getglobal(L,"initAuton");
-    lua_pushnumber(L,posX);
-    lua_pushnumber(L,posY);
+    lua_pushnumber(L,(int)posX);
+    lua_pushnumber(L,(int)posY);
     lua_pushnumber(L,ID);
     int mf = Phys::getMacroFactor();
     double tr = Phys::getTimeRes();
@@ -211,14 +210,7 @@ EventQueue::eEvent* AutonLUA::initEvent(){
 
     int isnum;
 
-    //sync positions:
-    lua_getglobal(L,"getSyncData");
 
-    if(lua_pcall(L,0,2,0)!=LUA_OK)
-        Output::Inst()->kprintf("error on initiateEvent:getSyncData:\t %s\n",lua_tostring(L,-1));
-
-    posX = lua_tonumber(L,-2);
-    posY = lua_tonumber(L,-1);
 
     //Output::Inst()->kprintf("position %f, %f \n", posX, posY);
     //lua_settop(L,0);
@@ -233,6 +225,7 @@ EventQueue::eEvent* AutonLUA::initEvent(){
     std::string validator = lua_tostring(L,-1);
     if(nullValue.compare(validator)==0){
         //Output::Inst()->kprintf("validator is : %s\n",validator.c_str());
+        getSyncData();
         return NULL;
     }
     //Generate the internal event:
@@ -254,11 +247,16 @@ EventQueue::eEvent* AutonLUA::initEvent(){
         return NULL;
     } else sendEvent->propagationSpeed = lua_tonumber(L,-4);
 
+    //Output::Inst()->kprintf("activationTime : %lld \t id : %lld \n desc : %s \t table : %s \n", sendEvent->activationTime,
+    //		sendEvent->id, sendEvent->desc.c_str(), sendEvent->table.c_str());
+
+
+    //sync positions:
+    getSyncData();
 
     sendEvent->posX = posX;
     sendEvent->posY = posY;
-    //Output::Inst()->kprintf("activationTime : %lld \t id : %lld \n desc : %s \t table : %s \n", sendEvent->activationTime,
-    //		sendEvent->id, sendEvent->desc.c_str(), sendEvent->table.c_str());
+
     return sendEvent;
 }
 
@@ -342,6 +340,21 @@ void AutonLUA::simDone(){
     lua_close(L);
 }
 
+void AutonLUA::getSyncData(){
+    lua_getglobal(L,"getSyncData");
+
+    if(lua_pcall(L,0,2,0)!=LUA_OK)
+        Output::Inst()->kprintf("error on getSyncData:getSyncData:\t %s\n",lua_tostring(L,-1));
+
+    int oldX = posX;
+    int oldY = posY;
+    posX = lua_tonumber(L,-2);
+    posY = lua_tonumber(L,-1);
+
+    if(oldX != posX || oldY != posY)
+        GridMovement::updatePos(oldX, oldY, posX, posY, ID);
+}
+
 /*********************************************
  * LUA wrapper functions:
  *********************************************/
@@ -384,7 +397,6 @@ int AutonLUA::l_speedOfSound(lua_State *L){
     double origX = lua_tonumber(L,-3);
     double origY = lua_tonumber(L,-4);
     double propagationSpeed = lua_tonumber(L,-5);
-
 
     unsigned long long t = Phys::speedOfSound(posX, posY, origX, origY, propagationSpeed);
 
@@ -491,36 +503,31 @@ int AutonLUA::l_checkMap(lua_State *L)
     return 3;
 }
 
-int AutonLUA::l_gridMove(lua_State *L)
-{
 
-    int oldX = lua_tonumber(L, -4);
-    int oldY = lua_tonumber(L, -3);
-    int newX = lua_tonumber(L, -2);
-    int newY = lua_tonumber(L, -1);
-
-    //bool moved = GridMovement::updatePos(oldX, oldY, newX, newY);
-bool moved = false;
-    lua_pushboolean(L, moved);
-
-    return 1;
-}
-
-int AutonLUA::l_checkCollision(lua_State *L)
+int AutonLUA::l_checkPosition(lua_State *L)
 {
     int posX = lua_tonumber(L, -2);
     int posY = lua_tonumber(L, -1);
 
-    int agentAmount = GridMovement::checkCollision(posX, posY);
+    pList agentList = GridMovement::checkPosition(posX, posY);
+    //pList agentList;
+    //agentList.push_back(1);
+    //agentList.push_back(2);
+    //agentList.push_back(3);
+    lua_newtable(L);
 
-    lua_pushnumber(L, agentAmount);
-
+    int i = 1;
+    for(pList::iterator it = agentList.begin(); it != agentList.end(); ++it,i++)
+    {
+        lua_pushnumber(L, i);
+        lua_pushnumber(L, *it);
+        lua_settable(L, -3);
+    }
     return 1;
 }
 
 int AutonLUA::l_scanRadial(lua_State *L)
 {
-
 
     int radius = lua_tonumber(L, -4);
     std::string channel = lua_tostring(L, -3);

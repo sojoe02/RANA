@@ -283,7 +283,7 @@ void MainWindow::defineMap()
     Output::Inst()->kprintf("Map information generated");
     MapHandler::setImage(mapImage);
     Phys::setEnvironment(mapImage->width(),mapImage->height());
-    GridMovement::initGrid(mapImage->width(), mapImage->height());
+    //GridMovement::initGrid(mapImage->width(), mapImage->height());
 }
 
 
