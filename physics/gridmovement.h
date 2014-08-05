@@ -10,14 +10,11 @@ typedef std::list<int> pList;
 class GridMovement
 {
 public:
-    GridMovement(){
-    };
+    GridMovement(){};
 
     static void addPos(int x, int y, int id);
     static bool updatePos(int oldX, int oldY, int newX, int newY, int id);
     static int checkCollision(int newX, int newY);
-
-    static void initGrid(int height, int width);
     pList checkPosition(int x, int y);
 
 

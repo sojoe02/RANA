@@ -302,7 +302,7 @@ EventQueue::eEvent* AutonLUA::actOnEvent(EventQueue::iEvent *ievent){
     EventQueue::eEvent* sendEvent = new EventQueue::eEvent();
     //first set the two pointers to 'this' and the external event that spurred it:
     sendEvent->origin = this;
-    sendEvent->activationTime = Phys::getCTime();
+    sendEvent->activationTime = Phys::getCTime() + 1;
     sendEvent->id = ID::generateEventID();
 
     //the description string:
@@ -315,7 +315,7 @@ EventQueue::eEvent* AutonLUA::actOnEvent(EventQueue::iEvent *ievent){
         Output::Inst()->kprintf("LUA function 'handleInternalEvent' propagation speed must be a number\n");
         delete sendEvent;
         return NULL;
-    } else sendEvent->propagationSpeed = lua_tonumber(L,-6);
+    } else sendEvent->propagationSpeed = lua_tonumber(L,-4);
 
     sendEvent->posX = posX;
     sendEvent->posY = posY;
