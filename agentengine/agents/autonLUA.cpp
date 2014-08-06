@@ -187,12 +187,7 @@ EventQueue::iEvent* AutonLUA::handleEvent(EventQueue::eEvent *event){
         ievent->activationTime =
                 Phys::speedOfSound(event->origin->getPosX(), event->origin->getPosY(),
                                    posX, posY, event->propagationSpeed) + 1;
-<<<<<<< HEAD
 
-        //Output::Inst()->kprintf("%s", event->desc.c_str());
-
-=======
->>>>>>> experimental
         ievent->id = ID::generateEventID();
         ievent->desc = "";
 
