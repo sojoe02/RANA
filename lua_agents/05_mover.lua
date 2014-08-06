@@ -8,8 +8,8 @@ timeRes = 0
 -- Init of the lua frog, function called upon initilization of the LUA auton:
 function initAuton(x, y, id, macroFactor, timeResolution)
 
-	posX = x
-	posY = y
+	posX = 10
+	posY = 10
 	ID = id
 	macroF = macroFactor
 	timeRes = timeResolution
@@ -28,28 +28,28 @@ end
 --Determine whether or not this Auton will initiate an event.
 function initiateEvent()
 
-	newPosX = posX + l_getMersenneInteger(1,2);
-	newPosY = posY + l_getMersenneInteger(1,2);
+	newPosX = posX + l_getMersenneInteger(0,3)-1;
+	newPosY = posY + l_getMersenneInteger(0,3)-1;
 
-	if newPosX > 198 or newPosX < 1	then 
-		newPosX = 1
+	if newPosX > 19 then 
+		newPosX = 0
 	end
 
-	if newPosY > 198 or newPosY < 1 then
-		newPosY = 1
+	if newPosX < 0 then 
+		newPosX = 19
+	end
+
+	if newPosY < 0 then
+		newPosY = 19
+	end
+
+	if newPosY > 19 then
+		newPosY = 0
 	end
 
 	--l_debug(newPosX..":"..newPosY)
-
-	--posX = newPosX
-	--posY = newPosY
+ 	move(newPosX, newPosY)
 	
-	positionTable = l_checkPosition(posX, posY);
-    l_debug("---start---")
-	for i = 1, #positionTable do 
-		l_debug(positionTable[i])
-	end
-	l_debug("---stop---")
 
 	return 0,0,0,"null"
 end
@@ -60,9 +60,26 @@ function getSyncData()
 end
 
 function simDone()
+	--if ID ==  1 then
+		positionTable = {}
+		positionTable = l_checkPosition(posX, posY);
+		l_debug("---start---")
+		for i = 1, #positionTable do 
+			l_debug(positionTable[i])
+		end
+	--end
 	l_debug("Agent #: " .. ID .. " is done\n")
 end
 
+--function to change position:
+function move(newPosX, newPosY)
+
+	--l_debug("moving from X"..posX..", Y"..posY)
+	l_updatePosition(posX, posY, newPosX, newPosY, ID)
+	posX = newPosX
+	posY = newPosY
+
+end
 
 function serializeTbl(val, name, depth)
 	--skipnewlines = skipnewlines or false

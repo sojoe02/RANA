@@ -12,16 +12,18 @@ class GridMovement
 public:
     GridMovement(){};
 
+    static void initGrid();
     static void addPos(int x, int y, int id);
     static void updatePos(int oldX, int oldY, int newX, int newY, int id);
-    static int checkCollision(int newX, int newY);
+    static bool checkCollision(int x, int y);
     static pList checkPosition(int x, int y);
 
 
+    static void clearGrid();
 private:
 
     //maps that contain the amount of agents at a givin x,y position
-    static std::map<std::string, pList> posMap;
+    static std::map<std::string, pList> *posMap;
     static std::map<std::string, pList>::iterator positr;
 
     static int width;

@@ -69,10 +69,8 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
     lua_register(L, "l_modifyMap", l_modifyMap);
     lua_register(L, "l_checkMap", l_checkMap);
     lua_register(L, "l_checkPosition", l_checkPosition);
-    //Load the LUA frog:
-    //std::string pre = "../src/frog.lua";
-    //std::string file = pre;
-    //
+    lua_register(L, "l_updatePosition", l_updatePosition);
+    lua_register(L, "l_checkCollision", l_checkCollision);
 
     if(luaL_loadfile(L, filename.c_str() ) || lua_pcall(L,0,0,0)){
         Output::Inst()->kprintf("error : %s \n", lua_tostring(L, -1));
@@ -351,8 +349,6 @@ void AutonLUA::getSyncData(){
     posX = lua_tonumber(L,-2);
     posY = lua_tonumber(L,-1);
 
-    if(oldX != posX || oldY != posY)
-        GridMovement::updatePos(oldX, oldY, posX, posY, ID);
 }
 
 /*********************************************
@@ -486,8 +482,9 @@ int AutonLUA::l_modifyMap(lua_State *L)
     color.blue = lua_tonumber(L, -1);
     color.alpha = 0;
 
-    MapHandler::setPixelInfo(x, y, color);
-    return 0;
+    bool success = MapHandler::setPixelInfo(x, y, color);
+    lua_pushboolean(L, success);
+    return 1;
 }
 
 int AutonLUA::l_checkMap(lua_State *L)
@@ -503,6 +500,32 @@ int AutonLUA::l_checkMap(lua_State *L)
     return 3;
 }
 
+int AutonLUA::l_updatePosition(lua_State *L)
+{
+    int oldX = lua_tonumber(L, -5);
+    int oldY = lua_tonumber(L, -4);
+    int newX = lua_tonumber(L, -3);
+    int newY = lua_tonumber(L, -2);
+    int id = lua_tonumber(L, -1);
+
+    if(oldX != newX || oldY != newY)
+       GridMovement::updatePos(oldX, oldY, newX, newY, id);
+
+    return 0;
+}
+
+int AutonLUA::l_checkCollision(lua_State *L)
+{
+    int posX = lua_tonumber(L, -2);
+    int posY = lua_tonumber(L, -1);
+
+    bool collision = GridMovement::checkCollision(posX, posY);
+
+    lua_pushboolean(L, collision);
+
+    return 1;
+}
+
 
 int AutonLUA::l_checkPosition(lua_State *L)
 {
@@ -510,10 +533,7 @@ int AutonLUA::l_checkPosition(lua_State *L)
     int posY = lua_tonumber(L, -1);
 
     pList agentList = GridMovement::checkPosition(posX, posY);
-    //pList agentList;
-    //agentList.push_back(1);
-    //agentList.push_back(2);
-    //agentList.push_back(3);
+
     lua_newtable(L);
 
     int i = 1;
@@ -528,7 +548,6 @@ int AutonLUA::l_checkPosition(lua_State *L)
 
 int AutonLUA::l_scanRadial(lua_State *L)
 {
-
     int radius = lua_tonumber(L, -4);
     std::string channel = lua_tostring(L, -3);
     int posX = lua_tonumber(L, -2);

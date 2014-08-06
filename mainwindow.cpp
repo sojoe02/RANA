@@ -3,6 +3,8 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <string>
+#include <thread>
+#include <chrono>
 
 
 #include "mainwindow.h"
@@ -28,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->progressBar->setMinimum(0);
     ui->progressBar->setValue(0);
     ui->graphicsView->setScene(scene);
+    scene->setBackgroundBrush(Qt::gray);
     ui->runButton->hide();
 
     control = new Control(this);
@@ -43,7 +46,6 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(this,SIGNAL(writeStatusSignal(unsigned long long,unsigned long long,unsigned long long,unsigned long long)),
                      this,SLOT(on_udateStatus(unsigned long long,unsigned long long,unsigned long long,unsigned long long)));
 
-
 }
 
 MainWindow::~MainWindow()
@@ -58,6 +60,7 @@ void MainWindow::on_generateButton_clicked()
         //delete *iter;
     }
     graphAgents.clear();
+    GridMovement::clearGrid();
 
     if(mapItem != NULL){
         ui->progressBar->setValue(0);
@@ -155,6 +158,7 @@ void MainWindow::on_generateMap_clicked()
 }
 void MainWindow::on_writeOutput(QString string)
 {
+    //std::this_thread::sleep_for(std::chrono::milliseconds(5));
     ui->outputTextEdit->append(string);
 }
 
