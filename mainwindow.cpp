@@ -3,7 +3,8 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <string>
-
+#include <thread>
+#include <chrono>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -28,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->progressBar->setMinimum(0);
     ui->progressBar->setValue(0);
     ui->graphicsView->setScene(scene);
+    scene->setBackgroundBrush(Qt::gray);
     ui->runButton->hide();
 
     control = new Control(this);
@@ -43,7 +45,6 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(this,SIGNAL(writeStatusSignal(unsigned long long,unsigned long long,unsigned long long,unsigned long long)),
                      this,SLOT(on_udateStatus(unsigned long long,unsigned long long,unsigned long long,unsigned long long)));
 
-
 }
 
 MainWindow::~MainWindow()
@@ -58,6 +59,7 @@ void MainWindow::on_generateButton_clicked()
         //delete *iter;
     }
     graphAgents.clear();
+    GridMovement::clearGrid();
 
     if(mapItem != NULL){
         ui->progressBar->setValue(0);
@@ -155,6 +157,7 @@ void MainWindow::on_generateMap_clicked()
 }
 void MainWindow::on_writeOutput(QString string)
 {
+    //std::this_thread::sleep_for(std::chrono::milliseconds(5));
     ui->outputTextEdit->append(string);
 }
 
@@ -226,22 +229,22 @@ void MainWindow::on_updateMap(INFOLIST infolist)
 
 void MainWindow::wheelEvent(QWheelEvent* event)
 {
-    ui->graphicsView->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-    // Scale the view / do the zoom
-    double scaleFactor = 1.15;
+//    ui->graphicsView->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+//    // Scale the view / do the zoom
+//    double scaleFactor = 1.15;
 
-    if(event->delta() > 0) {
-        // Zoom in
-        factor = .15 + factor;
-        ui->graphicsView-> scale(scaleFactor, scaleFactor);
+//    if(event->delta() > 0) {
+//        // Zoom in
+//        factor = .15 + factor;
+//        ui->graphicsView->scale(scaleFactor, scaleFactor);
 
-    } else {
-        // Zooming out
-        factor =  factor - .15;
-        ui->graphicsView->scale(1.0 / scaleFactor, 1.0 / scaleFactor);
-    }
+//    } else {
+//        // Zooming out
+//        factor =  factor - .15;
+//        ui->graphicsView->scale(1.0 / scaleFactor, 1.0 / scaleFactor);
+//    }
 
-    ui->zoomLabel->setText(QString().setNum(factor*100));
+//    ui->zoomLabel->setText(QString().setNum(factor*100));
 }
 
 void MainWindow::on_browseLuaAgentButton_clicked()
@@ -283,11 +286,24 @@ void MainWindow::defineMap()
     Output::Inst()->kprintf("Map information generated");
     MapHandler::setImage(mapImage);
     Phys::setEnvironment(mapImage->width(),mapImage->height());
-    GridMovement::initGrid(mapImage->width(), mapImage->height());
+    //GridMovement::initGrid(mapImage->width(), mapImage->height());
 }
 
 
 void MainWindow::on_delaySpinBox_valueChanged(int arg1)
 {
     Output::DelayValue = arg1;
+}
+
+
+void MainWindow::on_zoomSlider_valueChanged(int value)
+{
+
+    double scale = (double)value/100;
+
+    ui->zoomLabel->setText(QString().setNum(value));
+
+    ui->graphicsView->setTransform(QTransform::fromScale(scale,scale));
+
+
 }

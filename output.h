@@ -31,6 +31,8 @@ public:
 
     static std::atomic<int> DelayValue;
 
+    static std::atomic<bool> RunSimulation;
+
 
 private:
     Output();

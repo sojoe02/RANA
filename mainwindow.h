@@ -63,9 +63,9 @@ private slots:
 
     void on_writeOutput(QString string);
 
-
-
     void on_delaySpinBox_valueChanged(int arg1);
+
+    void on_zoomSlider_valueChanged(int value);
 
 signals:
 

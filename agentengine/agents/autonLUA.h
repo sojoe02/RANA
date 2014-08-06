@@ -65,9 +65,12 @@ class AutonLUA : public Auton
 		static int l_getEnvironmentSize(lua_State *L);	
         static int l_modifyMap(lua_State *L);
         static int l_checkMap(lua_State *L);
-        static int l_gridMove(lua_State *L);
+        static int l_checkPosition(lua_State *L);
+        static int l_updatePosition(lua_State *L);
         static int l_checkCollision(lua_State *L);
         static int l_scanRadial(lua_State *L);
+        static int l_gridMove(lua_State *L);
+        static int l_stopSimulation(lua_State *L);
 
 private:
 			//function to receive an event from nestene responsible for this auton, returns an internal Event 'thinking':
@@ -87,6 +90,7 @@ private:
 			bool nofile = false;
 
 
+            void getSyncData();
 };
 
 #endif // AUTONLUA_H

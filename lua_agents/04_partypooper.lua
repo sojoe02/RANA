@@ -14,13 +14,23 @@ function initAuton(x, y, id, macroFactor, timeResolution)
 	macroF = macroFactor
 	timeRes = timeResolution
 
+	--print out width and height of the environmet:
+	eX,eY = l_getEnvironmentSize()
+
+	l_debug("Environment X and Y"..eX..","..eY)
+
 	l_debug("Agent #: " .. id .. " has been initialized")
 
 end
 
 -- Event Handling:
 function handleEvent(origX, origY, origID, origDesc, origTable)
-	--make a response:
+	--load the table to se if anything is up:
+	loadstring("ctable="..origTable)()
+	if ID ~= 1 and ctable.name == "partyAnnouncement" then
+		l_debug("I am stopping this simulation, due to party announcement from agent ".. ctable.id ) 	
+		l_stopSimulation()
+	end
 
 	return 0,0,0,"null"
 end	
@@ -28,17 +38,12 @@ end
 --Determine whether or not this Auton will initiate an event.
 function initiateEvent()
 
-	newPosX = l_getMersenneInteger(0,200)
-	newPosY = l_getMersenneInteger(0,200)
-
-	l_modifyMap(newPosX, newPosY,0,0,l_getMersenneInteger(150,255))
-	r,g,b = l_checkMap(newPosX, newPosY)
-
 	--l_debug("color "..r..","..g..","..b)
-	if l_getMersenneInteger(1,100) <= 5 then
-		calltable = {name = "communication", index = 2, arg1 = callStrength}
+	--
+	if l_getMersenneInteger(1,100) <= 1 then
+		calltable = {name = "partyAnnouncement", id = ID}
 		s_calltable = serializeTbl(calltable) 
-		desc = "sound"
+		desc = "party"
 		id = l_generateEventID()
 		propagationSpeed = 50000
 

@@ -169,6 +169,7 @@ void AgentDomain::runSimulation(int time)
 	stop = false;
     Output::Inst()->kprintf("Running Simulation of: %i[s], with resolution of %f \n",
                             time, timeResolution);
+    Output::RunSimulation = true;
 
 	unsigned long long iterations = (double)time/timeResolution;
 	Output::Inst()->clearProgressBar();
@@ -209,7 +210,7 @@ void AgentDomain::runSimulation(int time)
         //		//Update the status and progress bar screens:
         auto end = steady_clock::now();
 
-        if(duration_cast<milliseconds>(end-start).count() > 250)
+        if(duration_cast<milliseconds>(end-start).count() > 50)
         {
             masteragent->printStatus();
             Output::Inst()->progressBar(cMacroStep,iterations);
@@ -220,7 +221,7 @@ void AgentDomain::runSimulation(int time)
 
             start = end;
         }
-        if(stop.load() == true)
+        if(stop.load() == true || Output::RunSimulation==false)
         {
             Output::Inst()->kprintf("Stopping simulator at microstep %llu \n", i);
             break;

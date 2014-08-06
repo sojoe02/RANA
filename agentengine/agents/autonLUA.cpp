@@ -68,12 +68,11 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
     lua_register(L, "l_getEnvironmentSize", l_getEnvironmentSize);
     lua_register(L, "l_modifyMap", l_modifyMap);
     lua_register(L, "l_checkMap", l_checkMap);
+    lua_register(L, "l_checkPosition", l_checkPosition);
+    lua_register(L, "l_updatePosition", l_updatePosition);
     lua_register(L, "l_checkCollision", l_checkCollision);
     lua_register(L, "l_gridMove", l_gridMove);
-    //Load the LUA frog:
-    //std::string pre = "../src/frog.lua";
-    //std::string file = pre;
-    //
+    lua_register(L, "l_stopSimulation", l_stopSimulation);
 
     if(luaL_loadfile(L, filename.c_str() ) || lua_pcall(L,0,0,0)){
         Output::Inst()->kprintf("error : %s \n", lua_tostring(L, -1));
@@ -82,8 +81,8 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
     }
     //init the LUA frog:
     lua_getglobal(L,"initAuton");
-    lua_pushnumber(L,posX);
-    lua_pushnumber(L,posY);
+    lua_pushnumber(L,(int)posX);
+    lua_pushnumber(L,(int)posY);
     lua_pushnumber(L,ID);
     int mf = Phys::getMacroFactor();
     double tr = Phys::getTimeRes();
@@ -106,7 +105,7 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
     posY = lua_tonumber(L,-1);
     lua_settop(L,0);
 
-    GridMovement::addPos(posX,posY);
+    GridMovement::addPos(posX,posY,ID);
 }
 
 AutonLUA::~AutonLUA(){
@@ -188,11 +187,14 @@ EventQueue::iEvent* AutonLUA::handleEvent(EventQueue::eEvent *event){
         ievent->activationTime =
                 Phys::speedOfSound(event->origin->getPosX(), event->origin->getPosY(),
                                    posX, posY, event->propagationSpeed) + 1;
+<<<<<<< HEAD
 
         //Output::Inst()->kprintf("%s", event->desc.c_str());
 
+=======
+>>>>>>> experimental
         ievent->id = ID::generateEventID();
-        ievent->desc = "standard";
+        ievent->desc = "";
 
 
         return ievent;
@@ -216,14 +218,7 @@ EventQueue::eEvent* AutonLUA::initEvent(){
 
     int isnum;
 
-    //sync positions:
-    lua_getglobal(L,"getSyncData");
 
-    if(lua_pcall(L,0,2,0)!=LUA_OK)
-        Output::Inst()->kprintf("error on initiateEvent:getSyncData:\t %s\n",lua_tostring(L,-1));
-
-    posX = lua_tonumber(L,-2);
-    posY = lua_tonumber(L,-1);
 
     //Output::Inst()->kprintf("position %f, %f \n", posX, posY);
     //lua_settop(L,0);
@@ -238,6 +233,7 @@ EventQueue::eEvent* AutonLUA::initEvent(){
     std::string validator = lua_tostring(L,-1);
     if(nullValue.compare(validator)==0){
         //Output::Inst()->kprintf("validator is : %s\n",validator.c_str());
+        getSyncData();
         return NULL;
     }
     //Generate the internal event:
@@ -259,11 +255,16 @@ EventQueue::eEvent* AutonLUA::initEvent(){
         return NULL;
     } else sendEvent->propagationSpeed = lua_tonumber(L,-4);
 
+    //Output::Inst()->kprintf("activationTime : %lld \t id : %lld \n desc : %s \t table : %s \n", sendEvent->activationTime,
+    //		sendEvent->id, sendEvent->desc.c_str(), sendEvent->table.c_str());
+
+
+    //sync positions:
+    getSyncData();
 
     sendEvent->posX = posX;
     sendEvent->posY = posY;
-    //Output::Inst()->kprintf("activationTime : %lld \t id : %lld \n desc : %s \t table : %s \n", sendEvent->activationTime,
-    //		sendEvent->id, sendEvent->desc.c_str(), sendEvent->table.c_str());
+
     return sendEvent;
 }
 
@@ -347,6 +348,19 @@ void AutonLUA::simDone(){
     lua_close(L);
 }
 
+void AutonLUA::getSyncData(){
+    lua_getglobal(L,"getSyncData");
+
+    if(lua_pcall(L,0,2,0)!=LUA_OK)
+        Output::Inst()->kprintf("error on getSyncData:getSyncData:\t %s\n",lua_tostring(L,-1));
+
+    int oldX = posX;
+    int oldY = posY;
+    posX = lua_tonumber(L,-2);
+    posY = lua_tonumber(L,-1);
+
+}
+
 /*********************************************
  * LUA wrapper functions:
  *********************************************/
@@ -390,7 +404,6 @@ int AutonLUA::l_speedOfSound(lua_State *L){
     double origY = lua_tonumber(L,-4);
     double propagationSpeed = lua_tonumber(L,-5);
 
-
     unsigned long long t = Phys::speedOfSound(posX, posY, origX, origY, propagationSpeed);
 
     lua_pushnumber(L,t);
@@ -428,8 +441,8 @@ int AutonLUA::l_currentTime(lua_State *L){
 }
 
 int AutonLUA::l_getEnvironmentSize(lua_State *L){
-    lua_pushnumber(L,Phys::getEnvX());
-    lua_pushnumber(L,Phys::getEnvY());
+    lua_pushnumber(L,Phys::getEnvX()-1);
+    lua_pushnumber(L,Phys::getEnvY()-1);
     return 2;
 
 }
@@ -479,8 +492,9 @@ int AutonLUA::l_modifyMap(lua_State *L)
     color.blue = lua_tonumber(L, -1);
     color.alpha = 0;
 
-    MapHandler::setPixelInfo(x, y, color);
-    return 0;
+    bool success = MapHandler::setPixelInfo(x, y, color);
+    lua_pushboolean(L, success);
+    return 1;
 }
 
 int AutonLUA::l_checkMap(lua_State *L)
@@ -496,19 +510,18 @@ int AutonLUA::l_checkMap(lua_State *L)
     return 3;
 }
 
-int AutonLUA::l_gridMove(lua_State *L)
+int AutonLUA::l_updatePosition(lua_State *L)
 {
+    int oldX = lua_tonumber(L, -5);
+    int oldY = lua_tonumber(L, -4);
+    int newX = lua_tonumber(L, -3);
+    int newY = lua_tonumber(L, -2);
+    int id = lua_tonumber(L, -1);
 
-    int oldX = lua_tonumber(L, -4);
-    int oldY = lua_tonumber(L, -3);
-    int newX = lua_tonumber(L, -2);
-    int newY = lua_tonumber(L, -1);
+    if(oldX != newX || oldY != newY)
+       GridMovement::updatePos(oldX, oldY, newX, newY, id);
 
-    bool moved = GridMovement::updatePos(oldX, oldY, newX, newY);
-
-    lua_pushboolean(L, moved);
-
-    return 1;
+    return 0;
 }
 
 int AutonLUA::l_checkCollision(lua_State *L)
@@ -516,17 +529,35 @@ int AutonLUA::l_checkCollision(lua_State *L)
     int posX = lua_tonumber(L, -2);
     int posY = lua_tonumber(L, -1);
 
-    int agentAmount = GridMovement::checkCollision(posX, posY);
+    bool collision = GridMovement::checkCollision(posX, posY);
 
-    lua_pushnumber(L, agentAmount);
+    lua_pushboolean(L, collision);
 
+    return 1;
+}
+
+
+int AutonLUA::l_checkPosition(lua_State *L)
+{
+    int posX = lua_tonumber(L, -2);
+    int posY = lua_tonumber(L, -1);
+
+    pList agentList = GridMovement::checkPosition(posX, posY);
+
+    lua_newtable(L);
+
+    int i = 1;
+    for(pList::iterator it = agentList.begin(); it != agentList.end(); ++it,i++)
+    {
+        lua_pushnumber(L, i);
+        lua_pushnumber(L, *it);
+        lua_settable(L, -3);
+    }
     return 1;
 }
 
 int AutonLUA::l_scanRadial(lua_State *L)
 {
-
-
     int radius = lua_tonumber(L, -4);
     std::string channel = lua_tostring(L, -3);
     int posX = lua_tonumber(L, -2);
@@ -544,13 +575,20 @@ int AutonLUA::l_scanRadial(lua_State *L)
             lua_rawset(L, -3);
         }
     }
-
    return 1;
-
 }
 
-//int AutonLUA::gridMove(lua_State *L){
+int AutonLUA::l_gridMove(lua_State *L){
+    int oldX = lua_tonumber(L, -4);
+    int oldY = lua_tonumber(L, -3);
+    int newX = lua_tonumber(L, -2);
+    int newY = lua_tonumber(L, -1);
+    return 0;
+}
 
-//}
+int AutonLUA::l_stopSimulation(lua_State *L){
+    Output::RunSimulation = false;
+    return 0;
+}
 
 

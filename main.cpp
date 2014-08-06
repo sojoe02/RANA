@@ -5,6 +5,7 @@
 #include "ID.h"
 #include "physics/phys.h"
 #include "output.h"
+#include "physics/gridmovement.h"
 
 
 int ID::aID = 0;
@@ -17,6 +18,7 @@ int main(int argc, char *argv[])
 {
     Phys::seedMersenne();
     Output::DelayValue = 0;
+    GridMovement::initGrid();
 
     QApplication a(argc, argv);
     MainWindow *w = new MainWindow();
