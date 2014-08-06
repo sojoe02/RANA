@@ -6,7 +6,6 @@
 #include <thread>
 #include <chrono>
 
-
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "physics/maphandler.h"
@@ -230,22 +229,22 @@ void MainWindow::on_updateMap(INFOLIST infolist)
 
 void MainWindow::wheelEvent(QWheelEvent* event)
 {
-    ui->graphicsView->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-    // Scale the view / do the zoom
-    double scaleFactor = 1.15;
+//    ui->graphicsView->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+//    // Scale the view / do the zoom
+//    double scaleFactor = 1.15;
 
-    if(event->delta() > 0) {
-        // Zoom in
-        factor = .15 + factor;
-        ui->graphicsView-> scale(scaleFactor, scaleFactor);
+//    if(event->delta() > 0) {
+//        // Zoom in
+//        factor = .15 + factor;
+//        ui->graphicsView->scale(scaleFactor, scaleFactor);
 
-    } else {
-        // Zooming out
-        factor =  factor - .15;
-        ui->graphicsView->scale(1.0 / scaleFactor, 1.0 / scaleFactor);
-    }
+//    } else {
+//        // Zooming out
+//        factor =  factor - .15;
+//        ui->graphicsView->scale(1.0 / scaleFactor, 1.0 / scaleFactor);
+//    }
 
-    ui->zoomLabel->setText(QString().setNum(factor*100));
+//    ui->zoomLabel->setText(QString().setNum(factor*100));
 }
 
 void MainWindow::on_browseLuaAgentButton_clicked()
@@ -294,4 +293,17 @@ void MainWindow::defineMap()
 void MainWindow::on_delaySpinBox_valueChanged(int arg1)
 {
     Output::DelayValue = arg1;
+}
+
+
+void MainWindow::on_zoomSlider_valueChanged(int value)
+{
+
+    double scale = (double)value/100;
+
+    ui->zoomLabel->setText(QString().setNum(value));
+
+    ui->graphicsView->setTransform(QTransform::fromScale(scale,scale));
+
+
 }

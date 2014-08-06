@@ -33,6 +33,7 @@ function initiateEvent()
 
 	l_modifyMap(newPosX, newPosY,0,0,l_getMersenneInteger(150,255))
 	r,g,b = l_checkMap(newPosX, newPosY)
+
 	--l_debug("color "..r..","..g..","..b)
 	if l_getMersenneInteger(1,100) <= 5 then
 		calltable = {name = "communication", index = 2, arg1 = callStrength}

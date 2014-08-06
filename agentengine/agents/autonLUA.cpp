@@ -71,6 +71,8 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
     lua_register(L, "l_checkPosition", l_checkPosition);
     lua_register(L, "l_updatePosition", l_updatePosition);
     lua_register(L, "l_checkCollision", l_checkCollision);
+    lua_register(L, "l_gridMove", l_gridMove);
+    lua_register(L, "l_stopSimulation", l_stopSimulation);
 
     if(luaL_loadfile(L, filename.c_str() ) || lua_pcall(L,0,0,0)){
         Output::Inst()->kprintf("error : %s \n", lua_tostring(L, -1));
@@ -185,7 +187,7 @@ EventQueue::iEvent* AutonLUA::handleEvent(EventQueue::eEvent *event){
                 Phys::speedOfSound(event->origin->getPosX(), event->origin->getPosY(),
                                    posX, posY, event->propagationSpeed) + 1;
         ievent->id = ID::generateEventID();
-        ievent->desc = "std";
+        ievent->desc = "";
 
         return ievent;
     } else
@@ -431,8 +433,8 @@ int AutonLUA::l_currentTime(lua_State *L){
 }
 
 int AutonLUA::l_getEnvironmentSize(lua_State *L){
-    lua_pushnumber(L,Phys::getEnvX());
-    lua_pushnumber(L,Phys::getEnvY());
+    lua_pushnumber(L,Phys::getEnvX()-1);
+    lua_pushnumber(L,Phys::getEnvY()-1);
     return 2;
 
 }
@@ -565,13 +567,20 @@ int AutonLUA::l_scanRadial(lua_State *L)
             lua_rawset(L, -3);
         }
     }
-
    return 1;
-
 }
 
-//int AutonLUA::gridMove(lua_State *L){
+int AutonLUA::l_gridMove(lua_State *L){
+    int oldX = lua_tonumber(L, -4);
+    int oldY = lua_tonumber(L, -3);
+    int newX = lua_tonumber(L, -2);
+    int newY = lua_tonumber(L, -1);
+    return 0;
+}
 
-//}
+int AutonLUA::l_stopSimulation(lua_State *L){
+    Output::RunSimulation = false;
+    return 0;
+}
 
 

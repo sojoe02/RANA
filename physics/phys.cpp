@@ -136,6 +136,6 @@ double Phys::getMersenneFloat(double min=0, double max=1){
 }
 
 uint64_t Phys::getMersenneInteger(uint64_t min=0, uint64_t max=ULLONG_MAX){
-
-	return min + Phys::uint_dist(Phys::rng)%max;
+    max++;
+    return min + Phys::uint_dist(Phys::rng)%(max-min);
 }
