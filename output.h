@@ -15,6 +15,7 @@ public:
     static Output* Inst();
 
     void kprintf(const char* msg, ...);
+    void kerr(const char* msg, ...);
 
     void updateStatus(unsigned long long ms, unsigned long long eventInit,
                       unsigned long long internalEvents, unsigned long long externalEvents);
@@ -32,7 +33,7 @@ public:
     static std::atomic<int> DelayValue;
 
     static std::atomic<bool> RunSimulation;
-
+    static std::atomic<bool> KillSimulation;
 
 private:
     Output();

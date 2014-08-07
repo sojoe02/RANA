@@ -163,13 +163,25 @@ void MainWindow::on_writeOutput(QString string)
 
 void MainWindow::write_output(QString argMsg)
 {
-    //QCoreApplication::postEvent(ui->outputTextEdit, new QEvent(QEvent::UpdateRequest),
-      //                          Qt::LowEventPriority);
-
-    //QMetaObject::invokeMethod(ui->outputTextEdit, "append", Q_ARG(QString, argMsg));
     emit writeStringSignal(argMsg);
+    std::this_thread::sleep_for(std::chrono::milliseconds(5));
 
 }
+
+void MainWindow::on_writeErrOutput(QString string)
+{
+    ui->outputTextEdit->setTextColor(Qt::red);
+    ui->outputTextEdit->append(string);
+    ui->outputTextEdit->setTextColor(Qt::black);
+}
+
+void MainWindow::write_errOutput(QString argMsg)
+{
+    emit writeErrSignal(argMsg);
+    std::this_thread::sleep_for(std::chrono::milliseconds(5));
+
+}
+
 void MainWindow::on_udateStatus(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents)
 {
     ui->label_status1->setText(QString().setNum(ms));

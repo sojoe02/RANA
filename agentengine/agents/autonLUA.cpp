@@ -24,6 +24,8 @@
 #include <string>
 #include <random>
 #include <chrono>
+#include <iostream>
+#include <exception>
 
 #include "lua.hpp"
 #include "lauxlib.h"
@@ -534,8 +536,18 @@ int AutonLUA::l_checkCollision(lua_State *L)
 
 int AutonLUA::l_checkPosition(lua_State *L)
 {
-    int posX = lua_tonumber(L, -2);
-    int posY = lua_tonumber(L, -1);
+    //int posX = 0;
+    //int posY = 0;
+
+   // try
+    //{
+        int posX = lua_tonumber(L, -2);
+        int posY = lua_tonumber(L, -1);
+    //}
+    //catch(std::exception& e)
+    //{
+
+    //}
 
     pList agentList = GridMovement::checkPosition(posX, posY);
 

@@ -38,8 +38,6 @@ end
 --Determine whether or not this Auton will initiate an event.
 function initiateEvent()
 
-	--l_debug("color "..r..","..g..","..b)
-	--
 	if l_getMersenneInteger(1,100) <= 1 then
 		calltable = {name = "partyAnnouncement", id = ID}
 		s_calltable = serializeTbl(calltable) 
@@ -48,10 +46,6 @@ function initiateEvent()
 		propagationSpeed = 50000
 
 		targetID = 0;
-
-		--l_gridMove(posX, posY, newPosX, newPosY)
-		--posX = newPosX
-		--posY = newPosY
 
 		return propagationSpeed, s_calltable, desc, targetID
 	end

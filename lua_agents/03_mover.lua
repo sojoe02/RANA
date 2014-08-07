@@ -22,7 +22,7 @@ end
 function handleEvent(origX, origY, origID, origDesc, origTable)
 	--make a response:
 
-	return 0,0,0,"null"
+        return 0,0,0,"null"
 end	
 
 --Determine whether or not this Auton will initiate an event.

@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <thread>
+#include <chrono>
 
 #include "output.h"
 
@@ -11,6 +13,7 @@ MainWindow* Output::mainWindow;
 std::mutex Output::lock;
 std::atomic<int> Output::DelayValue;
 std::atomic<bool> Output::RunSimulation;
+
 
 Output* Output::Inst()
 {
@@ -32,12 +35,30 @@ void Output::kprintf(const char* msg, ...)
     va_list args;
     va_start(args, msg);
 
-    char buffer[1024];
+    char buffer[2048];
     vsprintf(buffer, msg, args);
 
     QString string(buffer);
 
     mainWindow->write_output(string);
+
+    va_end(args);
+    //lock.unlock();
+}
+
+void Output::kerr(const char* msg, ...)
+{
+    //lock.lock();
+    va_list args;
+    va_start(args, msg);
+
+    char buffer[2048];
+
+    vsprintf(buffer, msg, args);
+
+    QString string(buffer);
+
+    //mainWindow->write_error(string);
 
     va_end(args);
     //lock.unlock();

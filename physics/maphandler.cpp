@@ -24,8 +24,7 @@ rgba MapHandler::getPixelInfo(int argX, int argY)
     
     if(image != NULL && image->width() >= argX && image->height() >= argY)
     {
-        rgba values;
-        
+
         QRgb info = image->pixel(argX, argY);
         
         values.red = qRed(info);

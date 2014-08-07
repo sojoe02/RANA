@@ -39,6 +39,9 @@ public:
     void write_output(QString argMsg);
     void write_status(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents);
 
+    void on_writeErrOutput(QString string);
+    void write_errOutput(QString argMsg);
+
 public slots:
 
     void wheelEvent(QWheelEvent *event);
@@ -72,6 +75,7 @@ signals:
     void map_updateSignal(INFOLIST infolist);
     void writeStringSignal(QString something);
     void writeStatusSignal(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents);
+    void writeErrSignal(QString something);
 
 private:
     Ui::MainWindow *ui;
