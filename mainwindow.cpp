@@ -42,6 +42,9 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(this,SIGNAL(writeStringSignal(QString)),
                      this,SLOT(on_writeOutput(QString)));
 
+    QObject::connect(this,SIGNAL(writeErrSignal(QString)),
+                     this,SLOT(on_writeErrOutput(QString)));
+
     QObject::connect(this,SIGNAL(writeStatusSignal(unsigned long long,unsigned long long,unsigned long long,unsigned long long)),
                      this,SLOT(on_udateStatus(unsigned long long,unsigned long long,unsigned long long,unsigned long long)));
 
@@ -163,8 +166,10 @@ void MainWindow::on_writeOutput(QString string)
 
 void MainWindow::write_output(QString argMsg)
 {
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+
     emit writeStringSignal(argMsg);
-    std::this_thread::sleep_for(std::chrono::milliseconds(5));
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
 }
 
@@ -178,7 +183,7 @@ void MainWindow::on_writeErrOutput(QString string)
 void MainWindow::write_errOutput(QString argMsg)
 {
     emit writeErrSignal(argMsg);
-    std::this_thread::sleep_for(std::chrono::milliseconds(5));
+    std::this_thread::sleep_for(std::chrono::milliseconds(2));
 
 }
 

@@ -1,5 +1,5 @@
 posX = 0
-posY = 0
+posY0ltho = 0
 ID = 0
 macroF = 0
 timeRes = 0
@@ -8,8 +8,8 @@ timeRes = 0
 -- Init of the lua frog, function called upon initilization of the LUA auton:
 function initAuton(x, y, id, macroFactor, timeResolution)
 
-	posX = 10
-	posY = 10
+	posX = x
+	posY = y
 	ID = id
 	macroF = macroFactor
 	timeRes = timeResolution
@@ -21,37 +21,36 @@ end
 -- Event Handling:
 function handleEvent(origX, origY, origID, origDesc, origTable)
 	--make a response:
+	l_debug(ID.." : "..origDesc )
+	if origDesc == "ping" then
+		--l_debug("making pong" )
+		desc = "pong"
+		s_calltable = "empty"
+		propagationSpeed = 340
+		targetID = 0
+		return propagationSpeed, s_calltable, desc, targetID
+	end
 
-        return 0,0,0,"null"
+
 end	
 
 --Determine whether or not this Auton will initiate an event.
 function initiateEvent()
 
-	newPosX = posX + l_getMersenneInteger(0,3)-1;
-	newPosY = posY + l_getMersenneInteger(0,3)-1;
-
-	if newPosX > 19 then 
-		newPosX = 0
+	--l_debug("color "..r..","..g..","..b)
+	if l_getMersenneInteger(1,100) <= 5 then
+		calltable = {name = "communication", index = 2, arg1 = callStrength}
+		s_calltable = serializeTbl(calltable) 
+		desc = "ping"
+		propagationSpeed = 340
+		targetID = 0;
+		--l_gridMove(posX, posY, newPosX, newPosY)
+		--posX = newPosX
+		--posY = newPosY
+		return propagationSpeed, s_calltable, desc, targetID
 	end
 
-	if newPosX < 0 then 
-		newPosX = 19
-	end
-
-	if newPosY < 0 then
-		newPosY = 19
-	end
-
-	if newPosY > 19 then
-		newPosY = 0
-	end
-
-	--l_debug(newPosX..":"..newPosY)
- 	move(newPosX, newPosY)
-	
-
-        return 0,0,0,"null"
+	return 0,0,0,"null"
 end
 
 
@@ -60,26 +59,9 @@ function getSyncData()
 end
 
 function simDone()
-	--if ID ==  1 then
-		positionTable = {}
-                positionTable = l_checkPosition(posX, posY);
-		l_debug("---start---")
-		for i = 1, #positionTable do 
-			l_debug(positionTable[i])
-		end
-	--end
 	l_debug("Agent #: " .. ID .. " is done\n")
 end
 
---function to change position:
-function move(newPosX, newPosY)
-
-	--l_debug("moving from X"..posX..", Y"..posY)
-        l_updatePosition(posX, posY, newPosX, newPosY,ID)
-	posX = newPosX
-	posY = newPosY
-
-end
 
 function serializeTbl(val, name, depth)
 	--skipnewlines = skipnewlines or false

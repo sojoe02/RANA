@@ -39,7 +39,6 @@ public:
     void write_output(QString argMsg);
     void write_status(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents);
 
-    void on_writeErrOutput(QString string);
     void write_errOutput(QString argMsg);
 
 public slots:
@@ -65,6 +64,8 @@ private slots:
     void on_udateStatus(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents);
 
     void on_writeOutput(QString string);
+
+    void on_writeErrOutput(QString string);
 
     void on_delaySpinBox_valueChanged(int arg1);
 

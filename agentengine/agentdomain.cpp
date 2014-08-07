@@ -215,7 +215,7 @@ void AgentDomain::runSimulation(int time)
             masteragent->printStatus();
             Output::Inst()->progressBar(cMacroStep,iterations);
             //int delay = Output::DelayValue.load();
-            std::this_thread::sleep_for(std::chrono::milliseconds(5));
+            //std::this_thread::sleep_for(std::chrono::milliseconds(5));
             //if(delay != 0)
             retrievePopPos();
 

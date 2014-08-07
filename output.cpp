@@ -58,7 +58,7 @@ void Output::kerr(const char* msg, ...)
 
     QString string(buffer);
 
-    //mainWindow->write_error(string);
+    mainWindow->write_errOutput(string);
 
     va_end(args);
     //lock.unlock();

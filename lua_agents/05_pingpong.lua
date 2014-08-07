@@ -31,8 +31,8 @@ function handleEvent(origX, origY, origID, origDesc, origTable)
 		return propagationSpeed, s_calltable, desc, targetID
 	end
 
-	return 0,0,0,"null"
-end	
+        return 0,0,0,"null"
+end
 
 --Determine whether or not this Auton will initiate an event.
 function initiateEvent()

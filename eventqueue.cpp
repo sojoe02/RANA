@@ -47,15 +47,15 @@
  */
 EventQueue::~EventQueue(){
 
-	for(iMapIt = iMap->begin(); iMapIt != iMap->end(); ++iMapIt){
-		std::list<iEvent *> tmplist = iMapIt->second;
-		if(!tmplist.empty()){
-			std::list<iEvent *>::iterator tmplistItr;
-			for(tmplistItr = tmplist.begin();tmplistItr != tmplist.end();++tmplistItr){
-				delete *tmplistItr;
-			}
-		}
-	}
+//	for(iMapIt = iMap->begin(); iMapIt != iMap->end(); ++iMapIt){
+//		std::list<iEvent *> tmplist = iMapIt->second;
+//		if(!tmplist.empty()){
+//			std::list<iEvent *>::iterator tmplistItr;
+//			for(tmplistItr = tmplist.begin();tmplistItr != tmplist.end();++tmplistItr){
+//				delete *tmplistItr;
+//			}
+//		}
+//	}
 	for(eMapIt = eMap->begin(); eMapIt != eMap->end(); ++eMapIt){
 		std::list<eEvent *> tmplist = eMapIt->second;
 		if(!tmplist.empty()){
