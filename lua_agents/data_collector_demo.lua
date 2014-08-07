@@ -65,8 +65,6 @@ function handleEvent(origX, origY, eventID, eventPropagationSpeed ,eventDesc , e
 		end
 		if total_set[ctable.itr] == nil then
 
-			
-
 			total_set[ctable.itr] = ctable.sync_points
 		else
 			total_set[ctable.itr] = total_set[ctable.itr] + ctable.sync_points

@@ -90,6 +90,7 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
     double tr = Phys::getTimeRes();
     lua_pushnumber(L,mf);
     lua_pushnumber(L,tr);
+    try{
     //Call the initAuton function (3 arguments, 0 results):
     if(lua_pcall(L,5,0,0)!=LUA_OK){
         Output::Inst()->kprintf("error on init autonLUA: %s\n",	lua_tostring(L,-1));
@@ -100,11 +101,16 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
     //sync positions:
     lua_getglobal(L,"getSyncData");
 
-    if(lua_pcall(L,0,2,0)!=LUA_OK)
-        Output::Inst()->kprintf("error on initiateEvent:getSyncData:\t %s\n",lua_tostring(L,-1));
+        if(lua_pcall(L,0,2,0)!=LUA_OK)
+            Output::Inst()->kprintf("error on initiateEvent:getSyncData:\t %s\n",lua_tostring(L,-1));
 
-    posX = lua_tonumber(L,-2);
-    posY = lua_tonumber(L,-1);
+        posX = lua_tonumber(L,-2);
+        posY = lua_tonumber(L,-1);
+    }catch(std::exception& e){
+        Output::Inst()->kprintf("<b><font color=\"red\">Error on Agent Initiation..%s<b>", e.what());
+        Output::RunSimulation = false;
+    }
+
     lua_settop(L,0);
 
     GridMovement::addPos(posX,posY,ID);
