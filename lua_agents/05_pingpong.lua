@@ -67,10 +67,15 @@ function serializeTbl(val, name, depth)
 	--skipnewlines = skipnewlines or false
 	depth = depth or 0
 	local tbl = string.rep("", depth)
-	if name then 
-		tbl = tbl .. name .. " = "
-		--else tbl = tbl .. "systbl="
-	end	
+	if name then
+		if type(name)=="number" then
+			namestr = "["..name.."]"
+			tbl= tbl..namestr.."="
+		elseif name then 
+			tbl = tbl ..name.."="
+			--else tbl = tbl .. "systbl="
+		end	
+	end
 	if type(val) == "table" then
 		tbl = tbl .. "{"
 		local i = 1
