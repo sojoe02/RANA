@@ -17,17 +17,18 @@ The simulation core offers a number of functions that the agent can call to expa
 
 |function		|Arguments	|Description		|
 |:-----------------------|:-------------|:----------------------|
-|**l_speedOfSound** 	|myX, myY, origX, origY, proppeed| Calculates the microstep, it takes for something that to propagate from origX,origY to myX,myY with the speed of propspeed |
+|**l_speedOfSound** 	|myX, myY, origX, origY, propspeed| Calculates the microstep, it takes for something that to propagate from origX,origY to myX,myY with the speed of propspeed *m/s* |
 |**l_currentTime**	||				Returns the current microstep|
 |**l_distance**		|myX, myY, origX, origY| Calculates the amount of units between myX,myY and origX,origY|
 |**l_getMacroFactor**	||				Returns the macrofactor of the simulator|
-|**l_getTimeResolution**	||Returns the 1/microresolution |
+|**l_getTimeResolution**	||Returns 1/microresolution |
 |**l_getMersenneFloat**	|float1, float2	| Returns a 64bit float between [float1,float2[|
 |**l_getMersenneInteger**|int1, int2	| Returns a number between int1 and int2, 64bit|
 |**l_EnvironmentSize** 	||Returns width and height of the environment(starts at 0)|
 |**l_modifyMap**	|x, y, R, G, B|	Changes the color of the map, at x,y |
 |**l_checkMap**		|x, y|		Returns R,G,B value of position x,y on the map (256,256,256) if the map is out of bounds|
 |**l_checkPosition**	|x, y| Returns a list of the ID's of the agents at position x,y|
+|**l_checkCollision**	|x, y| Returns a boolean
 |**l_updatePosition**	|oldX, oldY, newX, newY, ID| updates the agents position from oldX,oldY to newX,newY, in order for **l_checkPosition** to work the agents have use this whenever they change position|
 |**l_stopSimulation**	|| Tells the simulation core to stop the simulator when the next macroStep is done|
 
@@ -85,8 +86,13 @@ To compile RANA using Ubuntu do the following:
 7. Checkout whatever branch you want, e.g. **"git checkout MAS2014"**.
 8. Change the line **"unix: PKGCONFIG += lua"** to **"unix: PKGCONFIG += lua5.2"**.
 
+#License
+
+GNU GENERAL PUBLIC LICENSE Version 3
+http://www.gnu.org/licenses/gpl.html
+
 #Devteam
 
  Development of the Simulation core, agent interface and UI: Søren V Jørgensen, sojoe02@gmail.com
 
- Example Agents are developed by .... \<need to ...\>
+ Example Agents are developed by ..... \<need to ...\>
