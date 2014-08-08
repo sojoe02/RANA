@@ -23,6 +23,8 @@ function handleEvent(origX, origY, origID, origDesc, eventTable)
 		if data_set[ctable.itr] == nil then --just a check to see if there is no value
 			data_set[ctable.itr] = ctable.dirt
 			l_debug("Collector writing dirty data:"..ctable.dirt)
+		else --support more than one scanner, makes no sense though...
+			data_set[ctable.itr] = data_set[ctable.itr] + ctable.dirt
 		end
 	end
 

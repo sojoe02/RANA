@@ -55,3 +55,13 @@ function serializeTbl(val, name, depth)
 
 	return tbl
 end
+
+--function to change position:
+function move(newPosX, newPosY)
+	--l_debug("moving from X"..posX..", Y"..posY)
+	l_updatePosition(posX, posY, newPosX, newPosY,ID)
+	posX = newPosX
+	posY = newPosY
+
+end
+
