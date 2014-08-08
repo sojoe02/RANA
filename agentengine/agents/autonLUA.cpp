@@ -91,15 +91,15 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
     lua_pushnumber(L,mf);
     lua_pushnumber(L,tr);
     try{
-    //Call the initAuton function (3 arguments, 0 results):
-    if(lua_pcall(L,5,0,0)!=LUA_OK){
-        Output::Inst()->kprintf("error on init autonLUA: %s\n",	lua_tostring(L,-1));
-        nofile = true;
-        Output::Inst()->kprintf("Lua Auton disabled\n");
-    }
-    //lua_settop(L,0);
-    //sync positions:
-    lua_getglobal(L,"getSyncData");
+        //Call the initAuton function (3 arguments, 0 results):
+        if(lua_pcall(L,5,0,0)!=LUA_OK){
+            Output::Inst()->kprintf("error on init autonLUA: %s\n",	lua_tostring(L,-1));
+            nofile = true;
+            Output::Inst()->kprintf("Lua Auton disabled\n");
+        }
+        //lua_settop(L,0);
+        //sync positions:
+        lua_getglobal(L,"getSyncData");
 
         if(lua_pcall(L,0,2,0)!=LUA_OK)
             Output::Inst()->kprintf("error on initiateEvent:getSyncData:\t %s\n",lua_tostring(L,-1));
@@ -112,6 +112,7 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
     }
 
     lua_settop(L,0);
+    getSyncData();
 
     GridMovement::addPos(posX,posY,ID);
 }

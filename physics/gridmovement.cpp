@@ -24,7 +24,7 @@ void GridMovement::clearGrid()
 
 void GridMovement::addPos(int x, int y, int id)
 {
-    Output::Inst()->kprintf("ID..X:%i,Y:%i", x, y);
+    //Output::Inst()->kprintf("ID..X:%i,Y:%i", x, y);
 
     //add id to position map:
     char buffer[64];
