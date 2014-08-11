@@ -11,8 +11,10 @@ function initAuton(x, y, id, macroFactor, timeResolution)
 	lastID = id-1
 
 	l_addSharedNumber(id,l_getMersenneFloat(1,192039123))
+	l_addSharedNumber(id,id)
+
 	value = l_getSharedNumber(lastID)
-	l_debug("Agen with #:".. ID.. " looked up ".. lastID.." and got "..value)
+	l_debug("Agenh with #:".. ID.. " looked up ".. lastID.." and got "..value)
 
 end
 

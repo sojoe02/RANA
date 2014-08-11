@@ -20,7 +20,14 @@ void Shared::initShared()
 
 void Shared::addNumber(std::string key, double value)
 {
-    sharedNumbers->insert(std::pair<std::string, double>(key, value));
+    if(sharedNumbers->find(key) == sharedNumbers->end())
+        sharedNumbers->insert(std::pair<std::string, double>(key, value));
+    else
+    {
+        sharedNumbers->erase(key);
+        sharedNumbers->insert(std::pair<std::string, double>(key, value));
+    }
+
 }
 
 double Shared::getNumber(std::string key)

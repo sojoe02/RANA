@@ -343,7 +343,7 @@ void AutonLUA::getSyncData(){
         lua_getglobal(L,"getSyncData");
 
         if(lua_pcall(L,0,2,0)!=LUA_OK)
-            Output::Inst()->kprintf("error on getSyncData:getSyncData:\t %s\n",lua_tostring(L,-1));
+            Output::Inst()->kprintf("<b><font color=\"red\" error on getSyncData:getSyncData:\t %s\n",lua_tostring(L,-1));
 
         Auton::posX = lua_tonumber(L,-2);
         Auton::posY = lua_tonumber(L,-1);
