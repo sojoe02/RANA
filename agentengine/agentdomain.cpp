@@ -27,6 +27,7 @@
 #include "agentdomain.h"
 #include "../physics/phys.h"
 #include "../physics/gridmovement.h"
+#include "../physics/shared.h"
 #include "output.h"
 #include "ID.h"
 
@@ -76,7 +77,8 @@ void AgentDomain::generateEnvironment(double width, double height, int resolutio
 	Phys::setTimeRes(timeResolution);
 	Phys::setCTime(0);
 	Phys::setMacroFactor(macroFactor);
-	Phys::setEnvironment(width, height);
+    Phys::setEnvironment(width, height);
+    Shared::initShared();
 
     masteragent->generateMap(width,height,resolution,timeResolution, macroResolution);
 
@@ -105,6 +107,7 @@ void AgentDomain::generateSquaredEnvironment(double width, double height, int re
 	Phys::setCTime(0);
 	Phys::setMacroFactor(macroFactor);
 	Phys::setEnvironment(width, height);
+
 
 
     masteragent->generateMap(width,height,resolution,timeResolution, macroResolution);

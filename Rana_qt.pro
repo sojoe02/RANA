@@ -31,7 +31,8 @@ SOURCES += main.cpp\
     control.cpp \
     graphics/agentItem.cpp \
     physics/gridmovement.cpp \
-    runner.cpp
+    runner.cpp \
+    physics/shared.cpp
 
 HEADERS  += mainwindow.h \
     physics/phys.h \
@@ -51,7 +52,8 @@ HEADERS  += mainwindow.h \
     control.h \
     graphics/agentItem.h \
     physics/gridmovement.h \
-    runner.h
+    runner.h \
+    physics/shared.h
 
 FORMS    += mainwindow.ui
 

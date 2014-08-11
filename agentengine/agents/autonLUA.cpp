@@ -26,6 +26,7 @@
 #include <chrono>
 #include <iostream>
 #include <exception>
+#include <climits>
 
 #include "lua.hpp"
 #include "lauxlib.h"
@@ -38,8 +39,7 @@
 #include "../../physics/phys.h"
 #include "../../physics/gridmovement.h"
 #include "../../physics/maphandler.h"
-
-
+#include "../../physics/shared.h"
 
 AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *nestene, std::string filename)
     : Auton(ID, posX, posY, posZ, nestene), filename(filename)
@@ -75,6 +75,8 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
     lua_register(L, "l_checkCollision", l_checkCollision);
     lua_register(L, "l_gridMove", l_gridMove);
     lua_register(L, "l_stopSimulation", l_stopSimulation);
+    lua_register(L, "l_getSharedNumber", l_getSharedNumber);
+    lua_register(L, "l_addSharedNumber",l_addSharedNumber);
 
     if(luaL_loadfile(L, filename.c_str() ) || lua_pcall(L,0,0,0)){
         Output::Inst()->kprintf("error : %s \n", lua_tostring(L, -1));
@@ -621,6 +623,33 @@ int AutonLUA::l_gridMove(lua_State *L){
 int AutonLUA::l_stopSimulation(lua_State *L){
     Output::RunSimulation = false;
     return 0;
+}
+
+int AutonLUA::l_addSharedNumber(lua_State *L)
+{
+    std::string key = lua_tostring(L, -2);
+    double value = lua_tonumber(L, -1);
+
+    Shared::addNumber(key, value);
+
+    return 0;
+}
+
+int AutonLUA::l_getSharedNumber(lua_State *L)
+{
+    std::string key = lua_tostring(L, -1);
+
+    double value = Shared::getNumber(key);
+
+    if (value == LLONG_MIN)
+    {
+        lua_pushstring(L, "no_value");
+    } else
+    {
+        lua_pushnumber(L, value);
+    }
+    return 1;
+
 }
 
 

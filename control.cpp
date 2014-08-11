@@ -4,6 +4,7 @@
 
 
 
+
 Control::Control(MainWindow* mainwindow)
     : agentDomain(NULL), mainwindow(mainwindow),
       running(false), generated(false), stopped(true)
@@ -38,10 +39,7 @@ void Control::generateEnvironment(QImage *map, double scale,
     if(!running)
     {
         Output::Inst()->kprintf("Generating environment");
-        delete agentDomain;
-
         agentDomain = new AgentDomain(this);
-
         agentDomain->generateEnvironment(map->width(),map->height(),1,0,0,
                                          agentAmount,timeRes,macroRes,agentPath);
     } else
@@ -65,8 +63,6 @@ void Control::refreshPopPos(std::list<agentInfo> infolist)
 {
     mainwindow->updateMap(infolist);
 }
-
-
 
 bool Control::isRunning()
 {

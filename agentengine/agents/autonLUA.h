@@ -23,14 +23,14 @@
 #define AUTONLUA_H
 
 #include <random>
+#include <vector>
 
 #include "lua.hpp"
 #include "lauxlib.h"
 #include "lualib.h"
 
 #include "auton.h"
-//#include "nestene.h"
-//#include "output.h"
+
 
 class Nestene;
 class AutonLUA : public Auton
@@ -70,7 +70,9 @@ class AutonLUA : public Auton
         static int l_checkCollision(lua_State *L);
         static int l_scanRadial(lua_State *L);
         static int l_gridMove(lua_State *L);
-        static int l_stopSimulation(lua_State *L);
+        static int l_stopSimulation(lua_State *L);        
+        static int l_getSharedNumber(lua_State *L);
+        static int l_addSharedNumber(lua_State *L);
 
 private:
 			//function to receive an event from nestene responsible for this auton, returns an internal Event 'thinking':
@@ -78,18 +80,13 @@ private:
 			EventQueue::eEvent* actOnEvent(EventQueue::iEvent *event);
 			//returns an event:
 			EventQueue::eEvent* initEvent();
-
 			void simDone();
-
 			double eventChance();
 			std::string filename;
 			//The LUA state:
 			lua_State* L;
 			friend class Nestene;
-
-			bool nofile = false;
-
-
+            bool nofile = false;
             void getSyncData();
 };
 

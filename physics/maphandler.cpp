@@ -31,8 +31,9 @@ rgba MapHandler::getPixelInfo(int argX, int argY)
         values.green = qGreen(info);
         values.blue = qBlue(info);
         values.alpha = 0;
-        //beware of potentional memory leak!
-    }else{
+
+    }else
+    {
         values.red = 256;
         values.green = 256;
         values.blue = 256;
