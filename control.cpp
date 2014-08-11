@@ -33,23 +33,33 @@ void Control::generateEnvironment(QImage *map, double scale,
                                   double timeRes, double macroRes,
                                   int agentAmount, std::string agentPath)
 {
+
     if(!running)
     {
         Output::Inst()->kprintf("Generating environment");
+
+        if(agentDomain != NULL)
+        {
+            delete agentDomain;
+            agentDomain = NULL;
+        }
+
         agentDomain = new AgentDomain(this);
         agentDomain->generateEnvironment(map->width(),map->height(),1,0,0,
                                          agentAmount,timeRes,macroRes,agentPath);
     } else
         Output::Inst()->kprintf("Simulation thread is running, so you need to stop it");
-   //retrieve and update the positions:
+    //retrieve and update the positions:
 }
 
 void Control::simDone()
 {
     if(agentDomain != NULL)
+    {
         delete agentDomain;
+        agentDomain = NULL;
+    }
 
-    agentDomain = NULL;
     running = false;
     mainwindow->changeRunButton("Run");
     mainwindow->runButtonHide();
