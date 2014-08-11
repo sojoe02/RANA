@@ -83,6 +83,10 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
         nofile = true;
         Output::Inst()->kprintf("Lua Auton disabled\n");
     }
+
+    //lua_atpanic (L, AutonLUA::luapanic);
+
+
     //init the LUA frog:
     lua_getglobal(L,"initAuton");
     lua_pushnumber(L,(int)posX);
@@ -92,10 +96,14 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
     double tr = Phys::getTimeRes();
     lua_pushnumber(L,mf);
     lua_pushnumber(L,tr);
+
+
+
     try{
         //Call the initAuton function (3 arguments, 0 results):
-        if(lua_pcall(L,5,0,0)!=LUA_OK){
-            Output::Inst()->kprintf("error on init autonLUA: %s\n",	lua_tostring(L,-1));
+        if(lua_pcall(L,5,0,0)!=LUA_OK)
+        {
+            Output::Inst()->kprintf("<b><font color=\"yellow\">error on init autonLUA: %s\n",	lua_tostring(L,-1));
             nofile = true;
             Output::Inst()->kprintf("Lua Auton disabled\n");
         }
@@ -103,11 +111,13 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
         //sync positions:
         lua_getglobal(L,"getSyncData");
 
-        if(lua_pcall(L,0,2,0)!=LUA_OK)
-            Output::Inst()->kprintf("error on initiateEvent:getSyncData:\t %s\n",lua_tostring(L,-1));
+        if(lua_pcall(L,0,2,0)!=LUA_OK){
+            Output::Inst()->kprintf("<b><font color=\"yellow\">error on initiateEvent:getSyncData:\t %s\n",lua_tostring(L,-1));
+        }else{
 
-        posX = lua_tonumber(L,-2);
-        posY = lua_tonumber(L,-1);
+            Auton::posX = lua_tonumber(L,-2);
+            Auton::posY = lua_tonumber(L,-1);
+        }
     }catch(std::exception& e){
         Output::Inst()->kprintf("<b><font color=\"red\">Error on Agent Initiation..%s<b>", e.what());
         Output::RunSimulation = false;
@@ -131,64 +141,9 @@ AutonLUA::~AutonLUA(){
  * @param event pointer to the external event.
  * @return internal event.
  */
-EventQueue::iEvent* AutonLUA::handleEvent(EventQueue::eEvent *event){
-    //	if(nofile)
-    //		return NULL;
+EventQueue::iEvent* AutonLUA::handleEvent(EventQueue::eEvent *event)
+{
 
-    //	lua_settop(L,0);
-
-    //	int isnum;
-    //	//set the lua function:
-    //	lua_getglobal(L,"handleExternalEvent");
-    //	//push required arguments for eventhandling to the stack:
-    //	lua_pushnumber(L,event->origin->getPosX());
-    //	lua_pushnumber(L,event->origin->getPosY());
-    //	//push events ID to the stack:
-    //	lua_pushnumber(L,event->id);
-    //	//push propagation speed to the stack:
-    //	lua_pushnumber(L,event->propagationSpeed);
-    //	//push the events description string to the stack
-    //	lua_pushstring(L,event->desc.c_str());
-    //	//push the table to the stack
-    //	lua_pushstring(L,event->table.c_str());
-    //	//make the function call with 5 arguments and 3 results
-    //	if(lua_pcall(L,6,3,0)!=LUA_OK)
-    //		Output::Inst()->kprintf("error on handleEvent:\t %s\n",lua_tostring(L,-1));
-
-    //	//Test if the handleevent method returns a null string
-    //	std::string nullValue ="null";
-    //	std::string validator = lua_tostring(L,-1);
-
-    //	if(nullValue.compare(validator)==0)
-    //		return NULL;
-    //	//Generate the internal event:
-    //	EventQueue::iEvent *ievent = new EventQueue::iEvent();
-    //	//first set the two pointers to 'this' and the external event that spurred it:
-    //	ievent->origin = this;
-    //	ievent->event = event;
-
-    //	//activation time:
-    //	double activationTime = lua_tonumberx(L,-1, &isnum);
-    //	if(!isnum){
-    //		Output::Inst()->kprintf("LUA function handleEvent activation must be a number");
-    //		delete ievent;
-    //		return NULL;
-    //	} else ievent->activationTime = activationTime;
-
-    //	unsigned long long id = lua_tonumberx(L,-2, &isnum);
-    //	if(!isnum){
-    //		Output::Inst()->kprintf("LUA function hendleExternal id must be a number");
-    //		delete ievent;
-    //		return NULL;
-    //	} else ievent->id = id;
-
-    //	//the description string:
-    //	ievent->desc = lua_tostring(L,-3);
-
-    //	//the table string:
-
-    //calculate arrivaltime:
-    //Output::Inst()->kprintf("%s", event->desc.c_str());
     if (event->targetID == 0 || event->targetID == ID)
     {
         EventQueue::iEvent *ievent = new EventQueue::iEvent();
@@ -215,7 +170,8 @@ EventQueue::iEvent* AutonLUA::handleEvent(EventQueue::eEvent *event){
  * @return EventQueue::eEvent pointer to an external event or
  * a null pointer in which case nothing happens.
  */
-EventQueue::eEvent* AutonLUA::initEvent(){
+EventQueue::eEvent* AutonLUA::initEvent()
+{
 
 
     if(nofile)
@@ -233,7 +189,12 @@ EventQueue::eEvent* AutonLUA::initEvent(){
         lua_getglobal(L,"initiateEvent");
 
         if(lua_pcall(L,0,4,0)!=LUA_OK)
-            Output::Inst()->kprintf("error on initiateEvent:\t %s\n",lua_tostring(L,-1));
+        {
+            Output::Inst()->kprintf("<b><font color=\"brown\">error on initiateEvent:\t %s\n",lua_tostring(L,-1));
+            Output::RunSimulation.store(false);
+            return NULL;
+            //error(L, "error on initiateEvent %s", lua_tostring(L,-1));
+        }
 
         std::string nullValue = "null";
         std::string validator = lua_tostring(L,-1);
@@ -242,6 +203,7 @@ EventQueue::eEvent* AutonLUA::initEvent(){
             getSyncData();
             return NULL;
         }
+
         //Generate the internal event:
         EventQueue::eEvent* sendEvent = new EventQueue::eEvent();
 
@@ -255,7 +217,8 @@ EventQueue::eEvent* AutonLUA::initEvent(){
         sendEvent->table = lua_tostring(L,-3);
 
         lua_tonumberx(L,-4, &isnum);
-        if(!isnum){
+        if(!isnum)
+        {
             Output::Inst()->kprintf("LUA function handleExternal propagation speed must be a number\n");
             delete sendEvent;
             return NULL;
@@ -266,6 +229,7 @@ EventQueue::eEvent* AutonLUA::initEvent(){
         //sync positions:
         sendEvent->posX = posX;
         sendEvent->posY = posY;
+        getSyncData();
         return sendEvent;
     }
     catch(std::exception& e)
@@ -273,7 +237,7 @@ EventQueue::eEvent* AutonLUA::initEvent(){
         Output::Inst()->kprintf("<b><font color=\"red\">Error on Initiate Event..%s<b>", e.what());
         Output::RunSimulation = false;
     }
-    getSyncData();
+
     return NULL;
 }
 
@@ -308,7 +272,11 @@ EventQueue::eEvent* AutonLUA::actOnEvent(EventQueue::iEvent *ievent){
         lua_pushstring(L,ievent->event->table.c_str());
         //make the function call with 5 arguments and 6 returnvalues
         if(lua_pcall(L,5,4,0)!=LUA_OK)
-            Output::Inst()->kprintf("error on 'handleEvent':\t %s\n",lua_tostring(L,-1));
+        {
+            Output::Inst()->kprintf("<b><font color=\"yellow\">error on 'handleEvent':\t %s\n",lua_tostring(L,-1));
+            Output::RunSimulation.store(false);
+            return NULL;
+        }
 
         //Test if the handleevent method returns a null string
         std::string nullValue = "null";
@@ -323,7 +291,6 @@ EventQueue::eEvent* AutonLUA::actOnEvent(EventQueue::iEvent *ievent){
         sendEvent->activationTime = Phys::getCTime() + 1;
         sendEvent->id = ID::generateEventID();
 
-        //the description string:
         sendEvent->targetID = lua_tonumber(L, -1);
         sendEvent->desc = lua_tostring(L,-2);
         sendEvent->table = lua_tostring(L,-3);
@@ -359,25 +326,27 @@ void AutonLUA::simDone(){
     try{
         lua_getglobal(L,"simDone");
         if(lua_pcall(L,0,0,0)!=LUA_OK)
-            Output::Inst()->kprintf("error on 'simDone':\t %s\n",lua_tostring(L,-1));
+        {
+            Output::Inst()->kprintf("<b><font color=\"yellow\">error on 'simDone':\t %s\n",lua_tostring(L,-1));
+        }
 
         lua_settop(L,0);
         lua_close(L);
     } catch(std::exception& e)
     {
-        Output::Inst()->kprintf("<b><font color=\"red\">Error on simulationDone..%s<b>", e.what());
+        Output::Inst()->kprintf("<b><font color=\"red\">Error on simulationDone..%s", e.what());
     }
 }
 
 void AutonLUA::getSyncData(){
     try{
-    lua_getglobal(L,"getSyncData");
+        lua_getglobal(L,"getSyncData");
 
-    if(lua_pcall(L,0,2,0)!=LUA_OK)
-        Output::Inst()->kprintf("error on getSyncData:getSyncData:\t %s\n",lua_tostring(L,-1));
+        if(lua_pcall(L,0,2,0)!=LUA_OK)
+            Output::Inst()->kprintf("error on getSyncData:getSyncData:\t %s\n",lua_tostring(L,-1));
 
-    posX = lua_tonumber(L,-2);
-    posY = lua_tonumber(L,-1);
+        Auton::posX = lua_tonumber(L,-2);
+        Auton::posY = lua_tonumber(L,-1);
     }catch(std::exception& e)
     {
         Output::Inst()->kprintf("<b><font color=\"red\">Error on getSyncData..%s<b>", e.what());
@@ -650,6 +619,15 @@ int AutonLUA::l_getSharedNumber(lua_State *L)
     }
     return 1;
 
+}
+
+int AutonLUA::luapanic(lua_State *L)
+{
+    std::string str = lua_tostring(L, 1);
+    Output::Inst()->kprintf("<b>PANIC,%s</b>", str.c_str());
+    Output::KillSimulation.store(true);
+
+    //return 0;
 }
 
 

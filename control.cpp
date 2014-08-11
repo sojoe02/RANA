@@ -2,9 +2,6 @@
 #include "mainwindow.h"
 #include "output.h"
 
-
-
-
 Control::Control(MainWindow* mainwindow)
     : agentDomain(NULL), mainwindow(mainwindow),
       running(false), generated(false), stopped(true)

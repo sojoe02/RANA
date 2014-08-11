@@ -72,7 +72,9 @@ void AgentDomain::generateEnvironment(double width, double height, int resolutio
 	this->timeResolution = timeResolution;
 	this->macroFactor = macroFactor;
 
-	macroResolution = macroFactor * timeResolution;
+    macroResolution = macroFactor * timeResolution;
+
+    Output::KillSimulation = false;
 
 	Phys::setTimeRes(timeResolution);
 	Phys::setCTime(0);
@@ -186,6 +188,10 @@ void AgentDomain::runSimulation(int time)
 
     for(i = 0; i < iterations;)
     {
+        if(Output::KillSimulation.load() == true)
+            return;
+
+
         Phys::setCTime(i);
         if(i == cMicroStep && cMicroStep != ULLONG_MAX)
         {
@@ -218,7 +224,7 @@ void AgentDomain::runSimulation(int time)
             masteragent->printStatus();
             Output::Inst()->progressBar(cMacroStep,iterations);
             //int delay = Output::DelayValue.load();
-            //std::this_thread::sleep_for(std::chrono::milliseconds(5));
+            std::this_thread::sleep_for(std::chrono::milliseconds(5));
             //if(delay != 0)
             retrievePopPos();
 

@@ -32,8 +32,8 @@ end
 --Determine whether or not this Auton will initiate an event.
 function initiateEvent()
 
-	newPosX = posX + l_getMersenneInteger(0,3)-1;
-	newPosY = posY + l_getMersenneInteger(0,3)-1;
+	newPosX = posX + l_getMersenneInteger(0,4)-2;
+	newPosY = posY + l_getMersenneInteger(0,4)-2;
 
 	if newPosX > envWidth then
 		newPosX = 0

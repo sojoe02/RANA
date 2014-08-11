@@ -1,9 +1,6 @@
 posX = 0
 posY = 0
 ID = 0
-macroF = 0
-timeRes = 0
-
 
 -- Init of the lua frog, function called upon initilization of the LUA auton:
 function initAuton(x, y, id, macroFactor, timeResolution)
@@ -11,26 +8,17 @@ function initAuton(x, y, id, macroFactor, timeResolution)
 	posX = x
 	posY = y
 	ID = id
-	macroF = macroFactor
-	timeRes = timeResolution
+	lastID = id-1
 
-	--print out width and height of the environmet:
-	eX,eY = l_getEnvironmentSize()
-
-	l_debug("Environment X and Y"..eX..","..eY)
-
-	l_debug("Agent #: " .. id .. " has been initialized")
+	l_addSharedNumber(id,l_getMersenneFloat(1,192039123))
+	value = l_getSharedNumber(lastID)
+	l_debug("Agen with #:".. ID.. " looked up ".. lastID.." and got "..value)
 
 end
 
 -- Event Handling:
 function handleEvent(origX, origY, origID, origDesc, origTable)
-	--load the table to se if anything is up:
-	loadtring("ctable="..origTable)()
-	if ID ~= 1 and ctable.name == "partyAnnouncement" then
-		l_debug("I am stopping this simulation, due to party announcement from agent ".. ctable.id ) 	
-		l_stopSimulation()
-	end
+	--make a response:
 
 	return 0,0,0,"null"
 end	
@@ -38,18 +26,7 @@ end
 --Determine whether or not this Auton will initiate an event.
 function initiateEvent()
 
-	if l_getMersenneInteger(1,100) <= 1 then
-		calltable = {name = "partyAnnouncement", id = ID}
-		s_calltable = serializeTbl(calltable) 
-		desc = "party"
-		id = l_generateEventID()
-		propagationSpeed = 50000
-
-		targetID = 0;
-
-		return propagationSpeed, s_calltable, desc, targetID
-	end
-
+	l_stopSimulation()
 	return 0,0,0,"null"
 end
 

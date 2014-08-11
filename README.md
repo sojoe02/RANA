@@ -31,6 +31,8 @@ The simulation core offers a number of functions that the agent can call to expa
 |**l_checkCollision**	|x, y| Returns a boolean that is true if an agent is occupying x,y|
 |**l_updatePosition**	|oldX, oldY, newX, newY, ID| updates the agents position from oldX,oldY to newX,newY, in order for **l_checkPosition** and **l_checkCollision** to work the agents have use this whenever they change position|
 |**l_stopSimulation**	|| Tells the simulation core to stop the simulator when the next macroStep is done|
+|**l_addSharedNumber**	|key, value| adds any type of number(value) to a shared map, indexed my 'key'|
+|**l_getSharedNumber**	|key| returns the value associated with key, if the key does not exist it returns "no_value"|
 
 It is important to note that movement and map manipulation is not part of the simulation core itself, but rather the physics engine for very good reasons... email me if you want to know more.
 

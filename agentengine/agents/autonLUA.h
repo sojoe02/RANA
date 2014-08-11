@@ -74,6 +74,7 @@ class AutonLUA : public Auton
         static int l_getSharedNumber(lua_State *L);
         static int l_addSharedNumber(lua_State *L);
 
+        static int luapanic(lua_State *L);
 private:
 			//function to receive an event from nestene responsible for this auton, returns an internal Event 'thinking':
 			EventQueue::iEvent* handleEvent(EventQueue::eEvent* event);

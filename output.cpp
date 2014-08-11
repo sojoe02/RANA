@@ -13,6 +13,7 @@ MainWindow* Output::mainWindow;
 std::mutex Output::lock;
 std::atomic<int> Output::DelayValue;
 std::atomic<bool> Output::RunSimulation;
+std::atomic<bool> Output::KillSimulation;
 
 
 Output* Output::Inst()
