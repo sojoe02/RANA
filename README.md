@@ -17,10 +17,10 @@ The macro-level is where all major actions are usually performed. Actions such a
 
 ##Events
 
-Any external action that the agent can perform, is called an event. Events are basically containers that hold all the relevant information required for the simulation core and the agents to interpret them correctly.  Event attributes and their description is listed in table \ref{tab:event}.
+Any external action that the agent can perform, is called an event. Events are basically containers that hold all the relevant information required for the simulation core and the agents to interpret them correctly.  Event attributes and their description is listed below.
 
-		|Attribute	|Type		| Description |
-		|:---------|:----|:-----|
+		|Attribute	|Type		|Description |
+		|:-----------|:------------|:------------|
 		|id| 	Unsigned Integer |Event identifier, a runtime unique integer ID is provided via the simulation core.|
 		|propagationSpeed| Unsigned Integer|The speed the event propagates at in meters pr. second(m/s). E.g a sound event will usually propagate with a speed of 342[m/s]. Other agents will not perceive/recieve the event until it has propagated to their position.|
 		|posX | Unsigned Float|The X coordinate the event originates from.|
@@ -36,7 +36,7 @@ The simulation core offers a number of functions that the agent can call to expa
 ##Api functions
 
 
-|function		|Arguments	|Description		|
+|Function		|Arguments	|Description		|
 |:-----------------------|:-------------|:----------------------|
 |**l_speedOfSound** 	|myX, myY, origX, origY, propspeed| Calculates the arrival microstep, for something that to propagate from origX,origY to myX,myY with the speed of propspeed *m/s*. |
 |**l_currentTime**	||				Returns the current microstep.|
