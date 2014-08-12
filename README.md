@@ -7,6 +7,27 @@ A simplified system diagram can be seen in figure. The user interface and contro
 
 I am currently hard at work on either implementing timewarp or live updates of event propagation so events arrive at the correct time even if the agents are moving.
 
+##Precision Levels
+
+RANA handles agent actions at two different precision levels, 'macro' and 'micro'.
+
+The macro level is a user defined multiple of the micro level. The micro-level is the precision with which the agent can perceive and react to events emitted by other agents. As the simulator is designed to perform 'real-time' simulations. A microlevel of 1x10<sup>6</sup> enables the agent to perceive events with one millionth second precision. 
+
+The macro-level is where all major actions are usually performed. Actions such as movement and initiation of events.
+
+##Events
+
+Any external action that the agent can perform, is called an event. Events are basically containers that hold all the relevant information required for the simulation core and the agents to interpret them correctly.  Event attributes and their description is listed in table \ref{tab:event}.
+
+		|Attribute	|Type		| Description |
+		|:---------|:----|:-----|
+		|id| 	Unsigned Integer |Event identifier, a runtime unique integer ID is provided via the simulation core.|
+		|propagationSpeed| Unsigned Integer|The speed the event propagates at in meters pr. second(m/s). E.g a sound event will usually propagate with a speed of 342[m/s]. Other agents will not perceive/recieve the event until it has propagated to their position.|
+		|posX | Unsigned Float|The X coordinate the event originates from.|
+		|posY | Unsigned Float|The Y coordinate the event originates from.|
+		|table | String |A serialized Lua table that can hold event specific data. |
+		|desc | String | A descriptor string that can help agents identify event types.|
+		|targetID | Unsigned Integer | Events can either be broadcast or targeted. If the targetID is 0 the event will be broadcast to all agents in the simulation.|
 
 #C++ API
 
@@ -17,16 +38,17 @@ The simulation core offers a number of functions that the agent can call to expa
 
 |function		|Arguments	|Description		|
 |:-----------------------|:-------------|:----------------------|
-|**l_speedOfSound** 	|myX, myY, origX, origY, propspeed| Calculates the microstep, it takes for something that to propagate from origX,origY to myX,myY with the speed of propspeed *m/s* |
-|**l_currentTime**	||				Returns the current microstep|
+|**l_speedOfSound** 	|myX, myY, origX, origY, propspeed| Calculates the arrival microstep, for something that to propagate from origX,origY to myX,myY with the speed of propspeed *m/s*. |
+|**l_currentTime**	||				Returns the current microstep.|
 |**l_distance**		|myX, myY, origX, origY| Calculates the amount of units between myX,myY and origX,origY|
 |**l_getMacroFactor**	||				Returns the macrofactor of the simulator|
-|**l_getTimeResolution**	||Returns 1/microresolution |
+|**l_getTimeResolution**	||Returns the microresolution |
 |**l_getMersenneFloat**	|float1, float2	| Returns a 64bit float between [float1,float2[|
-|**l_getMersenneInteger**|int1, int2	| Returns a number between int1 and int2, 64bit|
+|**l_getMersenneInteger**|uint1, uint2	| Returns a 64 signed integer between [uint1, uint2]|
 |**l_EnvironmentSize** 	||Returns width and height of the environment(starts at 0)|
 |**l_modifyMap**	|x, y, R, G, B|	Changes the color of the map, at x,y |
 |**l_checkMap**		|x, y|		Returns R,G,B value of position x,y on the map (256,256,256) if the map is out of bounds|
+|**l_updatePosition**	|oldX, oldY, newX, newY, ID| Updates the agents position from oldX,oldY to newX,newY, in order for **l_checkPosition** and **l_checkCollision** to work the agents have use this whenever they change position|
 |**l_checkPosition**	|x, y| Returns a list of the ID's of the agents at position x,y|
 |**l_checkCollision**	|x, y| Returns a boolean that is true if an agent is occupying x,y|
 |**l_updatePosition**	|oldX, oldY, newX, newY, ID| updates the agents position from oldX,oldY to newX,newY, in order for **l_checkPosition** and **l_checkCollision** to work the agents have use this whenever they change position|
@@ -36,9 +58,13 @@ The simulation core offers a number of functions that the agent can call to expa
 
 It is important to note that movement and map manipulation is not part of the simulation core itself, but rather the physics engine for very good reasons... email me if you want to know more.
 
+If an agent takes up more than one x,y space, you can add more than one position via l_updatePosition by providing the extra coordinates as both oldX,oldY and newX,newY, just remember to update all the positions correctly upon movement.
+
 #Compilation
 
 RANA_QT has two depencies, Qt and Lua (version 5.2).
+
+Pre-compiled Lua libraries for Windows and MacOS can be downloaded from here http://www.lua.org. For Linux it is recommended to use 
 
 ##Windows
 
@@ -98,4 +124,10 @@ http://www.gnu.org/licenses/gpl.html
 
  Development of the Simulation core, agent interface and UI: Søren V Jørgensen, sojoe02@gmail.com
 
- Example Agents are developed by ..... \<need to ...\>
+ Input and Support an various subjects regarding RANA: \<needs to be expanded\>
+
+ * John Hallam
+ * Yves Demazeau
+ * Jakob Christensen-Dalsgaard
+
+ Example Agents are developed by ..... \<need get more examples ...\>
