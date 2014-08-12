@@ -144,9 +144,9 @@ EventQueue::iEvent* AutonLUA::handleEvent(EventQueue::eEvent *event)
 
         ievent->origin = this;
         ievent->event = event;
-        if (event->activationTime == 0 )
+        if (event->propagationSpeed == 0 )
         {
-            ievent->activationTime = Phys::getCTime() + 1;
+          ievent->activationTime = Phys::getCTime() + 1;
 
         } else
         {

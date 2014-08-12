@@ -43,7 +43,7 @@ function initiateEvent()
 		s_calltable = serializeTbl(calltable) 
 		desc = "party"
 		id = l_generateEventID()
-		propagationSpeed = 50000
+		propagationSpeed = 0
 
 		targetID = 0;
 
