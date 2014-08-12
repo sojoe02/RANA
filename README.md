@@ -38,23 +38,23 @@ The simulation core offers a number of functions that the agent can call to expa
 
 |Function		|Arguments	|Description		|
 |:-----------------------|:-------------|:----------------------|
-|**l_speedOfSound** 	|myX, myY, origX, origY, propspeed| Calculates the arrival microstep, for something that to propagate from origX,origY to myX,myY with the speed of propspeed *m/s*. |
-|**l_currentTime**	||				Returns the current microstep.|
-|**l_distance**		|myX, myY, origX, origY| Calculates the amount of units between myX,myY and origX,origY|
-|**l_getMacroFactor**	||				Returns the macrofactor of the simulator|
-|**l_getTimeResolution**	||Returns the microresolution |
-|**l_getMersenneFloat**	|float1, float2	| Returns a 64bit float between [float1,float2[|
-|**l_getMersenneInteger**|uint1, uint2	| Returns a 64 signed integer between [uint1, uint2]|
-|**l_EnvironmentSize** 	||Returns width and height of the environment(starts at 0)|
-|**l_modifyMap**	|x, y, R, G, B|	Changes the color of the map, at x,y |
-|**l_checkMap**		|x, y|		Returns R,G,B value of position x,y on the map (256,256,256) if the map is out of bounds|
-|**l_updatePosition**	|oldX, oldY, newX, newY, ID| Updates the agents position from oldX,oldY to newX,newY, in order for **l_checkPosition** and **l_checkCollision** to work the agents have use this whenever they change position|
-|**l_checkPosition**	|x, y| Returns a list of the ID's of the agents at position x,y|
-|**l_checkCollision**	|x, y| Returns a boolean that is true if an agent is occupying x,y|
-|**l_updatePosition**	|oldX, oldY, newX, newY, ID| updates the agents position from oldX,oldY to newX,newY, in order for **l_checkPosition** and **l_checkCollision** to work the agents have use this whenever they change position|
-|**l_stopSimulation**	|| Tells the simulation core to stop the simulator when the next macroStep is done|
-|**l_addSharedNumber**	|key, value| adds any type of number(value) to a shared map, indexed my 'key'|
-|**l_getSharedNumber**	|key| returns the value associated with key, if the key does not exist it returns "no_value"|
+|l_speedOfSound	|myX, myY, origX, origY, propspeed| Calculates the arrival microstep, for something that to propagate from origX,origY to myX,myY with the speed of propspeed *m/s*. |
+|l_currentTime	||				Returns the current microstep.|
+|l_distance	|myX, myY, origX, origY| Calculates the amount of units between myX,myY and origX,origY|
+|l_getMacroFactor	||				Returns the macrofactor of the simulator|
+|l_getTimeResolution	||Returns the microresolution |
+|l_getMersenneFloat	|float1, float2	| Returns a 64bit float between [float1,float2[|
+|l_getMersenneInteger|uint1, uint2	| Returns a 64 signed integer between [uint1, uint2]|
+|l_EnvironmentSize	||Returns width and height of the environment(starts at 0)|
+|l_modifyMap	|x, y, R, G, B|	Changes the color of the map, at x,y |
+|l_checkMap		|x, y|		Returns R,G,B value of position x,y on the map (256,256,256) if the map is out of bounds|
+|l_updatePosition	|oldX, oldY, newX, newY, ID| Updates the agents position from oldX,oldY to newX,newY, in order for l_checkPosition and l_checkCollision to work the agents have use this whenever they change position|
+|l_checkPosition	|x, y| Returns a list of the ID's of the agents at position x,y|
+|l_checkCollision	|x, y| Returns a boolean that is true if an agent is occupying x,y|
+|l_updatePosition	|oldX, oldY, newX, newY, ID| updates the agents position from oldX,oldY to newX,newY, in order for l_checkPosition and **l_checkCollision** to work the agents have use this whenever they change position|
+|l_stopSimulation	|| Tells the simulation core to stop the simulator when the next macroStep is done|
+|l_addSharedNumber	|key, value| adds any type of number(value) to a shared map, indexed my 'key'|
+|l_getSharedNumber	|key| returns the value associated with key, if the key does not exist it returns "no_value"|
 
 It is important to note that movement and map manipulation is not part of the simulation core itself, but rather the physics engine for very good reasons... email me if you want to know more.
 
