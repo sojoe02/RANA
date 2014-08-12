@@ -22,8 +22,8 @@ Any external action that the agent can perform, is called an event. Events are b
 |Attribute	|Type		|Description |
 |:-----------|:------------|:------------|
 |id| 	Unsigned Integer |Event identifier, a runtime unique integer ID is provided via the simulation core.|
-|propagationSpeed| Unsigned Integer|The speed the event propagates at in meters pr. second(m/s). Other agents will not perceive/receive the event until it has propagated to their position.|
-|posX | Unsigned Float|The X coordinate the event originates from. propagationSpeed of 0 is equal to instant propagation|
+|propagationSpeed| Unsigned Integer|The speed the event propagates at in meters pr. second(m/s). Other agents will not perceive/receive the event until it has propagated to their position. PropagationSpeed of 0 is equal to instant propagation|
+|posX | Unsigned Float|The X coordinate the event originates from.|:
 |posY | Unsigned Float|The Y coordinate the event originates from.|
 |table | String |A serialized Lua table that can hold event specific data. |
 |desc | String | A descriptor string that can help agents identify event types.|
