@@ -45,9 +45,6 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
     : Auton(ID, posX, posY, posZ, nestene), filename(filename)
 {
     desc = "LUA";
-
-
-
     //Output::Inst()->kprintf("%f,%f", posX, posY);
     /*
      * Setup up the LUA stack:
@@ -56,7 +53,7 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
 
     luaL_openlibs(L);
     /*
-     * Register all the physics wrapper functions:
+     * Register all the API functions:
      */
     lua_register(L, "l_speedOfSound", l_speedOfSound);
     lua_register(L, "l_distance", l_distance);
@@ -86,7 +83,6 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
 
     //lua_atpanic (L, AutonLUA::luapanic);
 
-
     //init the LUA frog:
     lua_getglobal(L,"initAuton");
     lua_pushnumber(L,(int)posX);
@@ -96,8 +92,6 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
     double tr = Phys::getTimeRes();
     lua_pushnumber(L,mf);
     lua_pushnumber(L,tr);
-
-
 
     try{
         //Call the initAuton function (3 arguments, 0 results):
@@ -150,9 +144,16 @@ EventQueue::iEvent* AutonLUA::handleEvent(EventQueue::eEvent *event)
 
         ievent->origin = this;
         ievent->event = event;
-        ievent->activationTime =
-                Phys::speedOfSound(event->origin->getPosX(), event->origin->getPosY(),
-                                   posX, posY, event->propagationSpeed) + 1;
+        if (event->activationTime == 0 )
+        {
+            ievent->activationTime = Phys::getCTime() + 1;
+
+        } else
+        {
+            ievent->activationTime =
+                    Phys::speedOfSound(event->origin->getPosX(), event->origin->getPosY(),
+                                       posX, posY, event->propagationSpeed) + 1;
+        }
 
         ievent->id = ID::generateEventID();
         ievent->desc = "";
@@ -172,15 +173,12 @@ EventQueue::iEvent* AutonLUA::handleEvent(EventQueue::eEvent *event)
  */
 EventQueue::eEvent* AutonLUA::initEvent()
 {
-
-
     if(nofile)
         return NULL;
 
     lua_settop(L,0);
 
     int isnum;
-
 
     //Output::Inst()->kprintf("position %f, %f \n", posX, posY);
     //lua_settop(L,0);
@@ -217,18 +215,22 @@ EventQueue::eEvent* AutonLUA::initEvent()
         sendEvent->table = lua_tostring(L,-3);
 
         lua_tonumberx(L,-4, &isnum);
+
         if(!isnum)
         {
             Output::Inst()->kprintf("LUA function handleExternal propagation speed must be a number\n");
             delete sendEvent;
+            Output::RunSimulation.store(false);
             return NULL;
         } else sendEvent->propagationSpeed = lua_tonumber(L,-4);
 
         //Output::Inst()->kprintf("activationTime : %lld \t id : %lld \n desc : %s \t table : %s \n", sendEvent->activationTime,
         //		sendEvent->id, sendEvent->desc.c_str(), sendEvent->table.c_str());
         //sync positions:
+
         sendEvent->posX = posX;
         sendEvent->posY = posY;
+
         getSyncData();
         return sendEvent;
     }
@@ -549,12 +551,6 @@ int AutonLUA::l_checkPosition(lua_State *L)
         lua_pushnumber(L, *it);
         lua_settable(L, -3);
     }
-    //}
-    //catch(std::exception& e)
-    //{
-    //  Output::Inst()->kprintf("error on l_checkposition..%s", e.what());
-    // Output::RunSimulation = false;
-    //}
 
     return 1;
 }
