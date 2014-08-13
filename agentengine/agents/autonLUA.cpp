@@ -311,7 +311,7 @@ EventQueue::eEvent* AutonLUA::actOnEvent(EventQueue::iEvent *ievent){
     }
     catch(std::exception& e)
     {
-        Output::Inst()->kprintf("<b><font color=\"red\">Error on handleEvent..%s<b>", e.what());
+        Output::Inst()->kprintf("<b><font color=\"red\">Error on handleEvent..%s", e.what());
         Output::RunSimulation = false;
     }
 
@@ -351,7 +351,7 @@ void AutonLUA::getSyncData(){
         Auton::posY = lua_tonumber(L,-1);
     }catch(std::exception& e)
     {
-        Output::Inst()->kprintf("<b><font color=\"red\">Error on getSyncData..%s<b>", e.what());
+        Output::Inst()->kprintf("<b><font color=\"red\">Error on getSyncData..%s", e.what());
     }
 }
 

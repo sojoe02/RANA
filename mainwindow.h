@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QtWidgets>
+#include <QWidget>
 #include <QGraphicsScene>
 #include <map>
 
