@@ -113,7 +113,7 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
             Auton::posY = lua_tonumber(L,-1);
         }
     }catch(std::exception& e){
-        Output::Inst()->kprintf("<b><font color=\"red\">Error on Agent Initiation..%s</b>", e.what());
+        Output::Inst()->kprintf("<b><font color=\"red\">Error on Agent Initiation..%s, %s</b>", e.what());
         Output::RunSimulation = false;
     }
 

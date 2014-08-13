@@ -45,7 +45,7 @@ The simulation core offers a number of functions that the agent can call to expa
 |l_getTimeResolution	||Returns the microresolution |
 |l_getMersenneFloat	|float1, float2	| Returns a 64bit float between [float1,float2[|
 |l_getMersenneInteger|uint1, uint2	| Returns a 64 signed integer between [uint1, uint2]|
-|l_EnvironmentSize	||Returns width and height of the environment(starts at 0)|
+|l_getEnvironmentSize	||Returns width and height of the environment(starts at 0)|
 |l_modifyMap	|x, y, R, G, B|	Changes the color of the map, at x,y |
 |l_checkMap		|x, y|		Returns R,G,B value of position x,y on the map (256,256,256) if the map is out of bounds|
 |l_updatePosition	|oldX, oldY, newX, newY, ID| Updates the agents position from oldX,oldY to newX,newY, in order for l_checkPosition and l_checkCollision to work the agents have use this whenever they change position|
@@ -64,12 +64,13 @@ If an agent takes up more than one x,y space, you can add more than one position
 
 RANA_QT has two depencies, Qt and Lua (version 5.2).
 
-Pre-compiled Lua libraries for Windows and MacOS can be downloaded from here http://www.lua.org. For Linux it is recommended to use 
+Pre-compiled Lua libraries for Windows and MacOS can be downloaded from here http://www.lua.org. For Linux it is recommended to utilize the target distributions integrates Lua development packages.
+
+It is highly recommended to compile as 64bit as RANA does operate with 64bit numbers. Also event heavy simulations can use more memory than is available in 32bit userspace (usually less than 2Gb).
 
 ##Windows
 
 For Windows one can use MinGW from http://www.mingw.org/. 
-
 
 ##MacOS
 
