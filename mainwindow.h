@@ -71,6 +71,8 @@ private slots:
 
     void on_zoomSlider_valueChanged(int value);
 
+    void on_pushButton_clicked();
+
 signals:
 
     void map_updateSignal(INFOLIST infolist);
