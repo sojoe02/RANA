@@ -120,7 +120,7 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
     lua_settop(L,0);
     getSyncData();
 
-    GridMovement::addPos(posX,posY,ID);
+    //GridMovement::addPos(posX,posY,ID);
 }
 
 AutonLUA::~AutonLUA(){
