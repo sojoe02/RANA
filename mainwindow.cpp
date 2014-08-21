@@ -161,13 +161,14 @@ void MainWindow::on_generateMap_clicked()
 void MainWindow::on_writeOutput(QString string)
 {
     //std::this_thread::sleep_for(std::chrono::milliseconds(5));
+    //QString prepend = "</>";
+    //QString output = string.prepend(prepend);
     ui->outputTextEdit->append(string);
 }
 
 void MainWindow::write_output(QString argMsg)
 {
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
-
     emit writeStringSignal(argMsg);
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
 

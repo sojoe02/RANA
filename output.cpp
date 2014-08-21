@@ -54,7 +54,6 @@ void Output::kerr(const char* msg, ...)
     va_start(args, msg);
 
     char buffer[2048];
-
     vsprintf(buffer, msg, args);
 
     QString string(buffer);

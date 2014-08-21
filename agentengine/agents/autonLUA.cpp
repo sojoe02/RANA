@@ -97,7 +97,7 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
         //Call the initAuton function (3 arguments, 0 results):
         if(lua_pcall(L,5,0,0)!=LUA_OK)
         {
-            Output::Inst()->kprintf("<b><font color=\"brown\">error on init autonLUA: %s\n",	lua_tostring(L,-1));
+            Output::Inst()->kprintf("<b><font color=\"brown\">error on init autonLUA: %s\n</font></b></>",	lua_tostring(L,-1));
             nofile = true;
             Output::Inst()->kprintf("Lua Auton disabled\n");
         }
@@ -106,14 +106,14 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
         lua_getglobal(L,"getSyncData");
 
         if(lua_pcall(L,0,2,0)!=LUA_OK){
-            Output::Inst()->kprintf("<b><font color=\"brown\">error on initiateEvent:getSyncData:\t %s\n",lua_tostring(L,-1));
+            Output::Inst()->kprintf("<b><font color=\"brown\">error on initiateEvent:getSyncData:\t %s\n</font></b></>",lua_tostring(L,-1));
         }else{
 
             Auton::posX = lua_tonumber(L,-2);
             Auton::posY = lua_tonumber(L,-1);
         }
     }catch(std::exception& e){
-        Output::Inst()->kprintf("<b><font color=\"red\">Error on Agent Initiation..%s, %s</b>", e.what());
+        Output::Inst()->kprintf("<b><font color=\"red\">Error on Agent Initiation..%s, %s</font></b></>" , e.what());
         Output::RunSimulation = false;
     }
 
@@ -188,7 +188,7 @@ EventQueue::eEvent* AutonLUA::initEvent()
 
         if(lua_pcall(L,0,4,0)!=LUA_OK)
         {
-            Output::Inst()->kprintf("<b><font color=\"brown\">error on initiateEvent:\t %s\n",lua_tostring(L,-1));
+            Output::Inst()->kprintf("<b><font color=\"brown\">error on initiateEvent:\t %s\n</font></b></>",lua_tostring(L,-1));
             Output::RunSimulation.store(false);
             return NULL;
             //error(L, "error on initiateEvent %s", lua_tostring(L,-1));
@@ -236,7 +236,7 @@ EventQueue::eEvent* AutonLUA::initEvent()
     }
     catch(std::exception& e)
     {
-        Output::Inst()->kprintf("<b><font color=\"red\">Error on Initiate Event..%s</b>", e.what());
+        Output::Inst()->kprintf("<b><font color=\"red\">Error on Initiate Event..%s</font></b></>", e.what());
         Output::RunSimulation = false;
     }
 
@@ -275,7 +275,7 @@ EventQueue::eEvent* AutonLUA::actOnEvent(EventQueue::iEvent *ievent){
         //make the function call with 5 arguments and 6 returnvalues
         if(lua_pcall(L,5,4,0)!=LUA_OK)
         {
-            Output::Inst()->kprintf("<b><font color=\"brown\">error on 'handleEvent':\t %s\n",lua_tostring(L,-1));
+            Output::Inst()->kprintf("<b><font color=\"brown\">error on 'handleEvent':\t %s</font></b></>",lua_tostring(L,-1));
             Output::RunSimulation.store(false);
             return NULL;
         }
@@ -311,7 +311,7 @@ EventQueue::eEvent* AutonLUA::actOnEvent(EventQueue::iEvent *ievent){
     }
     catch(std::exception& e)
     {
-        Output::Inst()->kprintf("<b><font color=\"red\">Error on handleEvent..%s", e.what());
+        Output::Inst()->kprintf("<b><font color=\"red\">Error on handleEvent..%s</font></b></>", e.what());
         Output::RunSimulation = false;
     }
 
@@ -329,14 +329,14 @@ void AutonLUA::simDone(){
         lua_getglobal(L,"simDone");
         if(lua_pcall(L,0,0,0)!=LUA_OK)
         {
-            Output::Inst()->kprintf("<b><font color=\"brown\">error on 'simDone':\t %s\n",lua_tostring(L,-1));
+            Output::Inst()->kprintf("<b><font color=\"brown\">error on 'simDone':\t %s\n</font></b></>",lua_tostring(L,-1));
         }
 
         lua_settop(L,0);
         lua_close(L);
     } catch(std::exception& e)
     {
-        Output::Inst()->kprintf("<b><font color=\"red\">Error on simulationDone..%s", e.what());
+        Output::Inst()->kprintf("<b><font color=\"red\">Error on simulationDone..%s</font></b></>", e.what());
     }
 }
 
@@ -345,13 +345,13 @@ void AutonLUA::getSyncData(){
         lua_getglobal(L,"getSyncData");
 
         if(lua_pcall(L,0,2,0)!=LUA_OK)
-            Output::Inst()->kprintf("<b><font color=\"red\" error on getSyncData:getSyncData:\t %s\n",lua_tostring(L,-1));
+            Output::Inst()->kprintf("<b><font color=\"red\" error on getSyncData:getSyncData:\t %s\n</font></b></>",lua_tostring(L,-1));
 
         Auton::posX = lua_tonumber(L,-2);
         Auton::posY = lua_tonumber(L,-1);
     }catch(std::exception& e)
     {
-        Output::Inst()->kprintf("<b><font color=\"red\">Error on getSyncData..%s", e.what());
+        Output::Inst()->kprintf("<b><font color=\"red\">Error on getSyncData..%s</font></b></>", e.what());
     }
 }
 
@@ -620,7 +620,7 @@ int AutonLUA::l_getSharedNumber(lua_State *L)
 int AutonLUA::luapanic(lua_State *L)
 {
     std::string str = lua_tostring(L, 1);
-    Output::Inst()->kprintf("<b>PANIC,%s</b>", str.c_str());
+    Output::Inst()->kprintf("<b>PANIC,%s</b></>", str.c_str());
     Output::KillSimulation.store(true);
 
     //return 0;
