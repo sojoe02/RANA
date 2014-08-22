@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>817</width>
-    <height>761</height>
+    <width>705</width>
+    <height>791</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -54,6 +54,12 @@
         </item>
         <item row="16" column="0">
          <widget class="QWidget" name="widget_3" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <layout class="QGridLayout" name="gridLayout_2">
            <item row="26" column="3">
             <widget class="QPushButton" name="pushButton">
@@ -65,7 +71,7 @@
            <item row="12" column="2">
             <widget class="QSpinBox" name="macroSpinBox">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -94,7 +100,7 @@
            <item row="9" column="2">
             <widget class="QSpinBox" name="timeResSpinBox">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -122,7 +128,7 @@
            <item row="14" column="2">
             <widget class="QSpinBox" name="runTimeSpinBox">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -173,7 +179,7 @@
            <item row="16" column="2">
             <widget class="QSpinBox" name="luaSpinBox">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -185,7 +191,7 @@
               <number>1</number>
              </property>
              <property name="maximum">
-              <number>1000</number>
+              <number>65536</number>
              </property>
              <property name="value">
               <number>2</number>
@@ -292,7 +298,7 @@
              </property>
             </widget>
            </item>
-           <item row="22" column="2">
+           <item row="22" column="2" colspan="2">
             <widget class="QWidget" name="widget_5" native="true">
              <layout class="QGridLayout" name="gridLayout_7">
               <item row="1" column="0">
@@ -400,14 +406,14 @@
                 </property>
                </widget>
               </item>
+              <item row="1" column="3">
+               <widget class="QPushButton" name="generateMap">
+                <property name="text">
+                 <string>Generate Map</string>
+                </property>
+               </widget>
+              </item>
              </layout>
-            </widget>
-           </item>
-           <item row="22" column="3">
-            <widget class="QPushButton" name="generateMap">
-             <property name="text">
-              <string>Generate Map</string>
-             </property>
             </widget>
            </item>
           </layout>
