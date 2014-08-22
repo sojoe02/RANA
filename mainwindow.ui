@@ -61,17 +61,63 @@
            </sizepolicy>
           </property>
           <layout class="QGridLayout" name="gridLayout_2">
-           <item row="26" column="3">
-            <widget class="QPushButton" name="pushButton">
+           <item row="12" column="3">
+            <widget class="QPushButton" name="browseMapButton">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="text">
-              <string>Clear Output</string>
+              <string>Browse</string>
              </property>
             </widget>
            </item>
-           <item row="12" column="2">
+           <item row="9" column="1">
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string>&lt;b&gt;Agent Path:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="11" column="1" colspan="3">
+            <widget class="QLineEdit" name="agentPathLineEdit">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLabel" name="label_5">
+             <property name="toolTip">
+              <string>Number of microsteps pr second</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>-1</number>
+             </property>
+             <property name="text">
+              <string>&lt;b&gt;Time Resolution:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="14" column="1">
+            <widget class="QLabel" name="label_11">
+             <property name="text">
+              <string>&lt;b&gt;Map Generation:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="3">
             <widget class="QSpinBox" name="macroSpinBox">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -90,17 +136,17 @@
              </property>
             </widget>
            </item>
-           <item row="25" column="1">
-            <widget class="QLabel" name="label_10">
+           <item row="17" column="3">
+            <widget class="QPushButton" name="pushButton">
              <property name="text">
-              <string/>
+              <string>Clear Output</string>
              </property>
             </widget>
            </item>
-           <item row="9" column="2">
+           <item row="0" column="3">
             <widget class="QSpinBox" name="timeResSpinBox">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -125,35 +171,38 @@
              </property>
             </widget>
            </item>
-           <item row="14" column="2">
-            <widget class="QSpinBox" name="runTimeSpinBox">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-             <property name="accelerated">
-              <bool>true</bool>
-             </property>
-             <property name="minimum">
-              <number>1</number>
-             </property>
-             <property name="maximum">
-              <number>31536000</number>
-             </property>
-             <property name="singleStep">
-              <number>60</number>
-             </property>
-             <property name="value">
-              <number>60</number>
+           <item row="16" column="0">
+            <widget class="QLabel" name="label_10">
+             <property name="text">
+              <string/>
              </property>
             </widget>
            </item>
-           <item row="26" column="2">
+           <item row="2" column="1">
+            <widget class="QLabel" name="label_6">
+             <property name="toolTip">
+              <string>Number of mirosteps pr macrostep</string>
+             </property>
+             <property name="text">
+              <string>&lt;b&gt;Macro Factor:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="3">
+            <widget class="QPushButton" name="browseLuaAgentButton">
+             <property name="text">
+              <string>Browse</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1">
+            <widget class="QLabel" name="label_13">
+             <property name="text">
+              <string>&lt;b&gt;Runtime(s):</string>
+             </property>
+            </widget>
+           </item>
+           <item row="17" column="1">
             <spacer name="horizontalSpacer">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
@@ -169,17 +218,10 @@
              </property>
             </spacer>
            </item>
-           <item row="19" column="2">
-            <widget class="QLabel" name="label_7">
-             <property name="text">
-              <string>Map Path:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="16" column="2">
+           <item row="6" column="3">
             <widget class="QSpinBox" name="luaSpinBox">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -198,110 +240,30 @@
              </property>
             </widget>
            </item>
-           <item row="11" column="2">
-            <widget class="QLabel" name="label_6">
-             <property name="toolTip">
-              <string>Number of mirosteps pr macrostep</string>
-             </property>
+           <item row="12" column="1">
+            <widget class="QLabel" name="label_7">
              <property name="text">
-              <string>Macro Factor:</string>
+              <string>&lt;b&gt;Map Path:</string>
              </property>
             </widget>
            </item>
-           <item row="18" column="2" colspan="2">
-            <widget class="QLineEdit" name="agentPathLineEdit">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-           <item row="20" column="2" colspan="2">
-            <widget class="QLineEdit" name="mapPathLineEdit"/>
-           </item>
-           <item row="17" column="3">
-            <widget class="QPushButton" name="browseLuaAgentButton">
-             <property name="text">
-              <string>Browse</string>
-             </property>
-            </widget>
-           </item>
-           <item row="19" column="3">
-            <widget class="QPushButton" name="browseMapButton">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string>Browse</string>
-             </property>
-            </widget>
-           </item>
-           <item row="8" column="2">
-            <widget class="QLabel" name="label_5">
-             <property name="toolTip">
-              <string>Number of microsteps pr second</string>
-             </property>
-             <property name="toolTipDuration">
-              <number>-1</number>
-             </property>
-             <property name="text">
-              <string>Time Resolution:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="13" column="2">
-            <widget class="QLabel" name="label_13">
-             <property name="text">
-              <string>Runtime(s):</string>
-             </property>
-            </widget>
-           </item>
-           <item row="21" column="2">
-            <widget class="QLabel" name="label_11">
-             <property name="text">
-              <string>Map Generation:(R,G,B, Width, Height)</string>
-             </property>
-            </widget>
-           </item>
-           <item row="25" column="2" colspan="2">
-            <spacer name="verticalSpacer">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="17" column="2">
-            <widget class="QLabel" name="label">
-             <property name="text">
-              <string>Agent Path:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="15" column="2">
-            <widget class="QLabel" name="label_2">
-             <property name="text">
-              <string>Number of Agents:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="22" column="2" colspan="2">
+           <item row="15" column="1" colspan="3">
             <widget class="QWidget" name="widget_5" native="true">
              <layout class="QGridLayout" name="gridLayout_7">
-              <item row="1" column="0">
+              <item row="1" column="3">
+               <widget class="QSpinBox" name="pxSpinBox">
+                <property name="toolTip">
+                 <string>Width(px)</string>
+                </property>
+                <property name="maximum">
+                 <number>4096</number>
+                </property>
+                <property name="value">
+                 <number>200</number>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
                <widget class="QSpinBox" name="pySpinBox">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -320,7 +282,7 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="3">
+              <item row="0" column="5">
                <widget class="QDoubleSpinBox" name="BDoubleSpinBox">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -351,7 +313,14 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="0">
+              <item row="0" column="4">
+               <widget class="QLabel" name="label_19">
+                <property name="text">
+                 <string>Blue:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
                <widget class="QDoubleSpinBox" name="RdoubleSpinBox">
                 <property name="toolTip">
                  <string>%R</string>
@@ -364,20 +333,7 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="2">
-               <widget class="QSpinBox" name="pxSpinBox">
-                <property name="toolTip">
-                 <string>Width(px)</string>
-                </property>
-                <property name="maximum">
-                 <number>4096</number>
-                </property>
-                <property name="value">
-                 <number>200</number>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="2">
+              <item row="0" column="3">
                <widget class="QDoubleSpinBox" name="GDoubleSpinBox">
                 <property name="toolTip">
                  <string>%G</string>
@@ -393,7 +349,7 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="1">
+              <item row="0" column="2">
                <widget class="QLabel" name="label_18">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -401,20 +357,113 @@
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
+                <property name="font">
+                 <font>
+                  <underline>false</underline>
+                 </font>
+                </property>
                 <property name="text">
-                 <string/>
+                 <string>Green:</string>
                 </property>
                </widget>
               </item>
-              <item row="1" column="3">
-               <widget class="QPushButton" name="generateMap">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_21">
                 <property name="text">
-                 <string>Generate Map</string>
+                 <string>Red:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_22">
+                <property name="text">
+                 <string>Width:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2">
+               <widget class="QLabel" name="label_23">
+                <property name="text">
+                 <string>Height:</string>
                 </property>
                </widget>
               </item>
              </layout>
             </widget>
+           </item>
+           <item row="13" column="1" colspan="3">
+            <widget class="QLineEdit" name="mapPathLineEdit"/>
+           </item>
+           <item row="14" column="3">
+            <widget class="QPushButton" name="generateMap">
+             <property name="text">
+              <string>Generate Map</string>
+             </property>
+            </widget>
+           </item>
+           <item row="16" column="1" colspan="3">
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="6" column="1">
+            <widget class="QLabel" name="label_2">
+             <property name="text">
+              <string>&lt;b&gt;Number of Agents:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="3">
+            <widget class="QSpinBox" name="runTimeSpinBox">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+             <property name="accelerated">
+              <bool>true</bool>
+             </property>
+             <property name="minimum">
+              <number>1</number>
+             </property>
+             <property name="maximum">
+              <number>31536000</number>
+             </property>
+             <property name="singleStep">
+              <number>60</number>
+             </property>
+             <property name="value">
+              <number>60</number>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="1">
+            <spacer name="verticalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Minimum</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>5</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </widget>
