@@ -69,6 +69,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QObject::connect(this,SIGNAL(writeStatusSignal(unsigned long long,unsigned long long,unsigned long long,unsigned long long)),
                      this,SLOT(on_udateStatus(unsigned long long,unsigned long long,unsigned long long,unsigned long long)));
+    //connect actions:
+    QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
+    QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
+
+    ui->statusBar->addWidget(new QLabel("<b><font color=\"green\">RANA</b></font> version 1.1.10_QT"));
 
 }
 
@@ -76,6 +81,7 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+
 
 void MainWindow::on_generateButton_clicked()
 {
@@ -116,7 +122,7 @@ void MainWindow::advanceProgess(int percentage)
     //ui->progressBar->setValue(percentage);
 }
 
-void MainWindow::on_exitButton_clicked()
+void MainWindow::actionExit()
 {
     QApplication::quit();
 }
@@ -351,4 +357,9 @@ void MainWindow::on_zoomSlider_valueChanged(int value)
 void MainWindow::on_pushButton_clicked()
 {
     ui->outputTextEdit->clear();
+}
+
+void MainWindow::actionPrintInfo()
+{
+    ui->outputTextEdit->setText(tr("<b><font color=\"green\">RANA</b></font> version 1.1.10_QT"));
 }

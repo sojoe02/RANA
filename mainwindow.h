@@ -44,22 +44,16 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
-
     void updateMap(QImage *image);
 
     ~MainWindow();
 
     void changeRunButton(QString text);
-
     void advanceProgess(int percentage);
-
     void runButtonHide();
-
     void updateMap(std::list<agentInfo> infolist);
-
     void write_output(QString argMsg);
     void write_status(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents);
-
     void write_errOutput(QString argMsg);
 
 public slots:
@@ -69,30 +63,19 @@ public slots:
 private slots:
 
     void on_generateButton_clicked();
-
-    void on_exitButton_clicked();
-
+    void actionExit();
     void on_browseMapButton_clicked();
-
     void on_generateMap_clicked();
-
     void on_browseLuaAgentButton_clicked();
-
     void on_runButton_clicked();
-
     void on_updateMap(INFOLIST infolist);
-
     void on_udateStatus(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents);
-
     void on_writeOutput(QString string);
-
     void on_writeErrOutput(QString string);
-
     void on_delaySpinBox_valueChanged(int arg1);
-
     void on_zoomSlider_valueChanged(int value);
-
     void on_pushButton_clicked();
+    void actionPrintInfo();
 
 signals:
 
@@ -102,8 +85,8 @@ signals:
     void writeErrSignal(QString something);
 
 private:
-    Ui::MainWindow *ui;
 
+    Ui::MainWindow *ui;
     void updatePosition(int Id, int x, int y);
     void advanceProgess();
     double factor;
@@ -112,12 +95,15 @@ private:
     QGraphicsScene *scene;
     QMap<int, agentItem* > graphAgents;
     QMutex lock;
-
-
-
     Control *control;
-
     void defineMap();
+
+    //the menu bar:
+    QMenu *menu;
+    QAction* showAct;
+    QAction* hideAct;
+    QAction* exitAct;
+
 };
 
 #endif // MAINWINDOW_H
