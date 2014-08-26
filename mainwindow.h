@@ -76,6 +76,9 @@ private slots:
     void on_zoomSlider_valueChanged(int value);
     void on_pushButton_clicked();
     void actionPrintInfo();
+    void vis_isChecked();
+
+    void on_vis_processEventsPushButton_clicked();
 
 signals:
 
@@ -104,6 +107,9 @@ private:
     QAction* hideAct;
     QAction* exitAct;
 
+    void visualizationConstruction();
+    QWidget *vis_controlTabptr;
+    QWidget *vis_mapTabptr;
 };
 
 #endif // MAINWINDOW_H

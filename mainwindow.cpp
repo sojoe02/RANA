@@ -52,7 +52,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->progressBar->setValue(0);
     ui->graphicsView->setScene(scene);
     scene->setBackgroundBrush(Qt::gray);
-    ui->runButton->hide();
+    ui->runButton->setDisabled(true);
 
     control = new Control(this);
 
@@ -74,6 +74,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
 
     ui->statusBar->addWidget(new QLabel("<b><font color=\"green\">RANA</b></font> version 1.1.10_QT"));
+
+    visualizationConstruction();
 
 }
 
@@ -107,7 +109,7 @@ void MainWindow::on_generateButton_clicked()
 
             Output::Inst()->kprintf("generating environment, %d, %s",
                                     agentAmount, stringPath.c_str());
-            ui->runButton->show();
+            ui->runButton->setEnabled(true);
         } else
             Output::Inst()->kprintf("Cannot generate Environment: Valid path not given");
     } else
@@ -186,12 +188,15 @@ void MainWindow::on_generateMap_clicked()
 
    defineMap();
 }
+
 void MainWindow::on_writeOutput(QString string)
 {
     //std::this_thread::sleep_for(std::chrono::milliseconds(5));
     //QString prepend = "</>";
     //QString output = string.prepend(prepend);
-    ui->outputTextEdit->append(string);
+
+    ui->outputTextEdit->insertHtml(string);
+    ui->outputTextEdit->append("");
 }
 
 void MainWindow::write_output(QString argMsg)
@@ -317,7 +322,7 @@ void MainWindow::changeRunButton(QString text)
 
 void MainWindow::runButtonHide()
 {
-    ui->runButton->hide();
+    ui->runButton->setDisabled(true);
 }
 
 void MainWindow::defineMap()
@@ -356,10 +361,50 @@ void MainWindow::on_zoomSlider_valueChanged(int value)
 
 void MainWindow::on_pushButton_clicked()
 {
+    //ui->outputTextEdit->
     ui->outputTextEdit->clear();
+
 }
 
 void MainWindow::actionPrintInfo()
 {
     ui->outputTextEdit->setText(tr("<b><font color=\"green\">RANA</b></font> version 1.1.10_QT"));
+}
+
+/*
+ * VISUALIZATION PART:
+ *
+ */
+
+void MainWindow::visualizationConstruction()
+{
+    vis_controlTabptr = ui->vis_controlTab;
+    vis_mapTabptr = ui->vis_mapTab;
+
+    ui->tabWidget->removeTab(ui->tabWidget->indexOf(vis_controlTabptr));
+    ui->tabWidget->removeTab(ui->tabWidget->indexOf(vis_mapTabptr));
+
+    QObject::connect(ui->action_Enable_Visualisation, SIGNAL(changed()),this, SLOT(vis_isChecked()));
+
+}
+
+void MainWindow::vis_isChecked()
+{
+    if(ui->action_Enable_Visualisation->isChecked())
+    {
+        ui->tabWidget->insertTab(2,vis_controlTabptr,"Visualization Control");
+        ui->tabWidget->insertTab(3,vis_mapTabptr,"Visualization Map");
+    }else
+    {
+        ui->tabWidget->removeTab(ui->tabWidget->indexOf(vis_controlTabptr));
+        ui->tabWidget->removeTab(ui->tabWidget->indexOf(vis_mapTabptr));
+
+    }
+}
+
+
+void MainWindow::on_vis_processEventsPushButton_clicked()
+{
+    ui->vis_processEventsPushButton->setDisabled(true);
+
 }

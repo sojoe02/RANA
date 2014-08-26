@@ -32,7 +32,8 @@ SOURCES += main.cpp\
     graphics/agentItem.cpp \
     physics/gridmovement.cpp \
     runner.cpp \
-    physics/shared.cpp
+    physics/shared.cpp \
+    postprocessing/viscontrol.cpp
 
 HEADERS  += mainwindow.h \
     physics/phys.h \
@@ -53,7 +54,8 @@ HEADERS  += mainwindow.h \
     graphics/agentItem.h \
     physics/gridmovement.h \
     runner.h \
-    physics/shared.h
+    physics/shared.h \
+    postprocessing/viscontrol.h
 
 FORMS    += mainwindow.ui
 
