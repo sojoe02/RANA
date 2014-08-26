@@ -33,7 +33,11 @@ SOURCES += main.cpp\
     physics/gridmovement.cpp \
     runner.cpp \
     physics/shared.cpp \
-    postprocessing/viscontrol.cpp
+    postprocessing/eventprocessing.cpp \
+    graphics/intensitymap.cpp \
+    graphics/intensityblock.cpp \
+    postprocessing/eventmap.cpp \
+    graphics/zcolormap.cpp
 
 HEADERS  += mainwindow.h \
     physics/phys.h \
@@ -55,7 +59,11 @@ HEADERS  += mainwindow.h \
     physics/gridmovement.h \
     runner.h \
     physics/shared.h \
-    postprocessing/viscontrol.h
+    postprocessing/eventprocessing.h \
+    graphics/intensitymap.h \
+    graphics/intensityblock.h \
+    postprocessing/eventmap.h \
+    graphics/zcolormap.h
 
 FORMS    += mainwindow.ui
 

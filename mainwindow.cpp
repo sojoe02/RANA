@@ -406,5 +406,7 @@ void MainWindow::vis_isChecked()
 void MainWindow::on_vis_processEventsPushButton_clicked()
 {
     ui->vis_processEventsPushButton->setDisabled(true);
+    int timeStep = ui->vis_timeIntervalSpinBox->value();
+
 
 }
