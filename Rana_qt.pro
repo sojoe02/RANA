@@ -37,7 +37,8 @@ SOURCES += main.cpp\
     graphics/intensitymap.cpp \
     graphics/intensityblock.cpp \
     postprocessing/eventmap.cpp \
-    graphics/zcolormap.cpp
+    graphics/zcolormap.cpp \
+    postprocessing/colorutility.cpp
 
 HEADERS  += mainwindow.h \
     physics/phys.h \
@@ -63,7 +64,8 @@ HEADERS  += mainwindow.h \
     graphics/intensitymap.h \
     graphics/intensityblock.h \
     postprocessing/eventmap.h \
-    graphics/zcolormap.h
+    graphics/zcolormap.h \
+    postprocessing/colorutility.h
 
 FORMS    += mainwindow.ui
 

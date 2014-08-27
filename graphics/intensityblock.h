@@ -4,12 +4,13 @@
 #include <QPainter>
 #include <QGraphicsItem>
 
-class IntensityBlock
+class IntensityBlock : public QGraphicsItem
 {
 public:
-    IntensityBlock();
+	IntensityBlock(int x, int y, int size);
 
-
+	QRectF boundingRect() const;
+	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
 private:
 
@@ -17,7 +18,7 @@ private:
 	double frequency;
 	double average;
 	double highest;
-	int x, y;
+	int x, y, size;
 };
 
 #endif // INTENSITYBLOCK_H

@@ -101,6 +101,8 @@ private:
     Control *control;
     void defineMap();
 
+	QString versionString;
+
     //the menu bar:
     QMenu *menu;
     QAction* showAct;

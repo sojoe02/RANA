@@ -73,7 +73,9 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
 
-    ui->statusBar->addWidget(new QLabel("<b><font color=\"green\">RANA</b></font> version 1.1.10_QT"));
+	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.2.0_QT_incomplete");
+
+	ui->statusBar->addWidget(new QLabel(versionString));
 
     visualizationConstruction();
 
@@ -368,7 +370,8 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::actionPrintInfo()
 {
-    ui->outputTextEdit->setText(tr("<b><font color=\"green\">RANA</b></font> version 1.1.10_QT"));
+	ui->outputTextEdit->insertHtml(versionString);
+	ui->outputTextEdit->append("");
 }
 
 /*
@@ -392,8 +395,8 @@ void MainWindow::vis_isChecked()
 {
     if(ui->action_Enable_Visualisation->isChecked())
     {
-        ui->tabWidget->insertTab(2,vis_controlTabptr,"Visualization Control");
-        ui->tabWidget->insertTab(3,vis_mapTabptr,"Visualization Map");
+		ui->tabWidget->insertTab(2,vis_controlTabptr,"Event Process Control");
+		ui->tabWidget->insertTab(3,vis_mapTabptr,"Event Map");
     }else
     {
         ui->tabWidget->removeTab(ui->tabWidget->indexOf(vis_controlTabptr));

@@ -1,15 +1,15 @@
 #include "intensityblock.h"
 
-IntensityBlock::IntensityBlock()
+IntensityBlock::IntensityBlock(int x, int y, int size)
+	:x(x), y(y),size(size)
 {
 }
 
 QRectF IntensityBlock::boundingRect() const
 {
 	//Still needs to be implemented properly so it really depicts size of
-	// graphical representation of the agent.
 	//qreal penWidth = 1;
-	return QRectF(0,0,10,10);
+	return QRectF(0,0,size,size);
 }
 
 void IntensityBlock::paint(QPainter *painter,
@@ -19,4 +19,6 @@ void IntensityBlock::paint(QPainter *painter,
 	QRectF rect = boundingRect();
 	QPen pen (Qt::white, 1);
 
+	painter->setPen(pen);
+	painter->drawRect(x,y,size,size);
 }
