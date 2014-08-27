@@ -96,7 +96,29 @@ void Output::progressBar(unsigned long long current, unsigned long long maximum)
     mainWindow->advanceProgess(progress);
 }
 
+void Output::ppprogressbar(int current, int maximum)
+{
+	int progress = (current * 100)/maximum;
+	mainWindow->advancePPProgess(progress);
+}
+
 void Output::setMainWindow(MainWindow *mainwindow)
 {
-    Output::mainWindow = mainwindow;
+	Output::mainWindow = mainwindow;
+}
+
+void Output::ppprintf(const char *msg,...)
+{
+
+	va_list args;
+	va_start(args, msg);
+
+	char buffer[2048];
+	vsprintf(buffer, msg, args);
+
+	QString string(buffer);
+
+	mainWindow->write_PPOutput(string);
+
+	va_end(args);
 }

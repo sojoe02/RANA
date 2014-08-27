@@ -28,6 +28,7 @@
 #include <map>
 
 #include "graphics/agentItem.h"
+#include "postprocessing/eventprocessing.h"
 #include "utility.h"
 #include "control.h"
 
@@ -55,6 +56,9 @@ public:
     void write_output(QString argMsg);
     void write_status(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents);
     void write_errOutput(QString argMsg);
+	//postprocessing:
+	void advancePPProgess(int percentage);
+	void write_PPOutput(QString argMsg);
 
 public slots:
 
@@ -76,9 +80,13 @@ private slots:
     void on_zoomSlider_valueChanged(int value);
     void on_pushButton_clicked();
     void actionPrintInfo();
-    void vis_isChecked();
 
+	//postprocessing:
+
+	void ppIsChecked();
     void on_vis_processEventsPushButton_clicked();
+	void on_binEventsPushButton_clicked();
+	void on_writePPOutput(QString string);
 
 signals:
 
@@ -86,6 +94,9 @@ signals:
     void writeStringSignal(QString something);
     void writeStatusSignal(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents);
     void writeErrSignal(QString something);
+
+	//postprocessing:
+	void writePPSignal(QString something);
 
 private:
 
@@ -109,9 +120,13 @@ private:
     QAction* hideAct;
     QAction* exitAct;
 
-    void visualizationConstruction();
+	void ppConstruction();
     QWidget *vis_controlTabptr;
     QWidget *vis_mapTabptr;
+
+	//eventProcessing things:
+	EventProcessing *eventprocessor;
+
 };
 
 #endif // MAINWINDOW_H

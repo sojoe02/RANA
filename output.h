@@ -41,9 +41,6 @@ public:
     void updateStatus(unsigned long long ms, unsigned long long eventInit,
                       unsigned long long internalEvents, unsigned long long externalEvents);
 
-    void clearProgressBar(){
-
-    }
 
     void progressBar(unsigned long long current, unsigned long long maximum);
 
@@ -55,6 +52,10 @@ public:
 
     static std::atomic<bool> RunSimulation;
     static std::atomic<bool> KillSimulation;
+
+	//Post processing things:
+	void ppprintf(const char* msg, ...);
+	void ppprogressbar(int current, int maximum);
 
 private:
     Output();

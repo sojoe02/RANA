@@ -177,7 +177,7 @@ void AgentDomain::runSimulation(int time)
     Output::RunSimulation = true;
 
 	unsigned long long iterations = (double)time/timeResolution;
-	Output::Inst()->clearProgressBar();
+
 	auto start = steady_clock::now();
 	auto start2 = steady_clock::now();
 
@@ -253,7 +253,6 @@ void AgentDomain::runSimulation(int time)
  */
 void AgentDomain::stopSimulation(){
 	stop = true;
-	Output::Inst()->clearProgressBar();
 }
 
 /**

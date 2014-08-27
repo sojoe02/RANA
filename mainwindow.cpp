@@ -77,7 +77,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	ui->statusBar->addWidget(new QLabel(versionString));
 
-    visualizationConstruction();
+	ppConstruction();
 
 }
 
@@ -375,23 +375,29 @@ void MainWindow::actionPrintInfo()
 }
 
 /*
- * VISUALIZATION PART:
+ * POSTPROCESSING PART:
  *
  */
 
-void MainWindow::visualizationConstruction()
+void MainWindow::ppConstruction()
 {
+	eventprocessor = new EventProcessing;
+
     vis_controlTabptr = ui->vis_controlTab;
     vis_mapTabptr = ui->vis_mapTab;
 
     ui->tabWidget->removeTab(ui->tabWidget->indexOf(vis_controlTabptr));
     ui->tabWidget->removeTab(ui->tabWidget->indexOf(vis_mapTabptr));
 
-    QObject::connect(ui->action_Enable_Visualisation, SIGNAL(changed()),this, SLOT(vis_isChecked()));
+	QObject::connect(ui->action_Enable_Visualisation, SIGNAL(changed()),this, SLOT(ppIsChecked()));
+
+
+	QObject::connect(this,SIGNAL(writePPSignal(QString)),
+					 this,SLOT(on_writePPOutput(QString)));
 
 }
 
-void MainWindow::vis_isChecked()
+void MainWindow::ppIsChecked()
 {
     if(ui->action_Enable_Visualisation->isChecked())
     {
@@ -401,15 +407,39 @@ void MainWindow::vis_isChecked()
     {
         ui->tabWidget->removeTab(ui->tabWidget->indexOf(vis_controlTabptr));
         ui->tabWidget->removeTab(ui->tabWidget->indexOf(vis_mapTabptr));
-
     }
 }
 
 
 void MainWindow::on_vis_processEventsPushButton_clicked()
 {
-    ui->vis_processEventsPushButton->setDisabled(true);
-    int timeStep = ui->vis_timeIntervalSpinBox->value();
+    ui->vis_processEventsPushButton->setDisabled(true);	
+}
 
+void MainWindow::advancePPProgess(int percentage)
+{
+	QCoreApplication::postEvent(scene, new QEvent(QEvent::UpdateRequest),
+								Qt::LowEventPriority);
 
+	QMetaObject::invokeMethod(ui->vis_progressBar, "setValue", Q_ARG(int, percentage));
+	//ui->progressBar->setValue(percentage);
+}
+
+void MainWindow::on_binEventsPushButton_clicked()
+{
+
+}
+
+void MainWindow::write_PPOutput(QString argMsg)
+{
+	std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	emit writePPSignal(argMsg);
+	std::this_thread::sleep_for(std::chrono::milliseconds(1));
+
+}
+
+void MainWindow::on_writePPOutput(QString string)
+{
+	ui->outputTextEdit->insertHtml(string);
+	ui->outputTextEdit->append("");
 }
