@@ -34,6 +34,7 @@
 
 typedef std::list<agentInfo> INFOLIST;
 
+class EventProcessing;
 class Control;
 namespace Ui {
 class MainWindow;

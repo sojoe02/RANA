@@ -15,6 +15,7 @@ test/
 *.autosave
 *.lua~
 *.tmp
+*.*pre1
 
 Rana_qt.pro.user
 Rana_qt.pro.user.2.5pre1

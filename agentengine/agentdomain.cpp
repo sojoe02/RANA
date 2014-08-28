@@ -240,6 +240,9 @@ void AgentDomain::runSimulation(int time)
     masteragent->simDone();
     masteragent->printStatus();
     Output::Inst()->progressBar(i,iterations);
+
+	Output::RUNTIME = i;
+
     auto endsim = steady_clock::now();
     duration_cast<seconds>(start2-endsim).count();
     Output::Inst()->kprintf("Simulation run took:\t %llu[s] "

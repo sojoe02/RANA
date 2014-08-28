@@ -443,3 +443,10 @@ void MainWindow::on_writePPOutput(QString string)
 	ui->outputTextEdit->insertHtml(string);
 	ui->outputTextEdit->append("");
 }
+
+//void MainWindow::setRuntime(unsigned long long runtime, int timeResolution){
+
+//	int max = runtime/(unsigned long long)timeResolution;
+//	ui->vis_toTimeSpinBox->setMaximum(max);
+
+//}

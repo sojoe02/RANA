@@ -35,6 +35,7 @@ std::mutex Output::lock;
 std::atomic<int> Output::DelayValue;
 std::atomic<bool> Output::RunSimulation;
 std::atomic<bool> Output::KillSimulation;
+unsigned long long Output::RUNTIME = 0;
 
 
 Output* Output::Inst()

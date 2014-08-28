@@ -57,11 +57,14 @@ public:
 	void ppprintf(const char* msg, ...);
 	void ppprogressbar(int current, int maximum);
 
+	static unsigned long long RUNTIME;
+
 private:
     Output();
     static Output* output;
     static MainWindow* mainWindow;
     static std::mutex lock;
+
 };
 
 #endif // OUTPUT_H
