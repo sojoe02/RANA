@@ -18,7 +18,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_3">
        <attribute name="title">
@@ -1090,10 +1090,10 @@
    </widget>
    <widget class="QMenu" name="menu_Options">
     <property name="title">
-     <string>&amp;Options</string>
+     <string>&amp;Events</string>
     </property>
     <addaction name="separator"/>
-    <addaction name="separator"/>
+    <addaction name="actionSave_Current_Events"/>
     <addaction name="action_Enable_Visualisation"/>
    </widget>
    <addaction name="menu_File"/>
@@ -1122,6 +1122,11 @@
    </property>
    <property name="text">
     <string>&amp;Toggle Event Processing</string>
+   </property>
+  </action>
+  <action name="actionSave_Current_Events">
+   <property name="text">
+    <string>Save Current Events</string>
    </property>
   </action>
  </widget>

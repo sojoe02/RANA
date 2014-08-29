@@ -38,7 +38,8 @@ SOURCES += main.cpp\
     graphics/intensityblock.cpp \
     postprocessing/eventmap.cpp \
     graphics/zcolormap.cpp \
-    postprocessing/colorutility.cpp
+    postprocessing/colorutility.cpp \
+    eventdialog.cpp
 
 HEADERS  += mainwindow.h \
     physics/phys.h \
@@ -65,9 +66,11 @@ HEADERS  += mainwindow.h \
     graphics/intensityblock.h \
     postprocessing/eventmap.h \
     graphics/zcolormap.h \
-    postprocessing/colorutility.h
+    postprocessing/colorutility.h \
+    eventdialog.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    eventdialog.ui
 
 CONFIG += c++11
 

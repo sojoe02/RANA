@@ -35,6 +35,8 @@
 #include "physics/gridmovement.h"
 #include "output.h"
 
+#include "eventdialog.h"
+
 
 //QImage *MainWindow::mapItem = NULL;
 
@@ -78,6 +80,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->statusBar->addWidget(new QLabel(versionString));
 
 	ppConstruction();
+	dialogConstruction();
 
 }
 
@@ -450,3 +453,19 @@ void MainWindow::on_writePPOutput(QString string)
 //	ui->vis_toTimeSpinBox->setMaximum(max);
 
 //}
+
+//DIALOGS
+
+void MainWindow::dialogConstruction()
+{
+	QObject::connect(ui->actionSave_Current_Events, SIGNAL(triggered()),this, SLOT(eventDialog()));
+	//Output::Inst()->kprintf("dialog start now");
+	//Output::Inst()->kprintf("No map has been loaded, please do that...");
+
+}
+
+void MainWindow::eventDialog()
+{
+	EventDialog *dialog = new EventDialog(control, this);
+	dialog->exec();
+}

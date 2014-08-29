@@ -61,6 +61,8 @@ public:
 	void advancePPProgess(int percentage);
 	void write_PPOutput(QString argMsg);
 
+	//dialogs:
+	void dialogConstruction();
 public slots:
 
     void wheelEvent(QWheelEvent *event);
@@ -88,6 +90,9 @@ private slots:
     void on_vis_processEventsPushButton_clicked();
 	void on_binEventsPushButton_clicked();
 	void on_writePPOutput(QString string);
+
+	//dialogs:
+	void eventDialog();
 
 signals:
 
