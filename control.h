@@ -78,6 +78,7 @@ public:
     bool isGenerated();
     bool isRunning();
 
+	void saveEvents(QString path);
 
 public slots:
     void simDone();

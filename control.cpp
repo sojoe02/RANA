@@ -74,12 +74,6 @@ void Control::generateEnvironment(QImage *map, double scale,
 
 void Control::simDone()
 {
-    if(agentDomain != NULL)
-    {
-        delete agentDomain;
-        agentDomain = NULL;
-    }
-
     running = false;
     mainwindow->changeRunButton("Run");
     mainwindow->runButtonHide();
@@ -94,4 +88,19 @@ void Control::refreshPopPos(std::list<agentInfo> infolist)
 bool Control::isRunning()
 {
     return running;
+}
+
+bool Control::isGenerated()
+{
+	if(agentDomain!=NULL)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+void Control::saveEvents(QString path)
+{
+	agentDomain->saveExternalEvents(path.toStdString());
 }

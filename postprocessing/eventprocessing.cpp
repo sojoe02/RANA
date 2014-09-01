@@ -35,7 +35,7 @@ EventQueue::simInfo* EventProcessing::readEventInfo(std::string path)
 		Output::Inst()->ppprintf("Event Amount\t:\t%llu\n", simInfo->eventAmount);
 		Output::Inst()->ppprintf("Time Resolution\t:\t%f\n", simInfo->timeResolution);
 		Output::Inst()->ppprintf("MacroFactor\t:\t%d\n", simInfo->macroFactor);
-		Output::Inst()->ppprintf("Simulation runtime\t:%llu\n",simInfo->runtime);
+		Output::Inst()->ppprintf("Simulation runtime\t:%llu\n",simInfo->tmuAmount);
 
 		while(!file.eof())
 		{

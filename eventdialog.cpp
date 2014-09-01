@@ -17,7 +17,8 @@ EventDialog::~EventDialog()
 
 void EventDialog::on_event_savePushButton_clicked()
 {
-
+	QString path = ui->event_saveLineEdit->text();
+	control->saveEvents(path);
 
 }
 
@@ -28,19 +29,14 @@ void EventDialog::on_event_exitPushButton_clicked()
 
 void EventDialog::on_event_browsePushButton_clicked()
 {
-	QFileDialog dialog;
-
-	QString fileName = dialog.getSaveFileName
+	QString fileName = QFileDialog::getSaveFileName
 			(this,tr("save event path"),
-			 QDir::currentPath(),tr("Save File (*.kas)"));
+			 QDir::currentPath(),tr("Save File Name (*.kas)"));
 
 	if(!fileName.contains("."))
 	{
 			fileName.append(".kas");
 	}
 
-
 	ui->event_saveLineEdit->setText(fileName);
-
-	QString path = ui->event_saveLineEdit->text();
 }

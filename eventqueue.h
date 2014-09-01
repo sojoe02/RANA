@@ -38,7 +38,7 @@ class EventQueue
 		~EventQueue();
 
 		struct simInfo{
-			char luaFileName[250]; /*!< Filename of the lua auton thats active in this simulation*/
+			char luaFileName[1024]; /*!< Filename of the lua auton thats active in this simulation*/
 			unsigned long long eventAmount; /*!< Number of external events active in the simulation*/
 			int numberOfAutons; /*!< Total number of autons*/
 			double timeResolution; /*!< Resolution of the simulation number of microsteps possible pr second*/
@@ -46,7 +46,6 @@ class EventQueue
 			unsigned long long tmuAmount; /*!< number of total timeunist of  Timeresolution performed  */
 			double areaY; /*!< Areas Y size[m] (std computer coordinate system with reversed Y axis)*/
 			double areaX; /*!< Areas X size[m] */
-			unsigned long long runtime;
 		};
 
 		//define the external Event:
@@ -82,7 +81,7 @@ class EventQueue
 			double originY;
 			int originID;
 			char desc[150];
-			char table[500];
+			char table[1024];
 		};
 
 		struct autonInfo{

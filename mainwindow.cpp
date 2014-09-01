@@ -461,11 +461,20 @@ void MainWindow::dialogConstruction()
 	QObject::connect(ui->actionSave_Current_Events, SIGNAL(triggered()),this, SLOT(eventDialog()));
 	//Output::Inst()->kprintf("dialog start now");
 	//Output::Inst()->kprintf("No map has been loaded, please do that...");
-
 }
 
 void MainWindow::eventDialog()
 {
-	EventDialog *dialog = new EventDialog(control, this);
-	dialog->exec();
+	if(control->isRunning())
+	{
+		EventDialog *dialog = new EventDialog(control, this);
+		dialog->exec();
+	} else if(!control->isGenerated())
+	{
+		Output::Inst()->kprintf("Cannot save events, there is no simulation data");
+	}
+	else
+	{
+		Output::Inst()->kprintf("Cannot save events, simulation is still running,");
+	}
 }

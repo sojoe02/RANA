@@ -281,15 +281,13 @@ void EventQueue::saveEEventData(std::string name, std::string luaFileName,
 
 	//Open the file and set the options:
 	std::ofstream file (filename.c_str(), std::ofstream::binary | std::ofstream::trunc);
-	int bufferLimit = 100000;
+	//int bufferLimit = 100000;
 
 	Output::Inst()->kprintf("Saving event data to file:  %s\n" , filename.c_str());
 
-	std::string buffer;
-
 	//first save the dataEvent to the file:
 	simInfo dataInfo;
-	strncpy(dataInfo.luaFileName, luaFileName.c_str(),250);
+	strncpy(dataInfo.luaFileName, luaFileName.c_str(),1024);
 	dataInfo.eventAmount = eSize;
 	dataInfo.numberOfAutons = autonAmount;
 	dataInfo.timeResolution = 1/Phys::getTimeRes();
@@ -318,10 +316,8 @@ void EventQueue::saveEEventData(std::string name, std::string luaFileName,
 				devent.originID = tmp->origin->getID();
 				devent.propagationSpeed = tmp->propagationSpeed;
 				strncpy(devent.desc,tmp->desc.c_str(),150);
-				strncpy(devent.table,tmp->table.c_str(),500);
-
+				strncpy(devent.table,tmp->table.c_str(),1024);
 				//Output::Inst()->kprintf("Propagation %f\n", devent.propagationSpeed);				
-
 				file.write(reinterpret_cast<char*>(&devent),sizeof(devent));
 			}	
 		} else{
