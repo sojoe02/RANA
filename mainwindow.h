@@ -96,6 +96,8 @@ private slots:
 
 	void on_vis_eventBrowsePushButton_clicked();
 
+	void on_vis_readInfoPushButton_clicked();
+
 signals:
 
     void map_updateSignal(INFOLIST infolist);

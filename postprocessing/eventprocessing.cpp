@@ -37,15 +37,18 @@ EventQueue::simInfo* EventProcessing::readEventInfo(std::string path)
 		Output::Inst()->ppprintf("MacroFactor\t:\t%d\n", simInfo->macroFactor);
 		Output::Inst()->ppprintf("Simulation runtime\t:%llu\n",simInfo->tmuAmount);
 
-		while(!file.eof())
-		{
-			file.read(reinterpret_cast<char*>(&devent), sizeof(EventQueue::dataEvent));
-			eventbin.push_back(devent);
-		}
+		//while(!file.eof())
+		//{
+			//file.read(reinterpret_cast<char*>(&devent), sizeof(EventQueue::dataEvent));
+			//eventbin.push_back(devent);
+		//}
 	}else
 	{
 		Output::Inst()->ppprintf("File not found ... or worse");
 	}
+
+	file.close();
+
 	return simInfo;
 }
 
@@ -63,11 +66,20 @@ void EventProcessing::binEvents(std::string path, int to, int from)
 	if(file.is_open())
 	{
 		file.read(reinterpret_cast<char*>(simInfo), sizeof(EventQueue::simInfo));
+
 		while(!file.eof())
 		{
 			file.read(reinterpret_cast<char*>(&devent), sizeof(EventQueue::dataEvent));
-			eventbin.push_back(devent);
+			int activation = (devent.activationTime + simInfo->macroFactor)/(simInfo->timeResolution);
+
+			if(activation > from && activation < to)
+			{
+				Output::Inst()->ppprintf("binnig event with activation %llu",devent.activationTime);
+				eventbin.push_back(devent);
+			}
 		}
 	}else
 		Output::Inst()->ppprintf("File not found ... or worse");
+
+	file.close();
 }

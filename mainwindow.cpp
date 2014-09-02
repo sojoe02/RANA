@@ -34,6 +34,7 @@
 #include "physics/phys.h"
 #include "physics/gridmovement.h"
 #include "output.h"
+#include "eventqueue.h"
 
 #include "eventdialog.h"
 
@@ -395,6 +396,8 @@ void MainWindow::ppConstruction()
 	QObject::connect(this,SIGNAL(writePPSignal(QString)),
 					 this,SLOT(on_writePPOutput(QString)));
 
+	ui->binEventsPushButton->setEnabled(false);
+
 }
 
 void MainWindow::ppIsChecked()
@@ -425,17 +428,6 @@ void MainWindow::advancePPProgess(int percentage)
 	//ui->progressBar->setValue(percentage);
 }
 
-void MainWindow::on_binEventsPushButton_clicked()
-{
-	QString path = ui->vis_eventPathLineEdit->text();
-	QFileInfo fi(ui->vis_eventPathLineEdit->text());
-
-	if (fi.isFile())
-	{
-		Output::Inst()->ppprintf("path is again %s", path.toStdString().c_str());
-		eventprocessor->readEventInfo(path.toStdString());
-	}
-}
 
 void MainWindow::write_PPOutput(QString argMsg)
 {
@@ -460,7 +452,48 @@ void MainWindow::on_vis_eventBrowsePushButton_clicked()
 	ui->vis_eventPathLineEdit->setText(fileName);
 }
 
+void MainWindow::on_vis_readInfoPushButton_clicked()
+{
+	QString path = ui->vis_eventPathLineEdit->text();
+	QFileInfo fi(ui->vis_eventPathLineEdit->text());
+	EventQueue::simInfo *info;
 
+	if (fi.isFile())
+	{
+		Output::Inst()->ppprintf("path is again %s", path.toStdString().c_str());
+		info = eventprocessor->readEventInfo(path.toStdString());
+
+		int runtime = int(info->tmuAmount + info->macroFactor)/(info->timeResolution);
+		int step = runtime/10;
+
+		if (step == 0)
+			step = 1;
+
+		ui->vis_fromTimeSpinBox->setMinimum(0);
+		ui->vis_fromTimeSpinBox->setMaximum(runtime-1);
+		ui->vis_fromTimeSpinBox->setSingleStep(runtime/10);
+		ui->vis_toTimeSpinBox->setMinimum(1);
+		ui->vis_toTimeSpinBox->setMaximum(runtime);
+		ui->vis_toTimeSpinBox->setSingleStep(runtime/10);
+		ui->binEventsPushButton->setEnabled(true);
+
+	}else
+		Output::Inst()->ppprintf("path %s ,not found",path.toStdString().c_str());
+
+}
+
+void MainWindow::on_binEventsPushButton_clicked()
+{
+	QString path = ui->vis_eventPathLineEdit->text();
+	QFileInfo fi(ui->vis_eventPathLineEdit->text());
+	if (fi.isFile())
+	{
+		int to = ui->vis_toTimeSpinBox->value();
+		int from = ui->vis_fromTimeSpinBox->value();
+		eventprocessor->binEvents(path.toStdString(), to, from);
+	} else
+		Output::Inst()->ppprintf("path %s ,not found",path.toStdString().c_str());
+}
 //DIALOGS
 
 void MainWindow::dialogConstruction()
@@ -485,5 +518,7 @@ void MainWindow::eventDialog()
 		Output::Inst()->kprintf("Cannot save events, simulation is still running,");
 	}
 }
+
+
 
 
