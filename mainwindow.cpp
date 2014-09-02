@@ -75,7 +75,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
 
-	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.2.0_QT_incomplete");
+	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.2.1_QT_incomplete");
 
 	ui->statusBar->addWidget(new QLabel(versionString));
 	ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
@@ -202,8 +202,8 @@ void MainWindow::on_writeOutput(QString string)
     //QString prepend = "</>";
     //QString output = string.prepend(prepend);
 
-    ui->outputTextEdit->insertHtml(string);
-    ui->outputTextEdit->append("");
+	ui->outputTextBrowser->insertHtml(string);
+	ui->outputTextBrowser->append("");
 }
 
 void MainWindow::write_output(QString argMsg)
@@ -216,9 +216,9 @@ void MainWindow::write_output(QString argMsg)
 
 void MainWindow::on_writeErrOutput(QString string)
 {
-    ui->outputTextEdit->setTextColor(Qt::red);
-    ui->outputTextEdit->append(string);
-    ui->outputTextEdit->setTextColor(Qt::black);
+	ui->outputTextBrowser->setTextColor(Qt::red);
+	ui->outputTextBrowser->append(string);
+	ui->outputTextBrowser->setTextColor(Qt::black);
 }
 
 void MainWindow::write_errOutput(QString argMsg)
@@ -245,8 +245,6 @@ void MainWindow::updateMap(std::list<agentInfo> infolist)
 {
     emit map_updateSignal(infolist);
 }
-
-
 
 void MainWindow::on_updateMap(INFOLIST infolist)
 {
@@ -366,14 +364,14 @@ void MainWindow::on_zoomSlider_valueChanged(int value)
 void MainWindow::on_pushButton_clicked()
 {
     //ui->outputTextEdit->
-    ui->outputTextEdit->clear();
+	ui->outputTextBrowser->clear();
 
 }
 
 void MainWindow::actionPrintInfo()
 {
-	ui->outputTextEdit->insertHtml(versionString);
-	ui->outputTextEdit->append("");
+	ui->outputTextBrowser->insertHtml(versionString);
+	ui->outputTextBrowser->append("");
 }
 
 /*
@@ -429,7 +427,14 @@ void MainWindow::advancePPProgess(int percentage)
 
 void MainWindow::on_binEventsPushButton_clicked()
 {
+	QString path = ui->vis_eventPathLineEdit->text();
+	QFileInfo fi(ui->vis_eventPathLineEdit->text());
 
+	if (fi.isFile())
+	{
+		Output::Inst()->ppprintf("path is again %s", path.toStdString().c_str());
+		eventprocessor->readEventInfo(path.toStdString());
+	}
 }
 
 void MainWindow::write_PPOutput(QString argMsg)
@@ -442,16 +447,19 @@ void MainWindow::write_PPOutput(QString argMsg)
 
 void MainWindow::on_writePPOutput(QString string)
 {
-	ui->outputTextEdit->insertHtml(string);
-	ui->outputTextEdit->append("");
+	ui->vis_outputTextBrowser->insertHtml(string);
+	ui->vis_outputTextBrowser->append("");
 }
 
-//void MainWindow::setRuntime(unsigned long long runtime, int timeResolution){
+void MainWindow::on_vis_eventBrowsePushButton_clicked()
+{
+	QString fileName = QFileDialog::getOpenFileName
+			(this, tr("Open Event Save File"),QDir::currentPath(),
+			 tr("Event Save File (*.kas)"));
 
-//	int max = runtime/(unsigned long long)timeResolution;
-//	ui->vis_toTimeSpinBox->setMaximum(max);
+	ui->vis_eventPathLineEdit->setText(fileName);
+}
 
-//}
 
 //DIALOGS
 
@@ -464,7 +472,7 @@ void MainWindow::dialogConstruction()
 
 void MainWindow::eventDialog()
 {
-	if(control->isRunning())
+	if(!control->isRunning())
 	{
 		EventDialog *dialog = new EventDialog(control, this);
 		dialog->exec();
@@ -477,3 +485,5 @@ void MainWindow::eventDialog()
 		Output::Inst()->kprintf("Cannot save events, simulation is still running,");
 	}
 }
+
+

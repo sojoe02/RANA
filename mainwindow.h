@@ -94,6 +94,8 @@ private slots:
 	//dialogs:
 	void eventDialog();
 
+	void on_vis_eventBrowsePushButton_clicked();
+
 signals:
 
     void map_updateSignal(INFOLIST infolist);

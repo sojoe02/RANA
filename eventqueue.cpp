@@ -276,8 +276,8 @@ unsigned long long EventQueue::getISize(){
  */
 void EventQueue::saveEEventData(std::string name, std::string luaFileName, 
 		int autonAmount, double areaY, double areaX){ 
-	std::string ext = ".kas";
-	std::string filename = name + ext;
+
+	std::string filename = name;
 
 	//Open the file and set the options:
 	std::ofstream file (filename.c_str(), std::ofstream::binary | std::ofstream::trunc);
@@ -293,10 +293,10 @@ void EventQueue::saveEEventData(std::string name, std::string luaFileName,
 	dataInfo.timeResolution = 1/Phys::getTimeRes();
 	dataInfo.macroFactor = Phys::getMacroFactor();
 	dataInfo.tmuAmount = Phys::getCTime();
-	dataInfo.areaY = areaY;
-	dataInfo.areaX = areaX;
+	dataInfo.areaX = Phys::getEnvX();
+	dataInfo.areaY = Phys::getEnvY();
 
-	Output::Inst()->kprintf("\nsize stuff %d \n", dataInfo.areaX);
+	//Output::Inst()->kprintf("\nsize stuff %d \n", dataInfo.areaX);
 
 	file.write(reinterpret_cast<char*>(&dataInfo),sizeof(dataInfo));
 

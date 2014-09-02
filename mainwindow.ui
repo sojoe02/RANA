@@ -644,7 +644,7 @@
          </widget>
         </item>
         <item row="15" column="2" rowspan="2" colspan="2">
-         <widget class="QTextEdit" name="outputTextEdit"/>
+         <widget class="QTextBrowser" name="outputTextBrowser"/>
         </item>
        </layout>
       </widget>
