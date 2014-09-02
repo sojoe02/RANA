@@ -73,7 +73,8 @@ class AutonLUA : public Auton
         static int l_gridMove(lua_State *L);
         static int l_stopSimulation(lua_State *L);        
         static int l_getSharedNumber(lua_State *L);
-        static int l_addSharedNumber(lua_State *L);
+		static int l_addSharedNumber(lua_State *L);
+		static int l_getAgentPath(lua_State *L);
 
         static int luapanic(lua_State *L);
 private:

@@ -118,6 +118,10 @@ void MainWindow::on_generateButton_clicked()
             Output::Inst()->kprintf("generating environment, %d, %s",
                                     agentAmount, stringPath.c_str());
             ui->runButton->setEnabled(true);
+
+			QFileInfo fi(agentPath);
+			Output::AgentFile=fi.fileName().toStdString();
+			Output::AgentPath=fi.path().toStdString().append("/");
         } else
             Output::Inst()->kprintf("Cannot generate Environment: Valid path not given");
     } else
@@ -305,13 +309,15 @@ void MainWindow::on_browseLuaAgentButton_clicked()
 {
     QString fileName = QFileDialog::getOpenFileName
             (this, tr("Open Map File"),QDir::currentPath(),
-             tr("Lua Files (*.lua)"));
+			 tr("Lua Files (*.lua)"));
+
 
     ui->agentPathLineEdit->setText(fileName);
 }
 
 void MainWindow::on_runButton_clicked()
 {
+
     if(control->isRunning()){
         control->stopSimulation();
     } else
@@ -452,6 +458,15 @@ void MainWindow::on_vis_eventBrowsePushButton_clicked()
 	ui->vis_eventPathLineEdit->setText(fileName);
 }
 
+void MainWindow::on_vis_agentPathPushButton_clicked()
+{
+	QString fileName = QFileDialog::getOpenFileName
+			(this, tr("Open Map File"),QDir::currentPath(),
+			 tr("Lua Files (*.lua)"));
+
+	ui->vis_agentPathLineEdit->setText(fileName);
+}
+
 void MainWindow::on_vis_readInfoPushButton_clicked()
 {
 	QString path = ui->vis_eventPathLineEdit->text();
@@ -477,6 +492,8 @@ void MainWindow::on_vis_readInfoPushButton_clicked()
 		ui->vis_toTimeSpinBox->setSingleStep(runtime/10);
 		ui->binEventsPushButton->setEnabled(true);
 
+		ui->vis_agentPathLineEdit->setText(info->luaFileName);
+
 	}else
 		Output::Inst()->ppprintf("path %s ,not found",path.toStdString().c_str());
 
@@ -494,6 +511,8 @@ void MainWindow::on_binEventsPushButton_clicked()
 	} else
 		Output::Inst()->ppprintf("path %s ,not found",path.toStdString().c_str());
 }
+
+
 //DIALOGS
 
 void MainWindow::dialogConstruction()
@@ -518,7 +537,4 @@ void MainWindow::eventDialog()
 		Output::Inst()->kprintf("Cannot save events, simulation is still running,");
 	}
 }
-
-
-
 

@@ -58,13 +58,14 @@ public:
 	void ppprogressbar(int current, int maximum);
 
 	static unsigned long long RUNTIME;
+	static std::string AgentPath;
+	static std::string AgentFile;
 
 private:
     Output();
     static Output* output;
     static MainWindow* mainWindow;
     static std::mutex lock;
-
 };
 
 #endif // OUTPUT_H

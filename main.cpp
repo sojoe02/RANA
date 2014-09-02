@@ -21,6 +21,7 @@
 //--end_license--
 #include <QApplication>
 #include <stdio.h>
+#include <string>
 
 #include "mainwindow.h"
 #include "ID.h"

@@ -37,6 +37,8 @@ std::atomic<bool> Output::RunSimulation;
 std::atomic<bool> Output::KillSimulation;
 unsigned long long Output::RUNTIME = 0;
 
+std::string Output::AgentPath = "";
+std::string Output::AgentFile = "";
 
 Output* Output::Inst()
 {

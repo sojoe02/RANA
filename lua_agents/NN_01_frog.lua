@@ -198,7 +198,7 @@ end
 
 
 function generateLake(radius,x0, y0,resolution)
-	resolution = resolution or 10
+	resolution = resolution or 20
 	--innercircle
 	generateCircle(x0,y0,radius, Color_Water)
 
@@ -208,8 +208,11 @@ function generateLake(radius,x0, y0,resolution)
 		local angle = l_getMersenneInteger(1,359) 
 		local x = math.cos((anglechunk*i/180*math.pi)) * radius + x0
 		local y = math.sin((anglechunk*i/180*math.pi)) * radius + y0
-
-		generateCircle(x,y,radius, Color_Water, true)
+		if l_getMersenneInteger(1,1) == 1 then
+			generateCircle(x,y,l_getMersenneInteger(2,radius), Color_Water, true)
+		else
+			--generateCircle(x,y,l_getMersenneInteger(2,radius),Color_Land,true)
+		end
 	end
 
 	local width = 0

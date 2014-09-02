@@ -733,6 +733,9 @@
         <string>Visualization Control</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_3">
+        <item row="0" column="2" rowspan="2">
+         <widget class="QTextBrowser" name="vis_outputTextBrowser"/>
+        </item>
         <item row="0" column="0" rowspan="2">
          <widget class="QWidget" name="widget_2" native="true">
           <property name="sizePolicy">
@@ -754,7 +757,14 @@
            </size>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
-           <item row="10" column="2">
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_4">
+             <property name="text">
+              <string>&lt;b&gt;Data File:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="16" column="2">
             <widget class="QSpinBox" name="vis_fromTimeSpinBox">
              <property name="minimum">
               <number>-1</number>
@@ -767,17 +777,7 @@
              </property>
             </widget>
            </item>
-           <item row="3" column="0" colspan="3">
-            <widget class="QLineEdit" name="vis_eventPathLineEdit"/>
-           </item>
-           <item row="2" column="2">
-            <widget class="QPushButton" name="vis_eventBrowsePushButton">
-             <property name="text">
-              <string>Browse</string>
-             </property>
-            </widget>
-           </item>
-           <item row="9" column="2">
+           <item row="15" column="2">
             <widget class="QSpinBox" name="vis_resolutionSpinBox">
              <property name="maximum">
               <number>21</number>
@@ -787,14 +787,14 @@
              </property>
             </widget>
            </item>
-           <item row="9" column="0">
+           <item row="15" column="0">
             <widget class="QLabel" name="label_16">
              <property name="text">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Map Resolution:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
             </widget>
            </item>
-           <item row="17" column="0" colspan="3">
+           <item row="23" column="0" colspan="3">
             <widget class="QProgressBar" name="vis_progressBar">
              <property name="sizePolicy">
               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
@@ -819,21 +819,21 @@
              </property>
             </widget>
            </item>
-           <item row="11" column="0">
+           <item row="17" column="0">
             <widget class="QLabel" name="vis_toTimeLabel">
              <property name="text">
               <string>&lt;b&gt;To Time[s]</string>
              </property>
             </widget>
            </item>
-           <item row="0" column="2">
+           <item row="4" column="2">
             <widget class="QPushButton" name="vis_agentPathPushButton">
              <property name="text">
               <string>Browse</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="0" colspan="3">
+           <item row="5" column="0" colspan="3">
             <widget class="QLineEdit" name="vis_agentPathLineEdit">
              <property name="sizePolicy">
               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
@@ -843,35 +843,35 @@
              </property>
             </widget>
            </item>
-           <item row="15" column="2">
+           <item row="21" column="2">
             <widget class="QPushButton" name="vis_processEventsPushButton">
              <property name="text">
               <string>Process Events</string>
              </property>
             </widget>
            </item>
-           <item row="16" column="2">
+           <item row="22" column="2">
             <widget class="QPushButton" name="vis_clearOutputPushButton">
              <property name="text">
               <string>Clear Output</string>
              </property>
             </widget>
            </item>
-           <item row="0" column="0">
+           <item row="4" column="0">
             <widget class="QLabel" name="label_24">
              <property name="text">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Agent Path:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
             </widget>
            </item>
-           <item row="10" column="0">
+           <item row="16" column="0">
             <widget class="QLabel" name="label_17">
              <property name="text">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;From Time[s]:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
             </widget>
            </item>
-           <item row="7" column="2">
+           <item row="13" column="2">
             <widget class="QDoubleSpinBox" name="vis_zThressholdDoubleSpinBox">
              <property name="maximum">
               <double>1.000000000000000</double>
@@ -884,7 +884,7 @@
              </property>
             </widget>
            </item>
-           <item row="11" column="2">
+           <item row="17" column="2">
             <widget class="QSpinBox" name="vis_toTimeSpinBox">
              <property name="maximum">
               <number>-1</number>
@@ -894,14 +894,7 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="0">
-            <widget class="QLabel" name="label_4">
-             <property name="text">
-              <string>&lt;b&gt;Data File:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="14" column="1">
+           <item row="20" column="1">
             <spacer name="verticalSpacer_3">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -914,7 +907,38 @@
              </property>
             </spacer>
            </item>
-           <item row="5" column="2">
+           <item row="11" column="2">
+            <widget class="QPushButton" name="binEventsPushButton">
+             <property name="text">
+              <string>Bin Events</string>
+             </property>
+            </widget>
+           </item>
+           <item row="13" column="0">
+            <widget class="QLabel" name="label_25">
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Z Value Thresshold:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="2">
+            <widget class="QPushButton" name="vis_readInfoPushButton">
+             <property name="text">
+              <string>Get Event Info</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="2">
+            <widget class="QPushButton" name="vis_eventBrowsePushButton">
+             <property name="text">
+              <string>Browse</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0" colspan="3">
+            <widget class="QLineEdit" name="vis_eventPathLineEdit"/>
+           </item>
+           <item row="12" column="2">
             <widget class="QSpinBox" name="vis_timeResolutionSpinBox">
              <property name="maximum">
               <number>10000</number>
@@ -927,39 +951,15 @@
              </property>
             </widget>
            </item>
-           <item row="5" column="0">
+           <item row="12" column="0">
             <widget class="QLabel" name="label_29">
              <property name="text">
               <string>&lt;b&gt;Time Resolution:</string>
              </property>
             </widget>
            </item>
-           <item row="6" column="2">
-            <widget class="QPushButton" name="binEventsPushButton">
-             <property name="text">
-              <string>Bin Events</string>
-             </property>
-            </widget>
-           </item>
-           <item row="7" column="0">
-            <widget class="QLabel" name="label_25">
-             <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Z Value Thresshold:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="2">
-            <widget class="QPushButton" name="vis_readInfoPushButton">
-             <property name="text">
-              <string>Get Event Info</string>
-             </property>
-            </widget>
-           </item>
           </layout>
          </widget>
-        </item>
-        <item row="0" column="2" rowspan="2">
-         <widget class="QTextBrowser" name="vis_outputTextBrowser"/>
         </item>
        </layout>
       </widget>

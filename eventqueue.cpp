@@ -288,6 +288,7 @@ void EventQueue::saveEEventData(std::string name, std::string luaFileName,
 	//first save the dataEvent to the file:
 	simInfo dataInfo;
 	strncpy(dataInfo.luaFileName, luaFileName.c_str(),1024);
+
 	dataInfo.eventAmount = eSize;
 	dataInfo.numberOfAutons = autonAmount;
 	dataInfo.timeResolution = 1/Phys::getTimeRes();

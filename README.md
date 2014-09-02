@@ -55,6 +55,7 @@ The simulation core offers a number of functions that the agent can call to expa
 |l_stopSimulation	|| Tells the simulation core to stop the simulator when the next macroStep is done|
 |l_addSharedNumber	|key, value| adds any type of number(value) to a shared map, indexed 'key'|
 |l_getSharedNumber	|key| returns the value associated with key, if the key does not exist it returns "no_value"|
+|l_getPath			|| returns two strings, the path of the agent(no filename) and the filename of the main lua agent file|
 
 It is important to note that movement and map manipulation is not part of the simulation core itself, but rather the physics engine for very good reasons... email me if you want to know more.
 

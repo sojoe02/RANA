@@ -98,6 +98,8 @@ private slots:
 
 	void on_vis_readInfoPushButton_clicked();
 
+	void on_vis_agentPathPushButton_clicked();
+
 signals:
 
     void map_updateSignal(INFOLIST infolist);

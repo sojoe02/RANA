@@ -11,6 +11,7 @@
 
 class EventProcessing
 {
+
 public:
 	EventProcessing();
 	void resetEventProcessor();
@@ -19,6 +20,8 @@ public:
 
 	EventQueue::simInfo *readEventInfo(std::string path);
 	EventQueue::simInfo *getDataEvent();
+	void processBinnedEvents(double timeResolution, int mapResolution, double zThresshold);
+
 private:
 	std::vector<EventQueue::dataEvent> eventbin;
 	std::vector<IntensityBlock> *iBlocks;

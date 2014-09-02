@@ -74,7 +74,7 @@ void EventProcessing::binEvents(std::string path, int to, int from)
 
 			if(activation > from && activation < to)
 			{
-				Output::Inst()->ppprintf("binnig event with activation %llu",devent.activationTime);
+				//Output::Inst()->ppprintf("binnig event with activation %llu",devent.activationTime);
 				eventbin.push_back(devent);
 			}
 		}
@@ -82,4 +82,10 @@ void EventProcessing::binEvents(std::string path, int to, int from)
 		Output::Inst()->ppprintf("File not found ... or worse");
 
 	file.close();
+}
+
+void EventProcessing::processBinnedEvents(double timeResolution,
+										  int mapResolution, double zThresshold)
+{
+
 }

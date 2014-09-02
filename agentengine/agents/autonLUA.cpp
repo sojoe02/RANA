@@ -75,6 +75,7 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
     lua_register(L, "l_stopSimulation", l_stopSimulation);
     lua_register(L, "l_getSharedNumber", l_getSharedNumber);
     lua_register(L, "l_addSharedNumber",l_addSharedNumber);
+	lua_register(L, "l_getAgentPath", l_getAgentPath);
 
     if(luaL_loadfile(L, filename.c_str() ) || lua_pcall(L,0,0,0)){
         Output::Inst()->kprintf("error : %s \n", lua_tostring(L, -1));
@@ -616,6 +617,14 @@ int AutonLUA::l_getSharedNumber(lua_State *L)
     }
     return 1;
 
+}
+
+int AutonLUA::l_getAgentPath(lua_State *L)
+{
+	lua_pushstring(L,Output::AgentPath.c_str());
+	lua_pushstring(L,Output::AgentFile.c_str());
+
+	return 2;
 }
 
 int AutonLUA::luapanic(lua_State *L)
