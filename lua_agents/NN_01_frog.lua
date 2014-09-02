@@ -34,7 +34,7 @@ Strength = 0
 -- Setting the values for landscape generation:
 Color_Water = {0,0,255}
 Color_Shore = {255,210,103}
-Color_Land = {0,0,255}
+Color_Land = {0,200,0}
 
 
 
@@ -48,7 +48,7 @@ function initAuton(x, y, id, macroFactor, timeResolution)
 	timeRes = timeResolution
 
 
-	generateLake(40,100,100)
+	makeEnvironment()
 
 
 	l_debug("Agent #: " .. id .. " has been initialized")
@@ -136,12 +136,38 @@ function serializeTbl(val, name, depth)
 	return tbl
 end
 
+--ENVIRONMENT GENERATION-----------------------
+--
+--
+-----------------------------------------------
+
+function makeEnvironment()
+	
+	local width
+	local height
+
+	width, height = l_getEnvironmentSize()
+
+	l_debug(width..": "..height)
+	local background = Color_Land
+	
+	--color the map
+	for i = 0, width do
+		for j =0, height do
+			l_modifyMap(i,j, background[1], background[2], background[3])
+		end
+	end
+
+	generateLake(width/5, width/2, height/2)
+
+end
+
+
+
 function generateLake(radius,x0, y0,resolution)
 	resolution = resolution or 10
 	--innercircle
-	generateFilledCircle(x0,y0,radius)
-
-	--	limit =l_getMersenneInteger(2,10)
+	generateCircle(x0,y0,radius, Color_Water)
 
 	for i = 1, resolution do
 		anglechunk = l_getMersenneInteger(1,360);
@@ -150,8 +176,7 @@ function generateLake(radius,x0, y0,resolution)
 		local x = math.cos((anglechunk*i/180*math.pi)) * radius + x0
 		local y = math.sin((anglechunk*i/180*math.pi)) * radius + y0
 
-		generateFilledCircle(x,y,radius)
-
+		generateCircle(x,y,radius, Color_Water, true)
 	end
 	
 	local width = 0
@@ -163,6 +188,7 @@ function generateLake(radius,x0, y0,resolution)
 	local color1 = {}
 	local color2 = {}
 	local color3 = {}
+	local color4 = {}
 
 	for i = 0, width-1 do
 		for j =0, height-1 do
@@ -170,21 +196,21 @@ function generateLake(radius,x0, y0,resolution)
 				color1[1], color1[2], color1[3] = l_checkMap(i,j)
 				color2[1], color2[2], color2[3]	= l_checkMap(i,j+1)
 				color3[1], color3[2], color3[3]	= l_checkMap(i+1,j)
+				color4[1], color4[2], color4[3] = l_checkMap(i,j-1)
 				
-				if (compareColor(color1,color2) == false or compareColor(color2,color3) == false or
-					compareColor(color1,color3) == false ) and
-					compareColor(Color_Shore, color1) == false and
-					compareColor(Color_Shore, color2) ==false and
-					compareColor(Color_Shore, color3) == false 
+				if (compareColor(color1,color2)== false or compareColor(color2,color3)== false or
+					compareColor(color1,color3)== false or compareColor(color1,color4)== false or
+					compareColor(color2,color4)== false or compareColor(color3,color4)== false) and 
+					compareColor(Color_Shore, color1) == false and compareColor(Color_Shore,color2)==false and
+					compareColor(Color_Shore, color3) == false and compareColor(Color_Shore,color4)==false
 					then
 
-					if compareColor(color1, Color_Water) == true or
-						compareColor(color2, Color_Water) == true or compareColor(color3, Color_Water) then
-						--l_debug("comparing"..color1[1]..","..color1[2]..","..color1[3])
-						--l_debug("and")
-						--l_debug("comparing"..color2[1]..","..color2[2]..","..color2[3])	
+					if compareColor(color1, Color_Water) or compareColor(color4, Color_Water) or
+						compareColor(color2, Color_Water)or compareColor(color3, Color_Water) then
+
 						l_modifyMap(i,j,Color_Shore[1],Color_Shore[2],Color_Shore[3])
-						generateFilledCircle(i,j,5,Color_Shore)
+
+						generateCircle(i,j,5,Color_Shore,true)
 					end
 				end
 			end
@@ -205,9 +231,9 @@ function compareColor(color1, color2)
 
 end
 
-function generateFilledCircle(x0, y0, radius, color)
+function generateCircle(x0, y0, radius, color,filled)
 
-	local color = color or {0,0,255}
+	local filled = filled or false
 
 	--draw lakeedge:
 	local x = radius;
@@ -229,15 +255,17 @@ function generateFilledCircle(x0, y0, radius, color)
 		l_modifyMap(x + x0, -y + y0,r,g,b)
 		l_modifyMap(y + x0, -x + y0,r,g,b)
 
-		for i=0, radius do 
-			l_modifyMap(x + x0 -i, y + y0, r,g,b)
-			l_modifyMap(y + x0 , x + y0-i, r,g,b)
-			l_modifyMap(-x + x0 +i, y + y0, r,g,b)
-			l_modifyMap(-y + x0, x + y0-i, r,g,b)
-			l_modifyMap(-x + x0 +i, -y + y0, r,g,b)
-			l_modifyMap(-y + x0, -x + y0 +i, r,g,b)
-			l_modifyMap(x + x0 -i, -y + y0, r,g,b)
-			l_modifyMap(y + x0, -x + y0+i, r,g,b)
+		if filled == true then
+			for i=0, radius do 
+				l_modifyMap(x + x0 -i, y + y0, r,g,b)
+				l_modifyMap(y + x0 , x + y0-i, r,g,b)
+				l_modifyMap(-x + x0 +i, y + y0, r,g,b)
+				l_modifyMap(-y + x0, x + y0-i, r,g,b)
+				l_modifyMap(-x + x0 +i, -y + y0, r,g,b)
+				l_modifyMap(-y + x0, -x + y0 +i, r,g,b)
+				l_modifyMap(x + x0 -i, -y + y0, r,g,b)
+				l_modifyMap(y + x0, -x + y0+i, r,g,b)
+			end
 		end
 
 		y = y +1;
@@ -255,7 +283,6 @@ function generateFilledCircle(x0, y0, radius, color)
 	target_color = {0,0,0}
 
 	--floodFill(node, target_color, Color_Water)
-
 end
 
 function floodFill(node, target_color, replacement_color)

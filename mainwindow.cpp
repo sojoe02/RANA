@@ -78,9 +78,11 @@ MainWindow::MainWindow(QWidget *parent) :
 	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.2.0_QT_incomplete");
 
 	ui->statusBar->addWidget(new QLabel(versionString));
+	ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
 
 	ppConstruction();
 	dialogConstruction();
+
 
 }
 
@@ -279,9 +281,6 @@ void MainWindow::on_updateMap(INFOLIST infolist)
         }
     }
 }
-
-
-
 
 void MainWindow::wheelEvent(QWheelEvent* event)
 {

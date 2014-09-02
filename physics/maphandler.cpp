@@ -43,7 +43,8 @@ rgba MapHandler::getPixelInfo(int argX, int argY)
 {
     rgba values;
     
-    if(image != NULL && image->width() >= argX && image->height() >= argY)
+	if(image != NULL && image->width() > argX && image->height() > argY
+			&& argX >= 0 && argY >= 0)
     {
 
         QRgb info = image->pixel(argX, argY);
@@ -66,7 +67,8 @@ rgba MapHandler::getPixelInfo(int argX, int argY)
 
 bool MapHandler::setPixelInfo(int argX, int argY, rgba argValue)
 {
-    if (image != NULL && image->width() >= argX && image->height() >= argY)
+	if (image != NULL && image->width() > argX && image->height() > argY
+			&& argX >= 0 && argY >= 0)
     {
         QRgb value;
         //Output::Inst()->kprintf("%i, %i, %i",argValue.red, argValue.green, argValue.blue);
@@ -76,6 +78,7 @@ bool MapHandler::setPixelInfo(int argX, int argY, rgba argValue)
         
         value = qRgb(red,green,blue);
         image->setPixel(argX, argY, value);
+
         return true;
     } else
         return false;
