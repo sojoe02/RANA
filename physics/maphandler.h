@@ -27,7 +27,7 @@
 #include "utility.h"
 #include "mainwindow.h"
 
-#include <map>
+#include <unordered_map>
 #include <vector>
 
 typedef std::vector< std::vector<int> > MATRICE;
@@ -50,7 +50,7 @@ signals:
 private:
     static QImage *image;
     static MainWindow *parent;
-    static std::map<int, MATRICE> radialMasks;
+	static std::unordered_map<int, MATRICE> radialMasks;
 };
 
 #endif // MAPHANDLER_H

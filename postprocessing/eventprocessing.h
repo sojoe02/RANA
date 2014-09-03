@@ -6,7 +6,7 @@
 #include <string>
 
 #include "mainwindow.h"
-#include "../graphics/intensityblock.h"
+#include "graphics/zblock.h"
 #include "../agentengine/agents/autonLUA.h"
 
 class EventProcessing
@@ -24,7 +24,7 @@ public:
 
 private:
 	std::vector<EventQueue::dataEvent> eventbin;
-	std::vector<IntensityBlock> *iBlocks;
+	std::vector<ZBlock> *zBlocks;
 	//std::unorderd_map<>
 	EventQueue::simInfo *simInfo;
 	EventQueue::dataEvent devent;

@@ -26,8 +26,8 @@
 
 
 
-std::map< std::string, pList > *GridMovement::posMap;
-std::map< std::string, pList >::iterator GridMovement::positr;
+std::unordered_map< std::string, pList > *GridMovement::posMap;
+std::unordered_map< std::string, pList >::iterator GridMovement::positr;
 
 int GridMovement::width;
 int GridMovement::height;
@@ -35,7 +35,7 @@ int GridMovement::height;
 void GridMovement::initGrid()
 {
 
-    posMap = new std::map<std::string, pList>();
+	posMap = new std::unordered_map<std::string, pList>();
 }
 
 void GridMovement::clearGrid()
@@ -73,7 +73,7 @@ void GridMovement::updatePos(int oldX, int oldY, int newX, int newY, int id)
     sprintf(buffer,"%i,%i",oldX,oldY);
     std::string index = buffer;
 
-    std::map<std::string, pList>::iterator posItr = posMap->find(index);
+	std::unordered_map<std::string, pList>::iterator posItr = posMap->find(index);
 
     pList *tmp = &posItr->second;
     //pList *tmp = &posMap->find(index)->second;

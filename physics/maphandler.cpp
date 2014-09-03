@@ -26,7 +26,7 @@
 
 QImage *MapHandler::image = NULL;
 MainWindow *MapHandler::parent = NULL;
-std::map<int, MATRICE > MapHandler::radialMasks;
+std::unordered_map<int, MATRICE > MapHandler::radialMasks;
 
 
 MapHandler::MapHandler(MainWindow *parent)

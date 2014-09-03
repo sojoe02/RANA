@@ -54,7 +54,7 @@ QRgb colorUtility::zValueToColor(double value, double min, double max)
 	else if(thress < 0.3999)
 	{
 		g = sat;
-		b = uchar (sat -(thress-0.4)/0.2 * sat);
+		b = uchar(sat -(thress-0.4)/0.2 * sat);
 		return qRgb(r,g,b);
 	}
 	else if(thress < 0.5999)

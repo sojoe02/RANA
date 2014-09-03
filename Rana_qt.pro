@@ -34,12 +34,11 @@ SOURCES += main.cpp\
     runner.cpp \
     physics/shared.cpp \
     postprocessing/eventprocessing.cpp \
-    graphics/intensitymap.cpp \
-    graphics/intensityblock.cpp \
     postprocessing/eventmap.cpp \
     graphics/zcolormap.cpp \
     postprocessing/colorutility.cpp \
-    eventdialog.cpp
+    eventdialog.cpp \
+    postprocessing/graphics/zblock.cpp
 
 HEADERS  += mainwindow.h \
     physics/phys.h \
@@ -62,12 +61,11 @@ HEADERS  += mainwindow.h \
     runner.h \
     physics/shared.h \
     postprocessing/eventprocessing.h \
-    graphics/intensitymap.h \
-    graphics/intensityblock.h \
     postprocessing/eventmap.h \
     graphics/zcolormap.h \
     postprocessing/colorutility.h \
-    eventdialog.h
+    eventdialog.h \
+    postprocessing/graphics/zblock.h
 
 FORMS    += mainwindow.ui \
     eventdialog.ui

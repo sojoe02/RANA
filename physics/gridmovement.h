@@ -24,7 +24,7 @@
 
 #include <vector>
 #include <list>
-#include <map>
+#include <unordered_map>
 
 typedef std::list<int> pList;
 
@@ -44,8 +44,8 @@ public:
 private:
 
     //maps that contain the amount of agents at a givin x,y position
-    static std::map<std::string, pList> *posMap;
-    static std::map<std::string, pList>::iterator positr;
+	static std::unordered_map<std::string, pList> *posMap;
+	static std::unordered_map<std::string, pList>::iterator positr;
 
     static int width;
     static int height;

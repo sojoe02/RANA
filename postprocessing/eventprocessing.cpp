@@ -10,13 +10,13 @@
 EventProcessing::EventProcessing()
 
 {
-	iBlocks = new std::vector<IntensityBlock>();
+	zBlocks = new std::vector<ZBlock>();
 	simInfo = new EventQueue::simInfo;
 }
 
 void EventProcessing::resetEventProcessor()
 {
-	iBlocks->clear();
+	zBlocks->clear();
 	eventbin.clear();
 }
 
