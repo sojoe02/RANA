@@ -41,6 +41,9 @@ class AutonListener : public Auton
 
 		//returns an event:
 		EventQueue::eEvent* initEvent(double macroResolution, unsigned long long tmu);
+		EventQueue::eEvent* initEvent(){return NULL;};
+		void processFunction(EventQueue::dataEvent devent, double &zvalue,
+							 double &duration){};
 
 		double eventChance;
 

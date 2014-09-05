@@ -68,8 +68,9 @@ HEADERS  += mainwindow.h \
     postprocessing/graphics/zblock.h
 
 FORMS    += mainwindow.ui \
-    eventdialog.ui
+	eventdialog.ui
 
+QMAKE_CXXFLAGS = -Wno-unused-variable -Wno-unused-parameter
 CONFIG += c++11
 
 unix: CONFIG += link_pkgconfig

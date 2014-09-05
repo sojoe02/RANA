@@ -1,42 +1,45 @@
 #include "colorutility.h"
 
-colorUtility::zLevels *colorUtility::ABS_Z_LEVELS = new colorUtility::zLevels;
-double colorUtility::Z_TRESSHOLD_PERCENTAGE = 0;
-QMutex colorUtility::MUTEX;
+double ColorUtility::Z_TRESSHOLD_PERCENTAGE = 0;
+QMutex ColorUtility::MUTEX;
+ColorUtility::zvalue ColorUtility::MAX_Z_LEVELS;
+ColorUtility::zvalue ColorUtility::MIN_Z_LEVELS;
 
-colorUtility::colorUtility()
+ColorUtility::ColorUtility()
 {
 }
 
-void colorUtility::addMaxMinValues(zLevels *argLevels){
+void ColorUtility::AddMaxMinValues(zvalue min, zvalue max){
 
 	QMutexLocker locker(&MUTEX);
 
-	if( ABS_Z_LEVELS->high_average < argLevels->high_average)
-		 ABS_Z_LEVELS->high_average = argLevels->high_average;
+	if( MAX_Z_LEVELS.average < max.average)
+		 MAX_Z_LEVELS.average = max.average;
 
-	if(ABS_Z_LEVELS->high_frequenzy < argLevels->high_frequenzy)
-		ABS_Z_LEVELS->high_frequenzy = argLevels->high_frequenzy;
+	if(MAX_Z_LEVELS.frequency < max.frequency)
+		MAX_Z_LEVELS.frequency = max.frequency;
 
-	if(ABS_Z_LEVELS->high_cumulative < argLevels->high_cumulative)
-		ABS_Z_LEVELS->high_cumulative = argLevels->high_cumulative;
+	if(MAX_Z_LEVELS.cumulative < max.cumulative)
+		MAX_Z_LEVELS.cumulative = max.cumulative;
 
-	if( ABS_Z_LEVELS->low_average < argLevels->low_average)
-		 ABS_Z_LEVELS->low_average = argLevels->low_average;
+	if(MAX_Z_LEVELS.highest < max.highest)
+		MAX_Z_LEVELS.highest = max.highest;
 
-	if(ABS_Z_LEVELS->low_frequenzy < argLevels->low_frequenzy)
-		ABS_Z_LEVELS->low_frequenzy = argLevels->low_frequenzy;
+	if(MIN_Z_LEVELS.average > min.average)
+		 MIN_Z_LEVELS.average = min.average;
 
-	if(ABS_Z_LEVELS->low_cumulative < argLevels->low_cumulative)
-		ABS_Z_LEVELS->low_cumulative = argLevels->low_cumulative;
+	if(MIN_Z_LEVELS.frequency > min.frequency)
+		MIN_Z_LEVELS.frequency = min.frequency;
 
-	if(ABS_Z_LEVELS->highest < argLevels->highest)
-		ABS_Z_LEVELS->highest = argLevels->highest;
+	if(MIN_Z_LEVELS.cumulative > min.cumulative)
+		MIN_Z_LEVELS.cumulative = min.cumulative;
 
-	delete argLevels;
+	if(MIN_Z_LEVELS.highest > min.highest)
+		MIN_Z_LEVELS.highest = min.highest;
+
 }
 
-QRgb colorUtility::zValueToColor(double value, double min, double max)
+QRgb ColorUtility::ZValueToColor(double value, double min, double max)
 {
 	double thress = (value-min)/(max-min);
 
@@ -84,26 +87,27 @@ QRgb colorUtility::zValueToColor(double value, double min, double max)
 	} else return Qt::white;
 }
 
-QRgb colorUtility::getCumulativeColor(double value)
+QRgb ColorUtility::GetCumulativeColor(double value)
 {
-	return zValueToColor(value, ABS_Z_LEVELS->low_cumulative,
-						 ABS_Z_LEVELS->high_cumulative);
+	return ZValueToColor(value, MIN_Z_LEVELS.cumulative,
+						 MAX_Z_LEVELS.cumulative);
 }
 
-QRgb colorUtility::getFreqColor(double value)
+QRgb ColorUtility::GetFreqColor(double value)
 {
-	return zValueToColor(value, ABS_Z_LEVELS->low_frequenzy,
-						 ABS_Z_LEVELS->high_frequenzy);
+	return ZValueToColor(value, MIN_Z_LEVELS.frequency,
+						 MAX_Z_LEVELS.frequency);
 }
 
-QRgb colorUtility::getAvgColor(double value)
+QRgb ColorUtility::GetAvgColor(double value)
 {
-	return zValueToColor(value, ABS_Z_LEVELS->low_average,
-						 ABS_Z_LEVELS->high_average);
+	return ZValueToColor(value, MIN_Z_LEVELS.average,
+						 MAX_Z_LEVELS.average);
 }
 
-QRgb colorUtility::getHighest(double value)
+QRgb ColorUtility::GetHighest(double value)
 {
-	return zValueToColor(value, 0, ABS_Z_LEVELS->highest);
+	return ZValueToColor(value, MIN_Z_LEVELS.highest,
+						 MAX_Z_LEVELS.highest);
 }
 

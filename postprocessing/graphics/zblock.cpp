@@ -1,90 +1,129 @@
 #include "zblock.h"
+#include "../colorutility.h"
 
 ZBlock::ZBlock(int x, int y)
 	:
 	  x(x), y(y),
-	  max_cumulative(0), max_frequency(0), max_highest(0),max_average(0),
+	  currentFrequencyColor(Qt::blue), currentCumulativeColor(Qt::blue),
+	  currentAverageColor(Qt::blue), currentHighestColor(Qt::blue),
 	  firstAddition(true)
 {
 }
 
-QRectF ZBlock::boundingRect() const
+void ZBlock::addZValue(double zvalue, int time)
 {
-	//Still needs to be implemented properly so it really depicts size of
-	//qreal penWidth = 1;
-	return QRectF(0,0,size,size);
-}
-
-void ZBlock::paint(QPainter *painter,
-					  const QStyleOptionGraphicsItem *option,
-					  QWidget *widget)
-{
-	QRectF rect = boundingRect();
-	QPen pen (Qt::white, 1);
-
-	painter->setPen(pen);
-	painter->drawRect(x,y,size,size);
-}
-
-void ZBlock::addZValue(double zvalue, unsigned long long time)
-{
-	//set local minimun on first insertion:
+	//set local minimun and maximum on first insertion:
 	if(firstAddition)
 	{
-		min_cumulative = zvalue;
-		min_average = zvalue;
-		min_highest = zvalue;
-		min_frequency = 1;
-		max_frequency = 1;
+		min.cumulative = zvalue;
+		min.average = zvalue;
+		min.highest = zvalue;
+		min.frequency = 1;
+		max.frequency = 1;
+		max.cumulative = zvalue;
+		max.highest = zvalue;
+		max.average = zvalue;
 		firstAddition = false;
 	}
-
-	std::map<unsigned long long, ZBlock::zvalue>::iterator zitr;
 
 	zitr = zmap.find(time);
 
 	//Insertion logic for the different values:
 	if(zitr == zmap.end())
 	{
-		ZBlock::zvalue z;
+		ColorUtility::zvalue z;
 		z.frequency = 1;
 
 		z.cumulative = zvalue;
 
-		if(zvalue > max_cumulative)	max_cumulative = zvalue;
-		else if(zvalue < min_cumulative) min_cumulative = zvalue;
+		if(zvalue > max.cumulative)	max.cumulative = zvalue;
+		else if(zvalue < min.cumulative) min.cumulative = zvalue;
 
 		z.average = zvalue;
-		if(zvalue > max_average) max_average = zvalue;
-		else if(zvalue < min_average)	min_average = zvalue;
+		if(zvalue > max.average) max.average = zvalue;
+		else if(zvalue < min.average)	min.average = zvalue;
 
 		z.highest = zvalue;
-		if(zvalue > max_highest)
-			max_highest = zvalue;
-		else if(zvalue < min_highest)
-			min_highest = zvalue;
+		if(zvalue > max.highest)
+			max.highest = zvalue;
+		else if(zvalue < min.highest)
+			min.highest = zvalue;
 
-		zmap.insert(std::pair<unsigned long long,ZBlock::zvalue>(time,z));
+		zmap.insert(std::pair<unsigned long long,ColorUtility::zvalue>(time,z));
 	} else
 	{
-		ZBlock::zvalue *z = &zitr->second;
+		ColorUtility::zvalue *z = &zitr->second;
 		z->frequency++;
-		if(z->frequency > max_frequency) max_frequency = z->frequency;
-		else if(z->frequency <min_frequency) min_frequency = z->frequency;
+		if(z->frequency > max.frequency) max.frequency = z->frequency;
+		else if(z->frequency < min.frequency) min.frequency = z->frequency;
 
 		z->cumulative += zvalue;
-		if(z->cumulative > max_cumulative) max_cumulative = z->cumulative;
-		else if(z->cumulative < min_cumulative) min_cumulative = z->cumulative;
+		if(z->cumulative > max.cumulative) max.cumulative = z->cumulative;
+		else if(z->cumulative < min.cumulative) min.cumulative = z->cumulative;
 
 		z->average = z->cumulative/z->frequency;
-		if(z->average > max_average) max_average = z->average;
-		else if(z->average < min_average) min_average = z->average;
+		if(z->average > max.average) max.average = z->average;
+		else if(z->average < min.average) min.average = z->average;
 
 		if(zvalue > z->highest)
 		{
 			z->highest = zvalue;
-			if(z->highest > max_highest) max_highest = z->highest;
-			else if(z->highest < min_highest) min_highest = z->highest;
+			if(z->highest > max.highest) max.highest = z->highest;
+			else if(z->highest < min.highest) min.highest = z->highest;
 		}
 	}
+}
+
+void ZBlock::registerMinMax()
+{
+	ColorUtility::AddMaxMinValues(min, max);
+
+}
+
+QRgb ZBlock::getCumulativeColor(int time)
+{
+	zitr = zmap.find(time);
+
+	if(zitr != zmap.end())
+	{
+		currentCumulativeColor =
+				ColorUtility::GetCumulativeColor(zitr->second.cumulative);
+	}
+	return currentCumulativeColor;
+}
+
+QRgb ZBlock::getFrequencyColor(int time)
+{
+	zitr = zmap.find(time);
+
+	if(zitr != zmap.end())
+	{
+		currentFrequencyColor =
+		ColorUtility::GetFreqColor(zitr->second.frequency);
+	}
+	return currentFrequencyColor;
+}
+
+QRgb ZBlock::getHighestColor(int time)
+{
+	zitr = zmap.find(time);
+
+	if(zitr != zmap.end())
+	{
+		currentHighestColor =
+		ColorUtility::GetHighest(zitr->second.highest);
+	}
+	return currentHighestColor;
+}
+
+QRgb ZBlock::getAverageColor(int time)
+{
+	zitr = zmap.find(time);
+
+	if(zitr != zmap.end())
+	{
+		currentAverageColor =
+		ColorUtility::GetAvgColor(zitr->second.average);
+	}
+	return currentAverageColor;
 }

@@ -56,7 +56,6 @@ EventQueue::iEvent* Auton::handleEvent(EventQueue::eEvent* event){
 	return NULL;
 }
 
-
 EventQueue::eEvent* Auton::initEvent(int macroResolution, unsigned long long tmu){
 	return NULL;
 }

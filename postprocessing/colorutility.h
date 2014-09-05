@@ -4,36 +4,34 @@
 #include <QMutexLocker>
 #include <QImage>
 
-class colorUtility
+class ColorUtility
 {
 public:
-	colorUtility();
+	ColorUtility();
 
-	struct zLevels{
-		double high_average;
-		double high_cumulative;
-		double high_frequenzy;
-		double low_average;
-		double low_cumulative;
-		double low_frequenzy;
+	struct zvalue{
+		double cumulative;
+		double frequency;
+		double average;
 		double highest;
 	};
 
-	static void addMaxMinValues(zLevels *argLevels);
+	static void AddMaxMinValues(zvalue min, zvalue max);
 
-	static QRgb zValueToColor(double value, double min, double max);
+	static QRgb ZValueToColor(double value, double min, double max);
 
-	static QRgb getCumulativeColor(double value);
-	static QRgb getFreqColor(double value);
-	static QRgb getAvgColor(double value);
-	static QRgb getHighest(double value);
+	static QRgb GetCumulativeColor(double value);
+	static QRgb GetFreqColor(double value);
+	static QRgb GetAvgColor(double value);
+	static QRgb GetHighest(double value);
 
 	static double Z_TRESSHOLD_PERCENTAGE;
 
 private:
 
 	static QMutex MUTEX;
-	static zLevels *ABS_Z_LEVELS;
+	static zvalue MAX_Z_LEVELS;
+	static zvalue MIN_Z_LEVELS;
 };
 
 #endif // COLORUTILITY_H

@@ -1,17 +1,23 @@
-#include "eventprocessing.h"
-
 
 #include<iostream>
 #include<fstream>
 #include<stdio.h>
 
+#include "eventprocessing.h"
 #include "output.h"
+#include "agentengine/agents/autonLUA.h"
 
 EventProcessing::EventProcessing()
 
 {
 	zBlocks = new std::vector<ZBlock>();
 	simInfo = new EventQueue::simInfo;
+}
+
+EventProcessing::~EventProcessing()
+{
+	delete zBlocks;
+	delete simInfo;
 }
 
 void EventProcessing::resetEventProcessor()
@@ -87,5 +93,17 @@ void EventProcessing::binEvents(std::string path, int to, int from)
 void EventProcessing::processBinnedEvents(double timeResolution,
 										  int mapResolution, double zThresshold)
 {
+	int xAmount = simInfo->areaX/mapResolution;
+	int yAmount = simInfo->areaY/mapResolution;
+
+	//populate the zblok vector:
+	for (int x = 0; x >= xAmount; x++)
+	{
+		for(int y=0; y >= yAmount; y++)
+		{
+			ZBlock block(x,y);
+			zBlocks->push_back(block);
+		}
+	}
 
 }

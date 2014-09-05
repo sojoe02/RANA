@@ -7,13 +7,15 @@
 
 #include "mainwindow.h"
 #include "graphics/zblock.h"
-#include "../agentengine/agents/autonLUA.h"
+#include "eventqueue.h"
 
 class EventProcessing
 {
 
 public:
 	EventProcessing();
+	~EventProcessing();
+
 	void resetEventProcessor();
 
 	void binEvents(std::string path, int from, int to);
@@ -23,11 +25,13 @@ public:
 	void processBinnedEvents(double timeResolution, int mapResolution, double zThresshold);
 
 private:
+
 	std::vector<EventQueue::dataEvent> eventbin;
 	std::vector<ZBlock> *zBlocks;
 	//std::unorderd_map<>
 	EventQueue::simInfo *simInfo;
 	EventQueue::dataEvent devent;
+
 };
 
 #endif // EVENTPROCESSING_H

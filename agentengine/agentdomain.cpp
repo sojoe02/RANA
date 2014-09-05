@@ -181,10 +181,10 @@ void AgentDomain::runSimulation(int time)
 	auto start = steady_clock::now();
 	auto start2 = steady_clock::now();
 
-	unsigned long long run_time = 0;
+	//unsigned long long run_time = 0;
 	unsigned long long cMacroStep = 0;
 	unsigned long long cMicroStep = ULLONG_MAX;
-	unsigned long long i = 0, j = 0;
+	unsigned long long i = 0;//, j = 0;
 
     for(i = 0; i < iterations;)
     {

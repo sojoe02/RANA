@@ -1,45 +1,42 @@
 #ifndef ZBLOCK_H
 #define ZBLOCK_H
 
-#include <QPainter>
-#include <QGraphicsItem>
 #include <map>
+#include <QRgb>
 
-class ZBlock : public QGraphicsItem
+#include "../colorutility.h"
+
+
+class ZBlock
 {
 public:
 	ZBlock(int x, int y);
 
-	QRectF boundingRect() const;
-	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+	void addZValue(double zvalue, int time);
 
-	void addZValue(double zvalue, unsigned long long time);
+	void registerMinMax();
+	QRgb getCumulativeColor(int time);
+	QRgb getFrequencyColor(int time);
+	QRgb getHighestColor(int time);
+	QRgb getAverageColor(int time);
 
 private:
 
-	struct zvalue{
-		double cumulative;
-		double frequency;
-		double average;
-		double highest;
-	};
+	ColorUtility::zvalue current;
+	ColorUtility::zvalue max;
+	ColorUtility::zvalue min;
 
-	double max_cumulative;
-	double max_frequency;
-	double max_average;
-	double max_highest;
+	int x;
+	int y;
 
-	double min_cumulative;
-	double min_frequency;
-	double min_average;
-	double min_highest;
+	QRgb currentFrequencyColor;
+	QRgb currentCumulativeColor;
+	QRgb currentAverageColor;
+	QRgb currentHighestColor;
 
 	bool firstAddition;
-
-	int x, y, size;
-
-	std::map<unsigned long long, ZBlock::zvalue> zmap;
-
+	std::map<int, ColorUtility::zvalue> zmap;
+	std::map<int, ColorUtility::zvalue>::iterator zitr;
 };
 
 #endif // ZBLOCK_H
