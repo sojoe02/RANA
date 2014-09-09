@@ -1,17 +1,51 @@
 #ifndef POSTCONTROL_H
 #define POSTCONTROL_H
 
-#include <QThread>
+#include <QtGui>
+#include <QString>
+#include <QObject>
 
-class PostControl
+#include "eventrunner.h"
+#include "eventprocessing.h"
+#include "mainwindow.h"
+
+class MainWindow;
+class EventProcessing;
+class EventRunner;
+class PostControl : public QObject
 {
+	Q_OBJECT
+
 public:
-	PostControl();
 
+	PostControl(MainWindow *mainWindow);
+	~PostControl();
 
+	EventQueue::simInfo* getEventInfo(QString path);
+
+	void runProcessEvents(QString eventPath, int from, int to,
+					   double timeResolution,QString agentPath,
+					   int mapResolution, double zThresshold);
+
+	bool isProcessing();
+
+public slots:
+
+	void on_processDone();
+
+signals:
+
+	void startEventProcessing(QString eventPath, int from, int to,
+							  double timeResolution,QString agentPath,
+							  int mapResolution, double zThresshold);
 
 private:
-	QThread *runProcessing;
+
+	MainWindow *mainWindow;
+	EventProcessing *eventprocessor;
+	EventRunner *runner;
+	bool processing;
+
 
 };
 

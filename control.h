@@ -41,8 +41,7 @@ class AgentDomain;
 class MainWindow;
 class Control : public QObject
 {
-    Q_OBJECT
-
+	Q_OBJECT
 
 public:
 
@@ -81,7 +80,7 @@ public:
 	void saveEvents(QString path);
 
 public slots:
-    void simDone();
+	void on_simDone();
 
 signals:
     void runOperate();

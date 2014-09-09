@@ -67,6 +67,8 @@ EventQueue::simInfo* EventProcessing::getDataEvent()
 
 void EventProcessing::binEvents(std::string path, int to, int from)
 {
+	Output::Inst()->ppprintf("Binning Events from %i[s] to %i[s]",from, to);
+
 	std::ifstream file(path.c_str(), std::ifstream::binary);
 
 	eventbin.clear();
@@ -95,6 +97,9 @@ void EventProcessing::binEvents(std::string path, int to, int from)
 void EventProcessing::processBinnedEvents(double timeResolution, std::string path,
 										  int mapResolution, double thresshold)
 {
+
+	Output::Inst()->ppprintf("Processing %ul events", eventbin.size());
+
 	int xAmount = simInfo->areaX/mapResolution;
 	int yAmount = simInfo->areaY/mapResolution;
 
@@ -121,7 +126,7 @@ void EventProcessing::processBinnedEvents(double timeResolution, std::string pat
 }
 
 void EventProcessing::processEvent(EventQueue::dataEvent *event,
-								   double thresshold, double mapRes, double timeRes,
+								   double thresshold, int mapRes, double timeRes,
 								   std::string path)
 {
 	AutonLUA *auton =
@@ -145,58 +150,50 @@ void EventProcessing::processEvent(EventQueue::dataEvent *event,
 void EventProcessing::recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *event,
 									  std::set<std::string> *visited,
 									  int x, int y, int width, int height,
-									  double mapRes, double timeRes, double thressholdZ)
+									  int mapRes, double timeRes, double thressholdZ)
 {
 	char buffer[32];
 	sprintf(buffer,"%i,%i",x, y);
 	std::string vkey = buffer;
 
+	//have the position been accessed
 	if(visited->find(vkey)!=visited->end()){
 		return;
-	} else{
+	} else
 		visited->insert(vkey);
-	}
 
 	double z;
 	double duration;
 
-	auton->processFunction(event,(double)x*mapRes,(double)y*mapRes,z,duration);
+	auton->processFunction(event, x*mapRes, y*mapRes,z,duration);
 
 	double distance = Phys::calcDistance(event->originX, event->originY, x*mapRes, y*mapRes);
-	double time = distance/(event->propagationSpeed*timeRes);
+	double arrivalTime = distance/(event->propagationSpeed*timeRes);
 
 	//insert z value and take event duration into account:
 	std::unordered_map<std::string, ZBlock>::iterator zitr = zBlocks->find(vkey);
-	for(int i = 0; i < duration; i++){
+
+	for(int i = 0; i < (int)duration*(int)timeRes; i++){
 		if(zitr != zBlocks->end())
 		{
-			zitr->second.addZValue(z, time+i);
+			zitr->second.addZValue(z, (int)arrivalTime+i);
 		}
 	}
 	//return if z is below thresshold:
 	if (z < thressholdZ)
-	{
 		return;
-	}
 
 	//do the recursive calls:
 	if(x+1 <= width)
-	{
 		recursiveZlevel(auton,event,visited,x+1,y,width,height,mapRes,timeRes,thressholdZ);
-	}
 
 	if(y+1 <= height)
-	{
 		recursiveZlevel(auton,event,visited,x,y+1,width,height,mapRes,timeRes,thressholdZ);
-	}
 
 	if(x-1 >= 0)
-	{
 		recursiveZlevel(auton,event,visited,x-1,y,width,height,mapRes,timeRes,thressholdZ);
-	}
+
 	if(y-1 >= 0)
-	{
 		recursiveZlevel(auton,event,visited,x,y+1,width,height,mapRes,timeRes,thressholdZ);
-	}
 
 }

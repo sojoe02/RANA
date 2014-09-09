@@ -31,7 +31,6 @@ class Runner : public QThread
     Q_OBJECT
 public:
     explicit Runner();
-
     void setParameters(AgentDomain *agentDomain, unsigned long long runTime);
 
 signals:

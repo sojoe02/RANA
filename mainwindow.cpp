@@ -76,7 +76,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
 
-	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.2.1_QT_incomplete");
+	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.2.3_QT_incomplete");
 
 	ui->statusBar->addWidget(new QLabel(versionString));
 	ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
@@ -388,7 +388,8 @@ void MainWindow::actionPrintInfo()
 
 void MainWindow::ppConstruction()
 {
-	eventprocessor = new EventProcessing;
+	//eventprocessor = new EventProcessing;
+	postControl = new PostControl(this);
 
     vis_controlTabptr = ui->vis_controlTab;
     vis_mapTabptr = ui->vis_mapTab;
@@ -402,7 +403,8 @@ void MainWindow::ppConstruction()
 	QObject::connect(this,SIGNAL(writePPSignal(QString)),
 					 this,SLOT(on_writePPOutput(QString)));
 
-	ui->binEventsPushButton->setEnabled(false);
+	ui->vis_processEventsPushButton->setEnabled(false);
+
 
 }
 
@@ -422,14 +424,29 @@ void MainWindow::ppIsChecked()
 
 void MainWindow::on_vis_processEventsPushButton_clicked()
 {
-    ui->vis_processEventsPushButton->setDisabled(true);	
+	ui->vis_processEventsPushButton->setDisabled(true);
 
-	double timeRes = ui->vis_timeResolutionSpinBox->value();
-	std::string path = ui->vis_agentPathLineEdit->text().toStdString();
+	double timeRes = ui->vis_timeResolutionDoubleSpinBox->value();
+	QString agentPath = ui->vis_agentPathLineEdit->text();
 	int mapRes = ui->vis_resolutionSpinBox->value();
 	double thresshold = ui->vis_zThressholdDoubleSpinBox->value();
+	QString eventPath = ui->vis_eventPathLineEdit->text();
 
-	eventprocessor->processBinnedEvents(timeRes, path, mapRes, thresshold);
+	QFileInfo fi(ui->vis_eventPathLineEdit->text());
+	QFileInfo efi(ui->vis_agentPathLineEdit->text());
+
+	if( fi.isFile() && efi.isFile() )
+	{
+		int to = ui->vis_toTimeSpinBox->value();
+		int from = ui->vis_fromTimeSpinBox->value();
+
+		postControl->runProcessEvents(eventPath,from,to,
+									  timeRes,agentPath,mapRes,thresshold);
+
+	} else
+		Output::Inst()->ppprintf("agent- %s or event path %s, not found",
+								 agentPath.toStdString().c_str(),
+								 eventPath.toStdString().c_str());
 }
 
 void MainWindow::advancePPProgess(int percentage)
@@ -483,7 +500,7 @@ void MainWindow::on_vis_readInfoPushButton_clicked()
 	if (fi.isFile())
 	{
 		Output::Inst()->ppprintf("path is again %s", path.toStdString().c_str());
-		info = eventprocessor->readEventInfo(path.toStdString());
+		info = postControl->getEventInfo(path);
 
 		int runtime = int(info->tmuAmount + info->macroFactor)/(info->timeResolution);
 		int step = runtime/10;
@@ -497,26 +514,13 @@ void MainWindow::on_vis_readInfoPushButton_clicked()
 		ui->vis_toTimeSpinBox->setMinimum(1);
 		ui->vis_toTimeSpinBox->setMaximum(runtime);
 		ui->vis_toTimeSpinBox->setSingleStep(runtime/10);
-		ui->binEventsPushButton->setEnabled(true);
-
 		ui->vis_agentPathLineEdit->setText(info->luaFileName);
+
+		ui->vis_processEventsPushButton->setEnabled(true);
 
 	}else
 		Output::Inst()->ppprintf("path %s ,not found",path.toStdString().c_str());
 
-}
-
-void MainWindow::on_binEventsPushButton_clicked()
-{
-	QString path = ui->vis_eventPathLineEdit->text();
-	QFileInfo fi(ui->vis_eventPathLineEdit->text());
-	if (fi.isFile())
-	{
-		int to = ui->vis_toTimeSpinBox->value();
-		int from = ui->vis_fromTimeSpinBox->value();
-		eventprocessor->binEvents(path.toStdString(), to, from);
-	} else
-		Output::Inst()->ppprintf("path %s ,not found",path.toStdString().c_str());
 }
 
 

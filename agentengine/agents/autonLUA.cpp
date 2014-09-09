@@ -245,10 +245,8 @@ EventQueue::eEvent* AutonLUA::initEvent()
 	return NULL;
 }
 
-void AutonLUA::processFunction(EventQueue::dataEvent *devent, double x, double y, double &zvalue,
-								double &duration)
+void AutonLUA::processFunction(EventQueue::dataEvent *devent, double x, double y, double &zvalue,	double &duration)
 {
-
 	lua_getglobal(L, "processFunction");
 	lua_pushnumber(L, devent->originX);
 	lua_pushnumber(L, devent->originY);

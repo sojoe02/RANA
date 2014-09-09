@@ -28,13 +28,13 @@
 #include <map>
 
 #include "graphics/agentItem.h"
-#include "postprocessing/eventprocessing.h"
+#include "postprocessing/postcontrol.h"
 #include "utility.h"
 #include "control.h"
 
 typedef std::list<agentInfo> INFOLIST;
 
-class EventProcessing;
+class PostControl;
 class Control;
 namespace Ui {
 class MainWindow;
@@ -88,16 +88,12 @@ private slots:
 
 	void ppIsChecked();
     void on_vis_processEventsPushButton_clicked();
-	void on_binEventsPushButton_clicked();
 	void on_writePPOutput(QString string);
 
 	//dialogs:
 	void eventDialog();
-
 	void on_vis_eventBrowsePushButton_clicked();
-
 	void on_vis_readInfoPushButton_clicked();
-
 	void on_vis_agentPathPushButton_clicked();
 
 signals:
@@ -137,7 +133,7 @@ private:
     QWidget *vis_mapTabptr;
 
 	//eventProcessing things:
-	EventProcessing *eventprocessor;
+	PostControl *postControl;
 
 };
 

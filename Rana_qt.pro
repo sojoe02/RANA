@@ -39,7 +39,8 @@ SOURCES += main.cpp\
     postprocessing/colorutility.cpp \
     eventdialog.cpp \
     postprocessing/graphics/zblock.cpp \
-    postprocessing/postcontrol.cpp
+    postprocessing/postcontrol.cpp \
+    postprocessing/eventrunner.cpp
 
 HEADERS  += mainwindow.h \
     physics/phys.h \
@@ -67,7 +68,8 @@ HEADERS  += mainwindow.h \
     postprocessing/colorutility.h \
     eventdialog.h \
     postprocessing/graphics/zblock.h \
-    postprocessing/postcontrol.h
+    postprocessing/postcontrol.h \
+    postprocessing/eventrunner.h
 
 FORMS    += mainwindow.ui \
 	eventdialog.ui

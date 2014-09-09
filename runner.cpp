@@ -43,7 +43,7 @@ void Runner::run()
 
 void Runner::setParameters(AgentDomain *agentDomain, unsigned long long runTime)
 {
-    this->agentDomain = agentDomain;
+	this->agentDomain = agentDomain;
     this->runTime = runTime;
 }
 

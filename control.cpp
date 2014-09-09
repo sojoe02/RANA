@@ -1,7 +1,7 @@
 //--begin_license--
 //
-//Copyright 	2013 	Søren Vissing Jørgensen.
-//			2014	Søren Vissing Jørgensen, Center for Bio-Robotics, SDU, MMMI.  
+//Copyright 	2013-2014 	Søren Vissing Jørgensen.
+//			2014-	Søren Vissing Jørgensen, Center for Bio-Robotics, SDU, MMMI.
 //
 //This file is part of RANA.
 //
@@ -28,13 +28,13 @@ Control::Control(MainWindow* mainwindow)
       running(false), generated(false), stopped(true)
 {
     runner = new Runner();
-    connect(runner, SIGNAL(simulationDone()), this, SLOT(simDone()));
+	QObject::connect(runner, SIGNAL(simulationDone()), this, SLOT(on_simDone()));
 }
 
 Control::~Control()
 {
-    runThread->quit();
-    runThread->wait();
+	runner->quit();
+	runner->wait();
 }
 
 void Control::runSimulation(unsigned long long runTime)
@@ -72,7 +72,7 @@ void Control::generateEnvironment(QImage *map, double scale,
     //retrieve and update the positions:
 }
 
-void Control::simDone()
+void Control::on_simDone()
 {
     running = false;
     mainwindow->changeRunButton("Run");
