@@ -38,7 +38,8 @@ SOURCES += main.cpp\
     graphics/zcolormap.cpp \
     postprocessing/colorutility.cpp \
     eventdialog.cpp \
-    postprocessing/graphics/zblock.cpp
+    postprocessing/graphics/zblock.cpp \
+    postprocessing/postcontrol.cpp
 
 HEADERS  += mainwindow.h \
     physics/phys.h \
@@ -65,7 +66,8 @@ HEADERS  += mainwindow.h \
     graphics/zcolormap.h \
     postprocessing/colorutility.h \
     eventdialog.h \
-    postprocessing/graphics/zblock.h
+    postprocessing/graphics/zblock.h \
+    postprocessing/postcontrol.h
 
 FORMS    += mainwindow.ui \
 	eventdialog.ui

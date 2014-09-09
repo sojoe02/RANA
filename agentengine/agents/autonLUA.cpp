@@ -245,14 +245,16 @@ EventQueue::eEvent* AutonLUA::initEvent()
 	return NULL;
 }
 
-void AutonLUA::processFunction(EventQueue::dataEvent devent, double &zvalue,
-							   double &duration)
+void AutonLUA::processFunction(EventQueue::dataEvent *devent, double x, double y, double &zvalue,
+								double &duration)
 {
 
 	lua_getglobal(L, "processFunction");
-	lua_pushnumber(L, devent.originX);
-	lua_pushnumber(L, devent.originY);
-	lua_pushstring(L, devent.table);
+	lua_pushnumber(L, devent->originX);
+	lua_pushnumber(L, devent->originY);
+	lua_pushnumber(L, x);
+	lua_pushnumber(L, y);
+	lua_pushstring(L, devent->table);
 
 	if(lua_pcall(L,3,2,0)!=LUA_OK)
 		printf("error on calling processfunction : %s\n,",

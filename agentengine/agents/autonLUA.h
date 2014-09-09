@@ -77,6 +77,9 @@ class AutonLUA : public Auton
 		static int l_getAgentPath(lua_State *L);
 		static int luapanic(lua_State *L);
 
+		void processFunction(EventQueue::dataEvent *devent, double x, double y, double &zvalue,
+							 double &duration);
+
 
 private:
 			//function to receive an event from nestene responsible for this auton, returns an internal Event 'thinking':
@@ -84,8 +87,6 @@ private:
 			EventQueue::eEvent* actOnEvent(EventQueue::iEvent *event);
 			//returns an event:
 			EventQueue::eEvent* initEvent();
-			void processFunction(EventQueue::dataEvent devent, double &zvalue,
-								 double &duration);
 
 			void simDone();
 			double eventChance();

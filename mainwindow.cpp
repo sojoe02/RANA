@@ -423,6 +423,13 @@ void MainWindow::ppIsChecked()
 void MainWindow::on_vis_processEventsPushButton_clicked()
 {
     ui->vis_processEventsPushButton->setDisabled(true);	
+
+	double timeRes = ui->vis_timeResolutionSpinBox->value();
+	std::string path = ui->vis_agentPathLineEdit->text().toStdString();
+	int mapRes = ui->vis_resolutionSpinBox->value();
+	double thresshold = ui->vis_zThressholdDoubleSpinBox->value();
+
+	eventprocessor->processBinnedEvents(timeRes, path, mapRes, thresshold);
 }
 
 void MainWindow::advancePPProgess(int percentage)

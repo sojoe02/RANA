@@ -38,7 +38,7 @@ public:
     virtual EventQueue::eEvent* actOnEvent(EventQueue::iEvent* event);
     virtual EventQueue::eEvent* initEvent(int macroResolution, unsigned long long tmu);
 	virtual EventQueue::eEvent* initEvent(){return NULL;};
-	virtual void processFunction(EventQueue::dataEvent devent, double &zvalue,
+	virtual void processFunction(EventQueue::dataEvent *devent, double x, double y, double &zvalue,
 								 double &duration){};
     //virtual double eventChance();
 
