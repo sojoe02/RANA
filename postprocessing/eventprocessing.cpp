@@ -1,18 +1,25 @@
 
+
 #include<iostream>
 #include<fstream>
 #include<stdio.h>
 #include<set>
+#include<chrono>
 
 #include "physics/phys.h"
 #include "eventprocessing.h"
 #include "output.h"
 #include "agentengine/agents/autonLUA.h"
 
+using std::chrono::duration_cast;
+using std::chrono::milliseconds;
+using std::chrono::seconds;
+using std::chrono::steady_clock;
+
 EventProcessing::EventProcessing()
 
 {
-	zBlocks = new std::unordered_map<std::string, ZBlock>();
+	zBlocks = new QHash<QString, ZBlock*>();
 	simInfo = new EventQueue::simInfo;
 }
 
@@ -80,7 +87,8 @@ void EventProcessing::binEvents(std::string path, int to, int from)
 		while(!file.eof())
 		{
 			file.read(reinterpret_cast<char*>(&devent), sizeof(EventQueue::dataEvent));
-			int activation = (devent.activationTime + simInfo->macroFactor)/(simInfo->timeResolution);
+			//calculate the activation in seconds:
+			int activation = devent.activationTime/simInfo->timeResolution;
 
 			if(activation > from && activation < to)
 			{
@@ -103,24 +111,44 @@ void EventProcessing::processBinnedEvents(double timeResolution, std::string pat
 	int xAmount = simInfo->areaX/mapResolution;
 	int yAmount = simInfo->areaY/mapResolution;
 
+	//put in a timer:
+	auto start = steady_clock::now();
+	auto end = steady_clock::now();
+	//clear the zblok map:
+	QHashIterator<QString, ZBlock*> zitr(*zBlocks);
+	while(zitr.hasNext())
+	{
+		delete zitr.value();
+	}
+
 	//populate the zblok map:
 	for (int x = 0; x >= xAmount; x++)
 	{
 		for(int y=0; y >= yAmount; y++)
 		{
-			ZBlock block(x,y);
+			ZBlock *block = new ZBlock(x,y);
 			char buffer[32];
 			sprintf(buffer,"%i,%i",x,y);
-			std::string key = buffer;
-			zBlocks->insert(std::pair<std::string, ZBlock>(key, block));
+			//std::string key = buffer;
+			//zBlocks->insert(std::pair<std::string, ZBlock>(key, block));
+			//The Qt way:
+			QString key = buffer;
+			zBlocks->insert(key,block);
 		}
 	}
 
 	//process all the binned events, new c11 style better get used to it:
-	for(auto it = begin(eventbin); it != end(eventbin); ++it)
+	for(auto it = std::begin(eventbin); it != std::end(eventbin); ++it)
 	{
 		processEvent(&*it, thresshold,
 					 mapResolution, timeResolution, path);
+
+		end = steady_clock::now();
+		if(duration_cast<milliseconds>(end-start).count() > 50)
+		{
+			Output::Inst()->ppprogressbar(std::distance(it,begin(eventbin)), eventbin.size());
+			start = end;
+		}
 	}
 
 }
@@ -132,7 +160,7 @@ void EventProcessing::processEvent(EventQueue::dataEvent *event,
 	AutonLUA *auton =
 			new AutonLUA(event->id, event->originX, event->originY, 0, NULL, path);
 
-	std::set<std::string> *visited = new std::set<std::string>();
+	QSet<QString> *visited = new QSet<QString>();
 
 	int width = simInfo->areaX/mapRes;
 	int height = simInfo->areaY/mapRes;
@@ -144,23 +172,25 @@ void EventProcessing::processEvent(EventQueue::dataEvent *event,
 
 	recursiveZlevel(auton, event, visited,event->originX, event->originY,
 					width, height,mapRes,timeRes, thressholdZ);
+	delete visited;
 
 }
 
 void EventProcessing::recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *event,
-									  std::set<std::string> *visited,
+									  QSet<QString> *visited,
 									  int x, int y, int width, int height,
 									  int mapRes, double timeRes, double thressholdZ)
 {
 	char buffer[32];
 	sprintf(buffer,"%i,%i",x, y);
-	std::string vkey = buffer;
-
+	QString key = buffer;
+	//zBlocks->insert(key,block);
 	//have the position been accessed
-	if(visited->find(vkey)!=visited->end()){
+
+	if(visited->find(key)!=visited->end()){
 		return;
 	} else
-		visited->insert(vkey);
+		visited->insert(key);
 
 	double z;
 	double duration;
@@ -171,12 +201,12 @@ void EventProcessing::recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *ev
 	double arrivalTime = distance/(event->propagationSpeed*timeRes);
 
 	//insert z value and take event duration into account:
-	std::unordered_map<std::string, ZBlock>::iterator zitr = zBlocks->find(vkey);
+	QHash<QString, ZBlock*>::iterator zitr = zBlocks->find(key);
 
 	for(int i = 0; i < (int)duration*(int)timeRes; i++){
 		if(zitr != zBlocks->end())
 		{
-			zitr->second.addZValue(z, (int)arrivalTime+i);
+			zitr.value()->addZValue(z, (int)arrivalTime+i);
 		}
 	}
 	//return if z is below thresshold:
@@ -194,6 +224,6 @@ void EventProcessing::recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *ev
 		recursiveZlevel(auton,event,visited,x-1,y,width,height,mapRes,timeRes,thressholdZ);
 
 	if(y-1 >= 0)
-		recursiveZlevel(auton,event,visited,x,y+1,width,height,mapRes,timeRes,thressholdZ);
+		recursiveZlevel(auton,event,visited,x,y-1,width,height,mapRes,timeRes,thressholdZ);
 
 }

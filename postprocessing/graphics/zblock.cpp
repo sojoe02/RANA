@@ -5,10 +5,53 @@ ZBlock::ZBlock(int x, int y)
 	:
 	  x(x), y(y),
 	  currentFrequencyColor(Qt::blue), currentCumulativeColor(Qt::blue),
-	  currentAverageColor(Qt::blue), currentHighestColor(Qt::blue),
-	  firstAddition(true)
+	  currentAverageColor(Qt::blue), currentHighestColor(Qt::blue),activeColor(Qt::white),
+	  firstAddition(true), zmode(ZMode::Cumulative)
 {
 }
+
+ZBlock::~ZBlock()
+{
+
+}
+
+QRectF ZBlock::boundingRect() const
+{
+	return QRectF(x,y,1,1);
+}
+
+void ZBlock::paint(QPainter *painter,
+					  const QStyleOptionGraphicsItem *option,
+					  QWidget *widget)
+{
+	//QRectF rect = boundingRect();
+	painter->setBrush(QColor(activeColor));
+	painter->drawPoint(0,0);
+}
+
+void ZBlock::setColor(int time, ZMode zmode)
+{
+	if(zmode == ZMode::Average)
+	{
+		activeColor = getAverageColor(time);
+	}else if(zmode == ZMode::Cumulative)
+	{
+		activeColor = getCumulativeColor(time);
+	}else if(zmode == ZMode::Frequency)
+	{
+		activeColor = getFrequencyColor(time);
+	}else if(zmode == ZMode::Highest)
+	{
+		activeColor =  getHighestColor(time);
+	}else
+		activeColor = Qt::white;
+}
+
+void ZBlock::changeMode(ZMode zmode)
+{
+	this->zmode = zmode;
+}
+
 
 void ZBlock::addZValue(double zvalue, int time)
 {

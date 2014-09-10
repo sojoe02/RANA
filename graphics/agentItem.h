@@ -25,7 +25,6 @@
 #include <QPainter>
 #include <QGraphicsItem>
 
-
 class agentItem : public QGraphicsItem
 {
     //Q_OBJECT

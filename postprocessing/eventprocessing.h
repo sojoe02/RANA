@@ -6,6 +6,7 @@
 #include <string>
 #include <unordered_map>
 #include <set>
+#include <QHash>
 
 
 #include "agentengine/agents/autonLUA.h"
@@ -26,18 +27,20 @@ public:
 
 	EventQueue::simInfo *readEventInfo(std::string path);
 	EventQueue::simInfo *getDataEvent();
-	void processBinnedEvents(double timeResolution, std::string path, int mapResolution, double zThresshold);
+	void processBinnedEvents(double timeResolution, std::string path,
+							 int mapResolution, double zThresshold);
 
-	void processEvent(EventQueue::dataEvent *event, double thresshold, int mapRes, double timeRes, std::string path);
+	void processEvent(EventQueue::dataEvent *event, double thresshold,
+					  int mapRes, double timeRes, std::string path);
 private:
 
 	std::vector<EventQueue::dataEvent> eventbin;
-	std::unordered_map<std::string, ZBlock> *zBlocks;
+	QHash<QString, ZBlock*> *zBlocks;
 	//std::unorderd_map<>
 	EventQueue::simInfo *simInfo;
 	EventQueue::dataEvent devent;
 
-	void recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *event, std::set<std::string> *visited, int x, int y, int width, int height, int mapRes, double timeRes, double thressholdZ);
+	void recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *event, QSet<QString> *visited, int x, int y, int width, int height, int mapRes, double timeRes, double thressholdZ);
 };
 
 #endif // EVENTPROCESSING_H

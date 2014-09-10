@@ -180,6 +180,7 @@ void AgentDomain::runSimulation(int time)
 
 	auto start = steady_clock::now();
 	auto start2 = steady_clock::now();
+	auto end = steady_clock::now();
 
 	//unsigned long long run_time = 0;
 	unsigned long long cMacroStep = 0;
@@ -217,14 +218,13 @@ void AgentDomain::runSimulation(int time)
         }
 
         //		//Update the status and progress bar screens:
-        auto end = steady_clock::now();
-
+		end = steady_clock::now();
         if(duration_cast<milliseconds>(end-start).count() > 50)
         {
             masteragent->printStatus();
             Output::Inst()->progressBar(cMacroStep,iterations);
             //int delay = Output::DelayValue.load();
-            std::this_thread::sleep_for(std::chrono::milliseconds(5));
+			//std::this_thread::sleep_for(std::chrono::milliseconds(5));
             //if(delay != 0)
             retrievePopPos();
 
