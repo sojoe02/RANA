@@ -418,7 +418,16 @@ void MainWindow::ppIsChecked()
 
 void MainWindow::on_vis_processEventsPushButton_clicked()
 {
-	//clear the zBlock ptr(don't delete the ptr!):
+	//clear the zBlock and remove the blocks from the graphicsScene:
+	if(zBlocks != NULL)
+	{
+		QHashIterator<QString, ZBlock*> zitr(*zBlocks);
+		while(zitr.hasNext())
+		{
+			eventScene->removeItem(zitr.value());
+		}
+	}
+
 	zBlocks = NULL;
 
 	ui->vis_processEventsPushButton->setDisabled(true);
@@ -451,16 +460,14 @@ void MainWindow::on_vis_processEventsPushButton_clicked()
 
 void MainWindow::setZblockPtr(QHash<QString, ZBlock *> *argZBlocks)
 {
-	if(zBlocks != NULL)
+	zBlocks = argZBlocks;
+
+	QHashIterator<QString, ZBlock*> zitr(*zBlocks);
+	while(zitr.hasNext())
 	{
-		QHashIterator<QString, ZBlock*> zitr(*zBlocks);
-		while(zitr.hasNext())
-		{
-			eventScene->removeItem(zitr.value());
-		}
+		eventScene->addItem(zitr.value());
 	}
 
-	zBlocks = argZBlocks;
 
 }
 
@@ -472,7 +479,7 @@ void MainWindow::setProcessEventButton(bool enabled)
 void MainWindow::advancePPProgess(int percentage)
 {
 	//QCoreApplication::postEvent(scene, new QEvent(QEvent::UpdateRequest),
-		//						Qt::LowEventPriority);
+	//						Qt::LowEventPriority);
 
 	QMetaObject::invokeMethod(ui->vis_progressBar, "setValue", Q_ARG(int, percentage));
 	//ui->progressBar->setValue(percentage);
