@@ -7,6 +7,8 @@
 #include <unordered_map>
 #include <set>
 #include <QHash>
+#include <QMap>
+#include <QMapIterator>
 
 
 #include "agentengine/agents/autonLUA.h"
@@ -23,7 +25,7 @@ public:
 
 	void resetEventProcessor();
 
-	void binEvents(std::string path, int from, int to);
+	void binEvents(QRegExp regex, std::string path, int from, int to);
 
 	EventQueue::simInfo *readEventInfo(std::string path);
 	EventQueue::simInfo *getDataEvent();

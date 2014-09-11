@@ -11,11 +11,10 @@ void EventRunner::run()
 {
 	if(eventprocessor != NULL)
 	{
+		eventprocessor->binEvents(regex,eventPath.toStdString(),from,to);
 
-		eventprocessor->binEvents(eventPath.toStdString(),from,to);
-
-		eventprocessor->processBinnedEvents(timeResolution,agentPath.toStdString(),
-											mapResolution,zThresshold);
+		//eventprocessor->processBinnedEvents(timeResolution,agentPath.toStdString(),
+		//									mapResolution,zThresshold);
 
 	} else
 		Output::Inst()->ppprintf("parameters have not been set");
@@ -24,8 +23,9 @@ void EventRunner::run()
 }
 
 
-void EventRunner::setParameters(EventProcessing *eventprocessor, QString eventPath, int from, int to, double timeResolution, QString agentPath, int mapResolution, double zThresshold)
+void EventRunner::setParameters(QRegExp regex, EventProcessing *eventprocessor, QString eventPath, int from, int to, double timeResolution, QString agentPath, int mapResolution, double zThresshold)
 {
+	this->regex = regex;
 	this->eventprocessor = eventprocessor;
 	this->eventPath = eventPath;
 	this->from = from;

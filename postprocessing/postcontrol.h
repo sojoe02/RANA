@@ -23,8 +23,8 @@ public:
 
 	EventQueue::simInfo* getEventInfo(QString path);
 
-	void runProcessEvents(QString eventPath, int from, int to,
-					   double timeResolution,QString agentPath,
+	void runProcessEvents(QRegExp regex, QString eventPath, int to, int from,
+					   double timeResolution, QString agentPath,
 					   int mapResolution, double zThresshold);
 
 	bool isProcessing();

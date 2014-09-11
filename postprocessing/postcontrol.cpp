@@ -48,12 +48,12 @@ EventQueue::simInfo* PostControl::getEventInfo(QString path)
 	return eventprocessor->readEventInfo(path.toStdString());
 }
 
-void PostControl::runProcessEvents(QString eventPath, int from, int to,
+void PostControl::runProcessEvents(QRegExp regex, QString eventPath, int to, int from,
 								double timeResolution,QString agentPath,
 								int mapResolution, double zThresshold)
 {
 	processing = true;
-	runner->setParameters(eventprocessor, eventPath, from, to,
+	runner->setParameters(regex, eventprocessor, eventPath, to, from,
 						  timeResolution, agentPath, mapResolution, zThresshold);
 	runner->start();
 }
@@ -67,6 +67,9 @@ bool PostControl::isProcessing()
 void PostControl::on_processDone()
 {
 	processing = false;
+	mainWindow->setProcessEventButton(true);
+
+
 	Output::Inst()->ppprintf("Event processing done");
 }
 

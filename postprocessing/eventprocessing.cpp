@@ -17,10 +17,10 @@ using std::chrono::seconds;
 using std::chrono::steady_clock;
 
 EventProcessing::EventProcessing()
+	:zBlocks(new QHash<QString, ZBlock*>()),
+	  simInfo(new EventQueue::simInfo)
 
 {
-	zBlocks = new QHash<QString, ZBlock*>();
-	simInfo = new EventQueue::simInfo;
 }
 
 EventProcessing::~EventProcessing()
@@ -72,7 +72,7 @@ EventQueue::simInfo* EventProcessing::getDataEvent()
 	return simInfo;
 }
 
-void EventProcessing::binEvents(std::string path, int to, int from)
+void EventProcessing::binEvents(QRegExp regex,std::string path, int to, int from)
 {
 	Output::Inst()->ppprintf("Binning Events from %i[s] to %i[s]",from, to);
 
@@ -89,11 +89,17 @@ void EventProcessing::binEvents(std::string path, int to, int from)
 			file.read(reinterpret_cast<char*>(&devent), sizeof(EventQueue::dataEvent));
 			//calculate the activation in seconds:
 			int activation = devent.activationTime/simInfo->timeResolution;
+			Output::Inst()->ppprintf("Activation %i to %i from %i",activation,to,from);
 
 			if(activation > from && activation < to)
 			{
-				//Output::Inst()->ppprintf("binnig event with activation %llu",devent.activationTime);
-				eventbin.push_back(devent);
+				QString desc = devent.desc;
+				Output::Inst()->ppprintf("%s,you never know",devent.desc);
+				if(desc.contains(regex))
+				{
+				Output::Inst()->ppprintf("binning event with activation %llu",devent.activationTime);
+					eventbin.push_back(devent);
+				}
 			}
 		}
 	}else

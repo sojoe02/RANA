@@ -44,10 +44,13 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow),factor(1),
-    mapImage(NULL), mapItem(NULL)
+	mapImage(NULL), mapItem(NULL),scene(new QGraphicsScene()),
+	control(new Control(this)),
+	postControl(new PostControl(this)),zBlocks(NULL),
+	eventScene(new QGraphicsScene())
 {
-    scene = new QGraphicsScene();
-    this->setWindowTitle("RANA QT version 1.0");
+
+	this->setWindowTitle("RANA QT version");
 
     ui->setupUi(this);
     ui->progressBar->setMaximum(100);
@@ -56,8 +59,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->graphicsView->setScene(scene);
     scene->setBackgroundBrush(Qt::gray);
     ui->runButton->setDisabled(true);
-
-    control = new Control(this);
 
     qRegisterMetaType<INFOLIST>("INFOLIST");
 
@@ -76,7 +77,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
 
-	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.2.4_QT_incomplete");
+	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.2.5_QT_incomplete");
 
 	ui->statusBar->addWidget(new QLabel(versionString));
 	ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
@@ -130,8 +131,8 @@ void MainWindow::on_generateButton_clicked()
 
 void MainWindow::advanceProgess(int percentage)
 {
-    QCoreApplication::postEvent(scene, new QEvent(QEvent::UpdateRequest),
-                                Qt::LowEventPriority);
+	//QCoreApplication::postEvent(scene, new QEvent(QEvent::UpdateRequest),
+	  //                          Qt::LowEventPriority);
     QMetaObject::invokeMethod(ui->progressBar, "setValue", Q_ARG(int, percentage));
     //ui->progressBar->setValue(percentage);
 }
@@ -358,21 +359,17 @@ void MainWindow::on_delaySpinBox_valueChanged(int arg1)
 
 void MainWindow::on_zoomSlider_valueChanged(int value)
 {
-
     double scale = (double)value/100;
 
     ui->zoomLabel->setText(QString().setNum(value));
 
     ui->graphicsView->setTransform(QTransform::fromScale(scale,scale));
-
-
 }
 
 void MainWindow::on_pushButton_clicked()
 {
     //ui->outputTextEdit->
 	ui->outputTextBrowser->clear();
-
 }
 
 void MainWindow::actionPrintInfo()
@@ -388,9 +385,6 @@ void MainWindow::actionPrintInfo()
 
 void MainWindow::ppConstruction()
 {
-	//eventprocessor = new EventProcessing;
-	postControl = new PostControl(this);
-
     vis_controlTabptr = ui->vis_controlTab;
     vis_mapTabptr = ui->vis_mapTab;
 
@@ -424,6 +418,9 @@ void MainWindow::ppIsChecked()
 
 void MainWindow::on_vis_processEventsPushButton_clicked()
 {
+	//clear the zBlock ptr(don't delete the ptr!):
+	zBlocks = NULL;
+
 	ui->vis_processEventsPushButton->setDisabled(true);
 
 	double timeRes = ui->vis_timeResolutionDoubleSpinBox->value();
@@ -440,7 +437,9 @@ void MainWindow::on_vis_processEventsPushButton_clicked()
 		int to = ui->vis_toTimeSpinBox->value();
 		int from = ui->vis_fromTimeSpinBox->value();
 
-		postControl->runProcessEvents(eventPath,from,to,
+		QRegExp regex(ui->vis_eventRegExLineEdit->text());
+
+		postControl->runProcessEvents(regex,eventPath,to,from,
 									  timeRes,agentPath,mapRes,thresshold);
 
 	} else
@@ -449,10 +448,31 @@ void MainWindow::on_vis_processEventsPushButton_clicked()
 								 eventPath.toStdString().c_str());
 }
 
+
+void MainWindow::setZblockPtr(QHash<QString, ZBlock *> *argZBlocks)
+{
+	if(zBlocks != NULL)
+	{
+		QHashIterator<QString, ZBlock*> zitr(*zBlocks);
+		while(zitr.hasNext())
+		{
+			eventScene->removeItem(zitr.value());
+		}
+	}
+
+	zBlocks = argZBlocks;
+
+}
+
+void MainWindow::setProcessEventButton(bool enabled)
+{
+	ui->vis_processEventsPushButton->setEnabled(enabled);
+}
+
 void MainWindow::advancePPProgess(int percentage)
 {
-	QCoreApplication::postEvent(scene, new QEvent(QEvent::UpdateRequest),
-								Qt::LowEventPriority);
+	//QCoreApplication::postEvent(scene, new QEvent(QEvent::UpdateRequest),
+		//						Qt::LowEventPriority);
 
 	QMetaObject::invokeMethod(ui->vis_progressBar, "setValue", Q_ARG(int, percentage));
 	//ui->progressBar->setValue(percentage);
@@ -523,9 +543,7 @@ void MainWindow::on_vis_readInfoPushButton_clicked()
 
 }
 
-
 //DIALOGS
-
 void MainWindow::dialogConstruction()
 {
 	QObject::connect(ui->actionSave_Current_Events, SIGNAL(triggered()),this, SLOT(eventDialog()));

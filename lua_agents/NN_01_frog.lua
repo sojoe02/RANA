@@ -61,21 +61,23 @@ function func.soundIntensity.simple(...)
 		y = setPosY-posY
 	end
 
-	if not power then
-		power = 50
-	end
+	if not power then power = 50 end
 	
 	l = math.sqrt(x*x + y*y)/power-1
 	return 1/(math.exp(l)+1)
 end
+
 --The event processing function, needed for postprocessing:
-function processFunction(posX, posY, callTable)
+function processFunction(fromX, fromY, toX, toY, callTable)
+
+	posX = fromX
+	posY = fromY
 
 	load("ctable="..callTable)()
 	--handle the relevant function:
 	if ctable.f_name == "soundIntensity" then
 		if ctable.index == 1 then
-			return func.execute(ctable.name, ctable.index, posX, posY, ctable.power)
+			return func.execute(ctable.name, ctable.index, toX, toY, ctable.power)
 		end
 	end
 
@@ -292,25 +294,25 @@ function generateLake(radius,x0, y0,resolution)
 			l_modifyMap(y + x0, -x + y0,r,g,b)
 
 			if filled == true then
-				for i=0, radius do 
-					l_modifyMap(x + x0 -i, y + y0, r,g,b)
-					l_modifyMap(y + x0 , x + y0-i, r,g,b)
-					l_modifyMap(-x + x0 +i, y + y0, r,g,b)
-					l_modifyMap(-y + x0, x + y0-i, r,g,b)
-					l_modifyMap(-x + x0 +i, -y + y0, r,g,b)
-					l_modifyMap(-y + x0, -x + y0 +i, r,g,b)
-					l_modifyMap(x + x0 -i, -y + y0, r,g,b)
-					l_modifyMap(y + x0, -x + y0+i, r,g,b)
-				end
+			for i=0, radius do
+			l_modifyMap(x + x0 -i, y + y0, r,g,b)
+			l_modifyMap(y + x0 , x + y0-i, r,g,b)
+			l_modifyMap(-x + x0 +i, y + y0, r,g,b)
+			l_modifyMap(-y + x0, x + y0-i, r,g,b)
+			l_modifyMap(-x + x0 +i, -y + y0, r,g,b)
+			l_modifyMap(-y + x0, -x + y0 +i, r,g,b)
+			l_modifyMap(x + x0 -i, -y + y0, r,g,b)
+			l_modifyMap(y + x0, -x + y0+i, r,g,b)
+			end
 			end
 
 			y = y +1;
 
 			if radiusError < 0 then 
-				radiusError = radiusError + 2 * y +1  
+			radiusError = radiusError + 2 * y +1
 			else
-				x = x -1
-				radiusError =radiusError + 2 * (y - x +1)
+			x = x -1
+			radiusError =radiusError + 2 * (y - x +1)
 			end
 
 		end
@@ -319,24 +321,24 @@ function generateLake(radius,x0, y0,resolution)
 		target_color = {0,0,0}
 
 		--floodFill(node, target_color, Color_Water)
-	end
-
-	function floodFill(node, target_color, replacement_color)
-		--If target-color is equal to replacement-color, return.
-		if target_color[1] == replacement_color[1] and
-			target_color[2] == replacement_color[2] and
-			target_color[3] == replacement_color[3] then		
-			return
 		end
 
+	function floodFill(node, target_color, replacement_color)
+	--If target-color is equal to replacement-color, return.
+	if target_color[1] == replacement_color[1] and
+	target_color[2] == replacement_color[2] and
+	target_color[3] == replacement_color[3] then
+	return
+	end
+
 		node_color = {}
-		node_color[1], node_color[2], node_color[3] = l_checkMap(node.x,node.y) 
+		node_color[1], node_color[2], node_color[3] = l_checkMap(node.x,node.y)
 
 		--If the color of node is not equal to target-color, return.
 		if node_color[1] ~= target_color[1] or
-			node_color[2] ~= target_color[2] or
-			node_color[3] ~= target_color[3] then		
-			return
+		node_color[2] ~= target_color[2] or
+		node_color[3] ~= target_color[3] then
+		return
 		end
 
 		--Set the color of node to replacement-color.

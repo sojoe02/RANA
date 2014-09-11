@@ -29,6 +29,7 @@
 
 #include "graphics/agentItem.h"
 #include "postprocessing/postcontrol.h"
+#include "postprocessing/graphics/zblock.h"
 #include "utility.h"
 #include "control.h"
 
@@ -57,12 +58,16 @@ public:
     void write_output(QString argMsg);
     void write_status(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents);
     void write_errOutput(QString argMsg);
+
 	//postprocessing:
 	void advancePPProgess(int percentage);
 	void write_PPOutput(QString argMsg);
+	void setProcessEventButton(bool enabled);
+	void setZblockPtr(QHash<QString, ZBlock *> *argZBlocks);
 
 	//dialogs:
 	void dialogConstruction();
+
 public slots:
 
     void wheelEvent(QWheelEvent *event);
@@ -134,6 +139,8 @@ private:
 
 	//eventProcessing things:
 	PostControl *postControl;
+	QHash<QString, ZBlock*> *zBlocks;
+	QGraphicsScene *eventScene;
 
 };
 

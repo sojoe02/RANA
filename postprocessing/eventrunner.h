@@ -10,9 +10,9 @@ class EventRunner : public QThread
 	Q_OBJECT
 public:
 	explicit EventRunner();
-	void setParameters(EventProcessing *eventprocessor,QString eventPath,
+	void setParameters(QRegExp regex, EventProcessing *eventprocessor, QString eventPath,
 					   int from, int to,
-					   double timeResolution,QString agentPath,
+					   double timeResolution, QString agentPath,
 					   int mapResolution, double zThresshold);
 
 signals:
@@ -32,6 +32,7 @@ private:
 	QString agentPath;
 	int mapResolution;
 	double zThresshold;
+	QRegExp regex;
 };
 
 #endif // EVENTRUNNER_H
