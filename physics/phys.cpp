@@ -59,7 +59,7 @@ MyRNG Phys::rng;
 std::uniform_int_distribution<uint64_t> Phys::uint_dist;
 double Phys::env_x = 0;
 double Phys::env_y = 0;
-
+double Phys::scale = 1;
 
 
 void Phys::seedMersenne(){
@@ -91,7 +91,7 @@ int Phys::getMacroFactor(){
 unsigned long long Phys::speedOfSound(double x_origin, double y_origin,
 		double x_dest, double y_dest){
 
-	double distance = sqrt( pow((x_origin-x_dest), 2) + pow((y_origin-y_dest),2) );
+	double distance = sqrt( pow((x_origin-x_dest), 2) + pow((y_origin-y_dest),2) ) * scale;
 
 	unsigned long long tmp = uint64_t (distance / (343.2 * Phys::timeResolution));
 	unsigned long long a_timestep = tmp + Phys::c_timeStep;
@@ -102,7 +102,7 @@ unsigned long long Phys::speedOfSound(double x_origin, double y_origin,
 unsigned long long Phys::speedOfSound(double x_origin, double y_origin,
 		double x_dest, double y_dest, double propagationSpeed){
 
-	double distance = sqrt( pow((x_origin-x_dest), 2) + pow((y_origin-y_dest),2) );
+	double distance = sqrt( pow((x_origin-x_dest), 2) + pow((y_origin-y_dest),2) ) * scale;
 
 	double tmp = distance / (propagationSpeed * Phys::timeResolution);
 	unsigned long long a_timestep = tmp + Phys::c_timeStep;
@@ -112,7 +112,7 @@ unsigned long long Phys::speedOfSound(double x_origin, double y_origin,
 
 double Phys::calcDistance(double x_origin, double y_origin, 
 		double x_dest, double y_dest){
-	return  sqrt( pow((x_origin-x_dest), 2) + pow((y_origin-y_dest),2) );
+	return  sqrt( pow((x_origin-x_dest), 2) + pow((y_origin-y_dest),2) ) * scale;
 }
 
 unsigned long long Phys::getCTime(){
@@ -129,11 +129,11 @@ void Phys::setEnvironment(double x, double y){
 }
 
 double Phys::getEnvX(){
-	return env_x;
+	return env_x * scale;
 }
 
 double Phys::getEnvY(){
-    return env_y;
+	return env_y * scale;
 }
 
 
@@ -147,8 +147,8 @@ void Phys::move(double v, double posX, double posY,
     double vX = vf * cos(angle);
     double vY = vf * sin(angle);
 
-    newX = vX + posX;
-    newY = vY + posY;
+	newX = vX*scale + posX;
+	newY = vY*scale + posY;
 }
 
 double Phys::getMersenneFloat(double min=0, double max=1){

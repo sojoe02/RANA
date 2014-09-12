@@ -34,6 +34,7 @@ public:
 
 	void processEvent(EventQueue::dataEvent *event, double thresshold,
 					  int mapRes, double timeRes, std::string path);
+	QHash<QString, ZBlock *> * getZBlocks();
 private:
 
 	std::vector<EventQueue::dataEvent> eventbin;

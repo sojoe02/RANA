@@ -27,8 +27,10 @@ public:
 	QRectF boundingRect() const;
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
-	void setColor(int time, ZMode zmode);
-	void changeMode(ZMode zmode);
+	void setColor(int time, ZMode currentZMode);
+	void changeMode(ZMode currentZMode);
+	void setTime(int time){currentTime = time;}
+
 private:
 
 	QRgb getCumulativeColor(int time);
@@ -53,7 +55,8 @@ private:
 	std::map<int, ColorUtility::zvalue> zmap;
 	std::map<int, ColorUtility::zvalue>::iterator zitr;
 
-	ZMode zmode;
+	ZMode currentZMode;
+	int currentTime;
 };
 
 #endif // ZBLOCK_H

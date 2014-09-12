@@ -108,6 +108,11 @@ void EventProcessing::binEvents(QRegExp regex,std::string path, int to, int from
 	file.close();
 }
 
+QHash<QString, ZBlock*> * EventProcessing::getZBlocks()
+{
+	return zBlocks;
+}
+
 void EventProcessing::processBinnedEvents(double timeResolution, std::string path,
 										  int mapResolution, double thresshold)
 {
@@ -144,7 +149,8 @@ void EventProcessing::processBinnedEvents(double timeResolution, std::string pat
 	}
 
 	//process all the binned events, new c11 style better get used to it:
-	for(auto it = std::begin(eventbin); it != std::end(eventbin); ++it)
+	for(auto it = std::begin(eventbin);
+		it != std::end(eventbin) && Output::RunEventProcessing.load()==true; ++it)
 	{
 		processEvent(&*it, thresshold,
 					 mapResolution, timeResolution, path);
@@ -179,7 +185,6 @@ void EventProcessing::processEvent(EventQueue::dataEvent *event,
 	recursiveZlevel(auton, event, visited,event->originX, event->originY,
 					width, height,mapRes,timeRes, thressholdZ);
 	delete visited;
-
 }
 
 void EventProcessing::recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *event,
@@ -187,6 +192,9 @@ void EventProcessing::recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *ev
 									  int x, int y, int width, int height,
 									  int mapRes, double timeRes, double thressholdZ)
 {
+	if(Output::RunEventProcessing.load() == false)
+		return;
+
 	char buffer[32];
 	sprintf(buffer,"%i,%i",x, y);
 	QString key = buffer;

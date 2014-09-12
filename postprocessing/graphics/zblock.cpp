@@ -6,7 +6,7 @@ ZBlock::ZBlock(int x, int y)
 	  x(x), y(y),
 	  currentFrequencyColor(Qt::blue), currentCumulativeColor(Qt::blue),
 	  currentAverageColor(Qt::blue), currentHighestColor(Qt::blue),activeColor(Qt::white),
-	  firstAddition(true), zmode(ZMode::Cumulative)
+	  firstAddition(true), currentZMode(ZMode::Cumulative), currentTime(1)
 {
 }
 
@@ -25,6 +25,7 @@ void ZBlock::paint(QPainter *painter,
 					  QWidget *widget)
 {
 	//QRectF rect = boundingRect();
+	setColor(currentTime, currentZMode);
 	painter->setBrush(QColor(activeColor));
 	painter->drawPoint(0,0);
 }
@@ -49,7 +50,7 @@ void ZBlock::setColor(int time, ZMode zmode)
 
 void ZBlock::changeMode(ZMode zmode)
 {
-	this->zmode = zmode;
+	this->currentZMode = zmode;
 }
 
 

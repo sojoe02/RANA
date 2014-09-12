@@ -52,8 +52,7 @@ class Phys
 {
 	public:
 
-		Phys(){
-		};
+		Phys(){}
 
         static double getTimeRes();
         static int getMacroFactor();
@@ -83,11 +82,10 @@ class Phys
 
         static void move(double v, double posX, double posY,
                          double desX, double desY,
-                         double &newX, double &newY);
+						 double &newX, double &newY);
 
-
-
-
+		static void setScale(double scale){Phys::scale = scale;}
+		static double getScale(){return Phys::scale;}
 
 private:
 
@@ -103,7 +101,7 @@ private:
 		typedef std::mt19937_64 MyRNG;
         static MyRNG rng;
 
-
+		static double scale;
 };
 
 

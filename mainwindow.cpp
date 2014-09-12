@@ -73,11 +73,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QObject::connect(this,SIGNAL(writeStatusSignal(unsigned long long,unsigned long long,unsigned long long,unsigned long long)),
                      this,SLOT(on_udateStatus(unsigned long long,unsigned long long,unsigned long long,unsigned long long)));
+
     //connect actions:
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
 
-	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.2.5_QT_incomplete");
+	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.2.6_QT_incomplete");
 
 	ui->statusBar->addWidget(new QLabel(versionString));
 	ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
@@ -104,6 +105,10 @@ void MainWindow::on_generateButton_clicked()
     GridMovement::clearGrid();
 
     if(mapItem != NULL){
+
+		Phys::setScale(ui->scaleDoubleSpinBox->value());
+		Output::Inst()->kprintf("Setting map scale to %f", Phys::getScale());
+
         ui->progressBar->setValue(0);
         QFile path(ui->agentPathLineEdit->text());
         if(path.exists())
@@ -388,8 +393,8 @@ void MainWindow::ppConstruction()
     vis_controlTabptr = ui->vis_controlTab;
     vis_mapTabptr = ui->vis_mapTab;
 
-    ui->tabWidget->removeTab(ui->tabWidget->indexOf(vis_controlTabptr));
-    ui->tabWidget->removeTab(ui->tabWidget->indexOf(vis_mapTabptr));
+	//ui->tabWidget->removeTab(ui->tabWidget->indexOf(vis_controlTabptr));
+	//ui->tabWidget->removeTab(ui->tabWidget->indexOf(vis_mapTabptr));
 
 	QObject::connect(ui->action_Enable_Visualisation, SIGNAL(changed()),this, SLOT(ppIsChecked()));
 
@@ -406,8 +411,8 @@ void MainWindow::ppIsChecked()
 {
     if(ui->action_Enable_Visualisation->isChecked())
     {
-		ui->tabWidget->insertTab(2,vis_controlTabptr,"Event Process Control");
-		ui->tabWidget->insertTab(3,vis_mapTabptr,"Event Map");
+		ui->tabWidget->insertTab(ui->tabWidget->count()+1,vis_controlTabptr,"Event Process Control");
+		//ui->tabWidget->insertTab(3,vis_mapTabptr,"Event Map");
     }else
     {
         ui->tabWidget->removeTab(ui->tabWidget->indexOf(vis_controlTabptr));
@@ -418,6 +423,8 @@ void MainWindow::ppIsChecked()
 
 void MainWindow::on_vis_processEventsPushButton_clicked()
 {
+
+	Output::RunEventProcessing.store(true);
 	//clear the zBlock and remove the blocks from the graphicsScene:
 	if(zBlocks != NULL)
 	{
@@ -458,16 +465,19 @@ void MainWindow::on_vis_processEventsPushButton_clicked()
 }
 
 
-void MainWindow::setZblockPtr(QHash<QString, ZBlock *> *argZBlocks)
+void MainWindow::setupVisualTab(QHash<QString, ZBlock *> *argZBlocks)
 {
 	zBlocks = argZBlocks;
 
 	QHashIterator<QString, ZBlock*> zitr(*zBlocks);
+
 	while(zitr.hasNext())
 	{
 		eventScene->addItem(zitr.value());
 	}
 
+	//add the map tab:
+	ui->tabWidget->insertTab(ui->tabWidget->count()+1,vis_mapTabptr,"Event Map");
 
 }
 
@@ -550,6 +560,50 @@ void MainWindow::on_vis_readInfoPushButton_clicked()
 
 }
 
+void MainWindow::on_vis_mapTypeComboBox_currentIndexChanged(const QString &arg1)
+{
+	Output::Inst()->ppprintf("Current index is :%s", arg1.toStdString().c_str());
+	ZMode zmode;
+
+	//set the z mode:
+	if(arg1.compare("Average"))
+		zmode = ZMode::Average;
+	else if(arg1.compare("Highest"))
+		zmode = ZMode::Highest;
+	else if(arg1.compare("Frequency"))
+		zmode = ZMode::Frequency;
+	else if(arg1.compare("Cumulative"))
+		zmode = ZMode::Cumulative;
+
+	if(zBlocks != NULL)
+	{
+		QHashIterator<QString, ZBlock*> zitr(*zBlocks);
+
+		while(zitr.hasNext())
+		{
+			zitr.value()->changeMode(zmode);
+		}
+	}
+}
+
+void MainWindow::on_vis_activeMapSpinBox_valueChanged(int arg1)
+{
+	if(zBlocks != NULL)
+	{
+		QHashIterator<QString, ZBlock*> zitr(*zBlocks);
+
+		while(zitr.hasNext())
+		{
+			zitr.value()->setTime(arg1);
+		}
+	}
+}
+
+void MainWindow::on_vis_stopEventProcessingPushButton_clicked()
+{
+	Output::RunEventProcessing.store(false);
+}
+
 //DIALOGS
 void MainWindow::dialogConstruction()
 {
@@ -573,4 +627,9 @@ void MainWindow::eventDialog()
 		Output::Inst()->kprintf("Cannot save events, simulation is still running,");
 	}
 }
+
+
+
+
+
 

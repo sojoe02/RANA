@@ -63,7 +63,7 @@ public:
 	void advancePPProgess(int percentage);
 	void write_PPOutput(QString argMsg);
 	void setProcessEventButton(bool enabled);
-	void setZblockPtr(QHash<QString, ZBlock *> *argZBlocks);
+	void setupVisualTab(QHash<QString, ZBlock *> *argZBlocks);
 
 	//dialogs:
 	void dialogConstruction();
@@ -95,11 +95,19 @@ private slots:
     void on_vis_processEventsPushButton_clicked();
 	void on_writePPOutput(QString string);
 
-	//dialogs:
-	void eventDialog();
-	void on_vis_eventBrowsePushButton_clicked();
 	void on_vis_readInfoPushButton_clicked();
 	void on_vis_agentPathPushButton_clicked();
+	void on_vis_mapTypeComboBox_currentIndexChanged(const QString &arg1);
+
+	//dialogs:
+	void eventDialog(); 
+	void on_vis_eventBrowsePushButton_clicked();
+
+	void on_vis_activeMapSpinBox_valueChanged(int arg1);
+
+
+
+	void on_vis_stopEventProcessingPushButton_clicked();
 
 signals:
 

@@ -68,6 +68,7 @@ void PostControl::on_processDone()
 {
 	processing = false;
 	mainWindow->setProcessEventButton(true);
+	mainWindow->setupVisualTab(eventprocessor->getZBlocks());
 
 
 	Output::Inst()->ppprintf("Event processing done");

@@ -52,6 +52,7 @@ public:
 
     static std::atomic<bool> RunSimulation;
     static std::atomic<bool> KillSimulation;
+	static std::atomic<bool> RunEventProcessing;
 
 	//Post processing things:
 	void ppprintf(const char* msg, ...);
