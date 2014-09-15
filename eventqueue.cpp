@@ -296,6 +296,7 @@ void EventQueue::saveEEventData(std::string name, std::string luaFileName,
 	dataInfo.tmuAmount = Phys::getCTime();
 	dataInfo.areaX = Phys::getEnvX();
 	dataInfo.areaY = Phys::getEnvY();
+	dataInfo.mapResolution = Phys::getScale();
 
 	//Output::Inst()->kprintf("\nsize stuff %d \n", dataInfo.areaX);
 

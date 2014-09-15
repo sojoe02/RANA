@@ -13,8 +13,8 @@ void EventRunner::run()
 	{
 		eventprocessor->binEvents(regex,eventPath.toStdString(),from,to);
 
-		//eventprocessor->processBinnedEvents(timeResolution,agentPath.toStdString(),
-		//									mapResolution,zThresshold);
+		eventprocessor->processBinnedEvents(timeResolution,agentPath.toStdString(),
+										mapResolution,zThresshold);
 
 	} else
 		Output::Inst()->ppprintf("parameters have not been set");

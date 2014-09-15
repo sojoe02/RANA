@@ -4,8 +4,7 @@
 ZBlock::ZBlock(int x, int y)
 	:
 	  x(x), y(y),
-	  currentFrequencyColor(Qt::blue), currentCumulativeColor(Qt::blue),
-	  currentAverageColor(Qt::blue), currentHighestColor(Qt::blue),activeColor(Qt::white),
+	  activeColor(Qt::white),
 	  firstAddition(true), currentZMode(ZMode::Cumulative), currentTime(1)
 {
 }
@@ -128,46 +127,52 @@ QRgb ZBlock::getCumulativeColor(int time)
 {
 	zitr = zmap.find(time);
 
+	QRgb color = Qt::blue;
+
 	if(zitr != zmap.end())
 	{
-		currentCumulativeColor =
-				ColorUtility::GetCumulativeColor(zitr->second.cumulative);
+		color =	ColorUtility::GetCumulativeColor(zitr->second.cumulative);
 	}
-	return currentCumulativeColor;
+
+	return color;
 }
 
 QRgb ZBlock::getFrequencyColor(int time)
 {
 	zitr = zmap.find(time);
 
+	QRgb color = Qt::blue;
+
 	if(zitr != zmap.end())
 	{
-		currentFrequencyColor =
-		ColorUtility::GetFreqColor(zitr->second.frequency);
+		color = ColorUtility::GetFreqColor(zitr->second.frequency);
 	}
-	return currentFrequencyColor;
+	return color;
 }
 
 QRgb ZBlock::getHighestColor(int time)
 {
 	zitr = zmap.find(time);
 
+	QRgb color = Qt::blue;
+
 	if(zitr != zmap.end())
 	{
-		currentHighestColor =
-		ColorUtility::GetHighest(zitr->second.highest);
+		color =	ColorUtility::GetHighest(zitr->second.highest);
 	}
-	return currentHighestColor;
+
+	return color;
 }
 
 QRgb ZBlock::getAverageColor(int time)
 {
 	zitr = zmap.find(time);
 
+	QRgb color = Qt::blue;
+
 	if(zitr != zmap.end())
 	{
-		currentAverageColor =
-		ColorUtility::GetAvgColor(zitr->second.average);
+		color =	ColorUtility::GetAvgColor(zitr->second.average);
 	}
-	return currentAverageColor;
+	return color;
 }

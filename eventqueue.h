@@ -46,6 +46,7 @@ class EventQueue
 			unsigned long long tmuAmount; /*!< number of total timeunist of  Timeresolution performed  */
 			double areaY; /*!< Areas Y size[m] (std computer coordinate system with reversed Y axis)*/
 			double areaX; /*!< Areas X size[m] */
+			double mapResolution;
 		};
 
 		//define the external Event:

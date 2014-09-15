@@ -23,8 +23,8 @@ protected:
 
 private:
 	EventProcessing *eventprocessor;
-	//parameters needed for event processing:
 
+	//parameters needed for event processing:
 	QString eventPath;
 	int from;
 	int to;

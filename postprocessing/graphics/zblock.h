@@ -45,10 +45,6 @@ private:
 	int x;
 	int y;
 
-	QRgb currentFrequencyColor;
-	QRgb currentCumulativeColor;
-	QRgb currentAverageColor;
-	QRgb currentHighestColor;
 	QRgb activeColor;
 
 	bool firstAddition;

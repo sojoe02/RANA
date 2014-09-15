@@ -393,8 +393,8 @@ void MainWindow::ppConstruction()
     vis_controlTabptr = ui->vis_controlTab;
     vis_mapTabptr = ui->vis_mapTab;
 
-	//ui->tabWidget->removeTab(ui->tabWidget->indexOf(vis_controlTabptr));
-	//ui->tabWidget->removeTab(ui->tabWidget->indexOf(vis_mapTabptr));
+	ui->tabWidget->removeTab(ui->tabWidget->indexOf(vis_controlTabptr));
+	ui->tabWidget->removeTab(ui->tabWidget->indexOf(vis_mapTabptr));
 
 	QObject::connect(ui->action_Enable_Visualisation, SIGNAL(changed()),this, SLOT(ppIsChecked()));
 
@@ -627,9 +627,3 @@ void MainWindow::eventDialog()
 		Output::Inst()->kprintf("Cannot save events, simulation is still running,");
 	}
 }
-
-
-
-
-
-

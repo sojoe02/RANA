@@ -30,10 +30,10 @@ public:
 	EventQueue::simInfo *readEventInfo(std::string path);
 	EventQueue::simInfo *getDataEvent();
 	void processBinnedEvents(double timeResolution, std::string path,
-							 int mapResolution, double zThresshold);
+							 double mapResolution, double zThresshold);
 
 	void processEvent(EventQueue::dataEvent *event, double thresshold,
-					  int mapRes, double timeRes, std::string path);
+					  double mapRes, double timeRes, std::string path);
 	QHash<QString, ZBlock *> * getZBlocks();
 private:
 
@@ -43,7 +43,8 @@ private:
 	EventQueue::simInfo *simInfo;
 	EventQueue::dataEvent devent;
 
-	void recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *event, QSet<QString> *visited, int x, int y, int width, int height, int mapRes, double timeRes, double thressholdZ);
+	void recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *event, QSet<QString> *visited, int x, int y, int width, int height, double mapRes, double timeRes, double thressholdZ);
+
 };
 
 #endif // EVENTPROCESSING_H

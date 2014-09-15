@@ -83,7 +83,6 @@ function processFunction(fromX, fromY, toX, toY, callTable)
 
 end
 
-
 -- Init of the lua frog, function called upon initilization of the LUA auton:
 function initAuton(x, y, id, macroFactor, timeResolution)
 
@@ -119,7 +118,7 @@ function initiateEvent()
 		targetID = 0;
 		--l_gridMove(posX, posY, newPosX, newPosY)
 		--posX = newPosX
-		--posY = newPosY
+		--posY = newPosYe
 		return propagationSpeed, s_calltable, desc, targetID
 	end
 
