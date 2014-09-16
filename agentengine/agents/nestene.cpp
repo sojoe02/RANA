@@ -42,6 +42,11 @@
 }
 
 Nestene::~Nestene(){
+	for(auto it = begin(LUAs); it != end(LUAs); ++it)
+	{
+		delete it->second;
+	}
+
 }
 
 
@@ -76,9 +81,9 @@ void Nestene::populate(int listenerSize, int screamerSize, int LUASize,std::stri
 		double xtmp = (double)rand()/ RAND_MAX * width + posX;
 		double ytmp = (double)rand()/ RAND_MAX * height + posY;
 
-		AutonLUA auton = AutonLUA(ID::generateAutonID(),xtmp,ytmp,1,this,filename);
+		AutonLUA *auton = new AutonLUA(ID::generateAutonID(),xtmp,ytmp,1,this,filename);
 		itLUAs = LUAs.begin();
-		LUAs.insert(std::pair<int,AutonLUA>(auton.getID(),auton));
+		LUAs.insert(std::pair<int,AutonLUA*>(auton->getID(),auton));
 	}
 }
 
@@ -93,9 +98,9 @@ void Nestene::populateSquared(int LUASize,std::string filename){
 
 		for(int i=0; i<LUASize; i++){
 			for(int j = 0; j < LUASize; j++){
-				AutonLUA auton(ID::generateAutonID(), (chunkX*j)+posX+chunkX/2, (chunkY*i)+posY+chunkY/2,1,this,filename);
-				itLUAs = LUAs.begin();
-				LUAs.insert(std::pair<int,AutonLUA>(auton.getID(),auton));
+				//AutonLUA auton(ID::generateAutonID(), (chunkX*j)+posX+chunkX/2, (chunkY*i)+posY+chunkY/2,1,this,filename);
+				//itLUAs = LUAs.begin();
+				//LUAs.insert(std::pair<int,AutonLUA*>(&auton.getID(),auton));
 			}
 		}
 	}
@@ -130,9 +135,9 @@ void Nestene::retrievePopPos(std::list<agentInfo> &infolist){
 
         agentInfo info;
 
-        info.id = itLUAs->second.getID();
-        info.y = itLUAs->second.getPosY();
-        info.x = itLUAs->second.getPosX();
+		info.id = itLUAs->second->getID();
+		info.y = itLUAs->second->getPosY();
+		info.x = itLUAs->second->getPosX();
 
         infolist.push_back(info);
 	}
@@ -160,7 +165,7 @@ void Nestene::initPhase(double macroResolution, unsigned long long tmu){
 		}
 	}
 	for(itLUAs = LUAs.begin(); itLUAs !=LUAs.end(); itLUAs++){
-		EventQueue::eEvent* eevent = itLUAs->second.initEvent();
+		EventQueue::eEvent* eevent = itLUAs->second->initEvent();
 		if(eevent != NULL){
 			master->receiveInitEEventPtr(eevent);
 		}
@@ -181,8 +186,8 @@ void Nestene::distroPhase(EventQueue::eEvent* event){
 		}
 	}
 	for(itLUAs = LUAs.begin(); itLUAs != LUAs.end(); ++itLUAs){
-		if(event->origin->getID() != itLUAs->second.getID()){
-			EventQueue::iEvent *ievent = itLUAs->second.handleEvent(event);
+		if(event->origin->getID() != itLUAs->second->getID()){
+			EventQueue::iEvent *ievent = itLUAs->second->handleEvent(event);
 			if(ievent != NULL)
 				master->receiveIEventPtr(ievent);
 		}
@@ -213,7 +218,7 @@ void Nestene::simDone(){
 		itScreamers->second.simDone();
 	}
 	for(itLUAs = LUAs.begin(); itLUAs !=LUAs.end(); itLUAs++){
-		itLUAs->second.simDone();
+		itLUAs->second->simDone();
 	}
 }
 

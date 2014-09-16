@@ -11,6 +11,8 @@
 #include "eventprocessing.h"
 #include "output.h"
 #include "agentengine/agents/autonLUA.h"
+#include "physics/shared.h"
+#include "physics/gridmovement.h"
 
 using std::chrono::duration_cast;
 using std::chrono::milliseconds;
@@ -98,7 +100,7 @@ void EventProcessing::binEvents(QRegExp regex,std::string path, int to, int from
 				//Output::Inst()->ppprintf("%s,you never know",devent.desc);
 				if(desc.contains(regex))
 				{
-				//Output::Inst()->ppprintf("binning event with activation %llu",devent.activationTime);
+					//Output::Inst()->ppprintf("Binning event with ID %i",devent.id);
 					eventbin.push_back(devent);
 				}
 			}
@@ -149,35 +151,57 @@ void EventProcessing::processBinnedEvents(double timeResolution, std::string pat
 			zBlocks->insert(key,block);
 		}
 	}
-	Output::Inst()->ppprintf("before event");
+
+	//setup the agent environment:
+	Phys::setTimeRes(timeResolution);
+	Phys::setCTime(0);
+	Phys::setMacroFactor(simInfo->macroFactor);
+	Phys::setEnvironment(simInfo->areaX/simInfo->mapResolution,
+						 simInfo->areaY/simInfo->mapResolution);
+	Shared::initShared();
+	GridMovement::clearGrid();
+	QImage *mapImage = new QImage(simInfo->areaX*mapResolution,
+								 simInfo->areaY*mapResolution,
+								 QImage::Format_RGB32);
+
+	QGraphicsPixmapItem *mapItem = new QGraphicsPixmapItem(QPixmap::fromImage(*mapImage));
+	//scene->addItem(mapItem);
+	mapItem->setPixmap(QPixmap::fromImage(*mapImage));
+
+
 	//process all the binned events, new c11 style better get used to it:
 	for(auto it = std::begin(eventbin);
 		it != std::end(eventbin) && Output::RunEventProcessing.load()==true; ++it)
 	{
 		processEvent(&*it, thresshold,
 					 mapResolution, timeResolution, path);
-	Output::Inst()->ppprintf("after event");
+
+		//Output::Inst()->ppprintf("event ID is %i ",it->id);
+
 		end = steady_clock::now();
 		if(duration_cast<milliseconds>(end-start).count() > 50)
 		{
-			Output::Inst()->ppprogressbar(std::distance(it,begin(eventbin)), eventbin.size());
+			Output::Inst()->ppprogressbar(std::distance(begin(eventbin)+1,it), eventbin.size());
 			start = end;
 		}
 	}
 
+	Output::Inst()->ppprintf("Over and out...");
+
+	delete mapImage;
+	delete mapItem;
 }
 
 void EventProcessing::processEvent(EventQueue::dataEvent *event,
-								   double thresshold, double mapRes, double timeRes,
-								   std::string path)
+								   double thresshold, double mapRes, double timeRes, std::string path)
 {
-	Output::Inst()->ppprintf("during event, id %i ", event->originID);
+	//Output::Inst()->ppprintf("doing event, id %i ", event->id);
 
 	Phys::setMacroFactor(simInfo->macroFactor);
 	Phys::setTimeRes(simInfo->timeResolution);
 
 	AutonLUA *auton =
-			new AutonLUA(1,1,1, 0, NULL, path);
+			new AutonLUA(event->originID,event->originX,event->originY, 0, NULL, path);
 
 	QSet<QString> *visited = new QSet<QString>();
 
@@ -187,7 +211,8 @@ void EventProcessing::processEvent(EventQueue::dataEvent *event,
 	double z = 1;
 	double duration =0;
 	//calculate the z value at origin, to get thresshold value:
-	//auton->processFunction(event, mapRes, event->originX, event->originY, z, duration);
+	auton->processFunction(event, simInfo->mapResolution, event->originX, event->originY, z, duration);
+	Output::Inst()->kprintf("z value at origin is = %f, duration is = %f", z, duration);
 	double thressholdZ = z * thresshold;
 
 	//recursiveZlevel(auton, event, visited,event->originX, event->originY,
@@ -221,7 +246,7 @@ void EventProcessing::recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *ev
 	double z;
 	double duration;
 
-	auton->processFunction(event, mapRes,x*mapRes, y*mapRes,z,duration);
+	auton->processFunction(event, mapRes,x, y,z,duration);
 
 	double distance = sqrt( pow((event->originX - x*mapRes), 2)
 							+ pow((event->originY - y*mapRes),2) );

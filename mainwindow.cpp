@@ -47,7 +47,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	mapImage(NULL), mapItem(NULL),scene(new QGraphicsScene()),
 	control(new Control(this)),
 	postControl(new PostControl(this)),zBlocks(NULL),
-	eventScene(new QGraphicsScene())
+	eventScene(new QGraphicsScene()), disableSimOutput(false)
 {
 
 	this->setWindowTitle("RANA QT version");
@@ -212,9 +212,10 @@ void MainWindow::on_writeOutput(QString string)
     //std::this_thread::sleep_for(std::chrono::milliseconds(5));
     //QString prepend = "</>";
     //QString output = string.prepend(prepend);
-
-	ui->outputTextBrowser->insertHtml(string);
-	ui->outputTextBrowser->append("");
+	if(!disableSimOutput){
+		ui->outputTextBrowser->insertHtml(string);
+		ui->outputTextBrowser->append("");
+	}
 }
 
 void MainWindow::write_output(QString argMsg)
@@ -626,4 +627,9 @@ void MainWindow::eventDialog()
 	{
 		Output::Inst()->kprintf("Cannot save events, simulation is still running,");
 	}
+}
+
+void MainWindow::on_actionDisable_Simulation_Output_toggled(bool arg1)
+{
+	disableSimOutput = arg1;
 }

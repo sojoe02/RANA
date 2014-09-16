@@ -93,8 +93,8 @@ class Nestene
 		std::map<int,AutonScreamer> screamers;
 		std::map<int,AutonScreamer>::iterator itScreamers;
 
-		std::map<int,AutonLUA> LUAs;
-		std::map<int,AutonLUA>::iterator itLUAs;
+		std::map<int,AutonLUA*> LUAs;
+		std::map<int,AutonLUA*>::iterator itLUAs;
 
 		//list of ievents to be send back to the master:
 		//std::list<EventQueue::iEvent*>* iEvents;

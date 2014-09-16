@@ -51,7 +51,6 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
 	 * Setup up the LUA stack:
 	 */
 	L = luaL_newstate();
-Output::Inst()->ppprintf("am i initialized...4");
 	luaL_openlibs(L);
 	/*
 	 * Register all the API functions:
@@ -82,7 +81,7 @@ Output::Inst()->ppprintf("am i initialized...4");
 		nofile = true;
 		Output::Inst()->kprintf("Lua Auton disabled\n");
 	}
-Output::Inst()->ppprintf("am i initialized...3");
+
 	//lua_atpanic (L, AutonLUA::luapanic);
 
 	//init the LUA frog:
@@ -94,7 +93,7 @@ Output::Inst()->ppprintf("am i initialized...3");
 	double tr = Phys::getTimeRes();
 	lua_pushnumber(L,mf);
 	lua_pushnumber(L,tr);
-Output::Inst()->ppprintf("am i initialized...2");
+
 	try{
 		//Call the initAuton function (3 arguments, 0 results):
 		if(lua_pcall(L,5,0,0)!=LUA_OK)
@@ -103,6 +102,8 @@ Output::Inst()->ppprintf("am i initialized...2");
 			nofile = true;
 			Output::Inst()->kprintf("Lua Auton disabled\n");
 		}
+
+
 		//lua_settop(L,0);
 		//sync positions:
 		lua_getglobal(L,"getSyncData");
@@ -127,6 +128,9 @@ Output::Inst()->ppprintf("am i initialized...1");
 }
 
 AutonLUA::~AutonLUA(){
+	//delete L;
+	//lua_close(L);
+	lua_settop(L,0);
 	lua_close(L);
 }
 
@@ -155,7 +159,8 @@ EventQueue::iEvent* AutonLUA::handleEvent(EventQueue::eEvent *event)
 		} else
 		{
 			ievent->activationTime =
-					Phys::speedOfSound(event->origin->getPosX(), event->origin->getPosY(),
+					Phys::speedOfSound(event->origin->getPosX(),
+									   event->origin->getPosY(),
 									   posX, posY, event->propagationSpeed) + 1;
 		}
 
@@ -250,8 +255,8 @@ EventQueue::eEvent* AutonLUA::initEvent()
 void AutonLUA::processFunction(EventQueue::dataEvent *devent, double mapRes, double x, double y, double &zvalue,	double &duration)
 {
 	lua_getglobal(L, "processFunction");
-	lua_pushnumber(L, devent->originX *mapRes);
-	lua_pushnumber(L, devent->originY *mapRes);
+	lua_pushnumber(L, devent->originX);
+	lua_pushnumber(L, devent->originY);
 	lua_pushnumber(L, x);
 	lua_pushnumber(L, y);
 	lua_pushstring(L, devent->table);
@@ -357,9 +362,6 @@ void AutonLUA::simDone(){
 		{
 			Output::Inst()->kprintf("<b><font color=\"brown\">error on 'simDone':\t %s\n</font></b></>",lua_tostring(L,-1));
 		}
-
-		lua_settop(L,0);
-		lua_close(L);
 	} catch(std::exception& e)
 	{
 		Output::Inst()->kprintf("<b><font color=\"red\">Error on simulationDone..%s</font></b></>", e.what());

@@ -46,7 +46,7 @@ function func.execute(name, index, ...)
 end
 
 func.soundIntensity = {}
-function func.soundIntensity.simple(...)
+function func.soundIntensity.f2(...)
 
 	local setPosX
 	local setPosY
@@ -62,6 +62,8 @@ function func.soundIntensity.simple(...)
 	end
 
 	if not power then power = 50 end
+
+	l_debug("X:"..x.." Y:"..y.." power:"..power)
 	
 	l = math.sqrt(x*x + y*y)/power-1
 	return 1/(math.exp(l)+1)
@@ -73,13 +75,17 @@ function processFunction(fromX, fromY, toX, toY, callTable)
 	posX = fromX
 	posY = fromY
 
+	l_debug(callTable.." posX:"..posX.." posY:"..posY.." toX"..toX.." toY"..toY)
+
 	load("ctable="..callTable)()
 	--handle the relevant function:
 	if ctable.f_name == "soundIntensity" then
-		if ctable.index == 1 then
-			return func.execute(ctable.name, ctable.index, toX, toY, ctable.power)
+		if ctable.index == 2 then
+			return func.execute(ctable.f_name, ctable.index, toX, toY, ctable.power)
 		end
 	end
+
+	return 1,1
 
 end
 

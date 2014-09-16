@@ -34,6 +34,8 @@ class Auton
 public:
     Auton(int ID, double posX, double posY, double posZ, Nestene *nestene);
 
+	virtual ~Auton(){};
+
     virtual EventQueue::iEvent* handleEvent(EventQueue::eEvent* event);
     virtual EventQueue::eEvent* actOnEvent(EventQueue::iEvent* event);
     virtual EventQueue::eEvent* initEvent(int macroResolution, unsigned long long tmu);

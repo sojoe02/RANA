@@ -36,6 +36,7 @@ class AutonListener : public Auton
 
 	private:
 		//function to receive an event from nestene responsible for this auton, returns an internal Event 'thinking':
+
 		EventQueue::iEvent* handleEvent(EventQueue::eEvent* event);
 		EventQueue::eEvent* actOnEvent(EventQueue::iEvent *event);
 

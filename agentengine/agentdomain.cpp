@@ -110,10 +110,7 @@ void AgentDomain::generateSquaredEnvironment(double width, double height, int re
 	Phys::setMacroFactor(macroFactor);
 	Phys::setEnvironment(width, height);
 
-
-
     masteragent->generateMap(width,height,resolution,timeResolution, macroResolution);
-
 	//std::string filename = "frog.lua";
 
 	mapWidth = width;

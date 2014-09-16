@@ -319,7 +319,7 @@ void EventQueue::saveEEventData(std::string name, std::string luaFileName,
 				devent.propagationSpeed = tmp->propagationSpeed;
 				strncpy(devent.desc,tmp->desc.c_str(),150);
 				strncpy(devent.table,tmp->table.c_str(),1024);
-				//Output::Inst()->kprintf("Propagation %f\n", devent.propagationSpeed);				
+				//Output::Inst()->kprintf("Event id %i \n", tmp->id);
 				file.write(reinterpret_cast<char*>(&devent),sizeof(devent));
 			}	
 		} else{

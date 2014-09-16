@@ -1180,9 +1180,16 @@
     <addaction name="actionSave_Current_Events"/>
     <addaction name="action_Enable_Visualisation"/>
    </widget>
+   <widget class="QMenu" name="menuOptions">
+    <property name="title">
+     <string>&amp;Options</string>
+    </property>
+    <addaction name="actionDisable_Simulation_Output"/>
+   </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Options"/>
    <addaction name="menu_Help"/>
+   <addaction name="menuOptions"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="action_Open">
@@ -1211,6 +1218,14 @@
   <action name="actionSave_Current_Events">
    <property name="text">
     <string>Save Current Events</string>
+   </property>
+  </action>
+  <action name="actionDisable_Simulation_Output">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Disable Simulation Output</string>
    </property>
   </action>
  </widget>

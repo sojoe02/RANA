@@ -109,6 +109,8 @@ private slots:
 
 	void on_vis_stopEventProcessingPushButton_clicked();
 
+	void on_actionDisable_Simulation_Output_toggled(bool arg1);
+
 signals:
 
     void map_updateSignal(INFOLIST infolist);
@@ -140,6 +142,7 @@ private:
     QAction* showAct;
     QAction* hideAct;
     QAction* exitAct;
+	bool disableSimOutput;
 
 	void ppConstruction();
     QWidget *vis_controlTabptr;
