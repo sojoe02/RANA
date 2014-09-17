@@ -52,7 +52,7 @@ function func.soundIntensity.f2(...)
 	local setPosY
 	local power
 
-	setPosX, setPosY, power = ...
+	setPosX, setPosY, power,time = ...
 	local x = 0
 	local y = 0
 
@@ -62,6 +62,7 @@ function func.soundIntensity.f2(...)
 	end
 
 	if not power then power = 50 end
+	if not time then time = 0 end
 
 	l_debug("X:"..x.." Y:"..y.." power:"..power)
 	
@@ -70,7 +71,7 @@ function func.soundIntensity.f2(...)
 end
 
 --The event processing function, needed for postprocessing:
-function processFunction(fromX, fromY, toX, toY, callTable)
+function processFunction(fromX, fromY, toX, toY, callTable,time)
 
 	posX = fromX
 	posY = fromY
@@ -81,7 +82,7 @@ function processFunction(fromX, fromY, toX, toY, callTable)
 	--handle the relevant function:
 	if ctable.f_name == "soundIntensity" then
 		if ctable.index == 2 then
-			return func.execute(ctable.f_name, ctable.index, toX, toY, ctable.power)
+			return func.execute(ctable.f_name, ctable.index, toX, toY, ctable.power, time)
 		end
 	end
 

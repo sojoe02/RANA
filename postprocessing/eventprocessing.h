@@ -43,7 +43,7 @@ private:
 	EventQueue::simInfo *simInfo;
 	EventQueue::dataEvent devent;
 
-	void recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *event, QSet<QString> *visited, int x, int y, int width, int height, double mapRes, double timeRes, double thressholdZ);
+	void recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *event, QSet<QString> *visited, int x, int y, int displaceX, int displaceY, int width, int height, double mapRes, double timeRes, double thressholdZ);
 
 };
 
