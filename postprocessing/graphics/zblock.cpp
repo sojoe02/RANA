@@ -1,5 +1,7 @@
+#include "output.h"
 #include "zblock.h"
 #include "../colorutility.h"
+
 
 ZBlock::ZBlock(int x, int y)
 	:
@@ -7,6 +9,7 @@ ZBlock::ZBlock(int x, int y)
 	  activeColor(Qt::white),
 	  firstAddition(true), currentZMode(ZMode::Cumulative), currentTime(1)
 {
+	//Output::Inst()->ppprintf("zblock initialized at: %i,%i", x,y);
 }
 
 ZBlock::~ZBlock()
@@ -68,6 +71,7 @@ void ZBlock::addZValue(double zvalue, int time)
 		max.average = zvalue;
 		firstAddition = false;
 	}
+	Output::Inst()->ppprintf("Z value is: %f, time is: %f", zvalue , time);
 
 	zitr = zmap.find(time);
 

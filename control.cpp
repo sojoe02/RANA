@@ -40,6 +40,7 @@ Control::~Control()
 void Control::runSimulation(unsigned long long runTime)
 {
     running = true;
+	Output::SimRunning.store(true);
     mainwindow->changeRunButton("Stop");
     runner->setParameters(agentDomain, runTime);
     runner->start();
@@ -77,6 +78,7 @@ void Control::on_simDone()
     running = false;
     mainwindow->changeRunButton("Run");
     mainwindow->runButtonHide();
+	Output::SimRunning.store(false);
     Output::Inst()->kprintf("Simulation Done");
 }
 

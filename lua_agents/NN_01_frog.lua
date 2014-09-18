@@ -64,19 +64,19 @@ function func.soundIntensity.f2(...)
 	if not power then power = 50 end
 	if not time then time = 0 end
 
-	l_debug("X:"..x.." Y:"..y.." power:"..power)
+	--l_debug("X:"..x.." Y:"..y.." power:"..power)
 	
 	l = math.sqrt(x*x + y*y)/power-1
 	return 1/(math.exp(l)+1)
 end
 
 --The event processing function, needed for postprocessing:
-function processFunction(fromX, fromY, toX, toY, callTable,time)
+function processFunction(fromX, fromY, toX, toY,time, callTable)
 
 	posX = fromX
 	posY = fromY
 
-	l_debug(callTable.." posX:"..posX.." posY:"..posY.." toX"..toX.." toY"..toY)
+	--l_debug(callTable.." posX:"..posX.." posY:"..posY.." toX"..toX.." toY"..toY)
 
 	load("ctable="..callTable)()
 	--handle the relevant function:

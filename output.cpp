@@ -36,6 +36,7 @@ std::atomic<int> Output::DelayValue;
 std::atomic<bool> Output::RunSimulation;
 std::atomic<bool> Output::KillSimulation;
 std::atomic<bool> Output::RunEventProcessing;
+std::atomic<bool> Output::SimRunning;
 unsigned long long Output::RUNTIME = 0;
 
 std::string Output::AgentPath = "";

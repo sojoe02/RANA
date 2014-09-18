@@ -145,8 +145,11 @@ private:
 	bool disableSimOutput;
 
 	void ppConstruction();
-    QWidget *vis_controlTabptr;
-    QWidget *vis_mapTabptr;
+	QWidget *vis_controlTab;
+	QWidget *vis_mapTab;
+	QWidget *sim_controlTab;
+	QWidget *sim_viewTab;
+	QWidget *sim_general;
 
 	//eventProcessing things:
 	PostControl *postControl;

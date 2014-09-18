@@ -83,6 +83,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->statusBar->addWidget(new QLabel(versionString));
 	ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
 
+	sim_controlTab = ui->simControlTab;
+	sim_viewTab = ui->simLiveView;
+	sim_general = ui->simGeneralWidget;
+
 	ppConstruction();
 	dialogConstruction();
 
@@ -391,11 +395,11 @@ void MainWindow::actionPrintInfo()
 
 void MainWindow::ppConstruction()
 {
-    vis_controlTabptr = ui->vis_controlTab;
-    vis_mapTabptr = ui->vis_mapTab;
+	vis_controlTab = ui->vis_controlTab;
+	vis_mapTab = ui->vis_mapTab;
 
-	ui->tabWidget->removeTab(ui->tabWidget->indexOf(vis_controlTabptr));
-	ui->tabWidget->removeTab(ui->tabWidget->indexOf(vis_mapTabptr));
+	ui->tabWidget->removeTab(ui->tabWidget->indexOf(vis_controlTab));
+	ui->tabWidget->removeTab(ui->tabWidget->indexOf(vis_mapTab));
 
 	QObject::connect(ui->action_Enable_Visualisation, SIGNAL(changed()),this, SLOT(ppIsChecked()));
 
@@ -410,15 +414,33 @@ void MainWindow::ppConstruction()
 
 void MainWindow::ppIsChecked()
 {
-    if(ui->action_Enable_Visualisation->isChecked())
-    {
-		ui->tabWidget->insertTab(ui->tabWidget->count()+1,vis_controlTabptr,"Event Process Control");
-		//ui->tabWidget->insertTab(3,vis_mapTabptr,"Event Map");
-    }else
-    {
-        ui->tabWidget->removeTab(ui->tabWidget->indexOf(vis_controlTabptr));
-        ui->tabWidget->removeTab(ui->tabWidget->indexOf(vis_mapTabptr));
-    }
+
+	if(Output::SimRunning.load())
+	{
+		Output::Inst()->
+				kprintf("<b>Cannot Enable Postprocessing until the simulation is done</b>");
+		ui->action_Enable_Visualisation->setChecked(false);
+	} else
+	{
+
+		if(ui->action_Enable_Visualisation->isChecked())
+		{
+			ui->tabWidget->removeTab(ui->tabWidget->indexOf(sim_controlTab));
+			ui->tabWidget->removeTab(ui->tabWidget->indexOf(sim_viewTab));
+			ui->simGeneralWidget->hide();
+
+			ui->tabWidget->insertTab(ui->tabWidget->count()+1,vis_controlTab,"Event Process Control");
+			//ui->tabWidget->insertTab(3,vis_mapTabptr,"Event Map");
+		}else
+		{
+			ui->tabWidget->removeTab(ui->tabWidget->indexOf(vis_controlTab));
+			ui->tabWidget->removeTab(ui->tabWidget->indexOf(vis_mapTab));
+
+			ui->tabWidget->insertTab(ui->tabWidget->count()+1,sim_controlTab,"Control");
+			ui->tabWidget->insertTab(ui->tabWidget->count()+1,sim_viewTab,"Live View");
+			ui->simGeneralWidget->show();
+		}
+	}
 }
 
 
@@ -478,7 +500,7 @@ void MainWindow::setupVisualTab(QHash<QString, ZBlock *> *argZBlocks)
 	}
 
 	//add the map tab:
-	ui->tabWidget->insertTab(ui->tabWidget->count()+1,vis_mapTabptr,"Event Map");
+	ui->tabWidget->insertTab(ui->tabWidget->count()+1,vis_mapTab,"Event Map");
 
 }
 
