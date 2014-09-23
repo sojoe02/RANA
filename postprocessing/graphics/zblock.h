@@ -19,17 +19,18 @@ enum class ZMode
 class ZBlock : public QGraphicsItem
 {
 public:
-	ZBlock(int x, int y);
+	ZBlock(int posX, int argY);
 	~ZBlock();
 	void addZValue(double zvalue, int time);
 	void registerMinMax();	
 
 	QRectF boundingRect() const;
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+	void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
 
 	void setColor(int time, ZMode currentZMode);
 	void changeMode(ZMode currentZMode);
-	void setTime(int time){currentTime = time;}
+	void setTime(int time);
 
 private:
 
@@ -42,8 +43,8 @@ private:
 	ColorUtility::zvalue max;
 	ColorUtility::zvalue min;
 
-	int x;
-	int y;
+	int posX;
+	int posY;
 
 	QRgb activeColor;
 

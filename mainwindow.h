@@ -111,6 +111,8 @@ private slots:
 
 	void on_actionDisable_Simulation_Output_toggled(bool arg1);
 
+	void on_vis_eventZoomSlider_valueChanged(int value);
+
 signals:
 
     void map_updateSignal(INFOLIST infolist);

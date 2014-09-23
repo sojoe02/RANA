@@ -45,6 +45,7 @@ EventQueue::simInfo* PostControl::getEventInfo(QString path)
 
 	eventprocessor = new EventProcessing;
 
+
 	return eventprocessor->readEventInfo(path.toStdString());
 }
 
@@ -52,6 +53,8 @@ void PostControl::runProcessEvents(QRegExp regex, QString eventPath, int to, int
 								double timeResolution,QString agentPath,
 								int mapResolution, double zThresshold)
 {
+	ColorUtility::init();
+
 	processing = true;
 	runner->setParameters(regex, eventprocessor, eventPath, to, from,
 						  timeResolution, agentPath, mapResolution, zThresshold);

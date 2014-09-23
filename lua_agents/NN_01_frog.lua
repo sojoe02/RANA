@@ -82,7 +82,7 @@ function processFunction(fromX, fromY, toX, toY,time, callTable)
 	--handle the relevant function:
 	if ctable.f_name == "soundIntensity" then
 		if ctable.index == 2 then
-			return func.execute(ctable.f_name, ctable.index, toX, toY, ctable.power, time)
+			return func.execute(ctable.f_name, ctable.index, toX, toY, ctable.power, time), 1
 		end
 	end
 

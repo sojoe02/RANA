@@ -27,6 +27,7 @@ public:
 
 	static double Z_TRESSHOLD_PERCENTAGE;
 
+	static void init();
 private:
 
 	static QMutex MUTEX;

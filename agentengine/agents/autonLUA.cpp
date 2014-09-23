@@ -267,11 +267,12 @@ void AutonLUA::processFunction(EventQueue::dataEvent *devent, double time, doubl
 			   lua_tostring(L,-1));
 		Output::RunEventProcessing.store(false);
 		return;
+	} else
+	{
+
+		zvalue = lua_tonumber(L,-2);
+		duration = lua_tonumber(L,-1);
 	}
-
-	zvalue = lua_tonumber(L,-2);
-	duration = lua_tonumber(L,-1);
-
 	//Output::Inst()->ppprintf("zvalue: %f, duration %f", zvalue, duration);
 }
 

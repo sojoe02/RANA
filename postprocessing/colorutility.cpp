@@ -1,4 +1,6 @@
 #include "colorutility.h"
+#include "output.h"
+#include <climits>
 
 double ColorUtility::Z_TRESSHOLD_PERCENTAGE = 0;
 QMutex ColorUtility::MUTEX;
@@ -7,6 +9,19 @@ ColorUtility::zvalue ColorUtility::MIN_Z_LEVELS;
 
 ColorUtility::ColorUtility()
 {
+}
+
+void ColorUtility::init()
+{
+	MAX_Z_LEVELS.average = 0;
+	MAX_Z_LEVELS.cumulative = 0;
+	MAX_Z_LEVELS.highest = 0;
+	MAX_Z_LEVELS.frequency = 0;
+
+	MIN_Z_LEVELS.average = ULLONG_MAX;
+	MIN_Z_LEVELS.highest = ULLONG_MAX;
+	MIN_Z_LEVELS.cumulative = ULLONG_MAX;
+	MIN_Z_LEVELS.frequency = ULLONG_MAX;
 }
 
 void ColorUtility::AddMaxMinValues(zvalue min, zvalue max){
@@ -36,6 +51,8 @@ void ColorUtility::AddMaxMinValues(zvalue min, zvalue max){
 
 	if(MIN_Z_LEVELS.highest > min.highest)
 		MIN_Z_LEVELS.highest = min.highest;
+
+	//Output::Inst()->ppprintf("max/min. average %f,%f :", MAX_Z_LEVELS.average, MIN_Z_LEVELS.average);
 
 }
 

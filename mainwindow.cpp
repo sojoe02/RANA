@@ -78,7 +78,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
 
-	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.2.6_QT_incomplete");
+	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.2.7_QT_incomplete");
 
 	ui->statusBar->addWidget(new QLabel(versionString));
 	ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
@@ -409,6 +409,9 @@ void MainWindow::ppConstruction()
 
 	ui->vis_processEventsPushButton->setEnabled(false);
 
+	eventScene->setBackgroundBrush(Qt::gray);
+	ui->vis_graphicsView->setScene(eventScene);
+
 
 }
 
@@ -451,11 +454,11 @@ void MainWindow::on_vis_processEventsPushButton_clicked()
 	//clear the zBlock and remove the blocks from the graphicsScene:
 	if(zBlocks != NULL)
 	{
-		QHashIterator<QString, ZBlock*> zitr(*zBlocks);
-		while(zitr.hasNext())
-		{
-			eventScene->removeItem(zitr.value());
-		}
+		//QHashIterator<QString, ZBlock*> zitr(*zBlocks);
+		//while(zitr.hasNext())
+		//{
+		//	eventScene->removeItem(zitr.value());
+	//	}
 	}
 
 	zBlocks = NULL;
@@ -492,13 +495,17 @@ void MainWindow::setupVisualTab(QHash<QString, ZBlock *> *argZBlocks)
 {
 	zBlocks = argZBlocks;
 
-	QHashIterator<QString, ZBlock*> zitr(*zBlocks);
+	//QHashIterator<QString, ZBlock*> zitr(*zBlocks);
 
-	while(zitr.hasNext())
+	//while(zitr.hasNext())
+	//{
+		//eventScene->addItem(zitr.value());
+	//}
+	for(auto it = zBlocks->begin(); it != zBlocks->end(); ++it)
 	{
-		eventScene->addItem(zitr.value());
+		//Output::Inst()->ppprintf("adding item to something fierce...");
+		eventScene->addItem(it.value());
 	}
-
 	//add the map tab:
 	ui->tabWidget->insertTab(ui->tabWidget->count()+1,vis_mapTab,"Event Map");
 
@@ -589,23 +596,23 @@ void MainWindow::on_vis_mapTypeComboBox_currentIndexChanged(const QString &arg1)
 	ZMode zmode;
 
 	//set the z mode:
-	if(arg1.compare("Average"))
+	if(arg1.compare("Average") == 0)
 		zmode = ZMode::Average;
-	else if(arg1.compare("Highest"))
+	else if(arg1.compare("Highest") == 0)
 		zmode = ZMode::Highest;
-	else if(arg1.compare("Frequency"))
+	else if(arg1.compare("Frequency") == 0)
 		zmode = ZMode::Frequency;
-	else if(arg1.compare("Cumulative"))
+	else if(arg1.compare("Cumulative") == 0)
 		zmode = ZMode::Cumulative;
 
 	if(zBlocks != NULL)
 	{
-		QHashIterator<QString, ZBlock*> zitr(*zBlocks);
-
-		while(zitr.hasNext())
+		for(auto it = zBlocks->begin(); it != zBlocks->end(); ++it)
 		{
-			zitr.value()->changeMode(zmode);
+			it.value()->changeMode(zmode);
 		}
+		//auto it = zBlocks->begin();
+		//it.value()->changeMode(zmode);
 	}
 }
 
@@ -613,11 +620,9 @@ void MainWindow::on_vis_activeMapSpinBox_valueChanged(int arg1)
 {
 	if(zBlocks != NULL)
 	{
-		QHashIterator<QString, ZBlock*> zitr(*zBlocks);
-
-		while(zitr.hasNext())
+		for(auto it = zBlocks->begin(); it != zBlocks->end(); ++it)
 		{
-			zitr.value()->setTime(arg1);
+			it.value()->setTime(arg1);
 		}
 	}
 }
@@ -625,6 +630,16 @@ void MainWindow::on_vis_activeMapSpinBox_valueChanged(int arg1)
 void MainWindow::on_vis_stopEventProcessingPushButton_clicked()
 {
 	Output::RunEventProcessing.store(false);
+}
+
+void MainWindow::on_vis_eventZoomSlider_valueChanged(int value)
+{
+	double scale = (double)value/100;
+
+	ui->vis_zoomValueLabel->setText(QString().setNum(value));
+
+	ui->vis_graphicsView->setTransform(QTransform::fromScale(scale,scale));
+
 }
 
 //DIALOGS
