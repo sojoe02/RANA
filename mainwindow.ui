@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>721</width>
-    <height>816</height>
+    <width>908</width>
+    <height>768</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -69,7 +69,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="simControlTab">
        <attribute name="title">
@@ -1179,7 +1179,7 @@
               <number>1</number>
              </property>
              <property name="maximum">
-              <number>1000</number>
+              <number>2000</number>
              </property>
              <property name="singleStep">
               <number>50</number>
@@ -1215,7 +1215,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>721</width>
+     <width>908</width>
      <height>19</height>
     </rect>
    </property>

@@ -71,25 +71,25 @@ QRgb ColorUtility::ZValueToColor(double value, double min, double max)
 		g = uchar(thress/0.2* sat);
 		return qRgb(r,g,b);
 	}
-	else if(thress < 0.3999)
+	else if(thress < 0.4)
 	{
 		g = sat;
 		b = uchar(sat -(thress-0.4)/0.2 * sat);
 		return qRgb(r,g,b);
 	}
-	else if(thress < 0.5999)
+	else if(thress < 0.6)
 	{
 		g = sat;
 		r = uchar((thress-0.6)/0.2 * sat);
 		return qRgb(r,g,b);
 	}
-	else if(thress < 0.7999)
+	else if(thress < 0.8)
 	{
 		r = sat;
 		g = sat - uchar((thress-0.8)/0.2* sat);
 		return qRgb(r,g,b);
 	}
-	else if(thress < 0.9999)
+	else if(thress < 1)
 	{
 		r = sat;
 		b = uchar((thress-1)/0.2 * sat);

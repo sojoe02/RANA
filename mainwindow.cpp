@@ -78,7 +78,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
 
-	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.2.7_QT_incomplete");
+	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.2.7:0.1.1");
 
 	ui->statusBar->addWidget(new QLabel(versionString));
 	ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
@@ -449,33 +449,37 @@ void MainWindow::ppIsChecked()
 
 void MainWindow::on_vis_processEventsPushButton_clicked()
 {
-
-	Output::RunEventProcessing.store(true);
-	//clear the zBlock and remove the blocks from the graphicsScene:
-	if(zBlocks != NULL)
-	{
-		//QHashIterator<QString, ZBlock*> zitr(*zBlocks);
-		//while(zitr.hasNext())
-		//{
-		//	eventScene->removeItem(zitr.value());
-	//	}
-	}
-
-	zBlocks = NULL;
-
-	ui->vis_processEventsPushButton->setDisabled(true);
-
-	double timeRes = ui->vis_timeResolutionDoubleSpinBox->value();
-	QString agentPath = ui->vis_agentPathLineEdit->text();
-	int mapRes = ui->vis_resolutionSpinBox->value();
-	double thresshold = ui->vis_zThressholdDoubleSpinBox->value();
-	QString eventPath = ui->vis_eventPathLineEdit->text();
-
 	QFileInfo fi(ui->vis_eventPathLineEdit->text());
 	QFileInfo efi(ui->vis_agentPathLineEdit->text());
+	QString agentPath = ui->vis_agentPathLineEdit->text();
+	QString eventPath = ui->vis_eventPathLineEdit->text();
 
-	if( fi.isFile() && efi.isFile() )
+	if( fi.isFile() && efi.isFile())
 	{
+
+		eventScene->clear();
+		ui->tabWidget->removeTab(ui->tabWidget->indexOf(vis_mapTab));
+
+		Output::RunEventProcessing.store(true);
+		//clear the zBlock and remove the blocks from the graphicsScene:
+		if(zBlocks != NULL)
+		{
+			//QHashIterator<QString, ZBlock*> zitr(*zBlocks);
+			//while(zitr.hasNext())
+			//{
+			//	eventScene->removeItem(zitr.value());
+			//	}
+		}
+
+		zBlocks = NULL;
+
+		ui->vis_processEventsPushButton->setDisabled(true);
+
+		double timeRes = ui->vis_timeResolutionDoubleSpinBox->value();
+
+		int mapRes = ui->vis_resolutionSpinBox->value();
+		double thresshold = ui->vis_zThressholdDoubleSpinBox->value();
+
 		int to = ui->vis_toTimeSpinBox->value();
 		int from = ui->vis_fromTimeSpinBox->value();
 
@@ -499,7 +503,7 @@ void MainWindow::setupVisualTab(QHash<QString, ZBlock *> *argZBlocks)
 
 	//while(zitr.hasNext())
 	//{
-		//eventScene->addItem(zitr.value());
+	//eventScene->addItem(zitr.value());
 	//}
 	for(auto it = zBlocks->begin(); it != zBlocks->end(); ++it)
 	{

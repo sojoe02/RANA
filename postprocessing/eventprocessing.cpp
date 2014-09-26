@@ -34,7 +34,7 @@ EventProcessing::~EventProcessing()
 
 void EventProcessing::resetEventProcessor()
 {
-	zBlocks->clear();
+	//zBlocks->clear();
 	eventbin.clear();
 }
 
