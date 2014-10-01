@@ -62,7 +62,7 @@ void Output::kprintf(const char* msg, ...)
     va_list args;
     va_start(args, msg);
 
-    char buffer[2048];
+	char buffer[2048] = {};
     vsprintf(buffer, msg, args);
 
     QString string(buffer);
@@ -79,7 +79,7 @@ void Output::kerr(const char* msg, ...)
     va_list args;
     va_start(args, msg);
 
-    char buffer[2048];
+	char buffer[2048] = {};
     vsprintf(buffer, msg, args);
 
     QString string(buffer);
@@ -118,8 +118,8 @@ void Output::ppprintf(const char *msg,...)
 	va_list args;
 	va_start(args, msg);
 
-	char buffer[2048];
-	vsprintf(buffer, msg, args);
+	char buffer[2048] = {};
+	vsnprintf(buffer, 2047, msg, args);
 
 	QString string(buffer);
 

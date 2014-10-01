@@ -58,7 +58,7 @@ void ColorUtility::AddMaxMinValues(zvalue min, zvalue max){
 
 QRgb ColorUtility::ZValueToColor(double value, double min, double max)
 {
-	double thress = (value-min)/(max-min);
+	float thress = (float)(value-min)/(max-min);
 
 	uchar r = 0;
 	uchar g = 0;

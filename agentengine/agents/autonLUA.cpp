@@ -254,25 +254,39 @@ EventQueue::eEvent* AutonLUA::initEvent()
 
 void AutonLUA::processFunction(EventQueue::dataEvent *devent, double time, double x, double y, double &zvalue, double &duration)
 {
-	lua_getglobal(L, "processFunction");
-	lua_pushnumber(L, devent->originX);
-	lua_pushnumber(L, devent->originY);
-	lua_pushnumber(L, x);
-	lua_pushnumber(L, y);
-	lua_pushnumber(L, time);
-	lua_pushstring(L, devent->table);
 
-	if(lua_pcall(L,6,2,0)!=LUA_OK){
-		Output::Inst()->ppprintf("error on calling processfunction : %s\n,",
-			   lua_tostring(L,-1));
-		Output::RunEventProcessing.store(false);
-		return;
-	} else
-	{
+	//Output::Inst()->ppprintf("X and Y is = %f,%f", 1.,1.);
+	zvalue = 1;
+	duration =0;
 
-		zvalue = lua_tonumber(L,-2);
-		duration = lua_tonumber(L,-1);
-	}
+//	try{
+//		lua_settop(L,0);
+
+//		lua_getglobal(L, "processFunction");
+//		lua_pushnumber(L, 1);
+//		lua_pushnumber(L, 1);
+//		lua_pushnumber(L, 1);
+//		lua_pushnumber(L, 1);
+//		lua_pushnumber(L,2);
+//		lua_pushstring(L, devent->table);
+
+//		if(lua_pcall(L,6,2,0)!=LUA_OK){
+//			Output::Inst()->ppprintf("error on calling processfunction : %s\n,",
+//									 lua_tostring(L,-1));
+//			Output::RunEventProcessing.store(false);
+//			return;
+//		} else
+//		{
+
+//			//zvalue = lua_tonumber(L,-2);
+//			//duration = lua_tonumber(L,-1);
+//		}
+
+//	}catch(std::exception& e)
+//	{
+//		Output::Inst()->ppprintf("<b><font color=\"red\">Error on processEvent..%s</font></b></>", e.what());
+//		Output::RunEventProcessing.store(false);
+//	}
 	//Output::Inst()->ppprintf("zvalue: %f, duration %f", zvalue, duration);
 }
 
@@ -662,7 +676,7 @@ int AutonLUA::luapanic(lua_State *L)
 	Output::Inst()->kprintf("<b>PANIC,%s</b></>", str.c_str());
 	Output::KillSimulation.store(true);
 
-	//return 0;
+	return 0;
 }
 
 

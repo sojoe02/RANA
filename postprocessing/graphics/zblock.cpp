@@ -5,7 +5,7 @@
 
 ZBlock::ZBlock(int argX, int argY)
 	: posX(argX), posY(argY), activeColor(Qt::white),
-	  firstAddition(true), currentZMode(ZMode::Highest), currentTime(1)
+	  firstAddition(true), currentZMode(ZMode::Highest), currentTime(0)
 {
 	//Output::Inst()->ppprintf("zblock initialized at: %i,%i", x,y);
 	this->setX(argX);

@@ -21,7 +21,7 @@ using std::chrono::steady_clock;
 
 EventProcessing::EventProcessing()
 	:zBlocks(new QHash<QString, ZBlock*>()),
-	  simInfo(new EventQueue::simInfo)
+	  simInfo(new EventQueue::simInfo), test_number(0)
 
 {
 }
@@ -34,7 +34,7 @@ EventProcessing::~EventProcessing()
 
 void EventProcessing::resetEventProcessor()
 {
-	//zBlocks->clear();
+	zBlocks->clear();
 	eventbin.clear();
 }
 
@@ -132,10 +132,10 @@ void EventProcessing::processBinnedEvents(double timeResolution, std::string pat
 	auto end = steady_clock::now();
 
 	//clear the zblok map:
-	for(auto it = zBlocks->begin(); it != zBlocks->end(); ++it)
-	{
-		delete it.value();
-	}
+	//for(auto it = zBlocks->begin(); it != zBlocks->end(); ++it)
+	//{
+	//	it.value()->deleteLater();
+	//}
 	zBlocks->clear();
 
 	//populate the zblok map:
@@ -144,7 +144,7 @@ void EventProcessing::processBinnedEvents(double timeResolution, std::string pat
 		for(int y=0; y <= yAmount; y++)
 		{
 			ZBlock *block = new ZBlock(x,y);
-			char buffer[32];
+			char buffer[32] = {};
 			sprintf(buffer,"%i,%i",x,y);
 			//std::string key = buffer;
 			//zBlocks->insert(std::pair<std::string, ZBlock>(key, block));
@@ -187,9 +187,11 @@ void EventProcessing::processBinnedEvents(double timeResolution, std::string pat
 //		}
 //	}
 
-	auto it = std::begin(eventbin);
+	EventQueue::dataEvent *event = &*std::begin(eventbin);
 
-	processEvent(&*it,thresshold,mapResolution,timeResolution,path);
+	//EventQueue::dataEvent *event = &*it;
+
+	processEvent(event,thresshold,mapResolution,timeResolution,path);
 
 	for(auto it = zBlocks->begin(); it != zBlocks->end(); ++it)
 	{
@@ -205,7 +207,7 @@ void EventProcessing::processBinnedEvents(double timeResolution, std::string pat
 void EventProcessing::processEvent(EventQueue::dataEvent *event,
 								   double thresshold, double mapRes, double timeRes, std::string path)
 {
-	//Output::Inst()->ppprintf("doing event, id %i ", event->id);
+	Output::Inst()->ppprintf("doing event, id %i ", event->id);
 
 	Phys::setMacroFactor(simInfo->macroFactor);
 	Phys::setTimeRes(simInfo->timeResolution);
@@ -221,15 +223,15 @@ void EventProcessing::processEvent(EventQueue::dataEvent *event,
 	double z = 1;
 	double duration =0;
 	//calculate the z value at origin, to get thresshold value:
-	auton->processFunction(event, simInfo->mapResolution, (int)event->originX/mapRes,
-						   (int)event->originY/mapRes, z, duration);
+ //auton->processFunction(&event, simInfo->mapResolution, (int)event.originX/mapRes,
+		//				   (int)event.originY/mapRes, z, duration);
 
 	//Output::Inst()->kprintf("z value at origin is = %f, duration is = %f", z, duration);
 	double thressholdZ = z * thresshold;
 
-	recursiveZlevel(auton, event, visited,event->originX/mapRes,
-					event->originY/mapRes,0,0,
-					width, height,mapRes,timeRes, thressholdZ);
+	recursiveZlevel(auton, event, visited,event->originX,
+					event->originY,0,0,
+					height, width,mapRes,timeRes, thresshold);
 
 	delete visited;
 	delete auton;
@@ -241,13 +243,18 @@ void EventProcessing::recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *ev
 									  int width, int height,
 									  double mapRes, double timeRes, double thressholdZ)
 {
-	if(Output::RunEventProcessing.load() == false)
-		return;
+	//if(Output::RunEventProcessing.load() == false)
+	//	return;
 
-	char buffer[32];
-	sprintf(buffer,"%i,%i",x+displaceX, y+displaceY);
-	QString key = buffer;
-	//Output::Inst()->ppprintf("zblock key is: %s", buffer);
+	//Output::Inst()->ppprintf("%s,%s","8", "8");
+	//char buffer[16] = {};
+	int xd = x+displaceX;
+	int yd = y+displaceY;
+
+	//sprintf(buffer,"%i,%i",xd, yd);
+	QString key;
+	QTextStream(&key) << xd << "," << yd;
+	//Output::Inst()->ppprintf("zblocsk key is: %s", buffer);
 
 	//have the position been accessed?
 	if(visited->find(key)!=visited->end())
@@ -260,8 +267,8 @@ void EventProcessing::recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *ev
 							+ pow((event->originY - (y+displaceY)*mapRes), 2) );
 
 	double arrivalTime = distance/(event->propagationSpeed)/timeRes;
-	Output::Inst()->ppprintf("arrival time: %f, x: %i, y: %i", arrivalTime,
-							 x+displaceX, y+displaceY);
+	//Output::Inst()->ppprintf("arrival time: %f, x: %i, y: %i", arrivalTime,
+		//2					 x+displaceX, y+displaceY);
 
 	//insert z value and take event duration into account:
 	QHash<QString, ZBlock*>::iterator zitr = zBlocks->find(key);
@@ -272,15 +279,15 @@ void EventProcessing::recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *ev
 	else{
 
 		double duration = 0;
+		double xArg = double(x+displaceX)*mapRes;
+		double yArg = double(y+displaceY)*mapRes;
 
-		auton->processFunction(event, 0,(x+displaceX)*mapRes,
-							   (y+displaceY)*mapRes,z,duration);
+		auton->processFunction(event,mapRes, xArg, yArg, z, duration);
 
 		if(zitr != zBlocks->end())
 		{
-			zitr.value()->addZValue(z, (int)arrivalTime);
+			zitr.value()->addZValue(z, arrivalTime);
 		}
-
 		double max = duration*timeRes;
 
 		for(int i = 1; i < max; i++)
@@ -289,7 +296,7 @@ void EventProcessing::recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *ev
 			{
 				//auton->processFunction(event, i/timeRes,x+displaceX*mapRes,
 					//				   y+displaceY*mapRes,z,duration);
-				zitr.value()->addZValue(z, (int)arrivalTime+i);
+				zitr.value()->addZValue(z, arrivalTime+i);
 			}
 		}
 
