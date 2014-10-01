@@ -58,41 +58,49 @@ void ColorUtility::AddMaxMinValues(zvalue min, zvalue max){
 
 QRgb ColorUtility::ZValueToColor(double value, double min, double max)
 {
-	float thress = (float)(value-min)/(max-min);
+	double thress = (value-min)/(max-min);
+
+	if(thress > 1)
+		Output::Inst()->ppprintf("This is the %f", thress);
 
 	uchar r = 0;
 	uchar g = 0;
 	uchar b = 0;
 	int sat = 255;
 
-	if(thress < 0.2)
+	if(thress <= 0.2)
 	{
 		b = sat;
-		g = uchar(thress/0.2* sat);
+		g = uchar(thress/0.2 * sat);
+
 		return qRgb(r,g,b);
 	}
-	else if(thress < 0.4)
+	else if(thress < 0.399)
 	{
 		g = sat;
-		b = uchar(sat -(thress-0.4)/0.2 * sat);
+		b = uchar(sat-(thress-0.4)/0.2 * sat);
+
 		return qRgb(r,g,b);
 	}
-	else if(thress < 0.6)
+	else if(thress < 0.599)
 	{
 		g = sat;
 		r = uchar((thress-0.6)/0.2 * sat);
+
 		return qRgb(r,g,b);
 	}
-	else if(thress < 0.8)
+	else if(thress < 0.799)
 	{
 		r = sat;
-		g = sat - uchar((thress-0.8)/0.2* sat);
+		g = sat - uchar((thress-0.8)/0.2 * sat);
+
 		return qRgb(r,g,b);
 	}
-	else if(thress < 1)
+	else if(thress < 0.999)
 	{
 		r = sat;
 		b = uchar((thress-1)/0.2 * sat);
+
 		return qRgb(r,g,b);
 	}
 	else if(thress <= 1)
