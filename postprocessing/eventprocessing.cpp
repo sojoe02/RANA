@@ -171,27 +171,29 @@ void EventProcessing::processBinnedEvents(double timeResolution, std::string pat
 	mapItem->setPixmap(QPixmap::fromImage(*mapImage));
 
 	//process all the binned events, new c11 style better get used to it:
-//	for(auto it = std::begin(eventbin);
-//		it != std::end(eventbin) && Output::RunEventProcessing.load()==true; ++it)
-//	{
-//		processEvent(&*it, thresshold,
-//					 mapResolution, timeResolution, path);
+	auto it = std::begin(eventbin);
+	for( ; it != std::end(eventbin) && Output::RunEventProcessing.load()==true
+		 ; ++it)
+	{
+		processEvent(&*it, thresshold,
+					 mapResolution, timeResolution, path);
 
-//		//Output::Inst()->ppprintf("event ID is %i ",it->id);
+		//Output::Inst()->ppprintf("event ID is %i ",it->id);
 
-//		end = steady_clock::now();
-//		if(duration_cast<milliseconds>(end-start).count() > 50)
-//		{
-//			Output::Inst()->ppprogressbar(std::distance(begin(eventbin),it), eventbin.size());
-//			start = end;
-//		}
-//	}
+		end = steady_clock::now();
+		if(duration_cast<milliseconds>(end-start).count() > 50)
+		{
+			Output::Inst()->ppprogressbar(std::distance(begin(eventbin),it), eventbin.size());
+			start = end;
+		}
+	}
+	Output::Inst()->ppprogressbar(std::distance(begin(eventbin),it), eventbin.size());
 
-	EventQueue::dataEvent *event = &*std::begin(eventbin);
+	//EventQueue::dataEvent *event = &*std::begin(eventbin);
 
 	//EventQueue::dataEvent *event = &*it;
 
-	processEvent(event,thresshold,mapResolution,timeResolution,path);
+	//processEvent(event,thresshold,mapResolution,timeResolution,path);
 
 	for(auto it = zBlocks->begin(); it != zBlocks->end(); ++it)
 	{
@@ -223,14 +225,14 @@ void EventProcessing::processEvent(EventQueue::dataEvent *event,
 	double z = 1;
 	double duration =0;
 	//calculate the z value at origin, to get thresshold value:
- //auton->processFunction(&event, simInfo->mapResolution, (int)event.originX/mapRes,
-		//				   (int)event.originY/mapRes, z, duration);
+	auton->processFunction(event, simInfo->mapResolution, event->originX/mapRes,
+						   event->originY/mapRes, z, duration);
 
 	//Output::Inst()->kprintf("z value at origin is = %f, duration is = %f", z, duration);
 	double thressholdZ = z * thresshold;
 
-	recursiveZlevel(auton, event, visited,event->originX,
-					event->originY,0,0,
+	recursiveZlevel(auton, event, visited,event->originX/mapRes,
+					event->originY/mapRes,0,0,
 					height, width,mapRes,timeRes, thresshold);
 
 	delete visited;
@@ -243,8 +245,8 @@ void EventProcessing::recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *ev
 									  int width, int height,
 									  double mapRes, double timeRes, double thressholdZ)
 {
-	//if(Output::RunEventProcessing.load() == false)
-	//	return;
+	if(Output::RunEventProcessing.load() == false)
+		return;
 
 	//Output::Inst()->ppprintf("%s,%s","8", "8");
 	//char buffer[16] = {};
@@ -254,7 +256,7 @@ void EventProcessing::recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *ev
 	//sprintf(buffer,"%i,%i",xd, yd);
 	QString key;
 	QTextStream(&key) << xd << "," << yd;
-	//Output::Inst()->ppprintf("zblocsk key is: %s", buffer);
+	//Output::Inst()->ppprintf("zblock key is: %s", key.toStdString().c_str());
 
 	//have the position been accessed?
 	if(visited->find(key)!=visited->end())
@@ -266,7 +268,8 @@ void EventProcessing::recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *ev
 	double distance = sqrt( pow((event->originX - (x+displaceX)*mapRes), 2)
 							+ pow((event->originY - (y+displaceY)*mapRes), 2) );
 
-	double arrivalTime = distance/(event->propagationSpeed)/timeRes;
+	double arrivalTime = (event->activationTime/simInfo->timeResolution) +
+			distance/(event->propagationSpeed)/timeRes;
 	//Output::Inst()->ppprintf("arrival time: %f, x: %i, y: %i", arrivalTime,
 		//2					 x+displaceX, y+displaceY);
 
@@ -283,6 +286,8 @@ void EventProcessing::recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *ev
 		double yArg = double(y+displaceY)*mapRes;
 
 		auton->processFunction(event,mapRes, xArg, yArg, z, duration);
+
+		//Output::Inst()->ppprintf("zblock key is: %s", key.toStdString().c_str());
 
 		if(zitr != zBlocks->end())
 		{
@@ -309,11 +314,11 @@ void EventProcessing::recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *ev
 		return;
 
 	//do the recursive calls:
-	if(x+displaceX+1 < width)
+	if(x+displaceX+1 <= width)
 		recursiveZlevel(auton,event,visited,x,y,displaceX+1,displaceY,
 						width,height,mapRes,timeRes,thressholdZ);
 
-	if(y+displaceY+1 < height)
+	if(y+displaceY+1 <= height)
 		recursiveZlevel(auton,event,visited,x,y,displaceX,displaceY+1,
 						width,height,mapRes,timeRes,thressholdZ);
 
