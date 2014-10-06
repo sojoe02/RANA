@@ -60,6 +60,8 @@ EventQueue::eEvent* AutonListener::initEvent(double macroResolution, unsigned lo
 		event->origin = this;
 		return event;
 	}
+
+	return NULL;
 }
 
 EventQueue::eEvent* AutonListener::actOnEvent(EventQueue::iEvent *event){
@@ -72,6 +74,8 @@ EventQueue::eEvent* AutonListener::actOnEvent(EventQueue::iEvent *event){
 	sendEvent->origin = this;
 
 	distroEEvent(sendEvent);
+
+	return NULL;
 }
 
 bool AutonListener::operator==(AutonListener &other) const{

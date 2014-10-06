@@ -52,7 +52,7 @@ void PostControl::runProcessEvents(QRegExp regex, QString eventPath, int to, int
 								double timeResolution,QString agentPath,
 								int mapResolution, double zThresshold)
 {
-	ColorUtility::init();
+	ColorUtility::Init();
 
 	processing = true;
 

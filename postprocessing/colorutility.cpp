@@ -6,12 +6,13 @@ double ColorUtility::Z_TRESSHOLD_PERCENTAGE = 0;
 QMutex ColorUtility::MUTEX;
 ColorUtility::zvalue ColorUtility::MAX_Z_LEVELS;
 ColorUtility::zvalue ColorUtility::MIN_Z_LEVELS;
+int ColorUtility::MAXTIME = 0;
 
 ColorUtility::ColorUtility()
 {
 }
 
-void ColorUtility::init()
+void ColorUtility::Init()
 {
 	MAX_Z_LEVELS.average = 0;
 	MAX_Z_LEVELS.cumulative = 0;
@@ -24,7 +25,7 @@ void ColorUtility::init()
 	MIN_Z_LEVELS.frequency = ULLONG_MAX;
 }
 
-void ColorUtility::AddMaxMinValues(zvalue min, zvalue max){
+void ColorUtility::AddMaxMinValues(zvalue min, zvalue max, int maxTime){
 
 	QMutexLocker locker(&MUTEX);
 
@@ -53,6 +54,7 @@ void ColorUtility::AddMaxMinValues(zvalue min, zvalue max){
 		MIN_Z_LEVELS.highest = min.highest;
 
 	//Output::Inst()->ppprintf("max/min. average %f,%f :", MAX_Z_LEVELS.average, MIN_Z_LEVELS.average);
+	if(MAXTIME < maxTime) MAXTIME = maxTime;
 
 }
 

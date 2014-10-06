@@ -135,7 +135,7 @@ void Master::populateSystem(int listenerSize,
 	std::vector<int> LUAVector;
 	std::vector<int>::iterator itLUA;
 
-	for(int i = 0; i < nestenes.size(); i++){
+	for(uint i = 0; i < nestenes.size(); i++){
 		listenerVector.push_back(0);
 		ScreamerVector.push_back(0);
 		LUAVector.push_back(0);
@@ -147,7 +147,7 @@ void Master::populateSystem(int listenerSize,
 	int nSize = 0;
 	//first the listeners:
 	while(tmpSize<listenerSize){
-		for(int i=0; i<listenerVector.size(); i++){
+		for(uint i=0; i<listenerVector.size(); i++){
 			nSize = rand()%2;
 			tmpSize += nSize;
 			if(tmpSize > listenerSize){
@@ -161,7 +161,7 @@ void Master::populateSystem(int listenerSize,
 	tmpSize2 = 0;
 	nSize = 0;
 	while(tmpSize<screamerSize){
-		for(int i=0; i<ScreamerVector.size(); i++){
+		for(uint i=0; i<ScreamerVector.size(); i++){
 			nSize = rand()%2;
 			tmpSize += nSize;
 			if(tmpSize > screamerSize){
@@ -176,7 +176,7 @@ void Master::populateSystem(int listenerSize,
 	tmpSize2 = 0;
 	nSize = 0;
 	while(tmpSize<LUASize){
-		for(int i=0; i<LUAVector.size(); i++){
+		for(uint i=0; i<LUAVector.size(); i++){
 			nSize = rand()%2;
 			tmpSize += nSize;
 			if(tmpSize > LUASize){
@@ -191,7 +191,7 @@ void Master::populateSystem(int listenerSize,
 	luaFilename = filename;
 
 	//Output::Inst()->kprintf("lua size from master is : %d \n", LUASize);
-	for(int i= 0; i<listenerVector.size(); i++){
+	for(uint i= 0; i<listenerVector.size(); i++){
 		//std::cout<< listenerVector.at(i) << std::endl;
 		Nestene *nest = &nestenes.at(i);
 		nest->populate(listenerVector.at(i), ScreamerVector.at(i),LUAVector.at(i), filename);
@@ -203,7 +203,7 @@ void Master::populateSquareSystem(int LUASize, std::string filename){
 
 	std::vector<int> LUAVector;
 
-	for(int i = 0; i < nestenes.size(); i++){
+	for(uint i = 0; i < nestenes.size(); i++){
 		LUAVector.push_back(LUASize);
 	}
 
@@ -211,7 +211,7 @@ void Master::populateSquareSystem(int LUASize, std::string filename){
 	luaFilename = filename;
 
 	Output::Inst()->kprintf("lua amount is : %d \n", LUASize);
-	for(int i= 0; i<LUAVector.size(); i++){
+	for(uint i= 0; i<LUAVector.size(); i++){
 		Nestene *nest = &nestenes.at(i);
 		nest->populateSquared(LUAVector.at(i), filename);
 	}
@@ -221,14 +221,14 @@ void Master::populateSquareListenerSystem(int listenerSize){
 
 	std::vector<int> listenerVector;
 
-	for(int i = 0; i < nestenes.size(); i++){
+	for(uint i = 0; i < nestenes.size(); i++){
 		listenerVector.push_back(listenerSize);
 	}
 
 	autonAmount = listenerSize;
 
 	Output::Inst()->kprintf("listener amount is : %d \n", listenerSize);
-	for(int i= 0; i<listenerVector.size(); i++){
+	for(uint i= 0; i<listenerVector.size(); i++){
 		Nestene *nest = &nestenes.at(i);
 		nest->populateSquaredListener(listenerVector.at(i));
 	}

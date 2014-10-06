@@ -34,7 +34,7 @@
 #include "output.h"
 
 	Nestene::Nestene(double posX, double posY, double width, double height, Master* master)
-:posX(posX), posY(posY),width(width),height(height), initAmount(0),master(master)
+:initAmount(0),master(master), posX(posX), posY(posY),width(width),height(height)
 {	
 	//Output::Inst()->kprintf("Nestene position %f , %f\n", posX , posY);
 	//initialize the internal Events list:

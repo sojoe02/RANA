@@ -5,7 +5,8 @@
 
 ZBlock::ZBlock(int argX, int argY)
 	: posX(argX), posY(argY), activeColor(Qt::white),
-	  firstAddition(true), currentZMode(ZMode::Highest), currentTime(0)
+	  firstAddition(true), currentZMode(ZMode::Highest),
+	  currentTime(0), maxTime(0)
 {
 	//Output::Inst()->ppprintf("zblock initialized at: %i,%i", x,y);
 	this->setX(argX);
@@ -109,6 +110,7 @@ void ZBlock::setTime(int time)
 
 void ZBlock::addZValue(double zvalue, int time)
 {
+	if(maxTime < time) maxTime = time;
 	//set local minimun and maximum on first insertion:
 	if(firstAddition)
 	{
@@ -181,7 +183,7 @@ void ZBlock::registerMinMax()
 {
 	//Output::Inst()->ppprintf("Min/Max frequency, %f,%f", min.frequency, max.frequency);
 
-	ColorUtility::AddMaxMinValues(min, max);
+	ColorUtility::AddMaxMinValues(min, max,maxTime);
 
 }
 

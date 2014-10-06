@@ -16,7 +16,7 @@ public:
 		double highest;
 	};
 
-	static void AddMaxMinValues(zvalue min, zvalue max);
+	static void AddMaxMinValues(zvalue min, zvalue max, int maxTime);
 
 	static QRgb ZValueToColor(double value, double min, double max);
 
@@ -26,13 +26,16 @@ public:
 	static QRgb GetHighest(double value);
 
 	static double Z_TRESSHOLD_PERCENTAGE;
+	static int GetMaxTime(){return MAXTIME;}
 
-	static void init();
+	static void Init();
+
 private:
 
 	static QMutex MUTEX;
 	static zvalue MAX_Z_LEVELS;
 	static zvalue MIN_Z_LEVELS;
+	static int MAXTIME;
 };
 
 #endif // COLORUTILITY_H

@@ -35,6 +35,7 @@
 #include "physics/gridmovement.h"
 #include "output.h"
 #include "eventqueue.h"
+#include "postprocessing/colorutility.h"
 
 #include "eventdialog.h"
 
@@ -45,9 +46,9 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow),factor(1),
 	mapImage(NULL), mapItem(NULL),scene(new QGraphicsScene()),
-	control(new Control(this)),
+	control(new Control(this)),disableSimOutput(false),
 	postControl(new PostControl(this)),zBlocks(NULL),
-	eventScene(new QGraphicsScene()), disableSimOutput(false)
+	eventScene(new QGraphicsScene())
 {
 
 	this->setWindowTitle("RANA QT version");
@@ -78,7 +79,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
 
-	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.2.7:0.2.0");
+	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.2.7:0.2.1");
 
 	ui->statusBar->addWidget(new QLabel(versionString));
 	ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
@@ -499,12 +500,6 @@ void MainWindow::setupVisualTab(QHash<QString, ZBlock *> *argZBlocks)
 {
 	zBlocks = argZBlocks;
 
-	//QHashIterator<QString, ZBlock*> zitr(*zBlocks);
-
-	//while(zitr.hasNext())
-	//{
-	//eventScene->addItem(zitr.value());
-	//}
 	for(auto it = zBlocks->begin(); it != zBlocks->end(); ++it)
 	{
 		//Output::Inst()->ppprintf("adding item to something fierce...");
@@ -512,6 +507,8 @@ void MainWindow::setupVisualTab(QHash<QString, ZBlock *> *argZBlocks)
 	}
 	//add the map tab:
 	ui->tabWidget->insertTab(ui->tabWidget->count()+1,vis_mapTab,"Event Map");
+	ui->vis_activeMapSpinBox->setMaximum(ColorUtility::GetMaxTime());
+	ui->vis_mapTypeComboBox->setCurrentIndex(1);
 
 }
 

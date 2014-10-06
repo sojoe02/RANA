@@ -54,6 +54,7 @@ private:
 
 	ZMode currentZMode;
 	int currentTime;
+	int maxTime;
 };
 
 #endif // ZBLOCK_H
