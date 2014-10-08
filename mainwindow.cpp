@@ -79,7 +79,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
 
-	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.2.7:0.2.1");
+	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.2.7:0.3.0");
 
 	ui->statusBar->addWidget(new QLabel(versionString));
 	ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
@@ -489,6 +489,9 @@ void MainWindow::on_vis_processEventsPushButton_clicked()
 		postControl->runProcessEvents(regex,eventPath,to,from,
 									  timeRes,agentPath,mapRes,thresshold);
 
+		int timeOffset = from/timeRes;
+		ui->vis_activeMapSpinBox->setMinimum(timeOffset);
+
 	} else
 		Output::Inst()->ppprintf("agent- %s or event path %s, not found",
 								 agentPath.toStdString().c_str(),
@@ -508,8 +511,15 @@ void MainWindow::setupVisualTab(QHash<QString, ZBlock *> *argZBlocks)
 	//add the map tab:
 	ui->tabWidget->insertTab(ui->tabWidget->count()+1,vis_mapTab,"Event Map");
 	ui->vis_activeMapSpinBox->setMaximum(ColorUtility::GetMaxTime());
-	ui->vis_mapTypeComboBox->setCurrentIndex(1);
+	ui->vis_mapTypeComboBox->setCurrentIndex(0);
 
+	if(zBlocks != NULL)
+	{
+		for(auto it = zBlocks->begin(); it != zBlocks->end(); ++it)
+		{
+			it.value()->changeMode(ZMode::Cumulative);
+		}
+	}
 }
 
 void MainWindow::setProcessEventButton(bool enabled)

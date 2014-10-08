@@ -118,13 +118,9 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
 		Output::Inst()->kprintf("<b><font color=\"red\">Error on Agent Initiation..%s, %s</font></b></>" , e.what());
 		Output::RunSimulation = false;
 	}
-Output::Inst()->ppprintf("am i initialized...1");
+
 	lua_settop(L,0);
 	getSyncData();
-
-	Output::Inst()->ppprintf("am i initialized...");
-
-	//GridMovement::addPos(posX,posY,ID);
 }
 
 AutonLUA::~AutonLUA(){
@@ -252,6 +248,16 @@ EventQueue::eEvent* AutonLUA::initEvent()
 	return NULL;
 }
 
+/*
+ * function for event processing
+ * this function needs to be implemented in the target agent in order to
+ * support event processing.
+ * @param devent a pointer to the dataevent that needs to be processed.
+ * @param time the simulation time that the event is to be processed at.
+ * @param x, y target x and y position that the event is to be processed at.
+ * @param zvalue, the address of the zvalue is to be written at.
+ * @param duration, the address the events duration is to be written at.
+ */
 void AutonLUA::processFunction(EventQueue::dataEvent *devent, double time, double x, double y, double &zvalue, double &duration)
 {
 	//Output::Inst()->ppprintf("X and Y is = %f,%f", 1.,1.);

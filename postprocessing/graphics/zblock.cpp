@@ -40,7 +40,7 @@ void ZBlock::paint(QPainter *painter,
 
 	setColor(currentTime, currentZMode);
 	//painter->setBrush(QColor(activeColor));
-	QPen pen(QColor(activeColor),1);
+	QPen pen(activeColor,1);
 	painter->setPen(pen);
 	painter->drawPoint(0,0);
 	//painter->drawPoint(1,1);
@@ -50,13 +50,19 @@ void ZBlock::paint(QPainter *painter,
 }
 
 void ZBlock::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event){
-	//QColor color(activeColor);
-	//Output::Inst()->ppprintf("my current color is: %i,%i,%i",color.red(),color.green(),color.blue() );
-	//QColor color2(ColorUtility::ZValueToColor(0.5,0.7,0.0));
-	//Output::Inst()->ppprintf("test color is %i,%i,%i",color2.red(),color2.green(),color2.blue() );
-	//setColor(1,ZMode::Average);
-	QColor color3(activeColor);
-	Output::Inst()->ppprintf("test color is %i,%i,%i",color3.red(),color3.green(),color3.blue() );
+
+	//QColor color3(activeColor);
+
+	//Output::Inst()->ppprintf("test color is %i,%i,%i",color3.red(),color3.green(),color3.blue() );
+
+	zitr = zmap.find(currentTime);
+	if(zitr == zmap.end())
+	{
+		Output::Inst()->ppprintf("No z value");
+	} else
+	{
+		Output::Inst()->ppprintf("Z value: %f", *zitr);
+	}
 
 	if(currentZMode == ZMode::Average)
 	{
@@ -92,7 +98,6 @@ void ZBlock::setColor(int time, ZMode zmode)
 	}else
 		activeColor = Qt::white;
 
-	//this->update();
 }
 
 void ZBlock::changeMode(ZMode zmode)
@@ -107,6 +112,14 @@ void ZBlock::setTime(int time)
 	this->update();
 }
 
+/*
+ * Logic for adding a z value to this block.
+ * Adding a zvalue will determine, the various types of values that will be added
+ * to the given timeslot. It will also determine the blocks local min and max values.
+ * @param zvalue the added z value.
+ * @param time the discretized timeslot for this value.
+ *
+ */
 
 void ZBlock::addZValue(double zvalue, int time)
 {
@@ -179,64 +192,64 @@ void ZBlock::addZValue(double zvalue, int time)
 	//Output::Inst()->ppprintf("Min/Max average, %i,%i", min.average, max.average);
 }
 
+/*
+ * Will register the local min and maximum values with the ColorUtility class.
+ * see ColorUtility::AddMaxMinValues(double, double, int) for more info on
+ * the min max adding logic.
+ *
+ */
 void ZBlock::registerMinMax()
 {
 	//Output::Inst()->ppprintf("Min/Max frequency, %f,%f", min.frequency, max.frequency);
-
 	ColorUtility::AddMaxMinValues(min, max,maxTime);
-
 }
 
-QRgb ZBlock::getCumulativeColor(int time)
+/*
+ *
+ */
+QColor ZBlock::getCumulativeColor(int time)
 {
 	zitr = zmap.find(time);
 
-	QRgb color = Qt::blue;
-
 	if(zitr != zmap.end())
 	{
-		color =	ColorUtility::GetCumulativeColor(zitr->second.cumulative);
+		return ColorUtility::GetCumulativeColor(zitr->second.cumulative);
 	}
 
-	return color;
+	return Qt::black ;
 }
 
-QRgb ZBlock::getFrequencyColor(int time)
+QColor ZBlock::getFrequencyColor(int time)
 {
 	zitr = zmap.find(time);
 
-	QRgb color = Qt::blue;
-
 	if(zitr != zmap.end())
 	{
-		color = ColorUtility::GetFreqColor(zitr->second.frequency);
+		return ColorUtility::GetFreqColor(zitr->second.frequency);
 	}
-	return color;
+	return Qt::black;
 }
 
-QRgb ZBlock::getHighestColor(int time)
+QColor ZBlock::getHighestColor(int time)
 {
 	zitr = zmap.find(time);
 
-	QRgb color = Qt::blue;
-
 	if(zitr != zmap.end())
 	{
-		color =	ColorUtility::GetHighest(zitr->second.highest);
+		return ColorUtility::GetHighest(zitr->second.highest);
 	}
 
-	return color;
+	return Qt::black;
 }
 
-QRgb ZBlock::getAverageColor(int time)
+QColor ZBlock::getAverageColor(int time)
 {
 	zitr = zmap.find(time);
 
-	QRgb color = Qt::blue;
-
 	if(zitr != zmap.end())
 	{
-		color =	ColorUtility::GetAvgColor(zitr->second.average);
+		return ColorUtility::GetAvgColor(zitr->second.average);
 	}
-	return color;
+
+	return Qt::black;
 }

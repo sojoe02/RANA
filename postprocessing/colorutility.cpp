@@ -58,12 +58,12 @@ void ColorUtility::AddMaxMinValues(zvalue min, zvalue max, int maxTime){
 
 }
 
-QRgb ColorUtility::ZValueToColor(double value, double min, double max)
+QColor ColorUtility::ZValueToColor(double value, double min, double max)
 {
 	double thress = (value-min)/(max-min);
 
-	if(thress > 1)
-		Output::Inst()->ppprintf("This is the %f", thress);
+	//if(thress > 1)
+		//Output::Inst()->ppprintf("This is the %f", thress);
 
 	uchar r = 0;
 	uchar g = 0;
@@ -75,64 +75,64 @@ QRgb ColorUtility::ZValueToColor(double value, double min, double max)
 		b = sat;
 		g = uchar(thress/0.2 * sat);
 
-		return qRgb(r,g,b);
+		return QColor(r,g,b);
 	}
 	else if(thress < 0.399)
 	{
 		g = sat;
 		b = uchar(sat-(thress-0.4)/0.2 * sat);
 
-		return qRgb(r,g,b);
+		return QColor(r,g,b);
 	}
 	else if(thress < 0.599)
 	{
 		g = sat;
 		r = uchar((thress-0.6)/0.2 * sat);
 
-		return qRgb(r,g,b);
+		return QColor(r,g,b);
 	}
 	else if(thress < 0.799)
 	{
 		r = sat;
 		g = sat - uchar((thress-0.8)/0.2 * sat);
 
-		return qRgb(r,g,b);
+		return QColor(r,g,b);
 	}
 	else if(thress < 0.999)
 	{
 		r = sat;
 		b = uchar((thress-1)/0.2 * sat);
 
-		return qRgb(r,g,b);
+		return QColor(r,g,b);
 	}
 	else if(thress <= 1)
 	{
 		r = sat;
 		b = sat;
-		return qRgb(r,g,b);
+		return QColor(r,g,b);
 
-	} else return Qt::white;
+	} else return QColor(255,255,255);
 }
 
-QRgb ColorUtility::GetCumulativeColor(double value)
+QColor ColorUtility::GetCumulativeColor(double value)
 {
 	return ZValueToColor(value, MIN_Z_LEVELS.cumulative,
 						 MAX_Z_LEVELS.cumulative);
 }
 
-QRgb ColorUtility::GetFreqColor(double value)
+QColor ColorUtility::GetFreqColor(double value)
 {
 	return ZValueToColor(value, MIN_Z_LEVELS.frequency,
 						 MAX_Z_LEVELS.frequency);
 }
 
-QRgb ColorUtility::GetAvgColor(double value)
+QColor ColorUtility::GetAvgColor(double value)
 {
 	return ZValueToColor(value, MIN_Z_LEVELS.average,
 						 MAX_Z_LEVELS.average);
 }
 
-QRgb ColorUtility::GetHighest(double value)
+QColor ColorUtility::GetHighest(double value)
 {
 	return ZValueToColor(value, MIN_Z_LEVELS.highest,
 						 MAX_Z_LEVELS.highest);

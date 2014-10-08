@@ -34,10 +34,10 @@ public:
 
 private:
 
-	QRgb getCumulativeColor(int time);
-	QRgb getFrequencyColor(int time);
-	QRgb getHighestColor(int time);
-	QRgb getAverageColor(int time);
+	QColor getCumulativeColor(int time);
+	QColor getFrequencyColor(int time);
+	QColor getHighestColor(int time);
+	QColor getAverageColor(int time);
 
 	ColorUtility::zvalue current;
 	ColorUtility::zvalue max;
@@ -46,7 +46,7 @@ private:
 	int posX;
 	int posY;
 
-	QRgb activeColor;
+	QColor activeColor;
 
 	bool firstAddition;
 	std::map<int, ColorUtility::zvalue> zmap;

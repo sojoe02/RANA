@@ -18,12 +18,12 @@ public:
 
 	static void AddMaxMinValues(zvalue min, zvalue max, int maxTime);
 
-	static QRgb ZValueToColor(double value, double min, double max);
+	static QColor ZValueToColor(double value, double min, double max);
 
-	static QRgb GetCumulativeColor(double value);
-	static QRgb GetFreqColor(double value);
-	static QRgb GetAvgColor(double value);
-	static QRgb GetHighest(double value);
+	static QColor GetCumulativeColor(double value);
+	static QColor GetFreqColor(double value);
+	static QColor GetAvgColor(double value);
+	static QColor GetHighest(double value);
 
 	static double Z_TRESSHOLD_PERCENTAGE;
 	static int GetMaxTime(){return MAXTIME;}

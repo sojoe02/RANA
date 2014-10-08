@@ -178,8 +178,6 @@ void EventProcessing::processBinnedEvents(double timeResolution, std::string pat
 		processEvent(&*it, thresshold,
 					 mapResolution, timeResolution, path);
 
-		//Output::Inst()->ppprintf("event ID is %i ",it->id);
-
 		end = steady_clock::now();
 		if(duration_cast<milliseconds>(end-start).count() > 50)
 		{
@@ -187,13 +185,8 @@ void EventProcessing::processBinnedEvents(double timeResolution, std::string pat
 			start = end;
 		}
 	}
-	Output::Inst()->ppprogressbar(std::distance(begin(eventbin),it), eventbin.size());
-
-	//EventQueue::dataEvent *event = &*std::begin(eventbin);
-
-	//EventQueue::dataEvent *event = &*it;
-
-	//processEvent(event,thresshold,mapResolution,timeResolution,path);
+	if(!eventbin.empty())
+		Output::Inst()->ppprogressbar(std::distance(begin(eventbin),it), eventbin.size());
 
 	for(auto it = zBlocks->begin(); it != zBlocks->end(); ++it)
 	{
@@ -209,7 +202,7 @@ void EventProcessing::processBinnedEvents(double timeResolution, std::string pat
 void EventProcessing::processEvent(EventQueue::dataEvent *event,
 								   double thresshold, double mapRes, double timeRes, std::string path)
 {
-	Output::Inst()->ppprintf("doing event, id %i ", event->id);
+	//Output::Inst()->ppprintf("doing event, id %i ", event->id);
 
 	Phys::setMacroFactor(simInfo->macroFactor);
 	Phys::setTimeRes(simInfo->timeResolution);
@@ -222,7 +215,7 @@ void EventProcessing::processEvent(EventQueue::dataEvent *event,
 	int width = simInfo->areaX/mapRes;
 	int height = simInfo->areaY/mapRes;
 
-	double z = 1;
+	double z = 0;
 	double duration =0;
 	//calculate the z value at origin, to get thresshold value:
 	auton->processFunction(event, simInfo->mapResolution, event->originX/mapRes,
@@ -233,7 +226,7 @@ void EventProcessing::processEvent(EventQueue::dataEvent *event,
 
 	recursiveZlevel(auton, event, visited,event->originX/mapRes,
 					event->originY/mapRes,0,0,
-					height, width,mapRes,timeRes, thresshold);
+					height, width,mapRes,timeRes, thressholdZ);
 
 	delete visited;
 	delete auton;
@@ -268,7 +261,7 @@ void EventProcessing::recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *ev
 	double distance = sqrt( pow((event->originX - (x+displaceX)*mapRes), 2)
 							+ pow((event->originY - (y+displaceY)*mapRes), 2) );
 
-	double arrivalTime = (event->activationTime/simInfo->timeResolution) +
+	double arrivalTime = (event->activationTime/simInfo->timeResolution/timeRes) +
 			distance/(event->propagationSpeed)/timeRes;
 	//Output::Inst()->ppprintf("arrival time: %f, x: %i, y: %i", arrivalTime,
 		//2					 x+displaceX, y+displaceY);
@@ -293,7 +286,7 @@ void EventProcessing::recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *ev
 		{
 			zitr.value()->addZValue(z, arrivalTime);
 		}
-		double max = duration*timeRes;
+		double max = duration/timeRes;
 
 		for(int i = 1; i < max; i++)
 		{

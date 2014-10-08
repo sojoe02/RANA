@@ -674,7 +674,7 @@
            <item row="9" column="0">
             <widget class="QLabel" name="label_31">
              <property name="toolTip">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;How many meters each pixel covers&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;How many meters each pixel on the map covers&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="text">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Map Scale:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -795,7 +795,7 @@
            </size>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
-           <item row="28" column="2">
+           <item row="27" column="2">
             <widget class="QPushButton" name="vis_clearOutputPushButton">
              <property name="text">
               <string>Clear Output</string>
@@ -842,17 +842,17 @@
              </property>
             </widget>
            </item>
+           <item row="25" column="2">
+            <widget class="QPushButton" name="vis_processEventsPushButton">
+             <property name="text">
+              <string>Process Events</string>
+             </property>
+            </widget>
+           </item>
            <item row="4" column="2">
             <widget class="QPushButton" name="vis_agentPathPushButton">
              <property name="text">
               <string>Browse</string>
-             </property>
-            </widget>
-           </item>
-           <item row="26" column="2">
-            <widget class="QPushButton" name="vis_processEventsPushButton">
-             <property name="text">
-              <string>Process Events</string>
              </property>
             </widget>
            </item>
@@ -866,7 +866,20 @@
              </property>
             </widget>
            </item>
-           <item row="29" column="0" colspan="3">
+           <item row="14" column="2">
+            <widget class="QDoubleSpinBox" name="vis_zThressholdDoubleSpinBox">
+             <property name="maximum">
+              <double>1.000000000000000</double>
+             </property>
+             <property name="singleStep">
+              <double>0.010000000000000</double>
+             </property>
+             <property name="value">
+              <double>0.020000000000000</double>
+             </property>
+            </widget>
+           </item>
+           <item row="28" column="0" colspan="3">
             <widget class="QProgressBar" name="vis_progressBar">
              <property name="sizePolicy">
               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
@@ -898,16 +911,13 @@
              </property>
             </widget>
            </item>
-           <item row="14" column="2">
-            <widget class="QDoubleSpinBox" name="vis_zThressholdDoubleSpinBox">
+           <item row="18" column="2">
+            <widget class="QSpinBox" name="vis_toTimeSpinBox">
              <property name="maximum">
-              <double>1.000000000000000</double>
+              <number>-1</number>
              </property>
              <property name="singleStep">
-              <double>0.010000000000000</double>
-             </property>
-             <property name="value">
-              <double>0.020000000000000</double>
+              <number>60</number>
              </property>
             </widget>
            </item>
@@ -925,13 +935,10 @@
              </property>
             </widget>
            </item>
-           <item row="18" column="2">
-            <widget class="QSpinBox" name="vis_toTimeSpinBox">
-             <property name="maximum">
-              <number>-1</number>
-             </property>
-             <property name="singleStep">
-              <number>60</number>
+           <item row="2" column="2">
+            <widget class="QPushButton" name="vis_eventBrowsePushButton">
+             <property name="text">
+              <string>Browse</string>
              </property>
             </widget>
            </item>
@@ -942,17 +949,20 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="2">
-            <widget class="QPushButton" name="vis_eventBrowsePushButton">
-             <property name="text">
-              <string>Browse</string>
-             </property>
-            </widget>
-           </item>
            <item row="3" column="0" colspan="3">
             <widget class="QLineEdit" name="vis_eventPathLineEdit"/>
            </item>
-           <item row="24" column="1">
+           <item row="13" column="2">
+            <widget class="QDoubleSpinBox" name="vis_timeResolutionDoubleSpinBox">
+             <property name="singleStep">
+              <double>0.250000000000000</double>
+             </property>
+             <property name="value">
+              <double>0.250000000000000</double>
+             </property>
+            </widget>
+           </item>
+           <item row="23" column="1">
             <spacer name="verticalSpacer_3">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -965,13 +975,10 @@
              </property>
             </spacer>
            </item>
-           <item row="13" column="2">
-            <widget class="QDoubleSpinBox" name="vis_timeResolutionDoubleSpinBox">
-             <property name="singleStep">
-              <double>0.250000000000000</double>
-             </property>
-             <property name="value">
-              <double>0.250000000000000</double>
+           <item row="20" column="0" colspan="3">
+            <widget class="QLineEdit" name="vis_eventRegExLineEdit">
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This takes a RegEx string, that matched against each events 'description' string. Only events containing a matching description will be processed.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
             </widget>
            </item>
@@ -985,13 +992,6 @@
              </property>
             </widget>
            </item>
-           <item row="21" column="0" colspan="3">
-            <widget class="QLineEdit" name="vis_eventRegExLineEdit">
-             <property name="toolTip">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This takes a RegEx string, that matched against each events 'description' string. Only events containing a matching description will be processed.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-            </widget>
-           </item>
            <item row="13" column="0">
             <widget class="QLabel" name="label_29">
              <property name="text">
@@ -999,7 +999,7 @@
              </property>
             </widget>
            </item>
-           <item row="20" column="0">
+           <item row="19" column="0">
             <widget class="QLabel" name="label_28">
              <property name="toolTip">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This takes a RegEx string, that matched against each events 'description' string. Only events containing a matching description will be processed.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -1009,30 +1009,7 @@
              </property>
             </widget>
            </item>
-           <item row="19" column="0">
-            <widget class="QLabel" name="label_30">
-             <property name="toolTip">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;How many meters each pixel covers&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-             <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Scale:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-            </widget>
-           </item>
-           <item row="19" column="2">
-            <widget class="QDoubleSpinBox" name="doubleSpinBox">
-             <property name="minimum">
-              <double>1.000000000000000</double>
-             </property>
-             <property name="maximum">
-              <double>100.000000000000000</double>
-             </property>
-             <property name="singleStep">
-              <double>0.250000000000000</double>
-             </property>
-            </widget>
-           </item>
-           <item row="27" column="2">
+           <item row="26" column="2">
             <widget class="QPushButton" name="vis_stopEventProcessingPushButton">
              <property name="text">
               <string>Stop Processing</string>
@@ -1072,11 +1049,6 @@
             <widget class="QComboBox" name="vis_mapTypeComboBox">
              <item>
               <property name="text">
-               <string>Highest</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
                <string>Cumulative</string>
               </property>
              </item>
@@ -1088,6 +1060,11 @@
              <item>
               <property name="text">
                <string>Average</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Highest</string>
               </property>
              </item>
             </widget>

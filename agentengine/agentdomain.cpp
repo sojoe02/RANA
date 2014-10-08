@@ -130,12 +130,10 @@ void AgentDomain::generateSquaredListenerEnvironment(double width, double height
 	this->macroFactor = macroFactor;
 	macroResolution = macroFactor * timeResolution;
 
-
 	Phys::setTimeRes(timeResolution);
 	Phys::setCTime(0);
 	Phys::setMacroFactor(macroFactor);
 	Phys::setEnvironment(width, height);
-
 
     masteragent->generateMap(width,height,resolution,timeResolution, macroResolution);
 
