@@ -48,7 +48,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	mapImage(NULL), mapItem(NULL),scene(new QGraphicsScene()),
 	control(new Control(this)),disableSimOutput(false),
 	postControl(new PostControl(this)),zBlocks(NULL),
-	eventScene(new QGraphicsScene())
+	eventScene(new QGraphicsScene()), zmap(NULL), eventMapScene(new QGraphicsScene())
 {
 
 	this->setWindowTitle("RANA QT version");
@@ -412,6 +412,7 @@ void MainWindow::ppConstruction()
 
 	eventScene->setBackgroundBrush(Qt::gray);
 	ui->vis_graphicsView->setScene(eventScene);
+	ui->vis_mapGraphicsView->setScene(eventMapScene);
 
 
 }
@@ -463,14 +464,6 @@ void MainWindow::on_vis_processEventsPushButton_clicked()
 
 		Output::RunEventProcessing.store(true);
 		//clear the zBlock and remove the blocks from the graphicsScene:
-		if(zBlocks != NULL)
-		{
-			//QHashIterator<QString, ZBlock*> zitr(*zBlocks);
-			//while(zitr.hasNext())
-			//{
-			//	eventScene->removeItem(zitr.value());
-			//	}
-		}
 
 		zBlocks = NULL;
 
@@ -520,6 +513,13 @@ void MainWindow::setupVisualTab(QHash<QString, ZBlock *> *argZBlocks)
 			it.value()->changeMode(ZMode::Cumulative);
 		}
 	}
+
+	zmap = new ZMap();
+	zmap->setPos(0,eventScene->width() -50);
+	zmap->setSize(50,eventScene->height());
+
+	eventMapScene->addItem(zmap);
+
 }
 
 void MainWindow::setProcessEventButton(bool enabled)
@@ -588,10 +588,10 @@ void MainWindow::on_vis_readInfoPushButton_clicked()
 
 		ui->vis_fromTimeSpinBox->setMinimum(0);
 		ui->vis_fromTimeSpinBox->setMaximum(runtime-1);
-		ui->vis_fromTimeSpinBox->setSingleStep(runtime/10);
+		ui->vis_fromTimeSpinBox->setSingleStep((int)runtime/100+0.5);
 		ui->vis_toTimeSpinBox->setMinimum(1);
 		ui->vis_toTimeSpinBox->setMaximum(runtime);
-		ui->vis_toTimeSpinBox->setSingleStep(runtime/10);
+		ui->vis_toTimeSpinBox->setSingleStep((int)runtime/100+0.5);
 		ui->vis_agentPathLineEdit->setText(info->luaFileName);
 
 		ui->vis_processEventsPushButton->setEnabled(true);

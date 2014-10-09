@@ -286,7 +286,7 @@ void EventProcessing::recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *ev
 		{
 			zitr.value()->addZValue(z, arrivalTime);
 		}
-		double max = duration/timeRes;
+		double max = duration*timeRes;
 
 		for(int i = 1; i < max; i++)
 		{

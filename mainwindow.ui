@@ -821,6 +821,9 @@
            </item>
            <item row="17" column="2">
             <widget class="QSpinBox" name="vis_fromTimeSpinBox">
+             <property name="accelerated">
+              <bool>true</bool>
+             </property>
              <property name="minimum">
               <number>-1</number>
              </property>
@@ -828,7 +831,7 @@
               <number>-1</number>
              </property>
              <property name="singleStep">
-              <number>60</number>
+              <number>1</number>
              </property>
             </widget>
            </item>
@@ -913,11 +916,14 @@
            </item>
            <item row="18" column="2">
             <widget class="QSpinBox" name="vis_toTimeSpinBox">
+             <property name="accelerated">
+              <bool>true</bool>
+             </property>
              <property name="maximum">
               <number>-1</number>
              </property>
              <property name="singleStep">
-              <number>60</number>
+              <number>1</number>
              </property>
             </widget>
            </item>
@@ -954,11 +960,17 @@
            </item>
            <item row="13" column="2">
             <widget class="QDoubleSpinBox" name="vis_timeResolutionDoubleSpinBox">
+             <property name="accelerated">
+              <bool>true</bool>
+             </property>
+             <property name="minimum">
+              <double>2.000000000000000</double>
+             </property>
              <property name="singleStep">
-              <double>0.250000000000000</double>
+              <double>0.010000000000000</double>
              </property>
              <property name="value">
-              <double>0.250000000000000</double>
+              <double>2.000000000000000</double>
              </property>
             </widget>
            </item>
@@ -1019,7 +1031,7 @@
           </layout>
          </widget>
         </item>
-        <item row="0" column="1">
+        <item row="1" column="1">
          <widget class="QTextBrowser" name="vis_outputTextBrowser"/>
         </item>
        </layout>
@@ -1109,7 +1121,14 @@
          </widget>
         </item>
         <item row="0" column="2" colspan="3">
-         <widget class="QGraphicsView" name="vis_graphicsView"/>
+         <widget class="QGraphicsView" name="vis_graphicsView">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
         </item>
         <item row="1" column="1" colspan="4">
          <widget class="QWidget" name="widget_7" native="true">
@@ -1176,6 +1195,28 @@
             </widget>
            </item>
           </layout>
+         </widget>
+        </item>
+        <item row="0" column="5">
+         <widget class="QGraphicsView" name="vis_mapGraphicsView">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>50</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>100</width>
+            <height>16777215</height>
+           </size>
+          </property>
          </widget>
         </item>
        </layout>

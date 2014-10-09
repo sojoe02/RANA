@@ -25,6 +25,9 @@ public:
 	static QColor GetAvgColor(double value);
 	static QColor GetHighest(double value);
 
+	static zvalue GetMaxZLevels(){return MAX_Z_LEVELS;}
+	static zvalue GetMinZLevels(){return MIN_Z_LEVELS;}
+
 	static double Z_TRESSHOLD_PERCENTAGE;
 	static int GetMaxTime(){return MAXTIME;}
 

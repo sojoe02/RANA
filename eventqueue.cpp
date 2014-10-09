@@ -191,7 +191,6 @@ void EventQueue::insertIEvent(iEvent *event){
 			}
 			if(!inserted){
 				//Output::Inst()->kprintf("not inserted event %llu, %llu \n", *activeIt,tmu);
-
 				activeTmu.push_back(tmu);
 			}
 		}

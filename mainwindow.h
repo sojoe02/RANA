@@ -32,6 +32,7 @@
 #include "postprocessing/graphics/zblock.h"
 #include "utility.h"
 #include "control.h"
+#include "postprocessing/graphics/zmap.h"
 
 typedef std::list<agentInfo> INFOLIST;
 
@@ -105,8 +106,6 @@ private slots:
 
 	void on_vis_activeMapSpinBox_valueChanged(int arg1);
 
-
-
 	void on_vis_stopEventProcessingPushButton_clicked();
 
 	void on_actionDisable_Simulation_Output_toggled(bool arg1);
@@ -157,6 +156,9 @@ private:
 	PostControl *postControl;
 	QHash<QString, ZBlock*> *zBlocks;
 	QGraphicsScene *eventScene;
+	ZMap *zmap;
+	QGraphicsScene *eventMapScene;
+
 
 };
 
