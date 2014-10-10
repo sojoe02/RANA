@@ -65,6 +65,7 @@ public:
 	void write_PPOutput(QString argMsg);
 	void setProcessEventButton(bool enabled);
 	void setupVisualTab(QHash<QString, ZBlock *> *argZBlocks);
+	void writeZValue(QString string);
 
 	//dialogs:
 	void dialogConstruction();
@@ -111,6 +112,12 @@ private slots:
 	void on_actionDisable_Simulation_Output_toggled(bool arg1);
 
 	void on_vis_eventZoomSlider_valueChanged(int value);
+
+	void on_tabWidget_tabBarClicked(int index);
+
+	void resizeEvent(QResizeEvent* event);
+
+	void on_tabWidget_currentChanged(int index);
 
 signals:
 

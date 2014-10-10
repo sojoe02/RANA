@@ -60,10 +60,7 @@ void ColorUtility::AddMaxMinValues(zvalue min, zvalue max, int maxTime){
 
 QColor ColorUtility::ZValueToColor(double value, double min, double max)
 {
-	double thress = (value-min)/(max-min);
-
-	//if(thress > 1)
-		//Output::Inst()->ppprintf("This is the %f", thress);
+	double thress = (value)/(max);
 
 	uchar r = 0;
 	uchar g = 0;
@@ -105,7 +102,7 @@ QColor ColorUtility::ZValueToColor(double value, double min, double max)
 
 		return QColor(r,g,b);
 	}
-	else if(thress <= 1)
+	else if(thress >= 1)
 	{
 		r = sat;
 		b = sat;

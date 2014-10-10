@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>908</width>
-    <height>768</height>
+    <height>789</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -964,13 +964,13 @@
               <bool>true</bool>
              </property>
              <property name="minimum">
-              <double>2.000000000000000</double>
+              <double>0.010000000000000</double>
              </property>
              <property name="singleStep">
               <double>0.010000000000000</double>
              </property>
              <property name="value">
-              <double>2.000000000000000</double>
+              <double>0.250000000000000</double>
              </property>
             </widget>
            </item>
@@ -1006,6 +1006,9 @@
            </item>
            <item row="13" column="0">
             <widget class="QLabel" name="label_29">
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Amount of seconds each timeslot will cover.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
              <property name="text">
               <string>&lt;b&gt;Time Resolution:</string>
              </property>
@@ -1104,6 +1107,20 @@
              </property>
              <property name="value">
               <number>0</number>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_30">
+             <property name="text">
+              <string>Block Information:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="vis_zValueLabel">
+             <property name="text">
+              <string>Z-Value</string>
              </property>
             </widget>
            </item>
@@ -1207,7 +1224,7 @@
           </property>
           <property name="minimumSize">
            <size>
-            <width>50</width>
+            <width>60</width>
             <height>0</height>
            </size>
           </property>
@@ -1231,7 +1248,7 @@
      <x>0</x>
      <y>0</y>
      <width>908</width>
-     <height>19</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">

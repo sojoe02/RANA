@@ -17,40 +17,56 @@ QRectF ZMap::boundingRect() const
 }
 void ZMap::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-	//QColor activeColor Output::Inst()->ppprintf("value is: %f", value);= Qt::black;
-
-
+	//Output::Inst()->ppprintf("value is: scene %i", scene()->height());
 	for(int i = 1; i <= sizeY; i++)
 	{
 		QPen pen;
 		pen.setWidth(1);
-		pen.setColor(Qt::red);
+		pen.setColor(Qt::black);
 
 		double value = 0;
 
 		if(currentZMode == ZMode::Average)
 		{
-			value = (maxLevels.average - minLevels.average) * ((double)i/(double)sizeY);
+			value = (maxLevels.average - minLevels.average) *
+					((double)i/(double)sizeY);
+
 			pen.setColor(ColorUtility::GetAvgColor(value));
 
 		}else if(currentZMode == ZMode::Cumulative)
 		{
-			value = (maxLevels.cumulative - minLevels.cumulative) * ((double)i/(double)sizeY);
+			value = (maxLevels.cumulative - minLevels.cumulative) *
+					((double)i/(double)sizeY);
+
 			pen.setColor(ColorUtility::GetCumulativeColor(value));
-			Output::Inst()->ppprintf("value is: %f , min/max cumulative is: %f,%f", value, maxLevels.cumulative, minLevels.cumulative);
 
 		}else if(currentZMode == ZMode::Frequency)
 		{
-			value = (maxLevels.frequency - minLevels.frequency) * ((double)i/(double)sizeY);
+			value = (maxLevels.frequency - minLevels.frequency) *
+					((double)i/(double)sizeY);
+
 			pen.setColor(ColorUtility::GetFreqColor(value));
 
 		}else if(currentZMode == ZMode::Highest)
 		{
-			value = (maxLevels.highest - minLevels.highest) * ((double)i/(double)sizeY);
-			pen.setColor(ColorUtility::GetCumulativeColor(value));
+			value = (maxLevels.highest - minLevels.highest) *
+					((double)i/(double)sizeY);
+
+			pen.setColor(ColorUtility::GetHighest(value));
 		}
+
 		painter->setPen(pen);
 		painter->drawLine(0,i,sizeX,i);
+
+		if( i%30 == 0 && i != 0 )
+		{
+			QString valueString;
+			QTextStream(&valueString) << value;
+			pen.setColor(Qt::black);
+			painter->setPen(pen);
+			painter->drawLine(0,i,5,i);
+			painter->drawText(5,i,valueString);
+		}
 	}
 }
 

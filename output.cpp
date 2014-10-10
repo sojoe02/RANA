@@ -92,7 +92,8 @@ void Output::kerr(const char* msg, ...)
 
 void Output::updateStatus(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents)
 {
-    mainWindow->write_status(ms, eventInit, internalEvents, externalEvents);
+	mainWindow->write_status(ms, eventInit,
+							 internalEvents, externalEvents);
 }
 
 void Output::progressBar(unsigned long long current, unsigned long long maximum)
@@ -126,4 +127,9 @@ void Output::ppprintf(const char *msg,...)
 	mainWindow->write_PPOutput(string);
 
 	va_end(args);
+}
+
+void Output::updateZvalue(QString string)
+{
+	Output::mainWindow->writeZValue(string);
 }

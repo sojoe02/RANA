@@ -63,6 +63,7 @@ public:
 	static std::string AgentPath;
 	static std::string AgentFile;
 
+	void updateZvalue(QString string);
 private:
     Output();
     static Output* output;

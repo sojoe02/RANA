@@ -79,7 +79,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
 
-	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.2.7:0.3.0");
+	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.2.7:0.4.0");
 
 	ui->statusBar->addWidget(new QLabel(versionString));
 	ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
@@ -410,10 +410,11 @@ void MainWindow::ppConstruction()
 
 	ui->vis_processEventsPushButton->setEnabled(false);
 
-	eventScene->setBackgroundBrush(Qt::gray);
+	eventScene->setBackgroundBrush(Qt::black);
+	eventMapScene->setBackgroundBrush(Qt::black);
+
 	ui->vis_graphicsView->setScene(eventScene);
 	ui->vis_mapGraphicsView->setScene(eventMapScene);
-
 
 }
 
@@ -506,6 +507,7 @@ void MainWindow::setupVisualTab(QHash<QString, ZBlock *> *argZBlocks)
 	ui->vis_activeMapSpinBox->setMaximum(ColorUtility::GetMaxTime());
 	ui->vis_mapTypeComboBox->setCurrentIndex(0);
 
+
 	if(zBlocks != NULL)
 	{
 		for(auto it = zBlocks->begin(); it != zBlocks->end(); ++it)
@@ -515,11 +517,16 @@ void MainWindow::setupVisualTab(QHash<QString, ZBlock *> *argZBlocks)
 	}
 
 	zmap = new ZMap();
-	zmap->setPos(0,eventScene->width() -50);
-	zmap->setSize(50,eventScene->height());
-
 	eventMapScene->addItem(zmap);
 
+	zmap->setPos(0,0);
+	zmap->setSize(80, ui->vis_outputTextBrowser->height()-50);
+
+}
+
+void MainWindow::writeZValue(QString string)
+{
+	ui->vis_zValueLabel->setText(string);
 }
 
 void MainWindow::setProcessEventButton(bool enabled)
@@ -588,10 +595,14 @@ void MainWindow::on_vis_readInfoPushButton_clicked()
 
 		ui->vis_fromTimeSpinBox->setMinimum(0);
 		ui->vis_fromTimeSpinBox->setMaximum(runtime-1);
-		ui->vis_fromTimeSpinBox->setSingleStep((int)runtime/100+0.5);
+
+		int stepSize = (int)runtime/100;
+		if(stepSize < 1) stepSize = 1;
+
+		ui->vis_fromTimeSpinBox->setSingleStep(stepSize);
 		ui->vis_toTimeSpinBox->setMinimum(1);
 		ui->vis_toTimeSpinBox->setMaximum(runtime);
-		ui->vis_toTimeSpinBox->setSingleStep((int)runtime/100+0.5);
+		ui->vis_toTimeSpinBox->setSingleStep(stepSize);
 		ui->vis_agentPathLineEdit->setText(info->luaFileName);
 
 		ui->vis_processEventsPushButton->setEnabled(true);
@@ -623,6 +634,11 @@ void MainWindow::on_vis_mapTypeComboBox_currentIndexChanged(const QString &arg1)
 			it.value()->changeMode(zmode);
 		}
 	}
+
+	if(zmap != NULL)
+	{
+		zmap->changeMode(zmode);
+	}
 }
 
 void MainWindow::on_vis_activeMapSpinBox_valueChanged(int arg1)
@@ -649,6 +665,31 @@ void MainWindow::on_vis_eventZoomSlider_valueChanged(int value)
 
 	ui->vis_graphicsView->setTransform(QTransform::fromScale(scale,scale));
 
+}
+void MainWindow::on_tabWidget_tabBarClicked(int index)
+{
+	//if(zmap != NULL)
+	//zmap->setSize(50,ui->vis_mapGraphicsView->height());
+}
+
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+	//MainWindow::resizeEvent(event);
+
+}
+
+void MainWindow::on_tabWidget_currentChanged(int index)
+{
+	if(index == ui->tabWidget->indexOf(vis_mapTab))
+	{
+		if(zmap != NULL)
+		{
+			zmap->setSize(80,ui->vis_outputTextBrowser->height()-50);
+		}
+
+		ui->vis_graphicsView->fitInView(eventScene->sceneRect(),
+										Qt::KeepAspectRatio);
+	}
 }
 
 //DIALOGS
@@ -679,3 +720,6 @@ void MainWindow::on_actionDisable_Simulation_Output_toggled(bool arg1)
 {
 	disableSimOutput = arg1;
 }
+
+
+

@@ -20,6 +20,7 @@ ZBlock::ZBlock(int argX, int argY)
 	max.cumulative = 0;
 	max.highest = 0;
 	max.average = 0;
+	setToolTip("Double click to display z value");
 }
 
 ZBlock::~ZBlock()
@@ -51,31 +52,36 @@ void ZBlock::paint(QPainter *painter,
 
 void ZBlock::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event){
 
-	//QColor color3(activeColor);
-
-	//Output::Inst()->ppprintf("test color is %i,%i,%i",color3.red(),color3.green(),color3.blue() );
-
 	zitr = zmap.find(currentTime);
+
 	if(zitr == zmap.end())
 	{
 		Output::Inst()->ppprintf("No z value");
-	} else
+	}else
 	{
-		Output::Inst()->ppprintf("Z value: %f", *zitr);
-	}
+		QString string;
 
-	if(currentZMode == ZMode::Average)
-	{
-		Output::Inst()->ppprintf("current mode: Average");
-	}else if(currentZMode == ZMode::Cumulative)
-	{
-		Output::Inst()->ppprintf("current mode: Cumulative");
-	}else if(currentZMode == ZMode::Frequency)
-	{
-		Output::Inst()->ppprintf("current mode: Frequency");
-	}else if(currentZMode == ZMode::Highest)
-	{
-		Output::Inst()->ppprintf("current mode: Highest");
+		if(currentZMode == ZMode::Average)
+		{
+			QTextStream(&string)<< "Average value: "<< zitr->second.average;
+			Output::Inst()->updateZvalue(string);
+
+		}else if(currentZMode == ZMode::Cumulative)
+		{
+			QTextStream(&string)<< "Cumulative value: "<<zitr->second.cumulative;
+			Output::Inst()->updateZvalue(string);
+
+		}else if(currentZMode == ZMode::Frequency)
+		{
+			QTextStream(&string)<< "Frequency value: " << zitr->second.frequency;
+			Output::Inst()->updateZvalue(string);
+
+		}else if(currentZMode == ZMode::Highest)
+		{
+			QTextStream(&string)<< "Highest value: "<< zitr->second.highest;
+			Output::Inst()->updateZvalue(string);
+
+		}
 	}
 }
 
