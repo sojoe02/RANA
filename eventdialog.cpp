@@ -26,6 +26,7 @@ void EventDialog::on_event_savePushButton_clicked()
 void EventDialog::on_event_exitPushButton_clicked()
 {
 	this->close();
+
 }
 
 void EventDialog::on_event_browsePushButton_clicked()

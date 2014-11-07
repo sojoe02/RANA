@@ -48,7 +48,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	mapImage(NULL), mapItem(NULL),scene(new QGraphicsScene()),
 	control(new Control(this)),disableSimOutput(false),
 	postControl(new PostControl(this)),zBlocks(NULL),
-	eventScene(new QGraphicsScene()), zmap(NULL), eventMapScene(new QGraphicsScene())
+	eventScene(new QGraphicsScene()), zmap(NULL), eventMapScene(new QGraphicsScene()),
+	zMapTimer(new QTimer(this)),playingMap(false)
 {
 
 	this->setWindowTitle("RANA QT version");
@@ -79,7 +80,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
 
-	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.2.7:0.4.0");
+	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.2.7:0.4.1");
 
 	ui->statusBar->addWidget(new QLabel(versionString));
 	ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
@@ -90,7 +91,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	ppConstruction();
 	dialogConstruction();
-
 
 }
 
@@ -416,6 +416,8 @@ void MainWindow::ppConstruction()
 	ui->vis_graphicsView->setScene(eventScene);
 	ui->vis_mapGraphicsView->setScene(eventMapScene);
 
+	QObject::connect(zMapTimer,SIGNAL(timeout()),this,SLOT(on_zMapTimerTimeout()));
+
 }
 
 void MainWindow::ppIsChecked()
@@ -452,6 +454,8 @@ void MainWindow::ppIsChecked()
 
 void MainWindow::on_vis_processEventsPushButton_clicked()
 {
+	zMapTimer->stop();
+
 	QFileInfo fi(ui->vis_eventPathLineEdit->text());
 	QFileInfo efi(ui->vis_agentPathLineEdit->text());
 	QString agentPath = ui->vis_agentPathLineEdit->text();
@@ -590,8 +594,7 @@ void MainWindow::on_vis_readInfoPushButton_clicked()
 		int runtime = int(info->tmuAmount + info->macroFactor)/(info->timeResolution);
 		int step = runtime/10;
 
-		if (step == 0)
-			step = 1;
+		if (step == 0) step = 1;
 
 		ui->vis_fromTimeSpinBox->setMinimum(0);
 		ui->vis_fromTimeSpinBox->setMaximum(runtime-1);
@@ -692,7 +695,41 @@ void MainWindow::on_tabWidget_currentChanged(int index)
 	}
 }
 
-//DIALOGS
+void MainWindow::on_vis_eventPlayPushButton_clicked()
+{
+	if(!playingMap)
+	{
+		ui->vis_eventPlayPushButton->setText("Stop Playback");
+
+		zMapTimer->start(ui->vis_controlEventPlaySpinBox->value());
+		playingMap = true;
+
+	}else
+	{
+		ui->vis_eventPlayPushButton->setText("Start Playback");
+
+		zMapTimer->stop();
+		playingMap = false;
+	}
+}
+
+void MainWindow::on_zMapTimerTimeout()
+{
+	int index = ui->vis_activeMapSpinBox->value();
+	index++;
+
+	if(index > ui->vis_activeMapSpinBox->maximum())
+	{
+		index = 0;
+	}
+
+	on_vis_activeMapSpinBox_valueChanged(index);
+	ui->vis_activeMapSpinBox->setValue(index);
+
+}
+
+
+//DIALOGS:
 void MainWindow::dialogConstruction()
 {
 	QObject::connect(ui->actionSave_Current_Events, SIGNAL(triggered()),this, SLOT(eventDialog()));
@@ -720,6 +757,8 @@ void MainWindow::on_actionDisable_Simulation_Output_toggled(bool arg1)
 {
 	disableSimOutput = arg1;
 }
+
+
 
 
 

@@ -1134,6 +1134,32 @@
              </property>
             </widget>
            </item>
+           <item>
+            <widget class="QSpinBox" name="vis_controlEventPlaySpinBox">
+             <property name="accelerated">
+              <bool>true</bool>
+             </property>
+             <property name="minimum">
+              <number>10</number>
+             </property>
+             <property name="maximum">
+              <number>10000</number>
+             </property>
+             <property name="singleStep">
+              <number>10</number>
+             </property>
+             <property name="value">
+              <number>200</number>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="vis_eventPlayPushButton">
+             <property name="text">
+              <string>Start Playback</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </widget>
         </item>
@@ -1248,7 +1274,7 @@
      <x>0</x>
      <y>0</y>
      <width>908</width>
-     <height>20</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">

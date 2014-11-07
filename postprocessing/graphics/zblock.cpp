@@ -63,22 +63,22 @@ void ZBlock::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event){
 
 		if(currentZMode == ZMode::Average)
 		{
-			QTextStream(&string)<< "Average value: "<< zitr->second.average;
+			QTextStream(&string)<< zitr->second.average;
 			Output::Inst()->updateZvalue(string);
 
 		}else if(currentZMode == ZMode::Cumulative)
 		{
-			QTextStream(&string)<< "Cumulative value: "<<zitr->second.cumulative;
+			QTextStream(&string)<< zitr->second.cumulative;
 			Output::Inst()->updateZvalue(string);
 
 		}else if(currentZMode == ZMode::Frequency)
 		{
-			QTextStream(&string)<< "Frequency value: " << zitr->second.frequency;
+			QTextStream(&string)<< zitr->second.frequency;
 			Output::Inst()->updateZvalue(string);
 
 		}else if(currentZMode == ZMode::Highest)
 		{
-			QTextStream(&string)<< "Highest value: "<< zitr->second.highest;
+			QTextStream(&string)<< zitr->second.highest;
 			Output::Inst()->updateZvalue(string);
 
 		}

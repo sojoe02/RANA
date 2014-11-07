@@ -92,7 +92,6 @@ private slots:
     void actionPrintInfo();
 
 	//postprocessing:
-
 	void ppIsChecked();
     void on_vis_processEventsPushButton_clicked();
 	void on_writePPOutput(QString string);
@@ -101,23 +100,20 @@ private slots:
 	void on_vis_agentPathPushButton_clicked();
 	void on_vis_mapTypeComboBox_currentIndexChanged(const QString &arg1);
 
+	void on_zMapTimerTimeout();
+
 	//dialogs:
 	void eventDialog(); 
 	void on_vis_eventBrowsePushButton_clicked();
-
 	void on_vis_activeMapSpinBox_valueChanged(int arg1);
-
 	void on_vis_stopEventProcessingPushButton_clicked();
-
 	void on_actionDisable_Simulation_Output_toggled(bool arg1);
-
 	void on_vis_eventZoomSlider_valueChanged(int value);
-
 	void on_tabWidget_tabBarClicked(int index);
-
 	void resizeEvent(QResizeEvent* event);
-
 	void on_tabWidget_currentChanged(int index);
+
+	void on_vis_eventPlayPushButton_clicked();
 
 signals:
 
@@ -128,6 +124,7 @@ signals:
 
 	//postprocessing:
 	void writePPSignal(QString something);
+
 
 private:
 
@@ -165,6 +162,9 @@ private:
 	QGraphicsScene *eventScene;
 	ZMap *zmap;
 	QGraphicsScene *eventMapScene;
+
+	QTimer *zMapTimer;
+	bool playingMap;
 
 
 };
