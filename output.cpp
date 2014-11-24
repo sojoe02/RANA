@@ -73,7 +73,7 @@ void Output::kprintf(const char* msg, ...)
     //lock.unlock();
 }
 
-void Output::kerr(const char* msg, ...)
+void Output::kregprintf(const char* msg, ...)
 {
     //lock.lock();
     va_list args;
@@ -84,7 +84,7 @@ void Output::kerr(const char* msg, ...)
 
     QString string(buffer);
 
-    mainWindow->write_errOutput(string);
+    mainWindow->write_regularOutput(string);
 
     va_end(args);
     //lock.unlock();

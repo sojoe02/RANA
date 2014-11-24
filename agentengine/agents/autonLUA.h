@@ -47,6 +47,7 @@ class AutonLUA : public Auton
 		 * General LUA wrapper functions
 		 */
 		static int l_debug(lua_State *L);
+		static int l_print(lua_State *L);
 		static int l_registerIEvent(lua_State *L);
 		static int l_registerEEvent(lua_State *L);
 		static int l_generateEventID(lua_State *L);

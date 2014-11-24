@@ -38,6 +38,8 @@ The simulation core offers a number of functions that the agent can call to expa
 
 |Function		|Arguments	|Description		|
 |:-----------------------|:-------------|:----------------------|
+|l_print		|string |Prints an html formatted string to simulation output.|
+|l_debug 	|string| Same as l_print, though the output of this can be disabled in the menu|
 |l_speedOfSound	|myX, myY, origX, origY, propspeed| Calculates the arrival microstep, for something that to propagate from origX,origY to myX,myY with the speed of propspeed *m/s*. |
 |l_currentTime	||				Returns the current microstep.|
 |l_distance	|myX, myY, origX, origY| Calculates the amount of units between myX,myY and origX,origY|

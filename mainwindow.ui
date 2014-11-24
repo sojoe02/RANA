@@ -69,7 +69,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="simControlTab">
        <attribute name="title">
@@ -1390,7 +1390,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Disable Simulation Output</string>
+    <string>Disable Simulation Debug Output</string>
    </property>
   </action>
  </widget>

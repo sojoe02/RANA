@@ -58,7 +58,7 @@ public:
     void updateMap(std::list<agentInfo> infolist);
     void write_output(QString argMsg);
     void write_status(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents);
-    void write_errOutput(QString argMsg);
+	void write_regularOutput(QString argMsg);
 
 	//postprocessing:
 	void advancePPProgess(int percentage);
@@ -85,7 +85,7 @@ private slots:
     void on_updateMap(INFOLIST infolist);
     void on_udateStatus(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents);
     void on_writeOutput(QString string);
-    void on_writeErrOutput(QString string);
+	void on_writeRegularOutput(QString string);
     void on_delaySpinBox_valueChanged(int arg1);
     void on_zoomSlider_valueChanged(int value);
     void on_pushButton_clicked();
@@ -115,12 +115,14 @@ private slots:
 
 	void on_vis_eventPlayPushButton_clicked();
 
+	void on_vis_clearOutputPushButton_clicked();
+
 signals:
 
     void map_updateSignal(INFOLIST infolist);
     void writeStringSignal(QString something);
     void writeStatusSignal(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents);
-    void writeErrSignal(QString something);
+	void writeRegularSignal(QString something);
 
 	//postprocessing:
 	void writePPSignal(QString something);

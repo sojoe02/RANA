@@ -70,8 +70,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(this,SIGNAL(writeStringSignal(QString)),
                      this,SLOT(on_writeOutput(QString)));
 
-    QObject::connect(this,SIGNAL(writeErrSignal(QString)),
-                     this,SLOT(on_writeErrOutput(QString)));
+	QObject::connect(this,SIGNAL(writeRegularSignal(QString)),
+					 this,SLOT(on_writeRegularOutput(QString)));
 
     QObject::connect(this,SIGNAL(writeStatusSignal(unsigned long long,unsigned long long,unsigned long long,unsigned long long)),
                      this,SLOT(on_udateStatus(unsigned long long,unsigned long long,unsigned long long,unsigned long long)));
@@ -80,7 +80,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
 
-	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.2.7:0.4.7");
+	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.2.8:0.4.7");
 
 	ui->statusBar->addWidget(new QLabel(versionString));
 	ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
@@ -215,10 +215,19 @@ void MainWindow::on_writeOutput(QString string)
 {
     //std::this_thread::sleep_for(std::chrono::milliseconds(5));
     //QString prepend = "</>";
-    //QString output = string.prepend(prepend);
+	ui->outputTextBrowser->setTextColor(Qt::black);
 
-	ui->outputTextBrowser->insertHtml(string);
-	ui->outputTextBrowser->append("");
+	if(!ui->action_Enable_Visualisation->isChecked())
+	{
+		ui->outputTextBrowser->append(string);
+	} else
+	{
+		ui->vis_outputTextBrowser->append(string);
+	}
+	//QString output = string.prepend(prepend);
+
+	//ui->outputTextBrowser->insertHtml(string);
+	//ui->outputTextBrowser->append("");
 
 }
 
@@ -232,17 +241,23 @@ void MainWindow::write_output(QString argMsg)
 
 }
 
-void MainWindow::on_writeErrOutput(QString string)
+void MainWindow::on_writeRegularOutput(QString string)
 {
-	ui->outputTextBrowser->setTextColor(Qt::red);
-	ui->outputTextBrowser->append(string);
 	ui->outputTextBrowser->setTextColor(Qt::black);
+	if(!ui->action_Enable_Visualisation->isChecked())
+	{
+		ui->outputTextBrowser->append(string);
+	} else
+	{
+		ui->vis_outputTextBrowser->append(string);
+	}
 }
 
-void MainWindow::write_errOutput(QString argMsg)
+void MainWindow::write_regularOutput(QString argMsg)
 {
-    emit writeErrSignal(argMsg);
-    std::this_thread::sleep_for(std::chrono::milliseconds(2));
+	std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	emit writeRegularSignal(argMsg);
+	std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
 }
 
@@ -386,8 +401,7 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::actionPrintInfo()
 {
-	ui->outputTextBrowser->insertHtml(versionString);
-	ui->outputTextBrowser->append("");
+	write_regularOutput(versionString);
 }
 
 /*
@@ -566,8 +580,8 @@ void MainWindow::write_PPOutput(QString argMsg)
 
 void MainWindow::on_writePPOutput(QString string)
 {
-	ui->vis_outputTextBrowser->insertHtml(string);
-	ui->vis_outputTextBrowser->append("");
+	ui->vis_outputTextBrowser->append(string);
+	//ui->vis_outputTextBrowser->append("");
 }
 
 void MainWindow::on_vis_eventBrowsePushButton_clicked()
@@ -757,6 +771,11 @@ void MainWindow::on_zMapTimerTimeout()
 
 }
 
+void MainWindow::on_vis_clearOutputPushButton_clicked()
+{
+	ui->vis_outputTextBrowser->clear();
+
+}
 
 //DIALOGS:
 void MainWindow::dialogConstruction()
@@ -786,6 +805,8 @@ void MainWindow::on_actionDisable_Simulation_Output_toggled(bool arg1)
 {
 	disableSimOutput = arg1;
 }
+
+
 
 
 

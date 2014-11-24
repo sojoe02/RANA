@@ -59,6 +59,7 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
 	lua_register(L, "l_distance", l_distance);
 	lua_register(L, "l_currentTime",l_currentTime);
 	lua_register(L, "l_debug", l_debug);
+	lua_register(L, "l_print", l_print);
 	lua_register(L, "l_generateEventID", l_generateEventID);
 	lua_register(L, "l_getMacroFactor", l_getMacroFactor);
 	lua_register(L, "l_getTimeResolution", l_getTimeResolution);
@@ -414,6 +415,11 @@ void AutonLUA::getSyncData(){
  */
 int AutonLUA::l_debug(lua_State *L){
 	Output::Inst()->kprintf(lua_tostring(L,-1));
+	return 0;
+}
+
+int AutonLUA::l_print(lua_State *L){
+	Output::Inst()->kregprintf(lua_tostring(L,-1));
 	return 0;
 }
 
