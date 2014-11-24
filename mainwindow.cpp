@@ -80,7 +80,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
 
-	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.2.7:0.4.2");
+	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.2.7:0.4.7");
 
 	ui->statusBar->addWidget(new QLabel(versionString));
 	ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
@@ -142,13 +142,12 @@ void MainWindow::on_generateButton_clicked()
 void MainWindow::advanceProgess(int percentage)
 {
 	//QCoreApplication::postEvent(scene, new QEvent(QEvent::UpdateRequest),
-	  //                          Qt::LowEventPriority);
+	//                          Qt::LowEventPriority);
     QMetaObject::invokeMethod(ui->progressBar, "setValue", Q_ARG(int, percentage));
     //ui->progressBar->setValue(percentage);
 }
 
-void MainWindow::actionExit()
-{
+void MainWindow::actionExit(){
     QApplication::quit();
 }
 
@@ -217,17 +216,19 @@ void MainWindow::on_writeOutput(QString string)
     //std::this_thread::sleep_for(std::chrono::milliseconds(5));
     //QString prepend = "</>";
     //QString output = string.prepend(prepend);
-	if(!disableSimOutput){
-		ui->outputTextBrowser->insertHtml(string);
-		ui->outputTextBrowser->append("");
-	}
+
+	ui->outputTextBrowser->insertHtml(string);
+	ui->outputTextBrowser->append("");
+
 }
 
 void MainWindow::write_output(QString argMsg)
 {
-    std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    emit writeStringSignal(argMsg);
-    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	if(!disableSimOutput){
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		emit writeStringSignal(argMsg);
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	}
 
 }
 
@@ -487,8 +488,13 @@ void MainWindow::on_vis_processEventsPushButton_clicked()
 		postControl->runProcessEvents(regex,eventPath,to,from,
 									  timeRes,agentPath,mapRes,thresshold);
 
-		int timeOffset = from/timeRes;
+		timeOffset = from/timeRes;
 		ui->vis_activeMapSpinBox->setMinimum(timeOffset);
+
+		QString stringTmp = QString::number(timeRes);
+		ui->vis_activeTimeResolutionLabel->setText(stringTmp);
+		stringTmp = QString::number(0);
+		ui->vis_activeTimeLabel->setText(stringTmp);
 
 	} else
 		Output::Inst()->ppprintf("agent- %s or event path %s, not found",
@@ -501,6 +507,8 @@ void MainWindow::setupVisualTab(QHash<QString, ZBlock *> *argZBlocks)
 {
 	zBlocks = argZBlocks;
 
+	//Output::Inst()->ppprintf("adding item to something fierce...")
+
 	for(auto it = zBlocks->begin(); it != zBlocks->end(); ++it)
 	{
 		//Output::Inst()->ppprintf("adding item to something fierce...");
@@ -510,7 +518,7 @@ void MainWindow::setupVisualTab(QHash<QString, ZBlock *> *argZBlocks)
 	ui->tabWidget->insertTab(ui->tabWidget->count()+1,vis_mapTab,"Event Map");
 	ui->vis_activeMapSpinBox->setMaximum(ColorUtility::GetMaxTime());
 	ui->vis_mapTypeComboBox->setCurrentIndex(0);
-
+	ui->vis_activeMapSpinBox->setValue(timeOffset);
 
 	if(zBlocks != NULL)
 	{
@@ -524,7 +532,7 @@ void MainWindow::setupVisualTab(QHash<QString, ZBlock *> *argZBlocks)
 	eventMapScene->addItem(zmap);
 
 	zmap->setPos(0,0);
-	zmap->setSize(80, ui->vis_outputTextBrowser->height()-50);
+	zmap->setSize(ui->vis_mapGraphicsView->maximumWidth(),ui->vis_outputTextBrowser->height());
 
 }
 
@@ -653,6 +661,15 @@ void MainWindow::on_vis_activeMapSpinBox_valueChanged(int arg1)
 			it.value()->setTime(arg1);
 		}
 	}
+
+
+	double currentTime = ui->vis_activeMapSpinBox->value() *
+			ui->vis_activeTimeResolutionLabel->text().toDouble();
+
+	QString stringtmp = QString::number(currentTime);
+	stringtmp.append("\t - \t");
+	stringtmp.append(QString::number(currentTime + ui->vis_activeTimeResolutionLabel->text().toDouble()));
+	ui->vis_activeTimeLabel->setText(stringtmp);
 }
 
 void MainWindow::on_vis_stopEventProcessingPushButton_clicked()
@@ -678,7 +695,18 @@ void MainWindow::on_tabWidget_tabBarClicked(int index)
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
 	//MainWindow::resizeEvent(event);
+	if(ui->tabWidget->currentIndex() == ui->tabWidget->indexOf(vis_mapTab))
+	{
+		if(zmap != NULL)
+		{
+			zmap->setPos(0,0);
+			zmap->setSize(ui->vis_mapGraphicsView->width(),ui->vis_mapGraphicsView->height());
+		}
 
+		ui->vis_graphicsView->fitInView(eventScene->sceneRect(),
+										Qt::KeepAspectRatio);
+
+	}
 }
 
 void MainWindow::on_tabWidget_currentChanged(int index)
@@ -687,7 +715,8 @@ void MainWindow::on_tabWidget_currentChanged(int index)
 	{
 		if(zmap != NULL)
 		{
-			zmap->setSize(80,ui->vis_outputTextBrowser->height()-50);
+			zmap->setPos(0,0);
+			zmap->setSize(ui->vis_mapGraphicsView->width(),ui->vis_mapGraphicsView->height());
 		}
 
 		ui->vis_graphicsView->fitInView(eventScene->sceneRect(),

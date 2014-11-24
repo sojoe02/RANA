@@ -4,7 +4,7 @@
 
 
 ZBlock::ZBlock(int argX, int argY)
-	: posX(argX), posY(argY), activeColor(Qt::white),
+	: posX(argX), posY(argY), activeColor(Qt::white),defaultColor(Qt::black),
 	  firstAddition(true), currentZMode(ZMode::Highest),
 	  currentTime(0), maxTime(0)
 {
@@ -222,7 +222,7 @@ QColor ZBlock::getCumulativeColor(int time)
 		return ColorUtility::GetCumulativeColor(zitr->second.cumulative);
 	}
 
-	return Qt::black ;
+	return defaultColor ;
 }
 
 QColor ZBlock::getFrequencyColor(int time)
@@ -233,7 +233,7 @@ QColor ZBlock::getFrequencyColor(int time)
 	{
 		return ColorUtility::GetFreqColor(zitr->second.frequency);
 	}
-	return Qt::black;
+	return defaultColor;
 }
 
 QColor ZBlock::getHighestColor(int time)
@@ -245,7 +245,7 @@ QColor ZBlock::getHighestColor(int time)
 		return ColorUtility::GetHighest(zitr->second.highest);
 	}
 
-	return Qt::black;
+	return defaultColor;
 }
 
 QColor ZBlock::getAverageColor(int time)
@@ -257,5 +257,5 @@ QColor ZBlock::getAverageColor(int time)
 		return ColorUtility::GetAvgColor(zitr->second.average);
 	}
 
-	return Qt::black;
+	return defaultColor;
 }

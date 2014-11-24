@@ -14,6 +14,8 @@ ColorUtility::ColorUtility()
 
 void ColorUtility::Init()
 {
+	MAXTIME = 0;
+
 	MAX_Z_LEVELS.average = 0;
 	MAX_Z_LEVELS.cumulative = 0;
 	MAX_Z_LEVELS.highest = 0;

@@ -69,7 +69,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="simControlTab">
        <attribute name="title">
@@ -1035,7 +1035,14 @@
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="QTextBrowser" name="vis_outputTextBrowser"/>
+         <widget class="QTextBrowser" name="vis_outputTextBrowser">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -1113,7 +1120,7 @@
            <item>
             <widget class="QLabel" name="label_30">
              <property name="text">
-              <string>Block Information:</string>
+              <string>&lt;b&gt;Block Information:</string>
              </property>
             </widget>
            </item>
@@ -1125,12 +1132,47 @@
             </widget>
            </item>
            <item>
+            <widget class="QLabel" name="label_33">
+             <property name="text">
+              <string>&lt;b&gt;TimeResolution:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="vis_activeTimeResolutionLabel">
+             <property name="text">
+              <string>Resolution</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_35">
+             <property name="text">
+              <string>&lt;b&gt;Current Time[s]:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="vis_activeTimeLabel">
+             <property name="text">
+              <string>Time</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QWidget" name="vis_replaceWidget" native="true">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_36">
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Frame Delay[ms]:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
             </widget>
            </item>
@@ -1166,7 +1208,7 @@
         <item row="0" column="2" colspan="3">
          <widget class="QGraphicsView" name="vis_graphicsView">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -1250,15 +1292,21 @@
           </property>
           <property name="minimumSize">
            <size>
-            <width>60</width>
+            <width>80</width>
             <height>0</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>100</width>
+            <width>80</width>
             <height>16777215</height>
            </size>
+          </property>
+          <property name="verticalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
+          </property>
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
           </property>
          </widget>
         </item>

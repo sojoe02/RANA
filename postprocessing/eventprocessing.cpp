@@ -280,7 +280,10 @@ void EventProcessing::recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *ev
 
 		auton->processFunction(event,mapRes, xArg, yArg, z, duration);
 
-		//Output::Inst()->ppprintf("zblock key is: %s", key.toStdString().c_str());
+		if (z <= thressholdZ)
+			return;
+
+		//Output::Inst()->ppprintf("Process returns: %f, %f", z, duration);
 
 		if(zitr != zBlocks->end())
 		{
@@ -303,8 +306,8 @@ void EventProcessing::recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *ev
 	//Output::Inst()->ppprintf("Z value is: %f, position is: %i,%i", z ,x+displaceX,y+displaceY );
 
 	//return if z is below thresshold:
-	if (z <= thressholdZ)
-		return;
+	//if (z <= thressholdZ)
+		//return;
 
 	//do the recursive calls:
 	if(x+displaceX+1 <= width)

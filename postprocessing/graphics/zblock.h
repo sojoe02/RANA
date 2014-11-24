@@ -47,6 +47,7 @@ private:
 	int posY;
 
 	QColor activeColor;
+	QColor defaultColor;
 
 	bool firstAddition;
 	std::map<int, ColorUtility::zvalue> zmap;

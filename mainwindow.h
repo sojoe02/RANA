@@ -162,6 +162,7 @@ private:
 	QGraphicsScene *eventScene;
 	ZMap *zmap;
 	QGraphicsScene *eventMapScene;
+	int timeOffset;
 
 	QTimer *zMapTimer;
 	bool playingMap;
