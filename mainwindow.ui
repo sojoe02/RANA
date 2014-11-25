@@ -69,7 +69,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="simControlTab">
        <attribute name="title">
@@ -873,6 +873,9 @@
            </item>
            <item row="17" column="2">
             <widget class="QSpinBox" name="vis_fromTimeSpinBox">
+             <property name="wrapping">
+              <bool>true</bool>
+             </property>
              <property name="accelerated">
               <bool>true</bool>
              </property>
@@ -974,6 +977,9 @@
            </item>
            <item row="18" column="2">
             <widget class="QSpinBox" name="vis_toTimeSpinBox">
+             <property name="wrapping">
+              <bool>true</bool>
+             </property>
              <property name="accelerated">
               <bool>true</bool>
              </property>
@@ -1179,6 +1185,9 @@
            </item>
            <item>
             <widget class="QSpinBox" name="vis_activeMapSpinBox">
+             <property name="wrapping">
+              <bool>true</bool>
+             </property>
              <property name="accelerated">
               <bool>true</bool>
              </property>
