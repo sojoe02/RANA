@@ -112,12 +112,18 @@
              <property name="text">
               <string>&lt;b&gt;Map Generation:</string>
              </property>
+             <property name="buddy">
+              <cstring>generateMap</cstring>
+             </property>
             </widget>
            </item>
            <item row="7" column="0">
             <widget class="QLabel" name="label_7">
              <property name="text">
               <string>&lt;b&gt;Map Path:</string>
+             </property>
+             <property name="buddy">
+              <cstring>browseMapButton</cstring>
              </property>
             </widget>
            </item>
@@ -132,6 +138,9 @@
              <property name="text">
               <string>&lt;b&gt;Time Resolution:</string>
              </property>
+             <property name="buddy">
+              <cstring>timeResSpinBox</cstring>
+             </property>
             </widget>
            </item>
            <item row="1" column="0">
@@ -142,12 +151,18 @@
              <property name="text">
               <string>&lt;b&gt;Macro Factor:</string>
              </property>
+             <property name="buddy">
+              <cstring>macroSpinBox</cstring>
+             </property>
             </widget>
            </item>
            <item row="2" column="0">
             <widget class="QLabel" name="label_13">
              <property name="text">
               <string>&lt;b&gt;Runtime(s):</string>
+             </property>
+             <property name="buddy">
+              <cstring>runTimeSpinBox</cstring>
              </property>
             </widget>
            </item>
@@ -209,6 +224,9 @@
             <widget class="QLabel" name="label_2">
              <property name="text">
               <string>&lt;b&gt;Number of Agents:</string>
+             </property>
+             <property name="buddy">
+              <cstring>luaSpinBox</cstring>
              </property>
             </widget>
            </item>
@@ -327,6 +345,9 @@
                 <property name="text">
                  <string>Blue:</string>
                 </property>
+                <property name="buddy">
+                 <cstring>BDoubleSpinBox</cstring>
+                </property>
                </widget>
               </item>
               <item row="0" column="1">
@@ -374,12 +395,18 @@
                 <property name="text">
                  <string>Green:</string>
                 </property>
+                <property name="buddy">
+                 <cstring>GDoubleSpinBox</cstring>
+                </property>
                </widget>
               </item>
               <item row="0" column="0">
                <widget class="QLabel" name="label_21">
                 <property name="text">
                  <string>Red:</string>
+                </property>
+                <property name="buddy">
+                 <cstring>RdoubleSpinBox</cstring>
                 </property>
                </widget>
               </item>
@@ -388,6 +415,9 @@
                 <property name="text">
                  <string>Width:</string>
                 </property>
+                <property name="buddy">
+                 <cstring>pySpinBox</cstring>
+                </property>
                </widget>
               </item>
               <item row="1" column="2">
@@ -395,9 +425,22 @@
                 <property name="text">
                  <string>Height:</string>
                 </property>
+                <property name="buddy">
+                 <cstring>pxSpinBox</cstring>
+                </property>
                </widget>
               </item>
              </layout>
+             <zorder>label_19</zorder>
+             <zorder>label_18</zorder>
+             <zorder>label_21</zorder>
+             <zorder>label_22</zorder>
+             <zorder>label_23</zorder>
+             <zorder>pxSpinBox</zorder>
+             <zorder>pySpinBox</zorder>
+             <zorder>BDoubleSpinBox</zorder>
+             <zorder>GDoubleSpinBox</zorder>
+             <zorder>RdoubleSpinBox</zorder>
             </widget>
            </item>
            <item row="2" column="1">
@@ -609,6 +652,9 @@
              <property name="text">
               <string>&lt;b&gt;Agent Path:</string>
              </property>
+             <property name="buddy">
+              <cstring>browseLuaAgentButton</cstring>
+             </property>
             </widget>
            </item>
            <item row="4" column="0">
@@ -678,6 +724,9 @@
              </property>
              <property name="text">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Map Scale:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="buddy">
+              <cstring>scaleDoubleSpinBox</cstring>
              </property>
             </widget>
            </item>
@@ -817,6 +866,9 @@
              <property name="text">
               <string>&lt;b&gt;Data File:</string>
              </property>
+             <property name="buddy">
+              <cstring>vis_eventBrowsePushButton</cstring>
+             </property>
             </widget>
            </item>
            <item row="17" column="2">
@@ -867,6 +919,9 @@
              <property name="text">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Map Resolution:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
+             <property name="buddy">
+              <cstring>vis_resolutionSpinBox</cstring>
+             </property>
             </widget>
            </item>
            <item row="14" column="2">
@@ -912,6 +967,9 @@
              <property name="text">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;To Time[s]:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
+             <property name="buddy">
+              <cstring>vis_toTimeSpinBox</cstring>
+             </property>
             </widget>
            </item>
            <item row="18" column="2">
@@ -932,12 +990,18 @@
              <property name="text">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Agent Path:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
+             <property name="buddy">
+              <cstring>vis_agentPathPushButton</cstring>
+             </property>
             </widget>
            </item>
            <item row="17" column="0">
             <widget class="QLabel" name="label_17">
              <property name="text">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;From Time[s]:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="buddy">
+              <cstring>vis_fromTimeSpinBox</cstring>
              </property>
             </widget>
            </item>
@@ -1002,6 +1066,9 @@
              <property name="text">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Z Value Thresshold:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
+             <property name="buddy">
+              <cstring>vis_zThressholdDoubleSpinBox</cstring>
+             </property>
             </widget>
            </item>
            <item row="13" column="0">
@@ -1012,6 +1079,9 @@
              <property name="text">
               <string>&lt;b&gt;Time Resolution:</string>
              </property>
+             <property name="buddy">
+              <cstring>vis_timeResolutionDoubleSpinBox</cstring>
+             </property>
             </widget>
            </item>
            <item row="19" column="0">
@@ -1021,6 +1091,9 @@
              </property>
              <property name="text">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Event Description RegEx:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="buddy">
+              <cstring>vis_eventRegExLineEdit</cstring>
              </property>
             </widget>
            </item>
@@ -1065,6 +1138,9 @@
              <property name="text">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Map Type:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
+             <property name="buddy">
+              <cstring>vis_mapTypeComboBox</cstring>
+             </property>
             </widget>
            </item>
            <item>
@@ -1095,6 +1171,9 @@
             <widget class="QLabel" name="label_27">
              <property name="text">
               <string>&lt;b&gt;Active Map:</string>
+             </property>
+             <property name="buddy">
+              <cstring>vis_activeMapSpinBox</cstring>
              </property>
             </widget>
            </item>
@@ -1173,6 +1252,9 @@
             <widget class="QLabel" name="label_36">
              <property name="text">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Frame Delay[ms]:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="buddy">
+              <cstring>vis_controlEventPlaySpinBox</cstring>
              </property>
             </widget>
            </item>
@@ -1395,6 +1477,53 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>timeResSpinBox</tabstop>
+  <tabstop>macroSpinBox</tabstop>
+  <tabstop>runTimeSpinBox</tabstop>
+  <tabstop>luaSpinBox</tabstop>
+  <tabstop>browseLuaAgentButton</tabstop>
+  <tabstop>agentPathLineEdit</tabstop>
+  <tabstop>browseMapButton</tabstop>
+  <tabstop>mapPathLineEdit</tabstop>
+  <tabstop>scaleDoubleSpinBox</tabstop>
+  <tabstop>generateMap</tabstop>
+  <tabstop>RdoubleSpinBox</tabstop>
+  <tabstop>GDoubleSpinBox</tabstop>
+  <tabstop>BDoubleSpinBox</tabstop>
+  <tabstop>pySpinBox</tabstop>
+  <tabstop>pxSpinBox</tabstop>
+  <tabstop>generateButton</tabstop>
+  <tabstop>runButton</tabstop>
+  <tabstop>pushButton</tabstop>
+  <tabstop>outputTextBrowser</tabstop>
+  <tabstop>delaySpinBox</tabstop>
+  <tabstop>graphicsView</tabstop>
+  <tabstop>zoomSlider</tabstop>
+  <tabstop>vis_eventBrowsePushButton</tabstop>
+  <tabstop>vis_eventPathLineEdit</tabstop>
+  <tabstop>vis_agentPathPushButton</tabstop>
+  <tabstop>vis_agentPathLineEdit</tabstop>
+  <tabstop>vis_readInfoPushButton</tabstop>
+  <tabstop>vis_timeResolutionDoubleSpinBox</tabstop>
+  <tabstop>vis_zThressholdDoubleSpinBox</tabstop>
+  <tabstop>vis_resolutionSpinBox</tabstop>
+  <tabstop>vis_fromTimeSpinBox</tabstop>
+  <tabstop>vis_toTimeSpinBox</tabstop>
+  <tabstop>vis_eventRegExLineEdit</tabstop>
+  <tabstop>vis_processEventsPushButton</tabstop>
+  <tabstop>vis_stopEventProcessingPushButton</tabstop>
+  <tabstop>vis_clearOutputPushButton</tabstop>
+  <tabstop>vis_outputTextBrowser</tabstop>
+  <tabstop>vis_mapTypeComboBox</tabstop>
+  <tabstop>vis_activeMapSpinBox</tabstop>
+  <tabstop>vis_controlEventPlaySpinBox</tabstop>
+  <tabstop>vis_eventPlayPushButton</tabstop>
+  <tabstop>vis_eventZoomSlider</tabstop>
+  <tabstop>vis_graphicsView</tabstop>
+  <tabstop>vis_mapGraphicsView</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

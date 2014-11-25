@@ -414,12 +414,12 @@ void AutonLUA::getSyncData(){
  * @return 0.
  */
 int AutonLUA::l_debug(lua_State *L){
-	Output::Inst()->kprintf(lua_tostring(L,-1));
+	Output::Inst()->kdebug(lua_tostring(L,-1));
 	return 0;
 }
 
 int AutonLUA::l_print(lua_State *L){
-	Output::Inst()->kregprintf(lua_tostring(L,-1));
+	Output::Inst()->kprintf(lua_tostring(L,-1));
 	return 0;
 }
 

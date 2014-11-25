@@ -80,7 +80,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
 
-	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.2.8:0.4.7");
+	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.2.10:0.5.0");
 
 	ui->statusBar->addWidget(new QLabel(versionString));
 	ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
@@ -99,6 +99,11 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+/**
+ * @brief MainWindow::on_generateButton_clicked
+ * Generates an simulation, if a valid map has been loaded or generated.
+ *
+ */
 
 void MainWindow::on_generateButton_clicked()
 {
@@ -126,7 +131,7 @@ void MainWindow::on_generateButton_clicked()
             control->generateEnvironment(mapImage, 1,timeRes, macroRes,
                                          agentAmount,stringPath);
 
-            Output::Inst()->kprintf("generating environment, %d, %s",
+			Output::Inst()->kprintf("generating environment, %d, %s",
                                     agentAmount, stringPath.c_str());
             ui->runButton->setEnabled(true);
 
@@ -134,11 +139,16 @@ void MainWindow::on_generateButton_clicked()
 			Output::AgentFile=fi.fileName().toStdString();
 			Output::AgentPath=fi.path().toStdString().append("/");
         } else
-            Output::Inst()->kprintf("Cannot generate Environment: Valid path not given");
+			Output::Inst()->kprintf("Cannot generate Environment: Valid path not given");
     } else
-        Output::Inst()->kprintf("No map has been loaded, please do that...");
+		Output::Inst()->kprintf("No map has been loaded, please do that...");
 }
 
+/**
+ * @brief Progress bar control
+ * @param percentage value between 1 and 100 that depicts the current progress
+ * of simulation.
+ */
 void MainWindow::advanceProgess(int percentage)
 {
 	//QCoreApplication::postEvent(scene, new QEvent(QEvent::UpdateRequest),
@@ -151,6 +161,12 @@ void MainWindow::actionExit(){
     QApplication::quit();
 }
 
+/**
+ * @brief Enables the user to load regular images as a map.
+ * Launches a filebrowser, that browses for a png,jpg or bmp image,
+ * this image can then be used as a map.
+ *
+ */
 void MainWindow::on_browseMapButton_clicked()
 {
     QString fileName = QFileDialog::getOpenFileName
@@ -171,6 +187,12 @@ void MainWindow::on_browseMapButton_clicked()
     }
 }
 
+/**
+ * @brief Enables the user to generate a map.
+ * The user can define a random percentage of red, green and blue pixels,
+ * each channel is handeled seperately.
+ *
+ */
 void MainWindow::on_generateMap_clicked()
 {
     if(mapImage != NULL)
@@ -211,6 +233,12 @@ void MainWindow::on_generateMap_clicked()
    defineMap();
 }
 
+/**
+ * @brief Writes a debug string to the current active output window.
+ * The active output window will change depending on which mode the simulator
+ * is in. This output can be disabled in the menu.
+ * @param string the string that will be written to the output.
+ */
 void MainWindow::on_writeOutput(QString string)
 {
     //std::this_thread::sleep_for(std::chrono::milliseconds(5));
@@ -231,6 +259,11 @@ void MainWindow::on_writeOutput(QString string)
 
 }
 
+/**
+ * @brief MainWindow::write_output
+ *
+ * @see on_writeOutput()
+ */
 void MainWindow::write_output(QString argMsg)
 {
 	if(!disableSimOutput){
@@ -241,6 +274,11 @@ void MainWindow::write_output(QString argMsg)
 
 }
 
+/**
+ * @brief Writes a regular string to the current active window.
+ * Unlike on_writeOutput() this can not be disabled.
+ * @param string
+ */
 void MainWindow::on_writeRegularOutput(QString string)
 {
 	ui->outputTextBrowser->setTextColor(Qt::black);
@@ -253,6 +291,11 @@ void MainWindow::on_writeRegularOutput(QString string)
 	}
 }
 
+/**
+ *
+ * @see on_writeRegularOutput()
+ * @see on_writeOutput()
+ */
 void MainWindow::write_regularOutput(QString argMsg)
 {
 	std::this_thread::sleep_for(std::chrono::milliseconds(1));
@@ -261,6 +304,16 @@ void MainWindow::write_regularOutput(QString argMsg)
 
 }
 
+/**
+ * @brief Updates the simulation status window
+ * Updates dedicated status labels with the parameters given
+ * @param ms current microstep
+ * @param eventInit how many events in total that has been initiated
+ * @param internalEvents how many internal events that has been initiated
+ * @param externalEvents how many external events that has been initiated
+ * @see Output::updateStatus()
+ * @see Master::printStatus()
+ */
 void MainWindow::on_udateStatus(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents)
 {
     ui->label_status1->setText(QString().setNum(ms));
@@ -269,16 +322,28 @@ void MainWindow::on_udateStatus(unsigned long long ms, unsigned long long eventI
     ui->label_status4->setText(QString().setNum(externalEvents));
 }
 
+/**
+ * @brief Controls the status window update signal
+ * @see on_updateStatus
+ */
 void MainWindow::write_status(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents)
 {
     emit writeStatusSignal(ms, eventInit, internalEvents, externalEvents);
 }
+
 
 void MainWindow::updateMap(std::list<agentInfo> infolist)
 {
     emit map_updateSignal(infolist);
 }
 
+/**
+ * @brief Updates the agents in the live view graphicsview
+ * @param infolist list containing the ids and and positions of all
+ * currently active agents .
+ * @see Control::updatePositions()
+ * @see Master::retrievePopPos()
+ */
 void MainWindow::on_updateMap(INFOLIST infolist)
 {
     //Output::Inst()->kprintf("updating map fired...");
@@ -333,6 +398,31 @@ void MainWindow::wheelEvent(QWheelEvent* event)
 //    ui->zoomLabel->setText(QString().setNum(factor*100));
 }
 
+
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+	//MainWindow::resizeEvent(event);
+	if(ui->tabWidget->currentIndex() == ui->tabWidget->indexOf(vis_mapTab))
+	{
+		if(zmap != NULL)
+		{
+			zmap->setPos(0,0);
+			zmap->setSize(ui->vis_mapGraphicsView->width(),ui->vis_mapGraphicsView->height());
+		}
+
+		ui->vis_graphicsView->fitInView(eventScene->sceneRect(),
+										Qt::KeepAspectRatio);
+	} else if(ui->tabWidget->currentIndex() == ui->tabWidget->indexOf(sim_viewTab))
+	{
+		ui->graphicsView->fitInView(scene->sceneRect(),
+									Qt::KeepAspectRatio);
+
+	}
+}
+
+/**
+ * @brief Allows browsing for valid lua agents.
+ */
 void MainWindow::on_browseLuaAgentButton_clicked()
 {
     QString fileName = QFileDialog::getOpenFileName
@@ -343,6 +433,11 @@ void MainWindow::on_browseLuaAgentButton_clicked()
     ui->agentPathLineEdit->setText(fileName);
 }
 
+/**
+ * @brief Starts and stops the simulation
+ * @see Control::stopSimulation()
+ * @see Control::runSimulation()
+ */
 void MainWindow::on_runButton_clicked()
 {
 
@@ -352,6 +447,11 @@ void MainWindow::on_runButton_clicked()
         control->runSimulation(ui->runTimeSpinBox->value());
 }
 
+/**
+ * @brief Changes the runbuttons text to reflect whether it starts
+ * or stops the simulation
+ * @param text
+ */
 void MainWindow::changeRunButton(QString text)
 {
     ui->runButton->setText(text);
@@ -362,6 +462,12 @@ void MainWindow::runButtonHide()
     ui->runButton->setDisabled(true);
 }
 
+/**
+ * @brief defines the current map
+ * This is an internal helper function
+ * @see MainWindow::on_browseMapButton_clicked()
+ * @see MainWindow::on_generateMap_clicked()
+ */
 void MainWindow::defineMap()
 {
     if(mapItem == NULL)
@@ -377,13 +483,21 @@ void MainWindow::defineMap()
     //GridMovement::initGrid(mapImage->width(), mapImage->height());
 }
 
-
+/**
+ * @brief Sets a delay on the simulation
+ * this can make it easier to observe agent behaviour, the delay set on every
+ * macrostep, the value is translated to milliseconds
+ * @see AgentDomain::runSimulation()
+ */
 void MainWindow::on_delaySpinBox_valueChanged(int arg1)
 {
     Output::DelayValue = arg1;
 }
 
-
+/**
+ * @brief Enables the user to zoom in on the agent live-view
+ * @param value zoom value, in percentage
+ */
 void MainWindow::on_zoomSlider_valueChanged(int value)
 {
     double scale = (double)value/100;
@@ -393,15 +507,21 @@ void MainWindow::on_zoomSlider_valueChanged(int value)
     ui->graphicsView->setTransform(QTransform::fromScale(scale,scale));
 }
 
+/**
+ * @brief Clears the output window
+ */
 void MainWindow::on_pushButton_clicked()
 {
     //ui->outputTextEdit->
 	ui->outputTextBrowser->clear();
 }
 
+/**
+ * @brief Writes a info string to current output
+ */
 void MainWindow::actionPrintInfo()
 {
-	write_regularOutput(versionString);
+	write_output(versionString);
 }
 
 /*
@@ -409,6 +529,9 @@ void MainWindow::actionPrintInfo()
  *
  */
 
+/**
+ * @brief Constructs the postprossing widgets and their connections
+ */
 void MainWindow::ppConstruction()
 {
 	vis_controlTab = ui->vis_controlTab;
@@ -435,6 +558,10 @@ void MainWindow::ppConstruction()
 
 }
 
+/**
+ * @brief Activates the event postprocessing mode
+ *
+ */
 void MainWindow::ppIsChecked()
 {
 
@@ -466,7 +593,10 @@ void MainWindow::ppIsChecked()
 	}
 }
 
-
+/**
+ * @brief Processes the loaded events using the parameters defined
+ * @see PostControl::runProcessEvents()
+ */
 void MainWindow::on_vis_processEventsPushButton_clicked()
 {
 	zMapTimer->stop();
@@ -516,7 +646,13 @@ void MainWindow::on_vis_processEventsPushButton_clicked()
 								 eventPath.toStdString().c_str());
 }
 
-
+/**
+ * @brief Sets up the visual tab
+ * Using pointers to the generated zblocks the visual tabs will
+ * display them in the dedicated event visualization view
+ * @param argZBlocks pointers to all the relevant zblocks
+ * @see ZBlock
+ */
 void MainWindow::setupVisualTab(QHash<QString, ZBlock *> *argZBlocks)
 {
 	zBlocks = argZBlocks;
@@ -550,16 +686,31 @@ void MainWindow::setupVisualTab(QHash<QString, ZBlock *> *argZBlocks)
 
 }
 
+/**
+ * @brief Writes the 'activated' zvalue to a dedicated label
+ * @param string value to be written
+ * @see ZBlock::mouseDoubleClickEvent()
+ */
 void MainWindow::writeZValue(QString string)
 {
 	ui->vis_zValueLabel->setText(string);
 }
 
+/**
+ * @brief Enables the process event button
+ * If a valid event savefile has been loaded, and valid parameter has been set
+ * then the processing can be started
+ * @param enabled
+ */
 void MainWindow::setProcessEventButton(bool enabled)
 {
 	ui->vis_processEventsPushButton->setEnabled(enabled);
 }
 
+/**
+ * @brief Controls the progressbar for the event processing part
+ * @param percentage
+ */
 void MainWindow::advancePPProgess(int percentage)
 {
 	//QCoreApplication::postEvent(scene, new QEvent(QEvent::UpdateRequest),
@@ -569,7 +720,10 @@ void MainWindow::advancePPProgess(int percentage)
 	//ui->progressBar->setValue(percentage);
 }
 
-
+/**
+ * @brief Deprecated... use Output::kprintf() or MainWindow::write_output() instead
+ * @param argMsg
+ */
 void MainWindow::write_PPOutput(QString argMsg)
 {
 	std::this_thread::sleep_for(std::chrono::milliseconds(1));
@@ -578,12 +732,23 @@ void MainWindow::write_PPOutput(QString argMsg)
 
 }
 
+/**
+ *
+ * @see MainWindow::write_PPOutput()
+ */
 void MainWindow::on_writePPOutput(QString string)
 {
 	ui->vis_outputTextBrowser->append(string);
 	//ui->vis_outputTextBrowser->append("");
 }
 
+/**
+ * @brief Browses for events
+ * Launches a filebrowser that enables the user to load up a generated
+ * event savefile
+ * @see EventQueue::saveEEventData()
+ *
+ */
 void MainWindow::on_vis_eventBrowsePushButton_clicked()
 {
 	QString fileName = QFileDialog::getOpenFileName
@@ -593,6 +758,11 @@ void MainWindow::on_vis_eventBrowsePushButton_clicked()
 	ui->vis_eventPathLineEdit->setText(fileName);
 }
 
+/**
+ * @brief Browsing for the agent that can process the loaded events
+ * If the automatically generated agent path is no correct the
+ * user can define the correct path using this function.
+ */
 void MainWindow::on_vis_agentPathPushButton_clicked()
 {
 	QString fileName = QFileDialog::getOpenFileName
@@ -602,6 +772,11 @@ void MainWindow::on_vis_agentPathPushButton_clicked()
 	ui->vis_agentPathLineEdit->setText(fileName);
 }
 
+/**
+ * @brief Reads the simulation info for the defined event file
+ * this loads up all the data needed to configure the event processing
+ * @see MainWindow::on_vis_processEventsPushButton_clicked()
+ */
 void MainWindow::on_vis_readInfoPushButton_clicked()
 {
 	QString path = ui->vis_eventPathLineEdit->text();
@@ -637,6 +812,10 @@ void MainWindow::on_vis_readInfoPushButton_clicked()
 
 }
 
+/**
+ * @brief Changes the current mode af the event map, zblock
+ * @param arg1 Current active mode
+ */
 void MainWindow::on_vis_mapTypeComboBox_currentIndexChanged(const QString &arg1)
 {
 	Output::Inst()->ppprintf("Current index is :%s", arg1.toStdString().c_str());
@@ -666,6 +845,11 @@ void MainWindow::on_vis_mapTypeComboBox_currentIndexChanged(const QString &arg1)
 	}
 }
 
+/**
+ * @brief Changes the currently active map
+ * This enables the user to browse the various maps, via an index
+ * @param arg1 wished for map
+ */
 void MainWindow::on_vis_activeMapSpinBox_valueChanged(int arg1)
 {
 	if(zBlocks != NULL)
@@ -686,11 +870,22 @@ void MainWindow::on_vis_activeMapSpinBox_valueChanged(int arg1)
 	ui->vis_activeTimeLabel->setText(stringtmp);
 }
 
+/**
+ * @brief Stop the event processing, if active.
+ * This stops the event processing, the data already calculated will not be deleted
+ * so it can be browsed
+ */
 void MainWindow::on_vis_stopEventProcessingPushButton_clicked()
 {
 	Output::RunEventProcessing.store(false);
 }
 
+/**
+ * @brief Enables the user to set a custom zoom value
+ * If the automatic zoomlevel is not desirable the user can define one that
+ * hopfully is
+ * @param value zoom value in percentage
+ */
 void MainWindow::on_vis_eventZoomSlider_valueChanged(int value)
 {
 	double scale = (double)value/100;
@@ -700,29 +895,17 @@ void MainWindow::on_vis_eventZoomSlider_valueChanged(int value)
 	ui->vis_graphicsView->setTransform(QTransform::fromScale(scale,scale));
 
 }
+
 void MainWindow::on_tabWidget_tabBarClicked(int index)
 {
 	//if(zmap != NULL)
 	//zmap->setSize(50,ui->vis_mapGraphicsView->height());
 }
 
-void MainWindow::resizeEvent(QResizeEvent *event)
-{
-	//MainWindow::resizeEvent(event);
-	if(ui->tabWidget->currentIndex() == ui->tabWidget->indexOf(vis_mapTab))
-	{
-		if(zmap != NULL)
-		{
-			zmap->setPos(0,0);
-			zmap->setSize(ui->vis_mapGraphicsView->width(),ui->vis_mapGraphicsView->height());
-		}
-
-		ui->vis_graphicsView->fitInView(eventScene->sceneRect(),
-										Qt::KeepAspectRatio);
-
-	}
-}
-
+/**
+ * @brief ensures that the automatic zoom is only set on view change.
+ * @param index current active tabs index
+ */
 void MainWindow::on_tabWidget_currentChanged(int index)
 {
 	if(index == ui->tabWidget->indexOf(vis_mapTab))
@@ -735,9 +918,19 @@ void MainWindow::on_tabWidget_currentChanged(int index)
 
 		ui->vis_graphicsView->fitInView(eventScene->sceneRect(),
 										Qt::KeepAspectRatio);
+	} else if(ui->tabWidget->currentIndex() == ui->tabWidget->indexOf(sim_viewTab))
+	{
+			ui->graphicsView->fitInView(scene->sceneRect(),
+										Qt::KeepAspectRatio);
+
 	}
 }
 
+/**
+ * @brief Starts playback of the eventmaps
+ * The playback is done by changing map index with a timed delay, defined by the
+ * user
+ */
 void MainWindow::on_vis_eventPlayPushButton_clicked()
 {
 	if(!playingMap)
@@ -771,6 +964,9 @@ void MainWindow::on_zMapTimerTimeout()
 
 }
 
+/**
+ * @brief Clears the event processing output
+ */
 void MainWindow::on_vis_clearOutputPushButton_clicked()
 {
 	ui->vis_outputTextBrowser->clear();

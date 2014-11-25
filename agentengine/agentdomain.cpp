@@ -150,6 +150,8 @@ void AgentDomain::generateSquaredListenerEnvironment(double width, double height
 /**
  * Retrieval of auton positions.
  * Will write the positions of all autons to the std::lists given as arguments.
+ * @see Master::retrievePopPos()
+ * @see Control::refreshPopPos()
  */
 void AgentDomain::retrievePopPos(){
 
