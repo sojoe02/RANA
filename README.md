@@ -63,6 +63,26 @@ It is important to note that movement and map manipulation is not part of the si
 
 If an agent takes up more than one x,y space, you can add more than one position via l_updatePosition by providing the extra coordinates as both oldX,oldY and newX,newY, just remember to update all the positions correctly upon movement.
 
+#Event Processing
+
+RANA has an event processing module. 
+
+Events can upon the completion of a simulation be saved. They can later be loaded into the event post-processing module and be processed and drawn in 2 dimensional color map.
+
+To enable event processing the agent must implement the event processing function, see the ICTAI agents in the lua\_agents library for examples.
+
+The user defines the following parameters.
+
+* Map Resolution. Defines the granularity of the event colormap in relation to the simulated map.
+* Z thresshold. Events are processed via a recursive function, that starts from origin where it calculates an 'intensity' or z value. It then expands to all neighbouring cell either until it reaches the end of the map, or the calculated z value goes below the defined thresshold. This value is a percentage of the original.
+* Time resolution. Defines how many seconds each color map will cover.
+* To and From. Defines the timeperiod the event processing should cover.
+* Event description. This is a regular expression, the user can use this to only process event whose description matches the givent regular expression.
+
+The event table can contain a duration index, this will tell the event processing the duration of the event in seconds. If duration is not defined the duration will be 0, which is 1 time frame regardless of time resolution.
+
+The map frames can either be browsed manually or played back with a user defined speed for a 'live' view.
+
 #Compilation
 
 RANA_QT has two depencies, Qt and Lua (version 5.2).
