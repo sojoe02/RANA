@@ -56,6 +56,13 @@ Output::Output()
 
 }
 
+/**
+ * @brief Ranas version of printf, prints a message to current active output
+ * For example kprintf("sum of %i + %i = %i", 5, 5, 10) will output "sum of
+ * 5 + 5 = 10", the string can be html formatted!
+ * @param msg formated string that is to written to output
+ * @see MainWindow::write_regularOutput()
+ */
 void Output::kprintf(const char* msg, ...)
 {
     //lock.lock();
@@ -73,6 +80,11 @@ void Output::kprintf(const char* msg, ...)
     //lock.unlock();
 }
 
+/**
+ * @brief Same as Output::kprintf but it's output can be disabled via the menu
+ * @see Output::kprintf()
+ * @see MainWindow::write_output()
+ */
 void Output::kdebug(const char* msg, ...)
 {
     //lock.lock();
@@ -90,18 +102,39 @@ void Output::kdebug(const char* msg, ...)
     //lock.unlock();
 }
 
+/**
+ * @brief Updates the simulation status screen, with relevant values.
+ * Only used during simulation.
+ * @param ms current microstep
+ * @param eventInit number of events initiated
+ * @param internalEvents total number of internal events
+ * @param externalEvents total number of external events
+ * @see MainWindow::on_udateStatus()
+ */
 void Output::updateStatus(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents)
 {
 	mainWindow->write_status(ms, eventInit,
 							 internalEvents, externalEvents);
 }
 
+/**
+ * @brief Updates the simulation windows progress bar
+ * @param current Current progress value, e.g current microstep
+ * @param maximum Final microstep
+ * @see MainWindow::advanceProgess()
+ */
 void Output::progressBar(unsigned long long current, unsigned long long maximum)
 {
     int progress = (current * 100)/maximum;
     mainWindow->advanceProgess(progress);
 }
 
+/**
+ * @brief Updates the event postprocessing progress bar
+ * @param current Current progress value
+ * @param maximum Maximun progress value
+ * @see MainWindow::advancePPProgess()
+ */
 void Output::ppprogressbar(int current, int maximum)
 {
 	int progress = (current * 100)/maximum;
@@ -113,6 +146,10 @@ void Output::setMainWindow(MainWindow *mainwindow)
 	Output::mainWindow = mainwindow;
 }
 
+/**
+ * @brief Deprecated use Output::kprintf() or Output::ppprintf()
+ * @param msg
+ */
 void Output::ppprintf(const char *msg,...)
 {
 
@@ -129,6 +166,10 @@ void Output::ppprintf(const char *msg,...)
 	va_end(args);
 }
 
+/**
+ * @brief Writes a string to the zvalue label, in event postprocessing.
+ * @param string
+ */
 void Output::updateZvalue(QString string)
 {
 	Output::mainWindow->writeZValue(string);

@@ -12,6 +12,12 @@ ColorUtility::ColorUtility()
 {
 }
 
+/**
+ * @brief Initializes the colorutility class values
+ * This is done prior to any event processing
+ * @see MainWindow::on_vis_processEventsPushButton_clicked()
+ * @see EventProcessing::processBinnedEvents()
+ */
 void ColorUtility::Init()
 {
 	MAXTIME = 0;
@@ -27,6 +33,15 @@ void ColorUtility::Init()
 	MIN_Z_LEVELS.frequency = ULLONG_MAX;
 }
 
+/**
+ * @brief Allows the zblocks to add their local min and max z value
+ * Once all event have been processed each zblock will add their local
+ * @param min local min value
+ * @param max local max value
+ * @param maxTime last recorded time
+ * @see ZBlock::registerMinMax()
+ *
+ */
 void ColorUtility::AddMaxMinValues(zvalue min, zvalue max, int maxTime){
 
 	QMutexLocker locker(&MUTEX);
@@ -60,6 +75,13 @@ void ColorUtility::AddMaxMinValues(zvalue min, zvalue max, int maxTime){
 
 }
 
+/**
+ * @brief Transform a z value into a corresponding color
+ * @param value Value that needs to be transformed into the corresponding color
+ * @param min lowest possible value (pink)
+ * @param max highest possible value (blue)
+ * @return
+ */
 QColor ColorUtility::ZValueToColor(double value, double min, double max)
 {
 	double thress = (value)/(max);
