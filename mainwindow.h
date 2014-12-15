@@ -95,11 +95,9 @@ private slots:
 	void ppIsChecked();
     void on_vis_processEventsPushButton_clicked();
 	void on_writePPOutput(QString string);
-
 	void on_vis_readInfoPushButton_clicked();
 	void on_vis_agentPathPushButton_clicked();
 	void on_vis_mapTypeComboBox_currentIndexChanged(const QString &arg1);
-
 	void on_zMapTimerTimeout();
 
 	//dialogs:
@@ -112,10 +110,10 @@ private slots:
 	void on_tabWidget_tabBarClicked(int index);
 	void resizeEvent(QResizeEvent* event);
 	void on_tabWidget_currentChanged(int index);
-
 	void on_vis_eventPlayPushButton_clicked();
-
 	void on_vis_clearOutputPushButton_clicked();
+
+	void on_action_Enable_Visualisation_triggered(bool checked);
 
 signals:
 

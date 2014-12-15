@@ -24,6 +24,7 @@
 
 #include <string>
 #include <map>
+#include <shared_mutex>
 
 class Shared
 {
@@ -35,6 +36,9 @@ public:
     static double getNumber(std::string key);
     static void addNumber(std::string key, double value);
     static void initShared();
+
+private:
+	static std::mutex mutex;
 };
 
 #endif // SHARED_H

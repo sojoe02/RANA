@@ -66,7 +66,7 @@ void Control::generateEnvironment(QImage *map, double scale,
         }
 
         agentDomain = new AgentDomain(this);
-        agentDomain->generateEnvironment(map->width(),map->height(),1,0,0,
+		agentDomain->generateEnvironment(map->width(),map->height(),4,0,0,
                                          agentAmount,timeRes,macroRes,agentPath);
     } else
         Output::Inst()->kprintf("Simulation thread is running, so you need to stop it");

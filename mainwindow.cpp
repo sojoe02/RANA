@@ -80,7 +80,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
 
-	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.2.10:0.5.1");
+	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.3.0.THREAD:0.5.1");
 
 	ui->statusBar->addWidget(new QLabel(versionString));
 	ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
@@ -819,7 +819,7 @@ void MainWindow::on_vis_readInfoPushButton_clicked()
 void MainWindow::on_vis_mapTypeComboBox_currentIndexChanged(const QString &arg1)
 {
 	Output::Inst()->ppprintf("Current index is :%s", arg1.toStdString().c_str());
-	ZMode zmode;
+	ZMode zmode = ZMode::Average;
 
 	//set the z mode:
 	if(arg1.compare("Average") == 0)
@@ -1003,8 +1003,7 @@ void MainWindow::on_actionDisable_Simulation_Output_toggled(bool arg1)
 }
 
 
+void MainWindow::on_action_Enable_Visualisation_triggered(bool checked)
+{
 
-
-
-
-
+}

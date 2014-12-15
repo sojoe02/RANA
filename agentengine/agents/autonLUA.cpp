@@ -95,6 +95,8 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
 	lua_pushnumber(L,mf);
 	lua_pushnumber(L,tr);
 
+	Output::Inst()->kdebug("I belong to Nestene %i", nestene->getID());
+
 	try{
 		//Call the initAuton function (3 arguments, 0 results):
 		if(lua_pcall(L,5,0,0)!=LUA_OK)

@@ -76,8 +76,8 @@ HEADERS  += mainwindow.h \
 FORMS    += mainwindow.ui \
 	eventdialog.ui
 
-QMAKE_CXXFLAGS += -Wno-unused-variable -Wno-unused-parameter
-CONFIG += c++11 stdlib=libc++ lc++abi o3
+QMAKE_CXXFLAGS += -std=c++1y -Wno-unused-variable -Wno-unused-parameter
+CONFIG += stdlib=libc++ lc++abi o3
 
 unix: CONFIG += link_pkgconfig
 unix: PKGCONFIG += lua

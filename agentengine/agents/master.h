@@ -107,6 +107,7 @@ class Master
 		double macroResolution;
 
 		int autonAmount;
+		uint threads;
 		std::string luaFilename;
 		double areaX;
 		double areaY;

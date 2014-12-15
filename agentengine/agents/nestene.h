@@ -43,7 +43,7 @@ class AutonLUA;
 class Nestene
 {
 	public:
-		Nestene(double posX,double posY, double width, double height, Master* master);
+		Nestene(double posX,double posY, double width, double height, Master* master, uint id);
 		~Nestene();
 
 		void generateAuton();
@@ -62,6 +62,8 @@ class Nestene
 		int initAmount;
 
 		void simDone();
+
+		uint getID(){ return id; }
 
 	private:
 		//generates an event and puts it into the event map.
@@ -112,6 +114,7 @@ class Nestene
 		double posY;
 		double width;
 		double height;
+		uint id;
 
 		double listenerEventChance;
 		double screamerEventChance;

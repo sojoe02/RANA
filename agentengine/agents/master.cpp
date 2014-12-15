@@ -21,7 +21,7 @@
 //--end_license--
 
 #include <string>
-#include <string>
+#include <sstream>
 #include <set>
 
 #include <stdio.h>
@@ -37,7 +37,7 @@
 #include "output.h"
 
     Master::Master()
-:eEventInitAmount(0), responseAmount(0), externalDistroAmount(0), tmu(0)
+:eEventInitAmount(0), responseAmount(0), externalDistroAmount(0), tmu(0),threads(0)
 {
 	//Output::Inst()->kprintf("Initiating master\n");
 	eventQueue = new EventQueue;
@@ -53,43 +53,35 @@ Master::~Master(){
  * set the time resolution and macroFactor of the map
  * @param width maps max X coordinate
  * @param height maps max Y coordinate
- * @param resolution number of nestenes squared.
+ * @param threads number of nestene, i.e threads.
  * @param time resolution seconds between microsteps.
  * @param macroResolution factor to multiply with the time resolution for the macrostep intervals.
  */
-void Master::generateMap(double width, double height, int resolution, double timeResolution, double macroResolution){
+void Master::generateMap(double width, double height, int threads, double timeResolution, double macroResolution)
+{
 
 	this->timeResolution = timeResolution;
 	this->macroResolution = macroResolution;
+	this->threads = threads;
+
 	areaX = width;
 	areaY = height;
 
-	if(!nestenes.empty()){
-		//memoryleak here! not clearing out all autons!
+	if(!nestenes.empty())
+	{
 		nestenes.clear();
 	}
 
-	for(int i=0; i<resolution; i++)
+	for(uint i=0; i<threads; i++)
 	{
-		for(int j=0; j<resolution; j++)
-		{
-			std::string id;
-			std::string tmp;
+		std::string id;
+		std::stringstream ss;
+		ss << i;
+		id.append(ss.str());
 
-			double posY = height/resolution*j;
-			double posX = width/resolution*i;
+		Nestene nest = Nestene(0,0,width,height,this,i);
 
-            char buffer[512];
-
-            sprintf(buffer,"%f%f",posX,posY);
-
-            id = buffer;
-
-			Nestene nest = Nestene(posX,posY,width/resolution,height/resolution, this);
-
-			nestenes.push_back(nest);
-
-		}
+		nestenes.push_back(nest);
 	}
 }
 
@@ -105,13 +97,13 @@ void Master::generateMap(double width, double height, int resolution, double tim
  */
 std::list<agentInfo> Master::retrievePopPos(){
 
-    std::list<agentInfo> agentinfo;
+	std::list<agentInfo> agentinfo;
 
 	for(itNest = nestenes.begin(); itNest !=nestenes.end(); itNest++){
-        itNest->retrievePopPos(agentinfo);
-	}	
+		itNest->retrievePopPos(agentinfo);
+	}
 
-    return agentinfo;
+	return agentinfo;
 }
 
 /**
@@ -124,57 +116,34 @@ std::list<agentInfo> Master::retrievePopPos(){
  * @param filename the lua file of the LUA autons definition.
  */
 void Master::populateSystem(int listenerSize,
-		int screamerSize, int LUASize, std::string filename){
-
-	std::vector<int> listenerVector;
-	std::vector<int>::iterator itListerner;
-
-	std::vector<int> ScreamerVector;
-	std::vector<int>::iterator itScreamer;
+							int screamerSize, int LUASize, std::string filename){
 
 	std::vector<int> LUAVector;
-	std::vector<int>::iterator itLUA;
 
 	for(uint i = 0; i < nestenes.size(); i++){
-		listenerVector.push_back(0);
-		ScreamerVector.push_back(0);
 		LUAVector.push_back(0);
 	}
 
+	uint j = 0;
+	for(uint i = 0; i<LUASize; i++, j++)
+	{
+		if(i % nestenes.size() == 0)
+			j =0;
 
-	int tmpSize = 0;
-	int tmpSize2 = 0;
-	int nSize = 0;
-	//first the listeners:
-	while(tmpSize<listenerSize){
-		for(uint i=0; i<listenerVector.size(); i++){
-			nSize = rand()%2;
-			tmpSize += nSize;
-			if(tmpSize > listenerSize){
-				nSize = listenerSize - tmpSize2;
-			}
-			tmpSize2 += nSize;
-			listenerVector.at(i) += nSize;
-		}
-	}
-	tmpSize = 0;
-	tmpSize2 = 0;
-	nSize = 0;
-	while(tmpSize<screamerSize){
-		for(uint i=0; i<ScreamerVector.size(); i++){
-			nSize = rand()%2;
-			tmpSize += nSize;
-			if(tmpSize > screamerSize){
-				nSize = screamerSize - tmpSize2;
-			}
-			tmpSize2 += nSize;
-			ScreamerVector.at(i) += nSize;
-		}
+		LUAVector.at(j)++;
 	}
 
-	tmpSize = 0;
-	tmpSize2 = 0;
-	nSize = 0;
+	Output::Inst()->kdebug("working here! %i, %i", LUAVector.size(), LUAVector.at(0));
+
+	j = 0;
+	for(auto itr = LUAVector.begin(); itr != LUAVector.end(); ++itr, j++)
+	{
+		Nestene *nestene = &nestenes.at(j);
+		Output::Inst()->kdebug("Working not here %i", *itr);
+		nestene->populate(0,0,*itr,filename);
+	}
+	/*
+
 	while(tmpSize<LUASize){
 		for(uint i=0; i<LUAVector.size(); i++){
 			nSize = rand()%2;
@@ -196,6 +165,7 @@ void Master::populateSystem(int listenerSize,
 		Nestene *nest = &nestenes.at(i);
 		nest->populate(listenerVector.at(i), ScreamerVector.at(i),LUAVector.at(i), filename);
 	}
+	*/
 }
 
 
@@ -276,7 +246,7 @@ void Master::microStep(unsigned long long tmu){
 	}
 
 	if(eventQueue->iEventsAtTime(tmu)){
-		std::list<EventQueue::iEvent*> list = eventQueue->getIEventList(tmu);		
+		std::list<EventQueue::iEvent*> list = eventQueue->getIEventList(tmu);
 		std::list<EventQueue::iEvent*>::iterator itlist = list.begin();
 
 		for(; itlist != list.end(); ++itlist){
@@ -304,7 +274,7 @@ unsigned long long Master::getNextMicroTmu(){
 
 /**
  * Performs a macrostep
- * The macrostep, queries all autons on whether or not they will initiate and event. 
+ * The macrostep, queries all autons on whether or not they will initiate and event.
  * @see Nestene::initPhase();
  */
 void Master::macroStep(unsigned long long tmu){
@@ -317,12 +287,12 @@ void Master::macroStep(unsigned long long tmu){
 
 /**
  * Update Status Fields
- * Updates the status output field, on the running mode panel 
+ * Updates the status output field, on the running mode panel
  * @see Output::updateStatus()
  */
 void Master::printStatus(){
 	Output::Inst()->updateStatus(Phys::getCTime(),eEventInitAmount,
-			eventQueue->getISize(), eventQueue->getESize());
+								 eventQueue->getISize(), eventQueue->getESize());
 	//Output::Inst()->kprintf("%d\n", eventQueue->getISize());
 	//	eventQueue->printATmus();
 }

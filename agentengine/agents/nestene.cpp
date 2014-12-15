@@ -33,8 +33,8 @@
 #include "master.h"
 #include "output.h"
 
-	Nestene::Nestene(double posX, double posY, double width, double height, Master* master)
-:initAmount(0),master(master), posX(posX), posY(posY),width(width),height(height)
+	Nestene::Nestene(double posX, double posY, double width, double height, Master* master, uint id)
+:initAmount(0),master(master), posX(posX), posY(posY),width(width),height(height),id(id)
 {	
 	//Output::Inst()->kprintf("Nestene position %f , %f\n", posX , posY);
 	//initialize the internal Events list:
@@ -76,6 +76,7 @@ void Nestene::populate(int listenerSize, int screamerSize, int LUASize,std::stri
 		screamers.insert(std::pair<int,AutonScreamer>(auton.getID(),auton));
 	}
 
+	//Output::Inst()->kdebug("nestene %i reporting %i autons", LUA);
 	//the LUA autons:	
 	for(int i=0; i<LUASize; i++){
 		double xtmp = (double)rand()/ RAND_MAX * width + posX;
