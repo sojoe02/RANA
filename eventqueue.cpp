@@ -282,11 +282,14 @@ void EventQueue::saveEEventData(std::string name, std::string luaFileName,
 	std::ofstream file (filename.c_str(), std::ofstream::binary | std::ofstream::trunc);
 	//int bufferLimit = 100000;
 
-	Output::Inst()->kprintf("Saving event data to file:  %s\n" , filename.c_str());
+	Output::Inst()->kprintf("Saving event data to file:  %s\n" , luaFileName.c_str());
 
 	//first save the dataEvent to the file:
 	simInfo dataInfo;
 	strncpy(dataInfo.luaFileName, luaFileName.c_str(),1024);
+
+	Output::Inst()->kprintf("name %s", luaFileName.c_str());
+	Output::Inst()->kprintf("path saved is: %s", dataInfo.luaFileName);
 
 	dataInfo.eventAmount = eSize;
 	dataInfo.numberOfAutons = autonAmount;

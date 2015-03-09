@@ -124,8 +124,11 @@ void Master::populateSystem(int listenerSize,
 		LUAVector.push_back(0);
 	}
 
+	autonAmount = LUASize;
+	luaFilename = filename;
+
 	uint j = 0;
-	for(uint i = 0; i<LUASize; i++, j++)
+	for(int i = 0; i<LUASize; i++, j++)
 	{
 		if(i % nestenes.size() == 0)
 			j =0;

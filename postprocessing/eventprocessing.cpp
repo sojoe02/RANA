@@ -55,11 +55,11 @@ EventQueue::simInfo* EventProcessing::readEventInfo(std::string path)
 		Output::Inst()->ppprintf("MacroFactor\t:\t%d\n", simInfo->macroFactor);
 		Output::Inst()->ppprintf("Simulation runtime\t:%llu\n",simInfo->tmuAmount);
 
-		//while(!file.eof())
-		//{
-			//file.read(reinterpret_cast<char*>(&devent), sizeof(EventQueue::dataEvent));
-			//eventbin.push_back(devent);
-		//}
+		while(!file.eof())
+		{
+			file.read(reinterpret_cast<char*>(&devent), sizeof(EventQueue::dataEvent));
+			eventbin.push_back(devent);
+		}
 	}else
 	{
 		Output::Inst()->ppprintf("File not found ... or worse");

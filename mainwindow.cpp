@@ -80,13 +80,14 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
 
-	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.3.0.THREAD:0.5.1");
+	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.3.0.THREAD:0.5.3");
 
 	ui->statusBar->addWidget(new QLabel(versionString));
 	ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
 
 	sim_controlTab = ui->simControlTab;
 	sim_viewTab = ui->simLiveView;
+	sim_advancedTab = ui->simAdvancedTab;
 	sim_general = ui->simGeneralWidget;
 
 	ppConstruction();
@@ -577,6 +578,8 @@ void MainWindow::ppIsChecked()
 		{
 			ui->tabWidget->removeTab(ui->tabWidget->indexOf(sim_controlTab));
 			ui->tabWidget->removeTab(ui->tabWidget->indexOf(sim_viewTab));
+			ui->tabWidget->removeTab(ui->tabWidget->indexOf(sim_advancedTab));
+
 			ui->simGeneralWidget->hide();
 
 			ui->tabWidget->insertTab(ui->tabWidget->count()+1,vis_controlTab,"Event Process Control");
@@ -588,6 +591,8 @@ void MainWindow::ppIsChecked()
 
 			ui->tabWidget->insertTab(ui->tabWidget->count()+1,sim_controlTab,"Control");
 			ui->tabWidget->insertTab(ui->tabWidget->count()+1,sim_viewTab,"Live View");
+			ui->tabWidget->insertTab(ui->tabWidget->count()+2,sim_advancedTab,"Advanced");
+
 			ui->simGeneralWidget->show();
 		}
 	}

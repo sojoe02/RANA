@@ -154,6 +154,7 @@ private:
 	QWidget *vis_mapTab;
 	QWidget *sim_controlTab;
 	QWidget *sim_viewTab;
+	QWidget *sim_advancedTab;
 	QWidget *sim_general;
 
 	//eventProcessing things:
