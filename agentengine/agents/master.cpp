@@ -37,7 +37,8 @@
 #include "output.h"
 
     Master::Master()
-:eEventInitAmount(0), responseAmount(0), externalDistroAmount(0), tmu(0),threads(0)
+:nesteneIndex(0), eEventInitAmount(0), responseAmount(0),
+	  externalDistroAmount(0), tmu(0),threads(0)
 {
 	//Output::Inst()->kprintf("Initiating master\n");
 	eventQueue = new EventQueue;
@@ -71,6 +72,7 @@ void Master::generateMap(double width, double height, int threads, double timeRe
 	{
 		nestenes.clear();
 	}
+
 
 	for(uint i=0; i<threads; i++)
 	{
@@ -136,7 +138,7 @@ void Master::populateSystem(int listenerSize,
 		LUAVector.at(j)++;
 	}
 
-	Output::Inst()->kdebug("working here! %i, %i", LUAVector.size(), LUAVector.at(0));
+	//Output::Inst()->kdebug("working here! %i, %i", LUAVector.size(), LUAVector.at(0));
 
 	j = 0;
 	for(auto itr = LUAVector.begin(); itr != LUAVector.end(); ++itr, j++)
@@ -311,5 +313,28 @@ void Master::saveExternalEvents(std::string filename){
 void Master::simDone(){
 	for(itNest=nestenes.begin() ; itNest !=nestenes.end(); ++itNest){
 		itNest->simDone();
+	}
+}
+
+int Master::addAuton(double x, double y, double z, std::string filename, std::string type = "Lua")
+{
+	std::vector<Nestene>::iterator nestItr = nestenes.begin();
+
+	nesteneIndex++;
+
+	if(nesteneIndex == nestenes.size())
+		nesteneIndex = 0 ;
+
+	nestItr += nesteneIndex;
+	int id = nestItr->addAuton(x, y, z, filename, type);
+
+	return id;
+
+}
+
+void Master::removeAuton(int ID)
+{
+	for(itNest=nestenes.begin() ; itNest !=nestenes.end(); ++itNest){
+		itNest->removeAuton(ID);
 	}
 }

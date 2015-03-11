@@ -174,3 +174,13 @@ void Output::updateZvalue(QString string)
 {
 	Output::mainWindow->writeZValue(string);
 }
+
+void Output::removeGraphicAuton(int Id)
+{
+	mainWindow->removeGraphicAuton(Id);
+}
+
+void Output::addGraphicAuton(int Id, double posX, double posY)
+{
+	mainWindow->addGraphicAuton(Id, int(posX), int(posY));
+}

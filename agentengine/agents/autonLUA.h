@@ -76,6 +76,9 @@ class AutonLUA : public Auton
         static int l_getSharedNumber(lua_State *L);
 		static int l_addSharedNumber(lua_State *L);
 		static int l_getAgentPath(lua_State *L);
+		static int l_addAuton(lua_State *L);
+		static int l_removeAuton(lua_State *L);
+
 		static int luapanic(lua_State *L);
 
 		void processFunction(EventQueue::dataEvent *devent, double mapRes, double x, double y, double &zvalue,

@@ -65,7 +65,12 @@ class Nestene
 
 		uint getID(){ return id; }
 
-	private:
+		int addAuton(double x, double y, double z,
+					  std::string filename, std::string type);
+
+		void removeAuton(int ID);
+
+private:
 		//generates an event and puts it into the event map.
 		EventQueue::eEvent* generateListenerEvent();
 		EventQueue::eEvent* generateScreamerEvent();

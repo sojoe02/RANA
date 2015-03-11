@@ -53,12 +53,13 @@ The simulation core offers a number of functions that the agent can call to expa
 |l_updatePosition	|oldX, oldY, newX, newY, ID| Updates the agents position from oldX,oldY to newX,newY, in order for l_checkPosition and l_checkCollision to work the agents have use this whenever they change position|
 |l_checkPosition	|x, y| Returns a list of the ID's of the agents at position x,y|
 |l_checkCollision	|x, y| Returns a boolean that is true if an agent is occupying x,y|
-|l_updatePosition	|oldX, oldY, newX, newY, ID| updates the agents position from oldX,oldY to newX,newY, in order for l_checkPosition and **l_checkCollision** to work the agents have use this whenever they change position|
 |l_stopSimulation	|| Tells the simulation core to stop the simulator when the next macroStep is done|
 |l_addSharedNumber	|key, value| adds any type of number(value) to a shared map, indexed 'key'|
 |l_getSharedNumber	|key| returns the value associated with key, if the key does not exist it returns "no_value"|
 |l_getAgentPath			|| returns two strings, the path of the agent(no filename) and the filename of the main lua agent file|
-
+|l_addAuton |x,y,z,path,filename | adds a new auton at a given x,y and z position using the path and filename given, the simulation will stop with a warning if the agent source cannot be found. Returns the ID of the new agent|
+|l_removeAuton | id | removes an agent with the given ID. Returns true or false whether it's successful| 
+ 
 It is important to note that movement and map manipulation is not part of the simulation core itself, but rather the physics engine for very good reasons... email me if you want to know more.
 
 If an agent takes up more than one x,y space, you can add more than one position via l_updatePosition by providing the extra coordinates as both oldX,oldY and newX,newY, just remember to update all the positions correctly upon movement.

@@ -55,7 +55,11 @@ public:
     void changeRunButton(QString text);
     void advanceProgess(int percentage);
     void runButtonHide();
-    void updateMap(std::list<agentInfo> infolist);
+
+	void updateMap(std::list<agentInfo> infolist);
+	void addGraphicAuton(int Id, int posX, int posY);
+	void removeGraphicAuton(int Id);
+
     void write_output(QString argMsg);
     void write_status(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents);
 	void write_regularOutput(QString argMsg);
@@ -69,6 +73,7 @@ public:
 
 	//dialogs:
 	void dialogConstruction();
+
 
 public slots:
 

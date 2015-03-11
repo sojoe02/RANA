@@ -232,3 +232,27 @@ void Nestene::performEvent(AutonListener *auton){
 
 }
 
+int Nestene::addAuton(double x, double y, double z,
+					   std::string filename, std::string type="Lua")
+{
+	int id = ID::generateAutonID();
+
+	if(type.compare("Lua") == 0)
+	{
+		//std::map<int, AutonListener>::iterator luaItr;
+		AutonLUA *auton = new AutonLUA(id,x,y,z,this,filename);
+		//luaItr = LUAs.begin();
+		LUAs.insert(std::pair<int,AutonLUA*>(auton->getID(),auton));
+	}
+
+	return id;
+}
+
+void Nestene::removeAuton(int ID)
+{
+	std::map<int, AutonLUA*>::iterator luaItr = LUAs.find(ID);
+	if(luaItr != LUAs.end())
+	{
+		LUAs.erase(luaItr);
+	}
+}

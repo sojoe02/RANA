@@ -30,6 +30,7 @@
 #include "../physics/shared.h"
 #include "output.h"
 #include "ID.h"
+#include "agents/doctor.h"
 
 using std::chrono::duration_cast;
 using std::chrono::milliseconds;
@@ -44,7 +45,7 @@ AgentDomain::AgentDomain(Control *control)
 }
 
 AgentDomain::~AgentDomain(){
-	ID::resetSystem();
+	//ID::resetSystem();
 	Phys::setCTime(0);
     delete masteragent;
 }
@@ -76,11 +77,13 @@ void AgentDomain::generateEnvironment(double width, double height, int resolutio
 
     Output::KillSimulation = false;
 
+	ID::resetSystem();
 	Phys::setTimeRes(timeResolution);
 	Phys::setCTime(0);
 	Phys::setMacroFactor(macroFactor);
     Phys::setEnvironment(width, height);
     Shared::initShared();
+	Doctor::InitDoctor(masteragent);
 
     masteragent->generateMap(width,height,resolution,timeResolution, macroResolution);
 
@@ -88,7 +91,7 @@ void AgentDomain::generateEnvironment(double width, double height, int resolutio
 	mapHeight = height;
 
     masteragent->populateSystem(listenerSize, screamerSize, LUASize, filename);
-    retrievePopPos();
+	retrievePopPos();
 	mapGenerated = true;
 }
 

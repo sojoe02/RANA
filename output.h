@@ -49,7 +49,6 @@ public:
     void setMainWindow(MainWindow *mainwindow);
 
     static std::atomic<int> DelayValue;
-
     static std::atomic<bool> RunSimulation;
     static std::atomic<bool> KillSimulation;
 	static std::atomic<bool> RunEventProcessing;
@@ -64,7 +63,12 @@ public:
 	static std::string AgentFile;
 
 	void updateZvalue(QString string);
+
+	void removeGraphicAuton(int Id);
+	void addGraphicAuton(int Id, double posX, double posY);
+
 private:
+
     Output();
     static Output* output;
     static MainWindow* mainWindow;

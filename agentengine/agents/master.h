@@ -84,13 +84,18 @@ class Master
 
 		void saveExternalEvents(std::string filename);
 
-		void simDone();
+		int addAuton(double x, double y, double z, std::string filename, std::string type);
 
-	private:
+		void simDone();
+		
+		void removeAuton(int ID);
+private:
 
 
 		std::vector<Nestene> nestenes;
 		std::vector<Nestene>::iterator itNest;
+		//nestene index to keep track of which nestene the next auton should be added at:
+		int nesteneIndex;
 
 		//functions for the different phases in a microstep:
 		//list to hold events generated each step.

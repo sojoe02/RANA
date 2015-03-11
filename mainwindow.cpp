@@ -108,14 +108,22 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_generateButton_clicked()
 {
-    for(auto iter=graphAgents.begin(); iter!=graphAgents.end(); ++iter) {
+	int i = 0;
+	for(auto iter=graphAgents.begin(); iter!=graphAgents.end(); ++iter, i++) {
+		//Output::Inst()->kprintf("item #%i ", i);
         scene->removeItem(*iter);
-        //delete *iter;
-    }
+		delete *iter;
+	}
+
+	ui->graphicsView->viewport()->update();
+
     graphAgents.clear();
     GridMovement::clearGrid();
 
-    if(mapItem != NULL){
+	if(mapItem != NULL){
+
+		//mapItem->setPixmap(QPixmap::fromImage(*mapImage));
+		//mapItem->setZValue(1);
 
 		Phys::setScale(ui->scaleDoubleSpinBox->value());
 		Output::Inst()->kprintf("Setting map scale to %f", Phys::getScale());
@@ -358,17 +366,12 @@ void MainWindow::on_updateMap(INFOLIST infolist)
     {
         int x = itr->x;
         int y = itr->y;
-        int Id = itr->id;
+		int Id = itr->id;
 
         if(!graphAgents.contains(Id))
         {
-            agentItem *gfxItem = new agentItem(QString::number(Id));
-            gfxItem->setZValue(2);
-            gfxItem->setX(x);
-            gfxItem->setY(y);
-            scene->addItem(gfxItem);
+			addGraphicAuton(Id, x, y);
 
-            graphAgents.insert(Id, gfxItem);
         } else
         {
             QMap<int, agentItem*>::const_iterator i = graphAgents.find(Id);
@@ -377,6 +380,29 @@ void MainWindow::on_updateMap(INFOLIST infolist)
             gfxItem->setY(y);
         }
     }
+}
+
+void MainWindow::addGraphicAuton(int Id, int posX, int posY)
+{
+	agentItem *gfxItem = new agentItem(QString::number(Id));
+	gfxItem->setZValue(2);
+	gfxItem->setX(posX);
+	gfxItem->setY(posY);
+
+	Output::Inst()->kprintf("ID is %i", Id);
+	Output::Inst()->kprintf("Size of the agent array %i", graphAgents.size());
+
+	scene->addItem(gfxItem);
+	graphAgents.insert(Id, gfxItem);
+
+}
+
+void MainWindow::removeGraphicAuton(int Id)
+{
+	agentItem *gfxItem = graphAgents.find(Id).value();
+	graphAgents.remove(Id);
+	scene->removeItem(gfxItem);
+	delete gfxItem;
 }
 
 void MainWindow::wheelEvent(QWheelEvent* event)

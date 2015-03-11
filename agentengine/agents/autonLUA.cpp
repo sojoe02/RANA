@@ -37,6 +37,7 @@
 
 #include "ID.h"
 #include "autonLUA.h"
+#include "doctor.h"
 #include "../../physics/phys.h"
 #include "../../physics/gridmovement.h"
 #include "../../physics/maphandler.h"
@@ -76,6 +77,7 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
 	lua_register(L, "l_getSharedNumber", l_getSharedNumber);
 	lua_register(L, "l_addSharedNumber",l_addSharedNumber);
 	lua_register(L, "l_getAgentPath", l_getAgentPath);
+	lua_register(L, "l_addAuton", l_addAuton);
 
 	if(luaL_loadfile(L, filename.c_str() ) || lua_pcall(L,0,0,0)){
 		Output::Inst()->kprintf("error : %s \n", lua_tostring(L, -1));
@@ -636,7 +638,8 @@ int AutonLUA::l_scanRadial(lua_State *L)
 	return 1;
 }
 
-int AutonLUA::l_gridMove(lua_State *L){
+int AutonLUA::l_gridMove(lua_State *L)
+{
 	int oldX = lua_tonumber(L, -4);
 	int oldY = lua_tonumber(L, -3);
 	int newX = lua_tonumber(L, -2);
@@ -644,7 +647,8 @@ int AutonLUA::l_gridMove(lua_State *L){
 	return 0;
 }
 
-int AutonLUA::l_stopSimulation(lua_State *L){
+int AutonLUA::l_stopSimulation(lua_State *L)
+{
 	Output::RunSimulation = false;
 	return 0;
 }
@@ -683,6 +687,22 @@ int AutonLUA::l_getAgentPath(lua_State *L)
 
 	return 2;
 }
+
+int AutonLUA::l_addAuton(lua_State *L)
+{
+	double posX = lua_tonumber(L, -5);
+	double posY = lua_tonumber(L, -4);
+	double posZ = lua_tonumber(L, -3);
+	std::string path = lua_tostring(L, -2);
+	std::string filename = lua_tostring(L, -1);
+
+	int id = Doctor::addLuaAuton(posX, posY, posZ, path + filename);
+
+	lua_pushinteger(L, id);
+
+	return 1;
+}
+
 
 int AutonLUA::luapanic(lua_State *L)
 {
