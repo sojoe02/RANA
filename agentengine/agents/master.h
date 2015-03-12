@@ -35,94 +35,93 @@
 class Nestene;
 class Master
 {
-	public:
-		/*
+public:
+	/*
 		  resolution is microseconds pr. turn
 		*/
-        Master();
-        ~Master();
-		/*
+	Master();
+	~Master();
+	/*
 		   height of map
 		   width of map
 		   resolution is is number of nestenes squared
 		   */
-		void generateMap(double width, double height, int resolution, 
-				double timeResolution, double macroResolution);
+	void generateMap(double width, double height, int resolution,
+					 double timeResolution, double macroResolution);
 
 
-		/*
+	/*
 		   Populate the system with a give population size
 		   */
-		void populateSystem(int listenerSize, int screamerSize, 
-				int LUASize, std::string filename);
+	void populateSystem(int listenerSize, int screamerSize,
+						int LUASize, std::string filename);
 
-		void populateSquareSystem(int LUASize, std::string filename);
-		void populateSquareListenerSystem(int listenerSize);
+	void populateSquareSystem(int LUASize, std::string filename);
+	void populateSquareListenerSystem(int listenerSize);
 
-		/*
+	/*
 		   Functions to excecute a microStep and macroStep
 		   */
-		//void microStep();
-		void microStep(unsigned long long tmu);
-		void macroStep(unsigned long long tmu);
-		unsigned long long getNextMicroTmu();
-		/*
+	//void microStep();
+	void microStep(unsigned long long tmu);
+	void macroStep(unsigned long long tmu);
+	unsigned long long getNextMicroTmu();
+	/*
 		   Functions on what to do when receiving events:
 		   */
-		void receiveEEventPtr(EventQueue::eEvent* eEvent);
-		void receiveInitEEventPtr(EventQueue::eEvent* eEvent);
+	void receiveEEventPtr(EventQueue::eEvent* eEvent);
+	void receiveInitEEventPtr(EventQueue::eEvent* eEvent);
 
-		/*
+	/*
 		   Functions to add events to the masters eventQueue
 		   */
-		void receiveIEventPtr(EventQueue::iEvent *iEvent);
-		void addExternalEventPtr(EventQueue::eEvent *eEvent);
+	void receiveIEventPtr(EventQueue::iEvent *iEvent);
+	void addExternalEventPtr(EventQueue::eEvent *eEvent);
 
-		void printStatus();
+	void printStatus();
 
-        std::list<agentInfo> retrievePopPos();
+	std::list<agentInfo> retrievePopPos();
 
-		void saveExternalEvents(std::string filename);
+	void saveExternalEvents(std::string filename);
 
-		int addAuton(double x, double y, double z, std::string filename, std::string type);
+	int addAuton(double x, double y, double z, std::string filename, std::string type);
+	bool removeAuton(int ID);
 
-		void simDone();
-		
-		void removeAuton(int ID);
+	void simDone();
+
 private:
 
+	std::vector<Nestene> nestenes;
+	std::vector<Nestene>::iterator itNest;
+	//nestene index to keep track of which nestene the next auton should be added at:
+	int nesteneIndex;
 
-		std::vector<Nestene> nestenes;
-		std::vector<Nestene>::iterator itNest;
-		//nestene index to keep track of which nestene the next auton should be added at:
-		int nesteneIndex;
+	//functions for the different phases in a microstep:
+	//list to hold events generated each step.
+	std::list<EventQueue::eEvent*> stepEvents;
 
-		//functions for the different phases in a microstep:
-		//list to hold events generated each step.
-		std::list<EventQueue::eEvent*> stepEvents;
+	//first the master will be queuering the eventQueue if
+	//events will be excecuted here.
+	void excecuteEvents();
 
-		//first the master will be queuering the eventQueue if 
-		//events will be excecuted here.
-		void excecuteEvents();
+	//then Nestenes will be queuried to check if an Auton will
+	//initiate an event.
+	void queryNestenes();
+	double timeResolution;
+	double macroResolution;
 
-		//then Nestenes will be queuried to check if an Auton will
-		//initiate an event.
-		void queryNestenes();
-		double timeResolution;
-		double macroResolution;
+	int autonAmount;
+	uint threads;
+	std::string luaFilename;
+	double areaX;
+	double areaY;
 
-		int autonAmount;
-		uint threads;
-		std::string luaFilename;
-		double areaX;
-		double areaY;
+	EventQueue *eventQueue;
 
-		EventQueue *eventQueue;
-
-        unsigned long long eEventInitAmount;
-        unsigned long long responseAmount;
-		unsigned long long externalDistroAmount;
-        unsigned long long tmu;
+	unsigned long long eEventInitAmount;
+	unsigned long long responseAmount;
+	unsigned long long externalDistroAmount;
+	unsigned long long tmu;
 
 };
 #endif // MASTER_H

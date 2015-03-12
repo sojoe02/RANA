@@ -76,8 +76,14 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
 	lua_register(L, "l_stopSimulation", l_stopSimulation);
 	lua_register(L, "l_getSharedNumber", l_getSharedNumber);
 	lua_register(L, "l_addSharedNumber",l_addSharedNumber);
+	lua_register(L, "l_getSharedString", l_getSharedString);
+	lua_register(L, "l_addSharedString", l_addSharedString);
 	lua_register(L, "l_getAgentPath", l_getAgentPath);
+	lua_register(L, "l_getAutonPath", l_getAgentPath);
 	lua_register(L, "l_addAuton", l_addAuton);
+	lua_register(L, "l_removeAuton", l_removeAuton);
+	lua_register(L, "l_removeAgent", l_removeAuton);
+	lua_register(L, "l_addAgent", l_addAuton);
 
 	if(luaL_loadfile(L, filename.c_str() ) || lua_pcall(L,0,0,0)){
 		Output::Inst()->kprintf("error : %s \n", lua_tostring(L, -1));
@@ -680,6 +686,27 @@ int AutonLUA::l_getSharedNumber(lua_State *L)
 
 }
 
+int AutonLUA::l_addSharedString(lua_State *L)
+{
+	std::string key = lua_tostring(L, -2);
+	std::string value = lua_tostring(L, -1);
+
+	Shared::addString(key, value);
+
+	return 0;
+}
+
+int AutonLUA::l_getSharedString(lua_State *L)
+{
+	std::string key = lua_tostring(L, -1);
+	std::string value = Shared::getString(key);
+
+	lua_pushstring(L, value.c_str());
+
+	return 1;
+
+}
+
 int AutonLUA::l_getAgentPath(lua_State *L)
 {
 	lua_pushstring(L,Output::AgentPath.c_str());
@@ -703,6 +730,13 @@ int AutonLUA::l_addAuton(lua_State *L)
 	return 1;
 }
 
+int AutonLUA::l_removeAuton(lua_State *L)
+{
+
+	int id = lua_tonumber(L, -1);
+	bool removed = Doctor::removeAuton(id);
+	lua_pushboolean(L, removed);
+}
 
 int AutonLUA::luapanic(lua_State *L)
 {

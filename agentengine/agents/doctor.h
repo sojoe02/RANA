@@ -13,7 +13,7 @@ public:
 
 	static void InitDoctor(Master* arg_master);
 	static int addLuaAuton(double x, double y, double z, std::string path);
-	static void removeAuton(int ID);
+	static bool removeAuton(int ID);
 
 private:
 	static Master *master;

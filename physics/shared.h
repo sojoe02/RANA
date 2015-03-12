@@ -23,7 +23,7 @@
 #define SHARED_H
 
 #include <string>
-#include <map>
+#include <unordered_map>
 #include <shared_mutex>
 
 class Shared
@@ -31,14 +31,23 @@ class Shared
 public:
     Shared();
 
-    static std::map<std::string, double> *sharedNumbers;
-
     static double getNumber(std::string key);
-    static void addNumber(std::string key, double value);
-    static void initShared();
+	static void addNumber(std::string key, double value);
+
+	static std::string getString(std::string key);
+	static void addString(std::string key, std::string value);
+
+	static void initShared();
 
 private:
-	static std::mutex mutex;
+
+	static std::mutex sharedNumberMutex;
+	static std::mutex sharedStringMutex;
+
+	static std::unordered_map<std::string, double> sharedNumbers;
+	static std::unordered_map<std::string, std::string> sharedStrings;
+
 };
+
 
 #endif // SHARED_H

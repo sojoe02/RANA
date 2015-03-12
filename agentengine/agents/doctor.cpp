@@ -17,10 +17,13 @@ int Doctor::addLuaAuton(double x, double y, double z, std::string path)
 	return id;
 }
 
-void Doctor::removeAuton(int Id)
+bool Doctor::removeAuton(int Id)
 {
-	master->removeAuton(Id);
-	Output::Inst()->removeGraphicAuton(Id);
+	if(master->removeAuton(Id))
+	{
+		Output::Inst()->removeGraphicAuton(Id);
+		return true;
+	} return false;
 }
 
 

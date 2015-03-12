@@ -35,13 +35,21 @@ function initAuton(x, y, id, macroFactor, timeResolution)
 	macroF = macroFactor
 	timeRes = timeResolution
 
-	l_debug("Agent #: " .. id .. " has been initialized")
+	l_print("Agent #: " .. id .. " has been initialized")
+
+	path, filename = l_getAgentPath()
+
+	l_print("my path is"..path.."/"..filename)
 
 end
 
 -- Event Handling:
 function handleEvent(origX, origY, origID, origDesc, origTable)
 	--make a response:
+	if origDesc == "killme" then
+		l_debug("Killing agent with ID" .. origID) 
+		l_removeAgent(origID)
+	end
 
 	return 0,0,0,"null"
 
@@ -50,10 +58,13 @@ end
 --Determine whether or not this Auton will initiate an event.
 function initiateEvent()
 
-	if(l_getMersenneInteger(1,100) == 1) then
-		l_debug("Generating new agent")
-		local new_id = l_addAuton(l_getMersenneInteger(1,200),
-		l_getMersenneInteger(1,200),0,[[/home/sojoe/qtProjects/Rana_qt/lua_agents/]], [[01_painter.lua]])
+	if(l_getMersenneInteger(1,1000) == 1) then
+
+
+
+		--l_debug("Generating new agent: "..path.." : "..filename)
+		local new_id = l_addAuton(l_getMersenneInteger(1,200), l_getMersenneInteger(1,200),0,path, [[09_mover.lua]])
+		l_debug("Agent has ID".. new_id)
 	end
 
 	return 0,0,0,"null"

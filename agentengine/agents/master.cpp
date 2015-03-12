@@ -272,7 +272,8 @@ void Master::microStep(unsigned long long tmu){
  * Returns next viable tmu
  * @see EventQueue::getNextTmu()
  */
-unsigned long long Master::getNextMicroTmu(){
+unsigned long long Master::getNextMicroTmu()
+{
 	//eventQueue->printATmus();
 	return eventQueue->getNextTmu();
 }
@@ -282,9 +283,11 @@ unsigned long long Master::getNextMicroTmu(){
  * The macrostep, queries all autons on whether or not they will initiate and event.
  * @see Nestene::initPhase();
  */
-void Master::macroStep(unsigned long long tmu){
+void Master::macroStep(unsigned long long tmu)
+{
 	//Handle the initiation of events:
-	for(itNest=nestenes.begin() ; itNest !=nestenes.end(); ++itNest){
+	for(itNest=nestenes.begin() ; itNest !=nestenes.end(); ++itNest)
+	{
 		itNest->initPhase(macroResolution, tmu+1);
 	}
 }
@@ -295,7 +298,8 @@ void Master::macroStep(unsigned long long tmu){
  * Updates the status output field, on the running mode panel
  * @see Output::updateStatus()
  */
-void Master::printStatus(){
+void Master::printStatus()
+{
 	Output::Inst()->updateStatus(Phys::getCTime(),eEventInitAmount,
 								 eventQueue->getISize(), eventQueue->getESize());
 	//Output::Inst()->kprintf("%d\n", eventQueue->getISize());
@@ -306,12 +310,15 @@ void Master::printStatus(){
  * Save eEvent data to disk
  * @see EventQueue::saveEEventData
  */
-void Master::saveExternalEvents(std::string filename){
+void Master::saveExternalEvents(std::string filename)
+{
 	eventQueue->saveEEventData(filename, luaFilename,autonAmount,areaY,areaX);
 }
 
-void Master::simDone(){
-	for(itNest=nestenes.begin() ; itNest !=nestenes.end(); ++itNest){
+void Master::simDone()
+{
+	for(itNest=nestenes.begin() ; itNest !=nestenes.end(); ++itNest)
+	{
 		itNest->simDone();
 	}
 }
@@ -332,9 +339,15 @@ int Master::addAuton(double x, double y, double z, std::string filename, std::st
 
 }
 
-void Master::removeAuton(int ID)
+//The agent will be removed at the next macrostep:
+bool Master::removeAuton(int arg_id)
 {
-	for(itNest=nestenes.begin() ; itNest !=nestenes.end(); ++itNest){
-		itNest->removeAuton(ID);
+
+	for(auto nestitr=nestenes.begin() ; nestitr !=nestenes.end(); ++nestitr)
+	{
+		//int i = itNest->containsAuton(arg_id);
+		bool removed = nestitr->removeAuton(arg_id);
+		if(removed) return true;
 	}
+	return false;
 }

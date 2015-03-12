@@ -24,7 +24,8 @@
 #include <iostream>
 #include "shared.h"
 
-std::map<std::string, double> *Shared::sharedNumbers = NULL;
+std::unordered_map<std::string, double> Shared::sharedNumbers;
+std::unordered_map<std::string, std::string> Shared::sharedStrings;
 
 Shared::Shared()
 {
@@ -32,32 +33,61 @@ Shared::Shared()
 
 void Shared::initShared()
 {
-    if (sharedNumbers != NULL)
-    {
-        sharedNumbers->clear();
-    } else
-        sharedNumbers = new std::map<std::string, double>();
+	//if (sharedNumbers != NULL)
+	//{
+	sharedNumbers.clear();
+	sharedStrings.clear();
+	//sharedNumbers;
+	//	delete sharedStrings;
+	//} else
+	//{
+	//	sharedNumbers = new std::unordered_map<std::string, double>();
+	//	sharedStrings = new std::unordered_map<std::string, std::string()>;
+
+	//}
 }
 
 void Shared::addNumber(std::string key, double value)
 {
-    if(sharedNumbers->find(key) == sharedNumbers->end())
-        sharedNumbers->insert(std::pair<std::string, double>(key, value));
-    else
-    {
-        sharedNumbers->erase(key);
-        sharedNumbers->insert(std::pair<std::string, double>(key, value));
-    }
+	if(sharedNumbers.find(key) == sharedNumbers.end())
+		sharedNumbers.insert(std::pair<std::string, double>(key, value));
+	else
+	{
+		sharedNumbers.erase(key);
+		sharedNumbers.insert(std::pair<std::string, double>(key, value));
+	}
 
 }
 
 double Shared::getNumber(std::string key)
 {
-    if(sharedNumbers->find(key) != sharedNumbers->end())
-    {
-        return sharedNumbers->find(key)->second;
-    } else return LLONG_MIN;
+	auto sharedItr = sharedNumbers.find(key);
+
+	if(sharedItr != sharedNumbers.end())
+	{
+		return sharedItr->second;
+	} else return LLONG_MIN;
 }
 
+void Shared::addString(std::string key, std::string value)
+{
 
+	if(sharedStrings.find(key) == sharedStrings.end())
+		sharedStrings.insert(std::pair<std::string, std::string>(key, value));
+	else
+	{
+		sharedStrings.erase(key);
+		sharedStrings.insert(std::pair<std::string, std::string>(key, value));
+	}
+}
+
+std::string Shared::getString(std::string key)
+{
+	auto sharedItr = sharedStrings.find(key);
+
+	if(sharedItr != sharedStrings.end())
+	{
+		return sharedItr->second;
+	} else return "";
+}
 

@@ -68,7 +68,8 @@ class Nestene
 		int addAuton(double x, double y, double z,
 					  std::string filename, std::string type);
 
-		void removeAuton(int ID);
+		bool removeAuton(int arg_id);
+		int containsAuton(int arg_id);
 
 private:
 		//generates an event and puts it into the event map.
@@ -110,6 +111,8 @@ private:
 		//Autons will register the external events they want to send out here:
 		std::list<EventQueue::eEvent*> eEventsOutbox;
 		std::list<EventQueue::eEvent*>::iterator iteEventsOutbox;
+
+		std::list<int> removalIDs;
 
 		friend class Auton;
 		friend class AutonListener;

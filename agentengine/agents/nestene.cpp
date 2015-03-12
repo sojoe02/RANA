@@ -171,6 +171,13 @@ void Nestene::initPhase(double macroResolution, unsigned long long tmu){
 			master->receiveInitEEventPtr(eevent);
 		}
 	}
+
+
+	//remove all autons set for removal
+	for(auto itRemove= removalIDs.begin(); itRemove!= removalIDs.end(); ++itRemove)
+	{
+		LUAs.erase(*itRemove);
+	}
 }
 
 /**
@@ -248,11 +255,13 @@ int Nestene::addAuton(double x, double y, double z,
 	return id;
 }
 
-void Nestene::removeAuton(int ID)
+bool Nestene::removeAuton(int arg_id)
 {
-	std::map<int, AutonLUA*>::iterator luaItr = LUAs.find(ID);
+	auto luaItr = LUAs.find(arg_id);
 	if(luaItr != LUAs.end())
 	{
-		LUAs.erase(luaItr);
-	}
+		removalIDs.push_back(arg_id);
+		return true;
+	} else false;
+
 }
