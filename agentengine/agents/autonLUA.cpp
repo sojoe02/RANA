@@ -316,6 +316,8 @@ void AutonLUA::processFunction(EventQueue::dataEvent *devent, double time, doubl
 
 void AutonLUA::setRemoved()
 {
+
+	Output::Inst()->kprintf("removing agent.#.%i",ID);
 	removed = true;
 	GridMovement::removePos(posX, posY, ID);
 }
@@ -417,6 +419,9 @@ void AutonLUA::simDone(){
 }
 
 void AutonLUA::getSyncData(){
+
+	if(removed) return;
+
 	try{
 		lua_getglobal(L,"getSyncData");
 

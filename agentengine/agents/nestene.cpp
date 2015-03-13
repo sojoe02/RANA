@@ -179,8 +179,11 @@ void Nestene::initPhase(double macroResolution, unsigned long long tmu){
 		for(auto itRemove= removalIDs.begin(); itRemove!= removalIDs.end(); ++itRemove)
 		{
 			auto itrLua = LUAs.find(*itRemove);
-			LUAs.erase(itrLua);
-			delete itrLua->second;
+			if(itrLua != LUAs.end())
+			{
+				LUAs.erase(itrLua);
+				delete itrLua->second;
+			}
 		}
 		removalIDs.clear();
 	}

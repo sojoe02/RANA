@@ -405,8 +405,12 @@ void MainWindow::addGraphicAuton(int Id, int posX, int posY)
 void MainWindow::removeGraphicAuton(int Id)
 {
 	auto iter = graphAgents.find(Id);
-	scene->removeItem(*iter);
-	graphAgents.remove(Id);
+	if(iter != graphAgents.end())
+	{
+		scene->removeItem(*iter);
+		delete *iter;
+		graphAgents.remove(Id);
+	}
 	//delete gfxItem;
 }
 

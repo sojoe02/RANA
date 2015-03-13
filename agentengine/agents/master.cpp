@@ -256,10 +256,14 @@ void Master::microStep(unsigned long long tmu){
 
 		for(; itlist != list.end(); ++itlist){
 			EventQueue::iEvent* event = *itlist;
-			if (removedIDs.find(event->originID) != removedIDs.end())
+
+			Output::Inst()->kprintf("origin id is %i", event->originID);
+
+			if (removedIDs.find(event->originID) == removedIDs.end())
 			{
 				event->origin->actOnEvent(*itlist);
 			}
+
 		}
 	}
 
@@ -336,8 +340,8 @@ int Master::addAuton(double x, double y, double z, std::string filename, std::st
 		nesteneIndex = 0 ;
 
 	nestItr += nesteneIndex;
-	int id = nestItr->addAuton(x, y, z, filename, type);
 
+	int id = nestItr->addAuton(x, y, z, filename, type);
 	return id;
 
 }
