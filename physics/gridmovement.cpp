@@ -66,6 +66,31 @@ void GridMovement::addPos(int x, int y, int id)
 
 }
 
+void GridMovement::removePos(int x, int y, int id)
+{
+	char buffer[64];
+	sprintf(buffer, "%i,%i",x,y);
+	std::string index = buffer;
+
+	auto posItr = posMap->find(index);
+	pList *tmp = &posItr->second;
+
+	if(posItr != posMap->end()){
+		for(pList::iterator it=tmp->begin(); it != tmp->end(); it++ )
+		{
+			if (*it == id)
+			{
+				tmp->remove(id);
+				break;
+			}
+		}
+		if(tmp->empty()){
+			posMap->erase(posItr);
+		}
+	}
+
+}
+
 void GridMovement::updatePos(int oldX, int oldY, int newX, int newY, int id)
 {          
     //update the position map:
@@ -73,33 +98,23 @@ void GridMovement::updatePos(int oldX, int oldY, int newX, int newY, int id)
     sprintf(buffer,"%i,%i",oldX,oldY);
     std::string index = buffer;
 
-	std::unordered_map<std::string, pList>::iterator posItr = posMap->find(index);
+	auto posItr = posMap->find(index);
 
 	pList *tmp = &posItr->second;
-	//pList *tmp = &posMap->find(index)->second;
 
 	if(posItr != posMap->end()){
-		//posMap->erase(posItr);
-		//tmp = &posMap->find(index)->second;
-		//pList *tmp = new pList();
-		for(pList::iterator it=tmp->begin(); it != tmp->end(); it++ )
+		for(auto it=tmp->begin(); it != tmp->end(); it++ )
 		{
-			//Output::Inst()->kprintf("%i,%i, someone have been here!!!", *it,id);
 			if (*it == id)
 			{
-				//Output::Inst()->kprintf("deleting my position %i-%i:%s",*it,id,index.c_str());
 				tmp->remove(id);
 				break;
 			}
 		}
-		//if (!tmp->empty())
-		//    posMap->insert(std::pair<std::string, pList>(index,*tmp));
 		if(tmp->empty()){
 			posMap->erase(posItr);
 		}
 	}
-
-	//Output::Inst()->kprintf("=================");
 
 	sprintf(buffer,"%i,%i",newX,newY);
 	index = buffer;
@@ -114,9 +129,7 @@ void GridMovement::updatePos(int oldX, int oldY, int newX, int newY, int id)
 	{
 		pList *tmp = &posMap->find(index)->second;
 		tmp->push_back(id);
-		//Output::Inst()->kprintf("inserting %i,%i, into existing List", newX, newY);
 	}
-	//Output::Inst()->kprintf("%s", index.c_str());
 }
 
 bool GridMovement::checkCollision(int x, int y)

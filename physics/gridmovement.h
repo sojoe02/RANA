@@ -40,7 +40,8 @@ public:
     static pList checkPosition(int x, int y);
 
 
-    static void clearGrid();
+	static void clearGrid();
+	static void removePos(int x, int y, int id);
 private:
 
     //maps that contain the amount of agents at a givin x,y position

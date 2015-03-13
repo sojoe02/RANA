@@ -60,6 +60,7 @@ class EventQueue
 			std::string desc;
 			unsigned long long activationTime;
             int targetID;
+			int originID;
 			//double funcArray[11];
 		};
 
@@ -70,6 +71,7 @@ class EventQueue
 			unsigned long long activationTime;
 			unsigned long long id;
 			std::string desc;
+			int originID;
 		};
 
 		//define the data event, precisely the same as events:

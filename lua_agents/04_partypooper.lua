@@ -47,7 +47,7 @@ end
 -- Event Handling:
 function handleEvent(origX, origY, origID, origDesc, origTable)
 	--load the table to se if anything is up:
-	loadtring("ctable="..origTable)()
+	load("ctable="..origTable)()
 	if ID ~= 1 and ctable.name == "partyAnnouncement" then
 		l_debug("I am stopping this simulation, due to party announcement from agent ".. ctable.id ) 	
 		l_stopSimulation()

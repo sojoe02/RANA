@@ -172,11 +172,17 @@ void Nestene::initPhase(double macroResolution, unsigned long long tmu){
 		}
 	}
 
-
-	//remove all autons set for removal
-	for(auto itRemove= removalIDs.begin(); itRemove!= removalIDs.end(); ++itRemove)
+	if(!removalIDs.empty())
 	{
-		LUAs.erase(*itRemove);
+
+		//remove all autons set for removal
+		for(auto itRemove= removalIDs.begin(); itRemove!= removalIDs.end(); ++itRemove)
+		{
+			auto itrLua = LUAs.find(*itRemove);
+			LUAs.erase(itrLua);
+			delete itrLua->second;
+		}
+		removalIDs.clear();
 	}
 }
 
@@ -190,7 +196,7 @@ void Nestene::distroPhase(EventQueue::eEvent* event){
 		if(event->origin->getID() != itListeners->second.getID()){
 			EventQueue::iEvent *ievent = itListeners->second.handleEvent(event);
 			if(ievent != NULL)
-				master->receiveIEventPtr(ievent);			
+				master->receiveIEventPtr(ievent);
 		}
 	}
 	for(itLUAs = LUAs.begin(); itLUAs != LUAs.end(); ++itLUAs){
@@ -240,7 +246,7 @@ void Nestene::performEvent(AutonListener *auton){
 }
 
 int Nestene::addAuton(double x, double y, double z,
-					   std::string filename, std::string type="Lua")
+					  std::string filename, std::string type="Lua")
 {
 	int id = ID::generateAutonID();
 
@@ -260,6 +266,7 @@ bool Nestene::removeAuton(int arg_id)
 	auto luaItr = LUAs.find(arg_id);
 	if(luaItr != LUAs.end())
 	{
+		luaItr->second->setRemoved();
 		removalIDs.push_back(arg_id);
 		return true;
 	} else false;

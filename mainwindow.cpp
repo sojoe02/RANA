@@ -131,22 +131,27 @@ void MainWindow::on_generateButton_clicked()
         ui->progressBar->setValue(0);
         QFile path(ui->agentPathLineEdit->text());
         if(path.exists())
-        {
+		{
             double timeRes = 1/(double)ui->timeResSpinBox->value();
             double macroRes = ui->macroSpinBox->value();
             int agentAmount = ui->luaSpinBox->value();
-            QString agentPath = ui->agentPathLineEdit->text();
+			QString agentPath = ui->agentPathLineEdit->text();
+
+			//set the global agent loader path variables:
+			QFileInfo fi(agentPath);
+			Output::AgentFile=fi.fileName().toStdString();
+			Output::AgentPath=fi.path().toStdString().append("/");
+
             std::string stringPath = agentPath.toUtf8().constData();
-            control->generateEnvironment(mapImage, 1,timeRes, macroRes,
+
+			//generate the simulation and initialize agents
+			control->generateEnvironment(mapImage, 1,timeRes, macroRes,
                                          agentAmount,stringPath);
 
 			Output::Inst()->kprintf("generating environment, %d, %s",
                                     agentAmount, stringPath.c_str());
             ui->runButton->setEnabled(true);
 
-			QFileInfo fi(agentPath);
-			Output::AgentFile=fi.fileName().toStdString();
-			Output::AgentPath=fi.path().toStdString().append("/");
         } else
 			Output::Inst()->kprintf("Cannot generate Environment: Valid path not given");
     } else
@@ -399,30 +404,30 @@ void MainWindow::addGraphicAuton(int Id, int posX, int posY)
 
 void MainWindow::removeGraphicAuton(int Id)
 {
-	agentItem *gfxItem = graphAgents.find(Id).value();
+	auto iter = graphAgents.find(Id);
+	scene->removeItem(*iter);
 	graphAgents.remove(Id);
-	scene->removeItem(gfxItem);
-	delete gfxItem;
+	//delete gfxItem;
 }
 
 void MainWindow::wheelEvent(QWheelEvent* event)
 {
-//    ui->graphicsView->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-//    // Scale the view / do the zoom
-//    double scaleFactor = 1.15;
+	//    ui->graphicsView->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+	//    // Scale the view / do the zoom
+	//    double scaleFactor = 1.15;
 
-//    if(event->delta() > 0) {
-//        // Zoom in
-//        factor = .15 + factor;
-//        ui->graphicsView->scale(scaleFactor, scaleFactor);
+	//    if(event->delta() > 0) {
+	//        // Zoom in
+	//        factor = .15 + factor;
+	//        ui->graphicsView->scale(scaleFactor, scaleFactor);
 
-//    } else {
-//        // Zooming out
-//        factor =  factor - .15;
-//        ui->graphicsView->scale(1.0 / scaleFactor, 1.0 / scaleFactor);
-//    }
+	//    } else {
+	//        // Zooming out
+	//        factor =  factor - .15;
+	//        ui->graphicsView->scale(1.0 / scaleFactor, 1.0 / scaleFactor);
+	//    }
 
-//    ui->zoomLabel->setText(QString().setNum(factor*100));
+	//    ui->zoomLabel->setText(QString().setNum(factor*100));
 }
 
 
@@ -452,12 +457,12 @@ void MainWindow::resizeEvent(QResizeEvent *event)
  */
 void MainWindow::on_browseLuaAgentButton_clicked()
 {
-    QString fileName = QFileDialog::getOpenFileName
-            (this, tr("Open Map File"),QDir::currentPath(),
+	QString fileName = QFileDialog::getOpenFileName
+			(this, tr("Open Map File"),QDir::currentPath(),
 			 tr("Lua Files (*.lua)"));
 
 
-    ui->agentPathLineEdit->setText(fileName);
+	ui->agentPathLineEdit->setText(fileName);
 }
 
 /**
@@ -468,10 +473,10 @@ void MainWindow::on_browseLuaAgentButton_clicked()
 void MainWindow::on_runButton_clicked()
 {
 
-    if(control->isRunning()){
-        control->stopSimulation();
-    } else
-        control->runSimulation(ui->runTimeSpinBox->value());
+	if(control->isRunning()){
+		control->stopSimulation();
+	} else
+		control->runSimulation(ui->runTimeSpinBox->value());
 }
 
 /**
@@ -481,12 +486,12 @@ void MainWindow::on_runButton_clicked()
  */
 void MainWindow::changeRunButton(QString text)
 {
-    ui->runButton->setText(text);
+	ui->runButton->setText(text);
 }
 
 void MainWindow::runButtonHide()
 {
-    ui->runButton->setDisabled(true);
+	ui->runButton->setDisabled(true);
 }
 
 /**
@@ -497,17 +502,17 @@ void MainWindow::runButtonHide()
  */
 void MainWindow::defineMap()
 {
-    if(mapItem == NULL)
-    {
-        mapItem = new QGraphicsPixmapItem(QPixmap::fromImage(*mapImage));
-        scene->addItem(mapItem);
-    }else
-        mapItem->setPixmap(QPixmap::fromImage(*mapImage));
+	if(mapItem == NULL)
+	{
+		mapItem = new QGraphicsPixmapItem(QPixmap::fromImage(*mapImage));
+		scene->addItem(mapItem);
+	}else
+		mapItem->setPixmap(QPixmap::fromImage(*mapImage));
 
-    Output::Inst()->kprintf("Map information generated");
-    MapHandler::setImage(mapImage);
-    Phys::setEnvironment(mapImage->width(),mapImage->height());
-    //GridMovement::initGrid(mapImage->width(), mapImage->height());
+	Output::Inst()->kprintf("Map information generated");
+	MapHandler::setImage(mapImage);
+	Phys::setEnvironment(mapImage->width(),mapImage->height());
+	//GridMovement::initGrid(mapImage->width(), mapImage->height());
 }
 
 /**
@@ -518,7 +523,7 @@ void MainWindow::defineMap()
  */
 void MainWindow::on_delaySpinBox_valueChanged(int arg1)
 {
-    Output::DelayValue = arg1;
+	Output::DelayValue = arg1;
 }
 
 /**
@@ -527,11 +532,11 @@ void MainWindow::on_delaySpinBox_valueChanged(int arg1)
  */
 void MainWindow::on_zoomSlider_valueChanged(int value)
 {
-    double scale = (double)value/100;
+	double scale = (double)value/100;
 
-    ui->zoomLabel->setText(QString().setNum(value));
+	ui->zoomLabel->setText(QString().setNum(value));
 
-    ui->graphicsView->setTransform(QTransform::fromScale(scale,scale));
+	ui->graphicsView->setTransform(QTransform::fromScale(scale,scale));
 }
 
 /**
@@ -539,7 +544,7 @@ void MainWindow::on_zoomSlider_valueChanged(int value)
  */
 void MainWindow::on_pushButton_clicked()
 {
-    //ui->outputTextEdit->
+	//ui->outputTextEdit->
 	ui->outputTextBrowser->clear();
 }
 
@@ -951,8 +956,8 @@ void MainWindow::on_tabWidget_currentChanged(int index)
 										Qt::KeepAspectRatio);
 	} else if(ui->tabWidget->currentIndex() == ui->tabWidget->indexOf(sim_viewTab))
 	{
-			ui->graphicsView->fitInView(scene->sceneRect(),
-										Qt::KeepAspectRatio);
+		ui->graphicsView->fitInView(scene->sceneRect(),
+									Qt::KeepAspectRatio);
 
 	}
 }

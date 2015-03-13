@@ -74,7 +74,7 @@ void Master::generateMap(double width, double height, int threads, double timeRe
 	}
 
 
-	for(uint i=0; i<threads; i++)
+	for(int i=0; i<threads; i++)
 	{
 		std::string id;
 		std::stringstream ss;
@@ -256,7 +256,10 @@ void Master::microStep(unsigned long long tmu){
 
 		for(; itlist != list.end(); ++itlist){
 			EventQueue::iEvent* event = *itlist;
-			event->origin->actOnEvent(*itlist);
+			if (removedIDs.find(event->originID) != removedIDs.end())
+			{
+				event->origin->actOnEvent(*itlist);
+			}
 		}
 	}
 
@@ -329,7 +332,7 @@ int Master::addAuton(double x, double y, double z, std::string filename, std::st
 
 	nesteneIndex++;
 
-	if(nesteneIndex == nestenes.size())
+	if(nesteneIndex == (int)nestenes.size())
 		nesteneIndex = 0 ;
 
 	nestItr += nesteneIndex;
@@ -347,7 +350,12 @@ bool Master::removeAuton(int arg_id)
 	{
 		//int i = itNest->containsAuton(arg_id);
 		bool removed = nestitr->removeAuton(arg_id);
-		if(removed) return true;
+
+		if(removed)
+		{
+			removedIDs.insert(arg_id);
+			return true;
+		}
 	}
 	return false;
 }

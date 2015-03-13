@@ -44,7 +44,8 @@
 #include "../../physics/shared.h"
 
 AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *nestene, std::string filename)
-	: Auton(ID, posX, posY, posZ, nestene), filename(filename)
+	: Auton(ID, posX, posY, posZ, nestene), filename(filename),
+	  nofile(false),removed(false)
 {
 	desc = "LUA";
 	//Output::Inst()->kprintf("%f,%f", posX, posY);
@@ -65,6 +66,8 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
 	lua_register(L, "l_getMacroFactor", l_getMacroFactor);
 	lua_register(L, "l_getTimeResolution", l_getTimeResolution);
 	lua_register(L, "l_getMersenneFloat", l_getMersenneFloat);
+	lua_register(L, "l_getRandomFloat", l_getMersenneFloat);
+	lua_register(L, "l_getRandomInteger", l_getMersenneInteger);
 	lua_register(L, "l_getMersenneInteger", l_getMersenneInteger);
 	lua_register(L, "l_getEnvironmentSize", l_getEnvironmentSize);
 	lua_register(L, "l_modifyMap", l_modifyMap);
@@ -155,6 +158,7 @@ AutonLUA::~AutonLUA(){
  */
 EventQueue::iEvent* AutonLUA::handleEvent(EventQueue::eEvent *event)
 {
+	if (removed) return NULL;
 
 	if (event->targetID == 0 || event->targetID == ID)
 	{
@@ -176,6 +180,7 @@ EventQueue::iEvent* AutonLUA::handleEvent(EventQueue::eEvent *event)
 
 		ievent->id = ID::generateEventID();
 		ievent->desc = "";
+		ievent->originID = ID;
 
 		return ievent;
 	} else
@@ -192,8 +197,9 @@ EventQueue::iEvent* AutonLUA::handleEvent(EventQueue::eEvent *event)
  */
 EventQueue::eEvent* AutonLUA::initEvent()
 {
-	if(nofile)
-		return NULL;
+	if(removed) return NULL;
+
+	if(nofile) return NULL;
 
 	lua_settop(L,0);
 
@@ -274,6 +280,7 @@ EventQueue::eEvent* AutonLUA::initEvent()
  */
 void AutonLUA::processFunction(EventQueue::dataEvent *devent, double time, double x, double y, double &zvalue, double &duration)
 {
+	if(removed) return;
 	//Output::Inst()->ppprintf("X and Y is = %f,%f", 1.,1.);
 	//zvalue = 1;
 	//duration =0;
@@ -307,6 +314,12 @@ void AutonLUA::processFunction(EventQueue::dataEvent *devent, double time, doubl
 	//Output::Inst()->ppprintf("zvalue: %f, duration %f", zvalue, duration);
 }
 
+void AutonLUA::setRemoved()
+{
+	removed = true;
+	GridMovement::removePos(posX, posY, ID);
+}
+
 /**
  * Handler for internal events.
  * Will send all relevant event data to the LUA script which will then
@@ -316,8 +329,10 @@ void AutonLUA::processFunction(EventQueue::dataEvent *devent, double time, doubl
  * @return external event.
  */
 EventQueue::eEvent* AutonLUA::actOnEvent(EventQueue::iEvent *ievent){
-	if(nofile)
-		return NULL;
+
+	if(removed) return NULL;
+
+	if(nofile) return NULL;
 
 
 	//If the event isn't broadcast and the targetID is not mine
@@ -736,6 +751,8 @@ int AutonLUA::l_removeAuton(lua_State *L)
 	int id = lua_tonumber(L, -1);
 	bool removed = Doctor::removeAuton(id);
 	lua_pushboolean(L, removed);
+
+	return 1;
 }
 
 int AutonLUA::luapanic(lua_State *L)

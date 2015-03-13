@@ -64,16 +64,16 @@ class AutonLUA : public Auton
 		static int l_getTimeResolution(lua_State *L);
 		static int l_getMersenneFloat(lua_State *L);
 		static int l_getMersenneInteger(lua_State *L);
-		static int l_getEnvironmentSize(lua_State *L);	
-        static int l_modifyMap(lua_State *L);
-        static int l_checkMap(lua_State *L);
-        static int l_checkPosition(lua_State *L);
-        static int l_updatePosition(lua_State *L);
-        static int l_checkCollision(lua_State *L);
-        static int l_scanRadial(lua_State *L);
-        static int l_gridMove(lua_State *L);
-        static int l_stopSimulation(lua_State *L);        
-        static int l_getSharedNumber(lua_State *L);
+		static int l_getEnvironmentSize(lua_State *L);
+		static int l_modifyMap(lua_State *L);
+		static int l_checkMap(lua_State *L);
+		static int l_checkPosition(lua_State *L);
+		static int l_updatePosition(lua_State *L);
+		static int l_checkCollision(lua_State *L);
+		static int l_scanRadial(lua_State *L);
+		static int l_gridMove(lua_State *L);
+		static int l_stopSimulation(lua_State *L);
+		static int l_getSharedNumber(lua_State *L);
 		static int l_addSharedNumber(lua_State *L);
 		static int l_addSharedString(lua_State *L);
 		static int l_getSharedString(lua_State *L);
@@ -83,25 +83,27 @@ class AutonLUA : public Auton
 
 		static int luapanic(lua_State *L);
 
-		void processFunction(EventQueue::dataEvent *devent, double mapRes, double x, double y, double &zvalue,
-							 double &duration);
+		void processFunction(EventQueue::dataEvent *devent, double mapRes,
+							 double x, double y,
+							 double &zvalue, double &duration);
 
-
+		void setRemoved();
 private:
-			//function to receive an event from nestene responsible for this auton, returns an internal Event 'thinking':
-			EventQueue::iEvent* handleEvent(EventQueue::eEvent* event);
-			EventQueue::eEvent* actOnEvent(EventQueue::iEvent *event);
-			//returns an event:
-			EventQueue::eEvent* initEvent();
+		//function to receive an event from nestene responsible for this auton, returns an internal Event 'thinking':
+		EventQueue::iEvent* handleEvent(EventQueue::eEvent* event);
+		EventQueue::eEvent* actOnEvent(EventQueue::iEvent *event);
+		//returns an event:
+		EventQueue::eEvent* initEvent();
 
-			void simDone();
-			double eventChance();
-			std::string filename;
-			//The LUA state:
-			lua_State* L;
-			friend class Nestene;
-            bool nofile = false;
-            void getSyncData();
+		void simDone();
+		double eventChance();
+		std::string filename;
+		//The LUA state:
+		lua_State* L;
+		friend class Nestene;
+		bool nofile;
+		bool removed;
+		void getSyncData();
 };
 
 #endif // AUTONLUA_H

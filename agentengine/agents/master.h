@@ -26,6 +26,7 @@
 #include <vector>
 #include <list>
 #include <string>
+#include <set>
 
 #include "eventqueue.h"
 #include "nestene.h"
@@ -117,6 +118,8 @@ private:
 	double areaY;
 
 	EventQueue *eventQueue;
+
+	std::set<int> removedIDs;
 
 	unsigned long long eEventInitAmount;
 	unsigned long long responseAmount;
