@@ -41,7 +41,7 @@ public:
 
 
 	static void clearGrid();
-	static void removePos(int x, int y, int id);
+    static void removePos(int id);
 private:
 
     //maps that contain the amount of agents at a givin x,y position

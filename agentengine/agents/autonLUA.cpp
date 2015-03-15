@@ -166,21 +166,21 @@ EventQueue::iEvent* AutonLUA::handleEvent(EventQueue::eEvent *event)
 
 		ievent->origin = this;
 		ievent->event = event;
-		if (event->propagationSpeed == 0 )
+        if (event->propagationSpeed == 0)
 		{
 			ievent->activationTime = Phys::getCTime() + 1;
 
 		} else
 		{
 			ievent->activationTime =
-					Phys::speedOfSound(event->origin->getPosX(),
-									   event->origin->getPosY(),
+                    Phys::speedOfSound(event->posX,
+                                       event->posY,
 									   posX, posY, event->propagationSpeed) + 1;
 		}
 
 		ievent->id = ID::generateEventID();
 		ievent->desc = "";
-		ievent->originID = ID;
+        ievent->originID = ID;
 
 		return ievent;
 	} else
@@ -255,6 +255,7 @@ EventQueue::eEvent* AutonLUA::initEvent()
 
 		sendEvent->posX = posX;
 		sendEvent->posY = posY;
+        sendEvent->originID = ID;
 
 		getSyncData();
 		return sendEvent;
@@ -266,60 +267,6 @@ EventQueue::eEvent* AutonLUA::initEvent()
 	}
 
 	return NULL;
-}
-
-/*
- * function for event processing
- * this function needs to be implemented in the target agent in order to
- * support event processing.
- * @param devent a pointer to the dataevent that needs to be processed.
- * @param time the simulation time that the event is to be processed at.
- * @param x, y target x and y position that the event is to be processed at.
- * @param zvalue, the address of the zvalue is to be written at.
- * @param duration, the address the events duration is to be written at.
- */
-void AutonLUA::processFunction(EventQueue::dataEvent *devent, double time, double x, double y, double &zvalue, double &duration)
-{
-	if(removed) return;
-	//Output::Inst()->ppprintf("X and Y is = %f,%f", 1.,1.);
-	//zvalue = 1;
-	//duration =0;
-	try{
-		lua_settop(L,0);
-
-		lua_getglobal(L, "processFunction");
-		lua_pushnumber(L, devent->originX);
-		lua_pushnumber(L, devent->originY);
-		lua_pushnumber(L, x);
-		lua_pushnumber(L, y);
-		lua_pushnumber(L,time);
-		lua_pushstring(L, devent->table);
-
-		if(lua_pcall(L,6,2,0)!=LUA_OK){
-			Output::Inst()->ppprintf("error on calling processfunction : %s\n,",
-									 lua_tostring(L,-1));
-			Output::RunEventProcessing.store(false);
-			return;
-		} else
-		{
-			zvalue = lua_tonumber(L,-2);
-			duration = lua_tonumber(L,-1);
-		}
-
-	}catch(std::exception& e)
-	{
-		Output::Inst()->ppprintf("<b><font color=\"red\">Error on processEvent..%s</font></b></>", e.what());
-		Output::RunEventProcessing.store(false);
-	}
-	//Output::Inst()->ppprintf("zvalue: %f, duration %f", zvalue, duration);
-}
-
-void AutonLUA::setRemoved()
-{
-
-	Output::Inst()->kprintf("removing agent.#.%i",ID);
-	removed = true;
-	GridMovement::removePos(posX, posY, ID);
 }
 
 /**
@@ -345,10 +292,10 @@ EventQueue::eEvent* AutonLUA::actOnEvent(EventQueue::iEvent *ievent){
 		//set the lua function:
 		lua_getglobal(L,"handleEvent");
 		//push required arguments for eventhandling to the stack:
-		lua_pushnumber(L,ievent->event->origin->getPosX());
-		lua_pushnumber(L,ievent->event->origin->getPosY());
-		//push events ID to the stack:
-		lua_pushnumber(L,ievent->event->origin->getID());
+        lua_pushnumber(L,ievent->event->posX);
+        lua_pushnumber(L,ievent->event->posY);
+        //push events origin ID to the stack:
+        lua_pushnumber(L,ievent->event->originID);
 		//push the events description string to the stack
 		lua_pushstring(L,ievent->event->desc.c_str());
 		//push the table to the stack
@@ -387,6 +334,7 @@ EventQueue::eEvent* AutonLUA::actOnEvent(EventQueue::iEvent *ievent){
 
 		sendEvent->posX = posX;
 		sendEvent->posY = posY;
+        sendEvent->originID = ID;
 
 		distroEEvent(sendEvent);
 	}
@@ -399,6 +347,60 @@ EventQueue::eEvent* AutonLUA::actOnEvent(EventQueue::iEvent *ievent){
 	delete ievent;
 	return NULL;
 
+}
+
+/*
+ * function for event processing
+ * this function needs to be implemented in the target agent in order to
+ * support event processing.
+ * @param devent a pointer to the dataevent that needs to be processed.
+ * @param time the simulation time that the event is to be processed at.
+ * @param x, y target x and y position that the event is to be processed at.
+ * @param zvalue, the address of the zvalue is to be written at.
+ * @param duration, the address the events duration is to be written at.
+ */
+void AutonLUA::processFunction(EventQueue::dataEvent *devent, double time, double x, double y, double &zvalue, double &duration)
+{
+    if(removed) return;
+    //Output::Inst()->ppprintf("X and Y is = %f,%f", 1.,1.);
+    //zvalue = 1;
+    //duration =0;
+    try{
+        lua_settop(L,0);
+
+        lua_getglobal(L, "processFunction");
+        lua_pushnumber(L, devent->originX);
+        lua_pushnumber(L, devent->originY);
+        lua_pushnumber(L, x);
+        lua_pushnumber(L, y);
+        lua_pushnumber(L,time);
+        lua_pushstring(L, devent->table);
+
+        if(lua_pcall(L,6,2,0)!=LUA_OK){
+            Output::Inst()->ppprintf("error on calling processfunction : %s\n,",
+                                     lua_tostring(L,-1));
+            Output::RunEventProcessing.store(false);
+            return;
+        } else
+        {
+            zvalue = lua_tonumber(L,-2);
+            duration = lua_tonumber(L,-1);
+        }
+
+    }catch(std::exception& e)
+    {
+        Output::Inst()->ppprintf("<b><font color=\"red\">Error on processEvent..%s</font></b></>", e.what());
+        Output::RunEventProcessing.store(false);
+    }
+    //Output::Inst()->ppprintf("zvalue: %f, duration %f", zvalue, duration);
+}
+
+void AutonLUA::setRemoved()
+{
+
+    Output::Inst()->kprintf("removing agent.#.%i",ID);
+    removed = true;
+    GridMovement::removePos(ID);
 }
 
 void AutonLUA::simDone(){

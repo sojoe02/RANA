@@ -90,6 +90,8 @@ public:
 
 	void simDone();
 
+    std::set<int> removedIDs;
+
 private:
 
 	std::vector<Nestene> nestenes;
@@ -118,8 +120,6 @@ private:
 	double areaY;
 
 	EventQueue *eventQueue;
-
-	std::set<int> removedIDs;
 
 	unsigned long long eEventInitAmount;
 	unsigned long long responseAmount;

@@ -87,7 +87,7 @@ function initiateEvent()
 		--end
 		--table = serializeTbl({strength = strength})
 		--collisionTable[1]
-		return 5000, serializeTbl({strength=strength}), "battle",collisionTable[1]
+		return 0, serializeTbl({strength=strength}), "battle",collisionTable[1]
 	end
 
 

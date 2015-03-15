@@ -66,28 +66,36 @@ void GridMovement::addPos(int x, int y, int id)
 
 }
 
-void GridMovement::removePos(int x, int y, int id)
+void GridMovement::removePos(int id)
 {
-	char buffer[64];
-	sprintf(buffer, "%i,%i",x,y);
-	std::string index = buffer;
 
-	auto posItr = posMap->find(index);
-	pList *tmp = &posItr->second;
+    for(auto posItr=posMap->begin(); posItr!=posMap->end(); ++posItr)
+    {
 
-	if(posItr != posMap->end()){
-		for(pList::iterator it=tmp->begin(); it != tmp->end(); it++ )
-		{
-			if (*it == id)
-			{
-				tmp->remove(id);
-				break;
-			}
-		}
-		if(tmp->empty()){
-			posMap->erase(posItr);
-		}
-	}
+        if(posItr != posMap->end())
+        {
+
+            pList *tmp = &posItr->second;
+
+            for(auto it=tmp->begin(); it != tmp->end(); ++it)
+            {
+                if(it != tmp->end())
+                {
+                    if(*it == id)
+                    {
+                        Output::Inst()->kprintf("remove something id'ish...%i,%i", *it,id);
+
+                        tmp->remove(id);
+                        break;
+                    }
+                }
+            }
+            //if(tmp->empty())
+            //{
+              //  posMap->erase(posItr);
+            //}
+        }
+    }
 
 }
 
@@ -98,73 +106,73 @@ void GridMovement::updatePos(int oldX, int oldY, int newX, int newY, int id)
     sprintf(buffer,"%i,%i",oldX,oldY);
     std::string index = buffer;
 
-	auto posItr = posMap->find(index);
+    auto posItr = posMap->find(index);
 
-	pList *tmp = &posItr->second;
+    pList *tmp = &posItr->second;
 
-	if(posItr != posMap->end()){
-		for(auto it=tmp->begin(); it != tmp->end(); it++ )
-		{
-			if (*it == id)
-			{
-				tmp->remove(id);
-				break;
-			}
-		}
-		if(tmp->empty()){
-			posMap->erase(posItr);
-		}
-	}
+    if(posItr != posMap->end()){
+        for(auto it=tmp->begin(); it != tmp->end(); it++ )
+        {
+            if (*it == id)
+            {
+                tmp->remove(id);
+                break;
+            }
+        }
+        if(tmp->empty()){
+            posMap->erase(posItr);
+        }
+    }
 
-	sprintf(buffer,"%i,%i",newX,newY);
-	index = buffer;
+    sprintf(buffer,"%i,%i",newX,newY);
+    index = buffer;
 
-	if(posMap->find(index) == posMap->end() )
-	{
-		pList tmp;
-		tmp.push_back(id);
-		posMap->insert(std::pair<std::string, pList >(index,tmp));
-		//Output::Inst()->kprintf("inserting %i,%i, into new List", newX, newY);
-	} else
-	{
-		pList *tmp = &posMap->find(index)->second;
-		tmp->push_back(id);
-	}
+    if(posMap->find(index) == posMap->end() )
+    {
+        pList tmp;
+        tmp.push_back(id);
+        posMap->insert(std::pair<std::string, pList >(index,tmp));
+        //Output::Inst()->kprintf("inserting %i,%i, into new List", newX, newY);
+    } else
+    {
+        pList *tmp = &posMap->find(index)->second;
+        tmp->push_back(id);
+    }
 }
 
 bool GridMovement::checkCollision(int x, int y)
 {
-	char buffer[64];
-	sprintf(buffer, "%i,%i",x,y);
-	std::string index = buffer;
+    char buffer[64];
+    sprintf(buffer, "%i,%i",x,y);
+    std::string index = buffer;
 
-	positr = posMap->find(index);
+    positr = posMap->find(index);
 
-	if(positr == posMap->end())
-	{
-		return false;
-	}else return true;
+    if(positr == posMap->end())
+    {
+        return false;
+    }else return true;
 
 }
 
 pList GridMovement::checkPosition(int x, int y)
 {
-	char buffer[64];
-	sprintf(buffer,"%i,%i",x,y);
-	std::string index = buffer;
+    char buffer[64];
+    sprintf(buffer,"%i,%i",x,y);
+    std::string index = buffer;
 
-	pList tmp;
+    pList tmp;
 
-	positr = posMap->find(index);
+    positr = posMap->find(index);
 
-	if (positr != posMap->end())
-	{
-		//Output::Inst()->kprintf("returning a list");
-		return posMap->find(index)->second;
-	}
+    if (positr != posMap->end())
+    {
+        //Output::Inst()->kprintf("returning a list");
+        return posMap->find(index)->second;
+    }
 
-	//Output::Inst()->kprintf("returning an empty list");
-	//pList somelist = posMap.find(index)->second;
+    //Output::Inst()->kprintf("returning an empty list");
+    //pList somelist = posMap.find(index)->second;
 
-	return tmp;
+    return tmp;
 }

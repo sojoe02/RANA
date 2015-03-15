@@ -87,13 +87,13 @@ class AutonLUA : public Auton
 							 double x, double y,
 							 double &zvalue, double &duration);
 
-		void setRemoved();
 private:
 		//function to receive an event from nestene responsible for this auton, returns an internal Event 'thinking':
 		EventQueue::iEvent* handleEvent(EventQueue::eEvent* event);
 		EventQueue::eEvent* actOnEvent(EventQueue::iEvent *event);
 		//returns an event:
 		EventQueue::eEvent* initEvent();
+        void setRemoved();
 
 		void simDone();
 		double eventChance();

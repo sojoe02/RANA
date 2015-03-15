@@ -35,35 +35,56 @@ The simulation core offers a number of functions that the agent can call to expa
 
 ##Api functions
 
+It is important to note that movement and map manipulation is not part of the simulation core itself, but rather the physics engine for very good reasons... email me if you want to know more.
+
+If an agent takes up more than one x,y space, you can add more than one position via l_updatePosition by providing the extra coordinates as both oldX,oldY and newX,newY, just remember to update all the positions correctly upon movement.
+
+
+
+###Output:
 
 |Function		|Arguments	|Description		|
 |:-----------------------|:-------------|:----------------------|
 |l_print		|string |Prints an html formatted string to simulation output.|
 |l_debug 	|string| Same as l_print, though the output of this can be disabled in the menu|
-|l_speedOfSound	|myX, myY, origX, origY, propspeed| Calculates the arrival microstep, for something that to propagate from origX,origY to myX,myY with the speed of propspeed *m/s*. |
-|l_currentTime	||				Returns the current microstep.|
+
+###Map:
+|:-----------------------|:-------------|:----------------------|
+|l_modifyMap	|x, y, R, G, B|	Changes the color of the map, at x,y |
+|l_checkMap		|x, y|		Returns R,G,B value of position x,y on the map (256,256,256) if the map is out of bounds|
+
+###Shared Values:
+|:-----------------------|:-------------|:----------------------|
+|l_addSharedNumber	|key, number| adds any type of 'number' to a shared hash-map, indexed by 'key' of type string|
+|l_getSharedNumber	|key| returns the value associated with key, if the key does not exist it returns "no_value"|
+|l_addSharedString	|key, string| adds a string to a shared hashmap, with 'key' of type string. E.g. this can be used to store serialized tables|
+|l_getSharedNumber	|key| returns the string associated with the 'key', if the key does not exist it returns "no_value"|
+
+###Utility:
+|:-----------------------|:-------------|:----------------------|
+|l_speedOfSound	|myX, myY, origX, origY, propspeed| Calculates the arrival microstep, for something that propagates from origX,origY to myX,myY with the speed of propspeed *m/s*. |
 |l_distance	|myX, myY, origX, origY| Calculates the amount of units between myX,myY and origX,origY|
-|l_getMacroFactor	||				Returns the macrofactor of the simulator|
-|l_getTimeResolution	||Returns the microresolution |
 |l_getMersenneFloat	|float1, float2	| Returns a 64bit float between [float1,float2[|
 |l_getMersenneInteger|uint1, uint2	| Returns a 64 signed integer between [uint1, uint2]|
 |l_getEnvironmentSize	||Returns width and height of the environment(starts at 0)|
-|l_modifyMap	|x, y, R, G, B|	Changes the color of the map, at x,y |
-|l_checkMap		|x, y|		Returns R,G,B value of position x,y on the map (256,256,256) if the map is out of bounds|
+
+
+###Simulation Variables:
+|:-----------------------|:-------------|:----------------------|
+|l_currentTime	||				Returns the current microstep.|
+|l_getMacroFactor	||				Returns the macrofactor of the simulator|
+|l_getTimeResolution	||Returns the microresolution |
+|l_getEnvironmentSize	||Returns width and height of the environment(starts at 0)|
 |l_updatePosition	|oldX, oldY, newX, newY, ID| Updates the agents position from oldX,oldY to newX,newY, in order for l_checkPosition and l_checkCollision to work the agents have use this whenever they change position|
+
+###Agent Manipulation:
 |l_checkPosition	|x, y| Returns a list of the ID's of the agents at position x,y|
 |l_checkCollision	|x, y| Returns a boolean that is true if an agent is occupying x,y|
 |l_stopSimulation	|| Tells the simulation core to stop the simulator when the next macroStep is done|
-|l_addSharedNumber	|key, value| adds any type of number(value) to a shared map, indexed 'key'|
-|l_getSharedNumber	|key| returns the value associated with key, if the key does not exist it returns "no_value"|
 |l_getAgentPath			|| returns two strings, the path of the agent(no filename) and the filename of the main lua agent file|
-|l_addAuton |x,y,z,path,filename | adds a new auton at a given x,y and z position using the path and filename given, the simulation will stop with a warning if the agent source cannot be found. Returns the ID of the new agent|
-|l_removeAuton | id | removes an agent with the given ID. Returns true or false whether it's successful| 
+|l_addAgent |x,y,z,path,filename | adds a new auton at a given x,y and z position using the path and filename given, the simulation will stop with a warning if the agent source cannot be found. Returns the ID of the new agent|
+|l_removeAgent | id | removes an agent with the given ID. Returns true or false whether it's successful|
  
-It is important to note that movement and map manipulation is not part of the simulation core itself, but rather the physics engine for very good reasons... email me if you want to know more.
-
-If an agent takes up more than one x,y space, you can add more than one position via l_updatePosition by providing the extra coordinates as both oldX,oldY and newX,newY, just remember to update all the positions correctly upon movement.
-
 #Event Processing
 
 RANA has an event processing module. 
