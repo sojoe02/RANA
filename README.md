@@ -40,40 +40,27 @@ It is important to note that movement and map manipulation is not part of the si
 If an agent takes up more than one x,y space, you can add more than one position via l_updatePosition by providing the extra coordinates as both oldX,oldY and newX,newY, just remember to update all the positions correctly upon movement.
 
 
-
-###Output:
-
 |Function		|Arguments	|Description		|
 |:-----------------------|:-------------|:----------------------|
+|**OUTPUT:**|
 |**l_print**		|*string* |Prints *string* which is an html formatted string to simulation output.|
 |**l_debug** 	|*string*| Same as l_print, though the output of this can be disabled in the menu|
-
-###Map:
-|		|	|		|
-|:-----------------------|:-------------|:----------------------|
+| **MAP:**		|	|		|
 |**l_modifyMap**	|*x, y, R, G, B*|	Changes the color of the map, at *x,y*, where *R, G* and *B* corresponds to a signed 8 bit integer,  red, green and blue |
 |**l_checkMap**		|*x, y*| Returns *R,G,B* values of position x,y on the map. Returns 256,256,256 if the map is out of bounds|
-
-###Shared Values:
-|		|	|		|
-|:-----------------------|:-------------|:----------------------|
+|**SHARED VALUES**	|	|		|
 |**l_addSharedNumber**	|*key, number*| adds *number*(64 bit float) to a shared hash-map, indexed by *key* of type string|
 |**l_getSharedNumber**	|key| returns the number associated with *key*, if *key* does not exist it returns "no_value"|
 |**l_addSharedString**	|*key, string*| adds *string* to a shared hash-map, with *key* of type string. E.g. this can be used to store serialized tables|
 |**l_getSharedNumber**	|*key*| returns the string associated with *key*, if *key* does not exist it returns "no_value"|
-
-###Utility:
-|		|	|		|
+|**UTILITY:**		|	|		|
 |:-----------------------|:-------------|:----------------------|
 |**l_speedOfSound**	|*myX, myY, origX, origY, propspeed*| Calculates the arrival microstep, for something that propagates from *origX,origY* to *myX,myY* with the speed of *propspeed* (m/s) |
 |**l_distance**	|myX, myY, origX, origY| Calculates the amount of units between myX,myY and origX,origY|
 |**l_getRandomFloat**	|*float1, float2*	| Returns a 64 bit float between [*float1,float2*[, uses Mersenne twister with a simulation central seed|
 |**l_getRandomInteger**|*int1, int2*	| Returns a 64 signed integer between [*uint1, uint2*], uses Mersenne twister with a simulation central seed|
 |**l_getEnvironmentSize**	||Returns width and height of the environment(starts at 0)|
-
-
-###Simulation Variables:
-|		|	|		|
+|SIMULATION VARIABLES:		|	|		|
 |:-----------------------|:-------------|:----------------------|
 |**l_currentTime**	||				Returns the current microstep.|
 |**l_getMacroFactor**	||				Returns the macrofactor of the simulator|
