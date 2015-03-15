@@ -63,26 +63,26 @@ If an agent takes up more than one x,y space, you can add more than one position
 |l_getSharedNumber	|key| returns the string associated with the 'key', if the key does not exist it returns "no_value"|
 
 ###Utility:
-|Function		|Arguments	|Description		|
+|		|	|		|
 |:-----------------------|:-------------|:----------------------|
-|l_speedOfSound	|myX, myY, origX, origY, propspeed| Calculates the arrival microstep, for something that propagates from origX,origY to myX,myY with the speed of propspeed *m/s*. |
-|l_distance	|myX, myY, origX, origY| Calculates the amount of units between myX,myY and origX,origY|
-|l_getMersenneFloat	|float1, float2	| Returns a 64bit float between [float1,float2[|
-|l_getMersenneInteger|uint1, uint2	| Returns a 64 signed integer between [uint1, uint2]|
-|l_getEnvironmentSize	||Returns width and height of the environment(starts at 0)|
+|**l_speedOfSound**	|*myX, myY, origX, origY, propspeed*| Calculates the arrival microstep, for something that propagates from *origX,origY* to *myX,myY* with the speed of *propspeed* (m/s) |
+|**l_distance	|myX, myY, origX, origY| Calculates the amount of units between myX,myY and origX,origY|
+|**l_getMersenneFloat**	|*float1, float2*	| Returns a 64 bit float between [*float1,float2*[|
+|**l_getMersenneInteger**|*int1, int2*	| Returns a 64 signed integer between [*uint1, uint2*]|
+|**l_getEnvironmentSize**	||Returns width and height of the environment(starts at 0)|
 
 
 ###Simulation Variables:
-|Function		|Arguments	|Description		|
+|		|	|		|
 |:-----------------------|:-------------|:----------------------|
-|l_currentTime	||				Returns the current microstep.|
-|l_getMacroFactor	||				Returns the macrofactor of the simulator|
-|l_getTimeResolution	||Returns the microresolution |
-|l_getEnvironmentSize	||Returns width and height of the environment(starts at 0)|
-|l_updatePosition	|oldX, oldY, newX, newY, ID| Updates the agents position from oldX,oldY to newX,newY, in order for l_checkPosition and l_checkCollision to work the agents have use this whenever they change position|
+|**l_currentTime**	||				Returns the current microstep.|
+|**l_getMacroFactor**	||				Returns the macrofactor of the simulator|
+|**l_getTimeResolution**	||Returns the microresolution |
+|**l_getEnvironmentSize**	||Returns width and height of the environment(starts at 0)|
+|**l_updatePosition**	|*oldX, oldY, newX, newY, ID*| Updates the agents position from *oldX,oldY* to *newX,newY* in order for **l_checkPosition** and **l_checkCollision** to work the agents have use this whenever they change position|
 
 ###Agent Manipulation:
-|Function		|Arguments	|Description		|
+|	|	|		|
 |l_checkPosition	|x, y| Returns a list of the ID's of the agents at position x,y|
 |l_checkCollision	|x, y| Returns a boolean that is true if an agent is occupying x,y|
 |l_stopSimulation	|| Tells the simulation core to stop the simulator when the next macroStep is done|
