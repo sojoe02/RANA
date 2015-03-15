@@ -108,8 +108,6 @@ function initiateEvent()
 		return 0, serializeTbl({strength=strength}), "battle",collisionTable[1]
 	end
 
-
-
 	return 0,0,0,"null"
 end
 
@@ -131,7 +129,6 @@ function scanField(radius)
 
 			if i ~=0 and j ~=0 then
 				if l_checkCollision(posX+i, posY+j) then
-
 					collisionTable = l_checkPosition(posX+i, posY+j)
 					return collisionTable
 
@@ -161,7 +158,6 @@ function move(newPosX, newPosY)
 	if newPosY > mapHeight then
 		newPosY = 0
 	end
-
 	--l_debug("moving from X"..posX..", Y"..posY)
 	l_updatePosition(posX, posY, newPosX, newPosY,ID)
 	posX = newPosX

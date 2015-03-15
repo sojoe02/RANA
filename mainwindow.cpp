@@ -80,7 +80,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
 
-    versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.3.9.THREAD:0.5.3");
+    versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.3.10.THREAD:0.5.3");
 
 	ui->statusBar->addWidget(new QLabel(versionString));
 	ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
@@ -126,7 +126,7 @@ void MainWindow::on_generateButton_clicked()
 		//mapItem->setZValue(1);
 
 		Phys::setScale(ui->scaleDoubleSpinBox->value());
-		Output::Inst()->kprintf("Setting map scale to %f", Phys::getScale());
+        //Output::Inst()->kprintf("Setting map scale to %f", Phys::getScale());
 
         ui->progressBar->setValue(0);
         QFile path(ui->agentPathLineEdit->text());
@@ -148,8 +148,8 @@ void MainWindow::on_generateButton_clicked()
 			control->generateEnvironment(mapImage, 1,timeRes, macroRes,
                                          agentAmount,stringPath);
 
-			Output::Inst()->kprintf("generating environment, %d, %s",
-                                    agentAmount, stringPath.c_str());
+            //Output::Inst()->kprintf("generating environment, %d, %s",
+                          //          agentAmount, stringPath.c_str());
             ui->runButton->setEnabled(true);
 
         } else

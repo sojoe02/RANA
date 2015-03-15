@@ -35,8 +35,9 @@ function initAuton(x, y, id, macroFactor, timeResolution)
 	macroF = macroFactor
 	timeRes = timeResolution
 
-	l_print("Agent #: " .. id .. " has been initialized")
+	l_print("Controller Agent with ID: " .. id .. " has been initialized")
 
+	mapWidth, mapHeight = l_getEnvironmentSize()
 	path, filename = l_getAgentPath()
 
 	l_print("my path is"..path.."/"..filename)
@@ -46,11 +47,6 @@ end
 -- Event Handling:
 function handleEvent(origX, origY, origID, origDesc, origTable)
 	--make a response:
-	if origDesc == "killme" then
-		l_debug("Killing agent with ID" .. origID) 
-		l_removeAgent(origID)
-	end
-
 	return 0,0,0,"null"
 
 end	
@@ -59,11 +55,8 @@ end
 function initiateEvent()
 
 	if(l_getMersenneInteger(1,1000) == 1) then
-
-
-
 		--l_debug("Generating new agent: "..path.." : "..filename)
-		local new_id = l_addAuton(l_getMersenneInteger(1,200), l_getMersenneInteger(1,200),0,path, [[09_fighter.lua]])
+		local new_id = l_addAuton(l_getMersenneInteger(1,mapWidth), l_getMersenneInteger(1,mapHeight),0,path, [[09_fighter.lua]])
 		l_debug("Agent has ID".. new_id)
 	end
 
@@ -80,38 +73,3 @@ function simDone()
 	l_debug("Agent #: " .. ID .. " is done\n")
 end
 
-
-	function serializeTbl(val, name, depth)
-		--skipnewlines = skipnewlines or false
-		depth = depth or 0
-		local tbl = string.rep("", depth)
-		if name then
-			if type(name)=="number" then
-				namestr = "["..name.."]"
-				tbl= tbl..namestr.."="
-			elseif name then 
-				tbl = tbl ..name.."="
-				--else tbl = tbl .. "systbl="
-			end	
-		end
-		if type(val) == "table" then
-			tbl = tbl .. "{"
-			local i = 1
-			for k, v in pairs(val) do
-				if i ~= 1 then
-					tbl = tbl .. ","
-				end	
-				tbl = tbl .. serializeTbl(v,k, depth +1) 
-				i = i + 1;
-			end
-			tbl = tbl .. string.rep(" ", depth) ..  "}"
-		elseif type(val) == "number" then
-			tbl = tbl .. tostring(val) 
-		elseif type(val) == "string" then
-			tbl = tbl .. string.format("%q", val)
-		else
-			tbl = tbl .. "[datatype not serializable:".. type(val) .. "]"
-		end
-
-		return tbl
-	end
