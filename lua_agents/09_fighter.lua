@@ -71,16 +71,16 @@ function handleEvent(origX, origY, origID, origDesc, origTable)
 
 			for j=0,5 do
 
-				if l_getRandomInteger(0,j+1) == 1 then
+				if l_getRandomInteger(0,j+i) == 0 then
 					l_modifyMap(posX+i, posY+j, 200, 0,0);
 				end
-				if l_getRandomInteger(0,j+1) == 1 then
+				if l_getRandomInteger(0,j+i) == 0 then
 					l_modifyMap(posX-i, posY+j, 200, 0,0);
 				end
-				if l_getRandomInteger(0,j+1) == 1 then
+				if l_getRandomInteger(0,j+i) == 0 then
 					l_modifyMap(posX-i, posY-j, 200, 0,0);
 				end
-				if l_getRandomInteger(0,j+1) == 1 then
+				if l_getRandomInteger(0,j+i) == 0 then
 					l_modifyMap(posX+i, posY-j, 200, 0,0);
 				end
 
