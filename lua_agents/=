@@ -49,9 +49,9 @@ function handleEvent(origX, origY, origID, origDesc, origTable)
 	--make a response:
 	if origDesc == "battle" then
 
-		load("stable="..origTable)()
+		l_print("Figther "..ID.."(strength"..strength..") initiates battle with agent "..origID.." strength("..stable.strength..")")
 
-		l_print("Fighter "..ID.."(strength:"..strength..") initiates battle with "..origID.." (strength:"..stable.strength..")")
+		load("stable="..origTable)()
 
 		if strength >= stable.strength then
 			l_removeAgent(origID)
@@ -64,9 +64,10 @@ function handleEvent(origX, origY, origID, origDesc, origTable)
 			else 
 				l_removeAgent(ID)
 			end
-		end	
-
+		end
+		
 		--leave a blood splatter:
+		--
 		local radius = 3
 		local spread = 0
 		

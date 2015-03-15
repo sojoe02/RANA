@@ -144,7 +144,7 @@ void Master::populateSystem(int listenerSize,
 	for(auto itr = LUAVector.begin(); itr != LUAVector.end(); ++itr, j++)
 	{
 		Nestene *nestene = &nestenes.at(j);
-		Output::Inst()->kdebug("Working not here %i", *itr);
+        //Output::Inst()->kdebug("Working not here %i", *itr);
 		nestene->populate(0,0,*itr,filename);
 	}
 	/*
