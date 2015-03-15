@@ -48,7 +48,7 @@ If an agent takes up more than one x,y space, you can add more than one position
 |**l_print**		|*string* |Prints *string* which is an html formatted string to simulation output.|
 |**l_debug** 	|*string*| Same as l_print, though the output of this can be disabled in the menu|
 
-### MAP:
+### Map:
 
 |		|	|		|
 |:-----------------------|:-------------|:----------------------|
