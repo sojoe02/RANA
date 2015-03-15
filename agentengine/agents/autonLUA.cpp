@@ -74,6 +74,7 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
 	lua_register(L, "l_checkMap", l_checkMap);
 	lua_register(L, "l_checkPosition", l_checkPosition);
 	lua_register(L, "l_updatePosition", l_updatePosition);
+	lua_register(L, "l_addPosition", l_addPosition);
 	lua_register(L, "l_checkCollision", l_checkCollision);
 	lua_register(L, "l_gridMove", l_gridMove);
 	lua_register(L, "l_stopSimulation", l_stopSimulation);
@@ -605,6 +606,17 @@ int AutonLUA::l_updatePosition(lua_State *L)
 		GridMovement::updatePos(oldX, oldY, newX, newY, id);
 
 	return 0;
+}
+
+int AutonLUA::l_addPosition(lua_State *L)
+{
+
+    int x = lua_tonumber(L, -3);
+    int y = lua_tonumber(L, -2);
+    int id = lua_tonumber(L, -1);
+    GridMovement::addPos(x, y, id);
+
+    return 0;
 }
 
 int AutonLUA::l_checkCollision(lua_State *L)

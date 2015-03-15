@@ -67,6 +67,8 @@ class AutonLUA : public Auton
 		static int l_getEnvironmentSize(lua_State *L);
 		static int l_modifyMap(lua_State *L);
 		static int l_checkMap(lua_State *L);
+        static int l_addPosition(lua_State *L);
+
 		static int l_checkPosition(lua_State *L);
 		static int l_updatePosition(lua_State *L);
 		static int l_checkCollision(lua_State *L);
