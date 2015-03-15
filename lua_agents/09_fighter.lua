@@ -67,20 +67,24 @@ function handleEvent(origX, origY, origID, origDesc, origTable)
 		end
 		
 		--leave a blood splatter:
-		for i=0,5 do
+		--
+		local radius = 3
+		local spread = 0
+		
+		for i=0,radius do
 
-			for j=0,5 do
+			for j=0,radius do
 
-				if l_getRandomInteger(0,j+i) == 0 then
+				if l_getRandomInteger(0,j+i) <= spread then
 					l_modifyMap(posX+i, posY+j, 200, 0,0);
 				end
-				if l_getRandomInteger(0,j+i) == 0 then
+				if l_getRandomInteger(0,j+i) <= spread then
 					l_modifyMap(posX-i, posY+j, 200, 0,0);
 				end
-				if l_getRandomInteger(0,j+i) == 0 then
+				if l_getRandomInteger(0,j+i) <= spread then
 					l_modifyMap(posX-i, posY-j, 200, 0,0);
 				end
-				if l_getRandomInteger(0,j+i) == 0 then
+				if l_getRandomInteger(0,j+i) <= spread then
 					l_modifyMap(posX+i, posY-j, 200, 0,0);
 				end
 
