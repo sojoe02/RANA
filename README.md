@@ -55,7 +55,7 @@ If an agent takes up more than one x,y space, you can add more than one position
 |l_checkMap		|x, y|		Returns R,G,B value of position x,y on the map (256,256,256) if the map is out of bounds|
 
 ###Shared Values:
-|Function		|Arguments	|Description		|
+|		|	|		|
 |:-----------------------|:-------------|:----------------------|
 |l_addSharedNumber	|key, number| adds any type of 'number' to a shared hash-map, indexed by 'key' of type string|
 |l_getSharedNumber	|key| returns the value associated with key, if the key does not exist it returns "no_value"|
