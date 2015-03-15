@@ -49,11 +49,13 @@ If an agent takes up more than one x,y space, you can add more than one position
 |l_debug 	|string| Same as l_print, though the output of this can be disabled in the menu|
 
 ###Map:
+|Function		|Arguments	|Description		|
 |:-----------------------|:-------------|:----------------------|
 |l_modifyMap	|x, y, R, G, B|	Changes the color of the map, at x,y |
 |l_checkMap		|x, y|		Returns R,G,B value of position x,y on the map (256,256,256) if the map is out of bounds|
 
 ###Shared Values:
+|Function		|Arguments	|Description		|
 |:-----------------------|:-------------|:----------------------|
 |l_addSharedNumber	|key, number| adds any type of 'number' to a shared hash-map, indexed by 'key' of type string|
 |l_getSharedNumber	|key| returns the value associated with key, if the key does not exist it returns "no_value"|
@@ -61,6 +63,7 @@ If an agent takes up more than one x,y space, you can add more than one position
 |l_getSharedNumber	|key| returns the string associated with the 'key', if the key does not exist it returns "no_value"|
 
 ###Utility:
+|Function		|Arguments	|Description		|
 |:-----------------------|:-------------|:----------------------|
 |l_speedOfSound	|myX, myY, origX, origY, propspeed| Calculates the arrival microstep, for something that propagates from origX,origY to myX,myY with the speed of propspeed *m/s*. |
 |l_distance	|myX, myY, origX, origY| Calculates the amount of units between myX,myY and origX,origY|
@@ -70,6 +73,7 @@ If an agent takes up more than one x,y space, you can add more than one position
 
 
 ###Simulation Variables:
+|Function		|Arguments	|Description		|
 |:-----------------------|:-------------|:----------------------|
 |l_currentTime	||				Returns the current microstep.|
 |l_getMacroFactor	||				Returns the macrofactor of the simulator|
@@ -78,6 +82,7 @@ If an agent takes up more than one x,y space, you can add more than one position
 |l_updatePosition	|oldX, oldY, newX, newY, ID| Updates the agents position from oldX,oldY to newX,newY, in order for l_checkPosition and l_checkCollision to work the agents have use this whenever they change position|
 
 ###Agent Manipulation:
+|Function		|Arguments	|Description		|
 |l_checkPosition	|x, y| Returns a list of the ID's of the agents at position x,y|
 |l_checkCollision	|x, y| Returns a boolean that is true if an agent is occupying x,y|
 |l_stopSimulation	|| Tells the simulation core to stop the simulator when the next macroStep is done|
