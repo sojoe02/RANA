@@ -79,9 +79,7 @@ If an agent takes up more than one x,y space, you can add more than one position
 |**l_getMacroFactor**	||				Returns the macrofactor of the simulator|
 |**l_getTimeResolution**	||Returns the microresolution |
 |**l_getEnvironmentSize**	||Returns width and height of the environment(starts at 0)|
-|**l_updatePosition**	|*oldX, oldY, newX, newY, ID*| Updates a position from *oldX,oldY* to *newX,newY* in order for **l_checkPosition** and **l_checkCollision** to work the agents have use this whenever they change position|
-|**l_addPosition**| *x,y,ID* | Adds a position to the collision table, with an agent ID. This can be used multiple times to occupy more than one square.|
-**l_getAgentPath**			|| returns two strings, the path of the agent(no filename) and the filename of the main lua agent file|
+|**l_getAgentPath**			|| returns two strings, the path of the agent(no filename) and the filename of the main lua agent file|
 
 ###Collision Detection:
 	|	|		|
