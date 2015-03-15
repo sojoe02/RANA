@@ -169,6 +169,7 @@ void Nestene::initPhase(double macroResolution, unsigned long long tmu){
             master->receiveInitEEventPtr(eevent);
         }
     }
+
     for(itLUAs = LUAs.begin(); itLUAs !=LUAs.end(); itLUAs++){
         EventQueue::eEvent* eevent = itLUAs->second->initEvent();
         if(eevent != NULL){

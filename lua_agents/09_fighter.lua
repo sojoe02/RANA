@@ -65,6 +65,28 @@ function handleEvent(origX, origY, origID, origDesc, origTable)
 				l_removeAgent(ID)
 			end
 		end
+		
+		--leave a blood splatter:
+		for i=0,5 do
+
+			for j=0,5 do
+
+				if l_getRandomInteger(0,j+1) == 1 then
+					l_modifyMap(posX+i, posY+j, 200, 0,0);
+				end
+				if l_getRandomInteger(0,j+1) == 1 then
+					l_modifyMap(posX-i, posY+j, 200, 0,0);
+				end
+				if l_getRandomInteger(0,j+1) == 1 then
+					l_modifyMap(posX-i, posY-j, 200, 0,0);
+				end
+				if l_getRandomInteger(0,j+1) == 1 then
+					l_modifyMap(posX+i, posY-j, 200, 0,0);
+				end
+
+			end
+		end
+
 
 
 	end
@@ -78,7 +100,7 @@ function initiateEvent()
 	move() 
 	--check for collisions:
 	local collisionTable = scanField(10)
-	
+
 	if #collisionTable ~= 0 then
 		l_debug("Agent "..ID.."collides with: ".. collisionTable[1])
 
@@ -169,29 +191,29 @@ function serializeTbl(val, name, depth)
 		if type(name)=="number" then
 			namestr = "["..name.."]"
 			tbl= tbl..namestr.."="
-			elseif name then 
-				tbl = tbl ..name.."="
-				--else tbl = tbl .. "systbl="
+		elseif name then 
+			tbl = tbl ..name.."="
+			--else tbl = tbl .. "systbl="
+		end	
+	end
+	if type(val) == "table" then
+		tbl = tbl .. "{"
+		local i = 1
+		for k, v in pairs(val) do
+			if i ~= 1 then
+				tbl = tbl .. ","
 			end	
+			tbl = tbl .. serializeTbl(v,k, depth +1) 
+			i = i + 1
 		end
-		if type(val) == "table" then
-			tbl = tbl .. "{"
-			local i = 1
-			for k, v in pairs(val) do
-				if i ~= 1 then
-					tbl = tbl .. ","
-				end	
-				tbl = tbl .. serializeTbl(v,k, depth +1) 
-				i = i + 1
-			end
-			tbl = tbl .. string.rep(" ", depth) ..  "}"
-			elseif type(val) == "number" then
-				tbl = tbl .. tostring(val) 
-				elseif type(val) == "string" then
-					tbl = tbl .. string.format("%q", val)
-				else
-					tbl = tbl .. "[datatype not serializable:".. type(val) .. "]"
-				end
+		tbl = tbl .. string.rep(" ", depth) ..  "}"
+	elseif type(val) == "number" then
+		tbl = tbl .. tostring(val) 
+	elseif type(val) == "string" then
+		tbl = tbl .. string.format("%q", val)
+	else
+		tbl = tbl .. "[datatype not serializable:".. type(val) .. "]"
+	end
 
-				return tbl
-			end
+	return tbl
+end

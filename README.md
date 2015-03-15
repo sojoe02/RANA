@@ -49,7 +49,6 @@ If an agent takes up more than one x,y space, you can add more than one position
 |**l_debug** 	|*string*| Same as l_print, though the output of this can be disabled in the menu|
 
 ###Map:
-|Function		|Arguments	|Description		|
 |:-----------------------|:-------------|:----------------------|
 |**l_modifyMap**	|*x, y, R, G, B*|	Changes the color of the map, at *x,y*, where *R, G* and *B* corresponds to a signed 8 bit integer,  red, green and blue |
 |**l_checkMap**		|*x, y*| Returns *R,G,B* values of position x,y on the map. Returns 256,256,256 if the map is out of bounds|

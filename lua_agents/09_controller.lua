@@ -63,7 +63,7 @@ function initiateEvent()
 
 
 		--l_debug("Generating new agent: "..path.." : "..filename)
-		local new_id = l_addAuton(l_getMersenneInteger(1,200), l_getMersenneInteger(1,200),0,path, [[09_mover.lua]])
+		local new_id = l_addAuton(l_getMersenneInteger(1,200), l_getMersenneInteger(1,200),0,path, [[09_fighter.lua]])
 		l_debug("Agent has ID".. new_id)
 	end
 
