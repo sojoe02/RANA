@@ -83,14 +83,14 @@ public slots:
 	void on_simDone();
 
 signals:
-    void runOperate();
+	void startDoWork(AgentDomain *agentDomain, unsigned long long runtime);
 
 private:
 
     AgentDomain *agentDomain;
     MainWindow *mainwindow;
     Runner *runner;
-    QThread *runThread;
+	QThread runThread;
 
     bool running;
     bool generated;

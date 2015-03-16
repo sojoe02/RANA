@@ -27,23 +27,29 @@ Control::Control(MainWindow* mainwindow)
     : agentDomain(NULL), mainwindow(mainwindow),
       running(false), generated(false), stopped(true)
 {
-    runner = new Runner();
-	QObject::connect(runner, SIGNAL(simulationDone()), this, SLOT(on_simDone()));
+	runner = new Runner();
+	runner->moveToThread(&runThread);
+
+	connect(this, &Control::startDoWork, runner, &Runner::doWork);
+	connect(&runThread, &QThread::finished, runner, &QObject::deleteLater);
+	connect(runner, &Runner::simulationDone, this, &Control::on_simDone);
+	runThread.start();
 }
 
 Control::~Control()
 {
-	runner->quit();
-	runner->wait();
+	runThread.quit();
+	runThread.wait();
 }
 
 void Control::runSimulation(unsigned long long runTime)
 {
     running = true;
 	Output::SimRunning.store(true);
-    mainwindow->changeRunButton("Stop");
-    runner->setParameters(agentDomain, runTime);
-    runner->start();
+	mainwindow->changeRunButton("Stop");
+	emit startDoWork(agentDomain, runTime);
+	//runner->setParameters(agentDomain, runTime);
+	//runThread->start();
 }
 
 void Control::stopSimulation()

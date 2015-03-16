@@ -22,29 +22,25 @@
 #ifndef RUNNER_H
 #define RUNNER_H
 
-#include <QThread>
+#include <QObject>
 #include "agentengine/agentdomain.h"
 
 class AgentDomain;
-class Runner : public QThread
+class Runner : public QObject
 {
     Q_OBJECT
 public:
     explicit Runner();
-    void setParameters(AgentDomain *agentDomain, unsigned long long runTime);
 
 signals:
-    void simulationDone();
 
-protected:
-    void run();
+	void simulationDone();
 
 public slots:
 
+	void doWork(AgentDomain *agentDomain, unsigned long long runTime);
+
 private:
-    AgentDomain *agentDomain;
-    unsigned long long runTime;
-    //void startSimulation(AgentDomain *agentdomain, unsigned long long runTime);
 
 };
 
