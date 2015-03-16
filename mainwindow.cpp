@@ -80,7 +80,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
 
-    versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.3.10.THREAD:0.5.3");
+	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.3.11.THREAD:0.5.3");
 
 	ui->statusBar->addWidget(new QLabel(versionString));
 	ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
@@ -384,7 +384,10 @@ void MainWindow::on_updateMap(INFOLIST infolist)
             gfxItem->setX(x);
             gfxItem->setY(y);
         }
-    }
+	}
+
+	ui->graphicsView->viewport()->update();
+
 }
 
 void MainWindow::addGraphicAuton(int Id, int posX, int posY)

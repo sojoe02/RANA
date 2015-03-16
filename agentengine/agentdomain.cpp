@@ -219,7 +219,7 @@ void AgentDomain::runSimulation(int time)
 
         //		//Update the status and progress bar screens:
 		end = steady_clock::now();
-        if(duration_cast<milliseconds>(end-start).count() > 50)
+		if(duration_cast<milliseconds>(end-start).count() > 100)
         {
             masteragent->printStatus();
             Output::Inst()->progressBar(cMacroStep,iterations);

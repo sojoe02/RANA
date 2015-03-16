@@ -38,6 +38,7 @@ function initAuton(x, y, id, macroFactor, timeResolution)
 	l_print("Controller Agent with ID: " .. id .. " has been initialized")
 
 	mapWidth, mapHeight = l_getEnvironmentSize()
+	
 	path, filename = l_getAgentPath()
 
 	l_print("my path is"..path.."/"..filename)
@@ -55,8 +56,10 @@ end
 function initiateEvent()
 
 	if(l_getMersenneInteger(1,1000) == 1) then
+		
 		--l_debug("Generating new agent: "..path.." : "..filename)
 		local new_id = l_addAuton(l_getMersenneInteger(1,mapWidth), l_getMersenneInteger(1,mapHeight),0,path, [[09_fighter.lua]])
+
 		l_debug("Agent has ID".. new_id)
 	end
 

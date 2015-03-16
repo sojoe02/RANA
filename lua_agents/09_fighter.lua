@@ -53,9 +53,9 @@ function handleEvent(origX, origY, origID, origDesc, origTable)
 
 		l_print("Fighter "..ID.."(strength:"..strength..") initiates battle with "..origID.." (strength:"..stable.strength..")")
 
-		if strength >= stable.strength then
+		if strength > stable.strength then
 			l_removeAgent(origID)
-		elseif strength <= stable.strength then
+		elseif strength < stable.strength then
 			l_removeAgent(ID)
 		else
 			local dice = l_getRandomInteger(0,1)

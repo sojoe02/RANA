@@ -56,14 +56,16 @@ If an agent takes up more than one x,y space, you can add more than one position
 |**l_checkMap**|*x,y*| Returns the 8 bit signed(0-255) R,G and B values of a specific section of the map. Will return 256,256,256 if the position checked is out of bounds.|
 
 ###Shared Values:
+
 |		|	|		|
 |:-----------------------|:-------------|:----------------------|
 |**l_addSharedNumber**	|*key, number*| adds *number*(64 bit float) to a shared hash-map, indexed by *key* of type string|
 |**l_getSharedNumber**	|key| returns the number associated with *key*, if *key* does not exist it returns "no_value"|
 |**l_addSharedString**	|*key, string*| adds *string* to a shared hash-map, with *key* of type string. E.g. this can be used to store serialized tables|
-|**l_getSharedNumber**	|*key*| returns the string associated with *key*, if *key* does not exist it returns "no_value"|
+|**l_getSharedString**	|*key*| returns the string associated with *key*, if *key* does not exist it returns "no_value"|
 
 ###Utility:
+
 |		|	|		|
 |:-----------------------|:-------------|:----------------------|
 |**l_speedOfSound**	|*myX, myY, origX, origY, propspeed*| Calculates the arrival microstep, for something that propagates from *origX,origY* to *myX,myY* with the speed of *propspeed* (m/s) |
@@ -74,6 +76,7 @@ If an agent takes up more than one x,y space, you can add more than one position
 
 
 ###Simulation Variables:
+
 |		|	|		|
 |:-----------------------|:-------------|:----------------------|
 |**l_currentTime**	||Returns the current microstep.|
@@ -83,6 +86,7 @@ If an agent takes up more than one x,y space, you can add more than one position
 |**l_getAgentPath**			||Returns two strings, the path of the agent(no filename) and the filename of the main lua agent file|
 
 ###Collision Detection:
+
 	|	|		|
 |:-----------------------|:-------------|:----------------------|
 |**l_addPosition**| *x,y,ID* | Adds an *x,y* position to the collision table, with an agent *ID*. This can be used multiple times to occupy more than one square.|
@@ -91,12 +95,13 @@ If an agent takes up more than one x,y space, you can add more than one position
 |**l_checkCollision**	|*x, y*| Returns a boolean that is true if an agent is occupying x,y|
 
 ###Simulation Manipulation:
+
 |	|	|		|
 |:-----------------------|:-------------|:----------------------|
-|**l_stopSimulation**	|| Tells the simulation core to stop the simulator when the next macroStep is done|
-|**l_addAgent** |*x,y,z,path,filename* | Adds a new auton at a given *x,y* and *z* position using *path* and *filename*, the simulation will stop with a warning if the agent source cannot be found. Returns the id of the new agent|
-|**l_removeAgent** | *id* | Removes agent *id*. Returns true or false whether it's successful. This will also clear the Agent from the collision table|
- 
+|**l_stopSimulation**	|| Tells the simulation core to stop the current simulation when the next macroStep is done|
+|**l_addAgent** |*x,y,z,path,filename* | Adds a new agent at a given *x,y* and *z* position using *path* and *filename*, the simulation will stop with a warning if the agent source cannot be found. Returns the id of the new agent|
+|**l_removeAgent** | *id* | Removes agent with *id*. Returns true or false depending on whether removal is successful. This will also clear the Agent from the collision table| 
+
 #Event Processing
 
 RANA has an event processing module. 

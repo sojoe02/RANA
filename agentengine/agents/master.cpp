@@ -37,8 +37,8 @@
 #include "output.h"
 
     Master::Master()
-:nesteneIndex(0), eEventInitAmount(0), responseAmount(0),
-	  externalDistroAmount(0), tmu(0),threads(0)
+:nesteneIndex(0), threads(0) ,eEventInitAmount(0), responseAmount(0),
+	  externalDistroAmount(0), tmu(0)
 {
 	//Output::Inst()->kprintf("Initiating master\n");
 	eventQueue = new EventQueue;
