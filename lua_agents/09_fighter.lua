@@ -66,7 +66,7 @@ function handleEvent(origX, origY, origID, origDesc, origTable)
 			end
 		end	
 
-		--leave a blood splatter:
+		--leave a blood spatter:
 		local radius = 3
 		local spread = 0
 		
