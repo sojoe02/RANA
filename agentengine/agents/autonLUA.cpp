@@ -54,6 +54,20 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
 	 */
 	L = luaL_newstate();
 	luaL_openlibs(L);
+
+
+	/* Register the path to the Rana specific lua modules
+	 *
+	 */
+	lua_getglobal(L, "package");
+	lua_getfield(L, -1, "path");
+	std::string cur_path = lua_tostring(L, -1);
+	cur_path.append(";lua_modules/?.lua");
+	lua_pop(L,1);
+	lua_pushstring(L, cur_path.c_str());
+	lua_setfield(L,-2,"path");
+	lua_pop(L,1);
+
 	/*
 	 * Register all the API functions:
 	 */

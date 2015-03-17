@@ -76,6 +76,14 @@ HEADERS  += mainwindow.h \
 FORMS    += mainwindow.ui \
 	eventdialog.ui
 
+#copy the lua modules to the correct directory, "wherever" Qmake puts it
+copydata.commands = $(COPY_DIR) $$PWD/lua_modules $$OUT_PWD
+first.depends = $(first) copydata
+export(first.depends)
+export(copydata.commands)
+QMAKE_EXTRA_TARGETS += first copydata
+#
+
 QMAKE_CXXFLAGS += -std=c++1y -Wno-unused-variable -Wno-unused-parameter
 CONFIG += stdlib=libc++ lc++abi o3
 
