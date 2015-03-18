@@ -299,17 +299,25 @@ void EventQueue::saveEEventData(std::string name, std::string luaFileName,
 	dataInfo.areaX = Phys::getEnvX();
 	dataInfo.areaY = Phys::getEnvY();
 	dataInfo.mapResolution = Phys::getScale();
+	//
+
 
 	//Output::Inst()->kprintf("\nsize stuff %d \n", dataInfo.areaX);
 
 	file.write(reinterpret_cast<char*>(&dataInfo),sizeof(dataInfo));
 
 	//then save all the external events:
-	for(eMapIt = eMap->begin(); eMapIt != eMap->end(); ++eMapIt){
+
+	auto infoItr = agentFilenames.begin();
+
+	for(eMapIt = eMap->begin(); eMapIt != eMap->end(); ++eMapIt)
+	{
 		std::list<eEvent *> tmplist = eMapIt->second;
-		if(!tmplist.empty()){
+		if(!tmplist.empty())
+		{
 			std::list<eEvent *>::iterator tmplistItr;
-			for(tmplistItr = tmplist.begin();tmplistItr != tmplist.end();++tmplistItr){
+			for(tmplistItr = tmplist.begin();tmplistItr != tmplist.end();++tmplistItr)
+			{
 				eEvent* tmp = *tmplistItr;
 				dataEvent devent;
 				devent.id = tmp->id;
@@ -321,6 +329,13 @@ void EventQueue::saveEEventData(std::string name, std::string luaFileName,
 				devent.propagationSpeed = tmp->propagationSpeed;
 				strncpy(devent.desc,tmp->desc.c_str(),150);
 				strncpy(devent.table,tmp->table.c_str(),1024);
+				//Add the filename if it exists:
+				infoItr = agentFilenames.find(tmp->id);
+				if(infoItr != agentFilenames.end())
+				{
+					strncpy(devent.filename, infoItr->second.c_str(), 256);
+				}//else strncpy(devent.filename, std::string("").c_str(),256);
+
 				//Output::Inst()->kprintf("Event id %i \n", tmp->id);
 				file.write(reinterpret_cast<char*>(&devent),sizeof(devent));
 			}	
@@ -353,4 +368,9 @@ void EventQueue::printATmus(){
 		Output::Inst()->kprintf("%llu\n", *activeIt);							
 	}
 	Output::Inst()->kprintf("----------------\n");
+}
+
+void EventQueue::addAutonInfo(int id, std::string filename)
+{
+	agentFilenames.insert(std::pair<int, std::string>(id, filename) );
 }

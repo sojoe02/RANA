@@ -85,7 +85,7 @@ public:
 
 	void saveExternalEvents(std::string filename);
 
-	int addAuton(double x, double y, double z, std::string filename, std::string type);
+	int addAuton(double x, double y, double z, std::string path, std::string filename, std::string type);
 	bool removeAuton(int ID);
 
 	void simDone();

@@ -200,12 +200,22 @@ void EventProcessing::processBinnedEvents(double timeResolution, std::string pat
 }
 
 void EventProcessing::processEvent(EventQueue::dataEvent *event,
-								   double thresshold, double mapRes, double timeRes, std::string path)
+								   double thresshold, double mapRes, double timeRes, std::string arg_path)
 {
 	//Output::Inst()->ppprintf("doing event, id %i ", event->id);
 
 	Phys::setMacroFactor(simInfo->macroFactor);
 	Phys::setTimeRes(simInfo->timeResolution);
+
+	//figure out whether a filename was provided:
+	std::string filename = event->filename;
+	std::string path = arg_path;
+
+	if(filename.compare("NULL") != 0)
+	{
+		//build a new path 'clumsily':
+		std::string path = path.substr(0,path.find_last_of("\\/")) + filename;
+	}
 
 	AutonLUA *auton =
 			new AutonLUA(event->originID,event->originX,event->originY, 0, NULL, path);

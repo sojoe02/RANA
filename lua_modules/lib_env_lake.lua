@@ -39,7 +39,7 @@ local floodFill
 
 
 
---fetch and set functions for the 
+--fetch and set functions for the colors 
 function Environment.getColors()
 	return waterColor, shoreColor, landColor
 end
@@ -62,11 +62,11 @@ function Environment.setColors(water, shore, land)
 
 end
 
-
+--environment building function:
 function Environment.buildEnvironment()
 
-	local width = 1
-	local height = 1
+	local width
+	local height
 
 	width, height = l_getEnvironmentSize()
 

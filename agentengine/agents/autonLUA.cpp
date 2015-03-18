@@ -771,7 +771,7 @@ int AutonLUA::l_addAuton(lua_State *L)
 	std::string path = lua_tostring(L, -2);
 	std::string filename = lua_tostring(L, -1);
 
-	int id = Doctor::addLuaAuton(posX, posY, posZ, path + filename);
+	int id = Doctor::addLuaAuton(posX, posY, posZ, path, filename);
 
 	lua_pushinteger(L, id);
 

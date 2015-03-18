@@ -85,6 +85,7 @@ class EventQueue
 			int originID;
 			char desc[150];
 			char table[1024];
+			char filename[256];
 		};
 
 		struct autonInfo{
@@ -119,7 +120,10 @@ class EventQueue
 		unsigned long long getESize();
 		unsigned long long getISize();
 
+		void addAutonInfo(int id, std::string filename);
+
 	private:
+
 		void printTest();
 		//the eventmaps, (event):
 		typedef std::list<eEvent *> eEvents;
@@ -138,6 +142,9 @@ class EventQueue
 
 		//time keeper hash:
 		std::unordered_set<unsigned long long> tmuSet;
+
+		//agent info map:
+		std::unordered_map<int, std::string> agentFilenames;
 
 		//size of the eventqueue:
 		unsigned long long eSize;

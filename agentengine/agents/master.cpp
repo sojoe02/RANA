@@ -330,7 +330,7 @@ void Master::simDone()
 	}
 }
 
-int Master::addAuton(double x, double y, double z, std::string filename, std::string type = "Lua")
+int Master::addAuton(double x, double y, double z, std::string path, std::string filename, std::string type = "Lua")
 {
 	std::vector<Nestene>::iterator nestItr = nestenes.begin();
 
@@ -341,7 +341,10 @@ int Master::addAuton(double x, double y, double z, std::string filename, std::st
 
 	nestItr += nesteneIndex;
 
-	int id = nestItr->addAuton(x, y, z, filename, type);
+	int id = nestItr->addAuton(x, y, z, path+filename, type);
+
+	eventQueue->addAutonInfo(id, filename);
+
 	return id;
 
 }
