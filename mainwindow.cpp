@@ -80,7 +80,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
 
-	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.3.13.THREAD:0.6.0");
+	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.3.14.THREAD:0.6.0");
 
 	ui->statusBar->addWidget(new QLabel(versionString));
 	ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
@@ -111,9 +111,10 @@ void MainWindow::on_generateButton_clicked()
 	int i = 0;
 	for(auto iter=graphAgents.begin(); iter!=graphAgents.end(); ++iter, i++) {
 		//Output::Inst()->kprintf("item #%i ", i);
-        scene->removeItem(*iter);
+		scene->removeItem(*iter);
 		delete *iter;
 	}
+
 
 	ui->graphicsView->viewport()->update();
 
@@ -150,7 +151,9 @@ void MainWindow::on_generateButton_clicked()
 
             //Output::Inst()->kprintf("generating environment, %d, %s",
                           //          agentAmount, stringPath.c_str());
-            ui->runButton->setEnabled(true);
+			ui->runButton->setEnabled(true);
+
+
 
         } else
 			Output::Inst()->kprintf("Cannot generate Environment: Valid path not given");
@@ -209,13 +212,13 @@ void MainWindow::on_browseMapButton_clicked()
  */
 void MainWindow::on_generateMap_clicked()
 {
-    if(mapImage != NULL)
-        delete mapImage;
+	if(mapImage != NULL)
+		delete mapImage;
 
     mapImage = new QImage(ui->pxSpinBox->value(), ui->pySpinBox->value(),
                        QImage::Format_RGB32);
 
-    mapImage->fill(Qt::GlobalColor::white);
+	mapImage->fill(Qt::GlobalColor::white);
 
     QRgb value = qRgb(0,0,0);
 
@@ -514,7 +517,10 @@ void MainWindow::defineMap()
 		mapItem = new QGraphicsPixmapItem(QPixmap::fromImage(*mapImage));
 		scene->addItem(mapItem);
 	}else
+	{
 		mapItem->setPixmap(QPixmap::fromImage(*mapImage));
+		scene->setSceneRect(mapItem->boundingRect());
+	}
 
 	Output::Inst()->kprintf("Map information generated");
 	MapHandler::setImage(mapImage);

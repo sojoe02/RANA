@@ -334,7 +334,7 @@ void EventQueue::saveEEventData(std::string name, std::string luaFileName,
 				if(infoItr != agentFilenames.end())
 				{
 					strncpy(devent.filename, infoItr->second.c_str(), 256);
-				}//else strncpy(devent.filename, std::string("").c_str(),256);
+				}else strncpy(devent.filename, std::string("NULL").c_str(),256);
 
 				//Output::Inst()->kprintf("Event id %i \n", tmp->id);
 				file.write(reinterpret_cast<char*>(&devent),sizeof(devent));

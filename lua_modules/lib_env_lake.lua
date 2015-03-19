@@ -29,7 +29,7 @@ local Environment = {}
 --set default values for the environment colors
 local waterColor = {0,0,255}
 local shoreColor = {255,210,103}
-local landColor  = {0,200,0}
+local landColor  = {0,100,0}
 
 --define the local function variables
 local generateLake
@@ -47,13 +47,10 @@ end
 function Environment.setColors(water, shore, land)
 
 	--check table lengths
-
 	if #water ~= 3 and #shore ~= 3 and #land ~= 3 then 
 		return "failed to set new environment colors, table length not correct"
 	end
-
 	--TODO check table values
-
 	waterColor = water
 	shoreColor = shore
 	landColor  = land
@@ -80,7 +77,7 @@ function Environment.buildEnvironment()
 		end
 	end
 	--test()
-	generateLake(width/5, width/2, height/2)
+	generateLake(width/4, width/2, height/2)
 
 end
 
