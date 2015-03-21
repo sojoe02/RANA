@@ -214,32 +214,33 @@ void EventProcessing::processEvent(EventQueue::dataEvent *event,
 	if(filename.compare("NULL") != 0)
 	{
 		//build a new path 'clumsily':
-		std::string path = path.substr(0,path.find_last_of("\\/")) + filename;
+        path = path.substr(0,path.find_last_of("\\/")) + "/" + filename;
 	}
 
-	AutonLUA *auton =
-			new AutonLUA(event->originID,event->originX,event->originY, 0, NULL, path);
+    //Output::Inst()->kdebug("path is: %s, %s", path.c_str(), filename.c_str());
+    AutonLUA *auton =
+            new AutonLUA(event->originID,event->originX,event->originY, 0, NULL, path);
 
-	QSet<QString> *visited = new QSet<QString>();
+    QSet<QString> *visited = new QSet<QString>();
 
-	int width = simInfo->areaX/mapRes;
-	int height = simInfo->areaY/mapRes;
+    int width = simInfo->areaX/mapRes;
+    int height = simInfo->areaY/mapRes;
 
-	double z = 0;
-	double duration =0;
-	//calculate the z value at origin, to get thresshold value:
-	auton->processFunction(event, simInfo->mapResolution, event->originX/mapRes,
-						   event->originY/mapRes, z, duration);
+    double z = 0;
+    double duration =0;
+    //calculate the z value at origin, to get thresshold value:
+    auton->processFunction(event, simInfo->mapResolution, event->originX/mapRes,
+                           event->originY/mapRes, z, duration);
 
-	//Output::Inst()->kprintf("z value at origin is = %f, duration is = %f", z, duration);
-	double thressholdZ = z * thresshold;
+    //Output::Inst()->kprintf("z value at origin is = %f, duration is = %f", z, duration);
+    double thressholdZ = z * thresshold;
 
-	recursiveZlevel(auton, event, visited,event->originX/mapRes,
-					event->originY/mapRes,0,0,
-					height, width,mapRes,timeRes, thressholdZ);
+    recursiveZlevel(auton, event, visited,event->originX/mapRes,
+                    event->originY/mapRes,0,0,
+                    height, width,mapRes,timeRes, thressholdZ);
 
-	delete visited;
-	delete auton;
+    delete visited;
+    delete auton;
 }
 
 void EventProcessing::recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *event,

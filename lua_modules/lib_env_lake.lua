@@ -28,7 +28,7 @@ local Environment = {}
 
 --set default values for the environment colors
 local waterColor = {0,0,255}
-local shoreColor = {255,210,103}
+local shoreColor = {200,110,80}
 local landColor  = {0,100,0}
 
 --define the local function variables

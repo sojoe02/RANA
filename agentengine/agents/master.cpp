@@ -255,10 +255,8 @@ void Master::microStep(unsigned long long tmu){
 		std::list<EventQueue::iEvent*>::iterator itlist = list.begin();
 
 		for(; itlist != list.end(); ++itlist){
-			EventQueue::iEvent* event = *itlist;
-
-			Output::Inst()->kprintf("origin id is %i", event->originID);
-
+            EventQueue::iEvent* event = *itlist;
+            //Output::Inst()->kprintf("origin id is %i", event->originID);
 			if (removedIDs.find(event->originID) == removedIDs.end())
 			{
 				event->origin->actOnEvent(*itlist);

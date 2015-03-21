@@ -558,6 +558,7 @@ void MainWindow::on_zoomSlider_valueChanged(int value)
 void MainWindow::on_pushButton_clicked()
 {
 	//ui->outputTextEdit->
+    //ui->outputTextBrowser->cl
 	ui->outputTextBrowser->clear();
 }
 

@@ -1,16 +1,18 @@
-local Serialize = {}
+local Table = {}
 
-function Serialize.loadTable(string)
+function Table.deserialize(string)
+
+
+	if string.len(string) < 3 then return {} end
+
 	load("table="..string)()
-
 	--l_debug(string)
 	--l_debug(table[1])
-
 	return table
 end
 
 
-function Serialize.table(val, name, depth)
+function Table.serialize(val, name, depth)
 	--skipnewlines = skipnewlines or false
 	depth = depth or 0
 	local tbl = string.rep("", depth)
@@ -31,7 +33,7 @@ function Serialize.table(val, name, depth)
 			if i ~= 1 then
 				tbl = tbl .. ","
 			end	
-			tbl = tbl .. Serialize.table(v,k, depth +1) 
+			tbl = tbl .. Table.serialize(v,k, depth +1) 
 			i = i + 1;
 		end
 			tbl = tbl .. string.rep(" ", depth) ..  "}"
@@ -47,4 +49,4 @@ function Serialize.table(val, name, depth)
 
 end
 
-return Serialize
+return Table
