@@ -136,22 +136,22 @@ function handleEvent(origX, origY, origID, origDesc, origTable)
 	dist = ctable.distance + 80
 
 	if ID == 1 then
-		calltable = {dir = "right", duration = 5, power = 1, distance = dist}
+		calltable = {dir = "right", duration = 0, power = 1, distance = dist}
 		s_calltable = serializeTbl(calltable)
 		targetID = 2
 		
 	elseif ID == 2 then
-		calltable = {dir = "down", duration = 5, power = 1, distance = dist}
+		calltable = {dir = "down", duration = 0, power = 1, distance = dist}
 		s_calltable = serializeTbl(calltable)
 		targetID = 3
 
 	elseif ID == 3 then
-		calltable = {dir = "left", duration = 5, power = 1, distance = dist}
+		calltable = {dir = "left", duration = 0, power = 1, distance = dist}
 		s_calltable = serializeTbl(calltable)
 		targetID = 4
 
 	elseif ID == 4 then
-		calltable = {dir = "up", duration = 5, power = 1, distance = dist}
+		calltable = {dir = "up", duration = 0, power = 1, distance = dist}
 		s_calltable = serializeTbl(calltable)
 		targetID = 1
 
