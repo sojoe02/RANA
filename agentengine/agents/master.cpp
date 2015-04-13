@@ -262,6 +262,9 @@ void Master::microStep(unsigned long long tmu){
 				event->origin->actOnEvent(*itlist);
 			}
 
+            delete event;
+            //event=NULL;
+
 		}
 	}
 

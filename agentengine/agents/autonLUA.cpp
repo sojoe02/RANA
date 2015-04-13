@@ -254,15 +254,17 @@ EventQueue::eEvent* AutonLUA::initEvent()
 		sendEvent->desc = lua_tostring(L,-2);
 		sendEvent->table = lua_tostring(L,-3);
 
-		lua_tonumberx(L,-4, &isnum);
+//		lua_tonumber(L,-4, &isnum);
 
-		if(!isnum)
-		{
-			Output::Inst()->kprintf("LUA function handleExternal propagation speed must be a number\n");
-			delete sendEvent;
-			Output::RunSimulation.store(false);
-			return NULL;
-		} else sendEvent->propagationSpeed = lua_tonumber(L,-4);
+//		if(!isnum)
+//		{
+//			Output::Inst()->kprintf("LUA function handleExternal propagation speed must be a number\n");
+//			delete sendEvent;
+//			Output::RunSimulation.store(false);
+//			return NULL;
+    //	} else
+
+        sendEvent->propagationSpeed = lua_tonumber(L,-4);
 
 		//Output::Inst()->kprintf("activationTime : %lld \t id : %lld \n desc : %s \t table : %s \n", sendEvent->activationTime,
 		//		sendEvent->id, sendEvent->desc.c_str(), sendEvent->table.c_str());
@@ -340,12 +342,13 @@ EventQueue::eEvent* AutonLUA::actOnEvent(EventQueue::iEvent *ievent){
 		sendEvent->desc = lua_tostring(L,-2);
 		sendEvent->table = lua_tostring(L,-3);
 
-		lua_tonumberx(L,-4, &isnum);
-		if(!isnum){
-			Output::Inst()->kprintf("LUA function 'handleInternalEvent' propagation speed must be a number\n");
-			delete sendEvent;
-			return NULL;
-		} else sendEvent->propagationSpeed = lua_tonumber(L,-4);
+        //lua_tonumber(L,-4);
+        //if(isnum == NULL){
+            //Output::Inst()->kprintf("LUA function 'handleInternalEvent' propagation speed must be a number\n");
+            //delete sendEvent;
+            //return NULL;
+        //} else
+        sendEvent->propagationSpeed = lua_tonumber(L,-4);
 
 		sendEvent->posX = posX;
 		sendEvent->posY = posY;

@@ -32,6 +32,12 @@
 
 #include "auton.h"
 
+#define LUA_OK          0
+#define LUA_YIELD       1
+#define LUA_ERRRUN      2
+#define LUA_ERRSYNTAX   3
+#define LUA_ERRMEM      4
+#define LUA_ERRGCMM     5
 
 class Nestene;
 class AutonLUA : public Auton
