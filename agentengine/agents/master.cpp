@@ -36,21 +36,21 @@
 
 #include "output.h"
 
-    Master::Master()
-:nesteneIndex(0), threads(0) ,eEventInitAmount(0), responseAmount(0),
-	  externalDistroAmount(0), tmu(0)
+Master::Master()
+        :nesteneIndex(0), threads(0) ,eEventInitAmount(0), responseAmount(0),
+          externalDistroAmount(0), tmu(0)
 {
-	//Output::Inst()->kprintf("Initiating master\n");
-	eventQueue = new EventQueue;
-	srand (time(NULL));
+    //Output::Inst()->kprintf("Initiating master\n");
+    eventQueue = new EventQueue;
+    srand (time(NULL));
 }
 
 Master::~Master(){
-	delete eventQueue;
+    delete eventQueue;
 }
 /**
  * Generates the map
- * Places all Nestenes at positions to fit the width and height of the map, 
+ * Places all Nestenes at positions to fit the width and height of the map,
  * set the time resolution and macroFactor of the map
  * @param width maps max X coordinate
  * @param height maps max Y coordinate
@@ -61,30 +61,30 @@ Master::~Master(){
 void Master::generateMap(double width, double height, int threads, double timeResolution, double macroResolution)
 {
 
-	this->timeResolution = timeResolution;
-	this->macroResolution = macroResolution;
-	this->threads = threads;
+    this->timeResolution = timeResolution;
+    this->macroResolution = macroResolution;
+    this->threads = threads;
 
-	areaX = width;
-	areaY = height;
+    areaX = width;
+    areaY = height;
 
-	if(!nestenes.empty())
-	{
-		nestenes.clear();
-	}
+    if(!nestenes.empty())
+    {
+        nestenes.clear();
+    }
 
 
-	for(int i=0; i<threads; i++)
-	{
-		std::string id;
-		std::stringstream ss;
-		ss << i;
-		id.append(ss.str());
+    for(int i=0; i<threads; i++)
+    {
+        std::string id;
+        std::stringstream ss;
+        ss << i;
+        id.append(ss.str());
 
-		Nestene nest = Nestene(0,0,width,height,this,i);
+        Nestene nest = Nestene(0,0,width,height,this,i);
 
-		nestenes.push_back(nest);
-	}
+        nestenes.push_back(nest);
+    }
 }
 
 /**
@@ -97,15 +97,17 @@ void Master::generateMap(double width, double height, int threads, double timeRe
  * @param aylist y positions of all Lua autons
  * @param axlist x positions of all Lua autons
  */
-std::list<agentInfo> Master::retrievePopPos(){
+std::list<agentInfo> Master::retrievePopPos()
+{
 
-	std::list<agentInfo> agentinfo;
+    std::list<agentInfo> agentinfo;
 
-	for(itNest = nestenes.begin(); itNest !=nestenes.end(); itNest++){
-		itNest->retrievePopPos(agentinfo);
-	}
+    for(itNest = nestenes.begin(); itNest !=nestenes.end(); itNest++)
+    {
+        itNest->retrievePopPos(agentinfo);
+    }
 
-	return agentinfo;
+    return agentinfo;
 }
 
 /**
@@ -118,111 +120,121 @@ std::list<agentInfo> Master::retrievePopPos(){
  * @param filename the lua file of the LUA autons definition.
  */
 void Master::populateSystem(int listenerSize,
-							int screamerSize, int LUASize, std::string filename){
+                            int screamerSize, int LUASize, std::string filename)
+{
 
-	std::vector<int> LUAVector;
+    std::vector<int> LUAVector;
 
-	for(uint i = 0; i < nestenes.size(); i++){
-		LUAVector.push_back(0);
-	}
+    for(uint i = 0; i < nestenes.size(); i++)
+    {
+        LUAVector.push_back(0);
+    }
 
-	autonAmount = LUASize;
-	luaFilename = filename;
+    autonAmount = LUASize;
+    luaFilename = filename;
 
-	uint j = 0;
-	for(int i = 0; i<LUASize; i++, j++)
-	{
-		if(i % nestenes.size() == 0)
-			j =0;
+    uint j = 0;
+    for(int i = 0; i<LUASize; i++, j++)
+    {
+        if(i % nestenes.size() == 0) j =0;
 
-		LUAVector.at(j)++;
-	}
+        LUAVector.at(j)++;
+    }
 
-	//Output::Inst()->kdebug("working here! %i, %i", LUAVector.size(), LUAVector.at(0));
+    //Output::Inst()->kdebug("working here! %i, %i", LUAVector.size(), LUAVector.at(0));
 
-	j = 0;
-	for(auto itr = LUAVector.begin(); itr != LUAVector.end(); ++itr, j++)
-	{
-		Nestene *nestene = &nestenes.at(j);
+    j = 0;
+    for(auto itr = LUAVector.begin(); itr != LUAVector.end(); ++itr, j++)
+    {
+        Nestene *nestene = &nestenes.at(j);
         //Output::Inst()->kdebug("Working not here %i", *itr);
-		nestene->populate(0,0,*itr,filename);
-	}
-	/*
+        nestene->populate(0,0,*itr,filename);
+    }
+    /*
 
-	while(tmpSize<LUASize){
-		for(uint i=0; i<LUAVector.size(); i++){
-			nSize = rand()%2;
-			tmpSize += nSize;
-			if(tmpSize > LUASize){
-				nSize = LUASize - tmpSize2;
-			}
-			tmpSize2 += nSize;
-			LUAVector.at(i) += nSize;
-		}
-	}
+    while(tmpSize<LUASize){
+        for(uint i=0; i<LUAVector.size(); i++){
+            nSize = rand()%2;
+            tmpSize += nSize;
+            if(tmpSize > LUASize){
+                nSize = LUASize - tmpSize2;
+            }
+            tmpSize2 += nSize;
+            LUAVector.at(i) += nSize;
+        }
+    }
 
-	autonAmount = LUASize;
-	luaFilename = filename;
+    autonAmount = LUASize;
+    luaFilename = filename;
 
-	//Output::Inst()->kprintf("lua size from master is : %d \n", LUASize);
-	for(uint i= 0; i<listenerVector.size(); i++){
-		//std::cout<< listenerVector.at(i) << std::endl;
-		Nestene *nest = &nestenes.at(i);
-		nest->populate(listenerVector.at(i), ScreamerVector.at(i),LUAVector.at(i), filename);
-	}
-	*/
+    //Output::Inst()->kprintf("lua size from master is : %d \n", LUASize);
+    for(uint i= 0; i<listenerVector.size(); i++){
+        //std::cout<< listenerVector.at(i) << std::endl;
+        Nestene *nest = &nestenes.at(i);
+        nest->populate(listenerVector.at(i), ScreamerVector.at(i),LUAVector.at(i), filename);
+    }
+    */
 }
 
 
-void Master::populateSquareSystem(int LUASize, std::string filename){
+void Master::populateSquareSystem(int LUASize, std::string filename)
+{
 
-	std::vector<int> LUAVector;
+    std::vector<int> LUAVector;
 
-	for(uint i = 0; i < nestenes.size(); i++){
-		LUAVector.push_back(LUASize);
-	}
+    for(uint i = 0; i < nestenes.size(); i++)
+    {
+        LUAVector.push_back(LUASize);
+    }
 
-	autonAmount = LUASize;
-	luaFilename = filename;
+    autonAmount = LUASize;
+    luaFilename = filename;
 
-	Output::Inst()->kprintf("lua amount is : %d \n", LUASize);
-	for(uint i= 0; i<LUAVector.size(); i++){
-		Nestene *nest = &nestenes.at(i);
-		nest->populateSquared(LUAVector.at(i), filename);
-	}
+    Output::Inst()->kprintf("lua amount is : %d \n", LUASize);
+    for(uint i= 0; i<LUAVector.size(); i++)
+    {
+        Nestene *nest = &nestenes.at(i);
+        nest->populateSquared(LUAVector.at(i), filename);
+    }
 }
 
-void Master::populateSquareListenerSystem(int listenerSize){
+void Master::populateSquareListenerSystem(int listenerSize)
+{
 
-	std::vector<int> listenerVector;
+    std::vector<int> listenerVector;
 
-	for(uint i = 0; i < nestenes.size(); i++){
-		listenerVector.push_back(listenerSize);
-	}
+    for(uint i = 0; i < nestenes.size(); i++)
+    {
+        listenerVector.push_back(listenerSize);
+    }
 
-	autonAmount = listenerSize;
+    autonAmount = listenerSize;
 
-	Output::Inst()->kprintf("listener amount is : %d \n", listenerSize);
-	for(uint i= 0; i<listenerVector.size(); i++){
-		Nestene *nest = &nestenes.at(i);
-		nest->populateSquaredListener(listenerVector.at(i));
-	}
+    Output::Inst()->kprintf("listener amount is : %d \n", listenerSize);
+    for(uint i= 0; i<listenerVector.size(); i++)
+    {
+        Nestene *nest = &nestenes.at(i);
+        nest->populateSquaredListener(listenerVector.at(i));
+    }
 }
 
 
-void Master::receiveEEventPtr(EventQueue::eEvent *eEvent){
-	eventQueue->insertEEvent(eEvent);
+void Master::receiveEEventPtr(EventQueue::eEvent *eEvent)
+{
+    eventQueue->insertEEvent(eEvent);
 }
 
-void Master::receiveInitEEventPtr(EventQueue::eEvent *eEvent){
-	//increase the initiated events counter:
-	eEventInitAmount++;
-	//insert the event into the eventQueue:
-	eventQueue->insertEEvent(eEvent);
+void Master::receiveInitEEventPtr(EventQueue::eEvent *eEvent)
+{
+    //increase the initiated events counter:
+    eEventInitAmount++;
+    //insert the event into the eventQueue:
+    eventQueue->insertEEvent(eEvent);
 }
 
-void Master::receiveIEventPtr(EventQueue::iEvent *ievent){
-	eventQueue->insertIEvent(ievent);
+void Master::receiveIEventPtr(EventQueue::iEvent *ievent)
+{
+    eventQueue->insertIEvent(ievent);
 }
 
 
@@ -234,46 +246,52 @@ void Master::receiveIEventPtr(EventQueue::iEvent *ievent){
  * @see Auton::actOnEvent()
  * @see Nestene::endPhase()
  */
-void Master::microStep(unsigned long long tmu){
+void Master::microStep(unsigned long long tmu)
+{
 
-	//Output::Inst()->kprintf("Taking microstep at %d \n", tmu);
-	if(eventQueue->eEventsAtTime(tmu)){
-		std::list<EventQueue::eEvent*> list = eventQueue->getEEventList(tmu);
-		std::list<EventQueue::eEvent*>::iterator itlist = list.begin();
+    //Output::Inst()->kprintf("Taking microstep at %d \n", tmu);
+    if(eventQueue->eEventsAtTime(tmu))
+    {
+        std::list<EventQueue::eEvent*> list = eventQueue->getEEventList(tmu);
+        std::list<EventQueue::eEvent*>::iterator itlist = list.begin();
 
-		for(; itlist != list.end(); ++itlist){
-			for(itNest = nestenes.begin(); itNest != nestenes.end(); itNest++){
-				externalDistroAmount++;
-				//EventQueue::eEvent* event = *itlist;
-				itNest->distroPhase(*itlist);
-			}
-		}
-	}
+        for(; itlist != list.end(); ++itlist)
+        {
+            for(itNest = nestenes.begin(); itNest != nestenes.end(); itNest++)
+            {
+                externalDistroAmount++;
+                //EventQueue::eEvent* event = *itlist;
+                itNest->distroPhase(*itlist);
+            }
+        }
+    }
 
-	if(eventQueue->iEventsAtTime(tmu)){
-		std::list<EventQueue::iEvent*> list = eventQueue->getIEventList(tmu);
-		std::list<EventQueue::iEvent*>::iterator itlist = list.begin();
+    if(eventQueue->iEventsAtTime(tmu))
+    {
+        std::list<EventQueue::iEvent*> list = eventQueue->getIEventList(tmu);
+        std::list<EventQueue::iEvent*>::iterator itlist = list.begin();
 
-		for(; itlist != list.end(); ++itlist){
+        for(; itlist != list.end(); ++itlist)
+        {
             EventQueue::iEvent* event = *itlist;
             //Output::Inst()->kprintf("origin id is %i", event->originID);
-			if (removedIDs.find(event->originID) == removedIDs.end())
-			{
-				event->origin->actOnEvent(*itlist);
-			}
+            if (removedIDs.find(event->originID) == removedIDs.end())
+            {
+                event->origin->actOnEvent(event);
+            }
 
-			//if (event != NULL) delete event;
-            //event=NULL;
+            if (event != NULL) delete event;
+            event=NULL;
+        }
+    }
 
-		}
-	}
+    //then run the endPhase on the nestenes, this will handle the responses of the Autons:
+    for(itNest =nestenes.begin(); itNest !=nestenes.end(); ++itNest)
+    {
+        itNest->endPhase();
+    }
 
-	//then run the endPhase on the nestenes, this will handle the responses of the Autons:
-	for(itNest =nestenes.begin(); itNest !=nestenes.end(); ++itNest){
-		itNest->endPhase();
-	}
-
-	eventQueue->legacyFront();
+    eventQueue->legacyFront();
 }
 
 /**
@@ -282,8 +300,8 @@ void Master::microStep(unsigned long long tmu){
  */
 unsigned long long Master::getNextMicroTmu()
 {
-	//eventQueue->printATmus();
-	return eventQueue->getNextTmu();
+    //eventQueue->printATmus();
+    return eventQueue->getNextTmu();
 }
 
 /**
@@ -293,11 +311,11 @@ unsigned long long Master::getNextMicroTmu()
  */
 void Master::macroStep(unsigned long long tmu)
 {
-	//Handle the initiation of events:
-	for(itNest=nestenes.begin() ; itNest !=nestenes.end(); ++itNest)
-	{
-		itNest->initPhase(macroResolution, tmu+1);
-	}
+    //Handle the initiation of events:
+    for(itNest=nestenes.begin() ; itNest !=nestenes.end(); ++itNest)
+    {
+        itNest->initPhase(macroResolution, tmu+1);
+    }
 }
 
 
@@ -308,10 +326,10 @@ void Master::macroStep(unsigned long long tmu)
  */
 void Master::printStatus()
 {
-	Output::Inst()->updateStatus(Phys::getCTime(),eEventInitAmount,
-								 eventQueue->getISize(), eventQueue->getESize());
-	//Output::Inst()->kprintf("%d\n", eventQueue->getISize());
-	//	eventQueue->printATmus();
+    Output::Inst()->updateStatus(Phys::getCTime(),eEventInitAmount,
+                                 eventQueue->getISize(), eventQueue->getESize());
+    //Output::Inst()->kprintf("%d\n", eventQueue->getISize());
+    //	eventQueue->printATmus();
 }
 
 /**
@@ -320,33 +338,33 @@ void Master::printStatus()
  */
 void Master::saveExternalEvents(std::string filename)
 {
-	eventQueue->saveEEventData(filename, luaFilename,autonAmount,areaY,areaX);
+    eventQueue->saveEEventData(filename, luaFilename,autonAmount,areaY,areaX);
 }
 
 void Master::simDone()
 {
-	for(itNest=nestenes.begin() ; itNest !=nestenes.end(); ++itNest)
-	{
-		itNest->simDone();
-	}
+    for(itNest=nestenes.begin() ; itNest !=nestenes.end(); ++itNest)
+    {
+        itNest->simDone();
+    }
 }
 
 int Master::addAuton(double x, double y, double z, std::string path, std::string filename, std::string type = "Lua")
 {
-	std::vector<Nestene>::iterator nestItr = nestenes.begin();
+    std::vector<Nestene>::iterator nestItr = nestenes.begin();
 
-	nesteneIndex++;
+    nesteneIndex++;
 
-	if(nesteneIndex == (int)nestenes.size())
-		nesteneIndex = 0 ;
+    if(nesteneIndex == (int)nestenes.size())
+        nesteneIndex = 0 ;
 
-	nestItr += nesteneIndex;
+    nestItr += nesteneIndex;
 
-	int id = nestItr->addAuton(x, y, z, path+filename, type);
+    int id = nestItr->addAuton(x, y, z, path+filename, type);
 
-	eventQueue->addAutonInfo(id, filename);
+    eventQueue->addAutonInfo(id, filename);
 
-	return id;
+    return id;
 
 }
 
@@ -354,16 +372,16 @@ int Master::addAuton(double x, double y, double z, std::string path, std::string
 bool Master::removeAuton(int arg_id)
 {
 
-	for(auto nestitr=nestenes.begin() ; nestitr !=nestenes.end(); ++nestitr)
-	{
-		//int i = itNest->containsAuton(arg_id);
-		bool removed = nestitr->removeAuton(arg_id);
+    for(auto nestitr=nestenes.begin() ; nestitr !=nestenes.end(); ++nestitr)
+    {
+        //int i = itNest->containsAuton(arg_id);
+        bool removed = nestitr->removeAuton(arg_id);
 
-		if(removed)
-		{
-			removedIDs.insert(arg_id);
-			return true;
-		}
-	}
-	return false;
+        if(removed)
+        {
+            removedIDs.insert(arg_id);
+            return true;
+        }
+    }
+    return false;
 }
