@@ -57,6 +57,7 @@ public:
 	//Post processing things:
 	void ppprintf(const char* msg, ...);
 	void ppprogressbar(int current, int maximum);
+	void setEventSceneRect(int x, int y);
 
 	static unsigned long long RUNTIME;
 	static std::string AgentPath;

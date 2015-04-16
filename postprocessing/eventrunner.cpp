@@ -13,7 +13,7 @@ void EventRunner::run()
 	{
 		eventprocessor->binEvents(regex,eventPath.toStdString(),from,to);
 
-		eventprocessor->processBinnedEvents(timeResolution,agentPath.toStdString(),
+		eventprocessor->processBinnedEvents(timeResolution, agentPath.toStdString(),
 										mapResolution,zThresshold);
 
 	} else
@@ -25,6 +25,7 @@ void EventRunner::run()
 
 void EventRunner::setParameters(QRegExp regex, EventProcessing *eventprocessor, QString eventPath, int from, int to, double timeResolution, QString agentPath, int mapResolution, double zThresshold)
 {
+	Output::Inst()->kdebug("path of agent is %s,\n event are at %s", agentPath.toStdString().c_str(), eventPath.toStdString().c_str());
 	this->regex = regex;
 	this->eventprocessor = eventprocessor;
 	this->eventPath = eventPath;

@@ -60,7 +60,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->progressBar->setValue(0);
     ui->graphicsView->setScene(scene);
     scene->setBackgroundBrush(Qt::gray);
-    ui->runButton->setDisabled(true);
+	ui->runButton->setDisabled(true);
+	ui->adv_spinBox->hide();
 
     qRegisterMetaType<INFOLIST>("INFOLIST");
 
@@ -80,7 +81,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
 
-    versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.3.17b.THREAD:0.6.0");
+	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.3.18.THREAD:0.6.1");
 
 	ui->statusBar->addWidget(new QLabel(versionString));
 	ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
@@ -636,7 +637,8 @@ void MainWindow::ppIsChecked()
 
 			ui->tabWidget->insertTab(ui->tabWidget->count()+1,sim_controlTab,"Control");
 			ui->tabWidget->insertTab(ui->tabWidget->count()+1,sim_viewTab,"Live View");
-			ui->tabWidget->insertTab(ui->tabWidget->count()+2,sim_advancedTab,"Advanced");
+			ui->tabWidget->insertTab(ui->tabWidget->count()+
+									 2,sim_advancedTab,"Advanced");
 
 			ui->simGeneralWidget->show();
 		}
@@ -708,13 +710,16 @@ void MainWindow::setupVisualTab(QHash<QString, ZBlock *> *argZBlocks)
 	zBlocks = argZBlocks;
 
 	//Output::Inst()->ppprintf("adding item to something fierce...")
-    eventScene->clear();
+	eventScene->clear();
+	//eventScene->setSceneRect(0,0,10,10);
+
 
 	for(auto it = zBlocks->begin(); it != zBlocks->end(); ++it)
 	{
 		//Output::Inst()->ppprintf("adding item to something fierce...");
 		eventScene->addItem(it.value());
 	}
+
 	//add the map tab:
 	ui->tabWidget->insertTab(ui->tabWidget->count()+1,vis_mapTab,"Event Map");
 	ui->vis_activeMapSpinBox->setMaximum(ColorUtility::GetMaxTime());
@@ -735,6 +740,11 @@ void MainWindow::setupVisualTab(QHash<QString, ZBlock *> *argZBlocks)
 	zmap->setPos(0,0);
 	zmap->setSize(ui->vis_mapGraphicsView->maximumWidth(),ui->vis_outputTextBrowser->height());
 
+}
+
+void MainWindow::setEventSceneRect(int x, int y)
+{
+	eventScene->setSceneRect(0,0,x,y);
 }
 
 /**

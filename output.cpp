@@ -141,6 +141,11 @@ void Output::ppprogressbar(int current, int maximum)
 	mainWindow->advancePPProgess(progress);
 }
 
+void Output::setEventSceneRect(int x, int y)
+{
+	mainWindow->setEventSceneRect(x, y);
+}
+
 void Output::setMainWindow(MainWindow *mainwindow)
 {
 	Output::mainWindow = mainwindow;

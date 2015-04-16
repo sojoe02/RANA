@@ -55,6 +55,9 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
     L = luaL_newstate();
     luaL_openlibs(L);
 
+	//Lua jit control:
+	//luaJIT_setmode(L, 0, LUAJIT_MODE_ENGINE|LUAJIT_MODE_ON);
+
 
     /* Register the path to the Rana specific lua modules
      *

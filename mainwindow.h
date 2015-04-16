@@ -64,12 +64,14 @@ public:
     void write_status(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents);
 	void write_regularOutput(QString argMsg);
 
+
 	//postprocessing:
 	void advancePPProgess(int percentage);
 	void write_PPOutput(QString argMsg);
 	void setProcessEventButton(bool enabled);
 	void setupVisualTab(QHash<QString, ZBlock *> *argZBlocks);
 	void writeZValue(QString string);
+	void setEventSceneRect(int x, int y);
 
 	//dialogs:
 	void dialogConstruction();
