@@ -77,11 +77,17 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(this,SIGNAL(writeStatusSignal(unsigned long long,unsigned long long,unsigned long long,unsigned long long)),
                      this,SLOT(on_udateStatus(unsigned long long,unsigned long long,unsigned long long,unsigned long long)));
 
+	QObject::connect(this,SIGNAL(addGraphicAutonSignal(int,int,int)),
+						this,SLOT(on_addGraphicAuton(int,int,int)));
+
+	QObject::connect(this, SIGNAL(removeGraphicAutonSignal(int)),
+					 this, SLOT(on_removeGraphicAuton(int)));
+
     //connect actions:
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
 
-	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.3.18.THREAD:0.6.1");
+	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.3.19.THREAD:0.6.1");
 
 	ui->statusBar->addWidget(new QLabel(versionString));
 	ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
@@ -394,7 +400,12 @@ void MainWindow::on_updateMap(INFOLIST infolist)
 
 }
 
-void MainWindow::addGraphicAuton(int Id, int posX, int posY)
+void MainWindow::addGraphicAuton(int id, int posX, int posY)
+{
+	emit addGraphicAutonSignal(id, posX, posY);
+}
+
+void MainWindow::on_addGraphicAuton(int Id, int posX, int posY)
 {
 	agentItem *gfxItem = new agentItem(QString::number(Id));
 	gfxItem->setZValue(2);
@@ -409,16 +420,21 @@ void MainWindow::addGraphicAuton(int Id, int posX, int posY)
 
 }
 
-void MainWindow::removeGraphicAuton(int Id)
+
+void MainWindow::removeGraphicAuton(int id)
 {
-	auto iter = graphAgents.find(Id);
+	emit removeGraphicAutonSignal(id);
+}
+
+void MainWindow::on_removeGraphicAuton(int id)
+{
+	auto iter = graphAgents.find(id);
 	if(iter != graphAgents.end())
 	{
 		scene->removeItem(*iter);
 		delete *iter;
-		graphAgents.remove(Id);
+		graphAgents.remove(id);
 	}
-	//delete gfxItem;
 }
 
 void MainWindow::wheelEvent(QWheelEvent* event)

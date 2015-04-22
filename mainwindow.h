@@ -57,8 +57,7 @@ public:
     void runButtonHide();
 
 	void updateMap(std::list<agentInfo> infolist);
-	void addGraphicAuton(int Id, int posX, int posY);
-	void removeGraphicAuton(int Id);
+
 
     void write_output(QString argMsg);
     void write_status(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents);
@@ -72,6 +71,9 @@ public:
 	void setupVisualTab(QHash<QString, ZBlock *> *argZBlocks);
 	void writeZValue(QString string);
 	void setEventSceneRect(int x, int y);
+
+	void addGraphicAuton(int Id, int posX, int posY);
+	void removeGraphicAuton(int id);
 
 	//dialogs:
 	void dialogConstruction();
@@ -96,7 +98,10 @@ private slots:
     void on_delaySpinBox_valueChanged(int arg1);
     void on_zoomSlider_valueChanged(int value);
     void on_pushButton_clicked();
-    void actionPrintInfo();
+	void actionPrintInfo();
+
+	void on_addGraphicAuton(int Id, int posX, int posY);
+	void on_removeGraphicAuton(int Id);
 
 	//postprocessing:
 	void ppIsChecked();
@@ -129,8 +134,12 @@ signals:
     void writeStatusSignal(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents);
 	void writeRegularSignal(QString something);
 
+	void addGraphicAutonSignal(int id, int posX, int posY);
+	void removeGraphicAutonSignal(int Id);
+
 	//postprocessing:
 	void writePPSignal(QString something);
+
 
 
 private:
