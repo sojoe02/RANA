@@ -27,6 +27,7 @@
 #include<string.h>
 #include<stdio.h>
 #include<chrono>
+#include<utility>
 
 #include"output.h"
 
@@ -37,7 +38,7 @@
 	EventQueue::EventQueue()
 :eSize(0), iSize(0)
 {
-	iMap = new std::unordered_map<unsigned long long, iEvents>();
+    //iMap = new std::unordered_map<unsigned long long, iEvents>();
 	eMap = new std::unordered_map<unsigned long long, eEvents>();
 }
 
@@ -66,7 +67,7 @@ EventQueue::~EventQueue(){
 			}
 		}
 	}
-	delete iMap;
+    //delete iMap;
 	delete eMap;
 
 	Output::Inst()->kprintf("EventQueue Cleared\n");
@@ -158,38 +159,47 @@ bool EventQueue::eEventsAtTime(unsigned long long tmu){
  * event time list via insertion sort.
  * @param event, pointer to an internal event.
  */
-void EventQueue::insertIEvent(iEvent *event){
+void EventQueue::insertIEvent(std::shared_ptr<EventQueue::iEvent> ieventPtr)
+{
 	//put event in hashmap.
 	iSize++;
-	unsigned long long tmu = event->activationTime;
+    unsigned long long tmu = ieventPtr->activationTime;
+    auto iMapItr = iMap.find(tmu);
 
-	if(iMap->find(tmu) == iMap->end()){
+    if(iMapItr == iMap.end())
+    {
 		iEvents tmp;
-		tmp.push_back(event);
-		iMap->insert(std::pair<unsigned long long,iEvents>(tmu,tmp));
-	} else{
-		iEvents *tmp = &iMap->find(tmu)->second;
-		tmp->push_back(event);
+        tmp.push_back(ieventPtr);
+        iMap.insert(std::make_pair(tmu,tmp));
+    } else
+    {
+        auto tmp = iMap.find(tmu);
+        tmp->second.push_back(ieventPtr);
+        //Output::Inst()->kprintf("size of list is %i ", iMap.find(tmu)->second.size());
 	}
-	if(tmuSet.find(tmu)==tmuSet.end()){
+    if(tmuSet.find(tmu)==tmuSet.end())
+    {
 		tmuSet.insert(tmu);
-		if(activeTmu.empty()){
+        if(activeTmu.empty())
+        {
 			activeTmu.push_front(tmu);
-		}else{
-			std::list<unsigned long long>::iterator activeIt;
+        }else
+        {
+            //std::list<unsigned long long>::iterator activeIt;
 			bool inserted = false;			
 			//do insertion sort:
-			for(activeIt = activeTmu.begin(); activeIt!=activeTmu.end(); activeIt++){
-				if(*activeIt > tmu){
+            for(auto activeIt = activeTmu.begin(); activeIt!=activeTmu.end(); activeIt++)
+            {
+                if(*activeIt > tmu)
+                {
 					//Output::Inst()->kprintf("insertinginternal event %llu, %llu \n", *activeIt,tmu);
-
-					//--activeIt;
 					activeTmu.insert(activeIt, tmu);
 					inserted = true;
 					break;
 				}
 			}
-			if(!inserted){
+            if(!inserted)
+            {
 				//Output::Inst()->kprintf("not inserted event %llu, %llu \n", *activeIt,tmu);
 				activeTmu.push_back(tmu);
 			}
@@ -201,9 +211,14 @@ void EventQueue::insertIEvent(iEvent *event){
  * @param tmu timestep for the event ptr list
  * @returns event list at current tmu index in the hashmap, or NULL if there isn't an eventlist 
  */
-std::list<EventQueue::iEvent*> EventQueue::getIEventList(unsigned long long tmu){
-	std::list<iEvent*> ieList = iMap->find(tmu)->second;
-	return ieList;
+std::list<std::shared_ptr<EventQueue::iEvent>> EventQueue::getIEventList(unsigned long long tmu)
+{
+
+    auto imapitr = iMap.find(tmu);
+    std::list<std::shared_ptr<iEvent>> iList = imapitr->second;
+    iMap.erase(imapitr);
+
+    return iList;
 }
 
 /**
@@ -221,11 +236,15 @@ unsigned long long EventQueue::getNextTmu(){
  * @param tmu check whether there is an event at a given tmu
  * @return true if there is an event.
  */
-bool EventQueue::iEventsAtTime(unsigned long long tmu){
-	iMapIt = iMap->find(tmu);
-	if(iMapIt == iMap->end() || iMapIt->second.empty()){
+bool EventQueue::iEventsAtTime(unsigned long long tmu)
+{
+    auto iMapIt = iMap.find(tmu);
+
+    if(iMapIt == iMap.end() || iMapIt->second.empty())
+    {
 		return false;
-	} else return true;
+    } else
+        return true;
 }
 /* **********************************************************************
  * UTILITY FUNCTIONS

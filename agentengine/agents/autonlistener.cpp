@@ -36,8 +36,10 @@
 	desc = "Listener";
 }
 
-EventQueue::iEvent* AutonListener::handleEvent(EventQueue::eEvent *event){
-	unsigned long long time = 
+std::shared_ptr<EventQueue::iEvent> AutonListener::handleEvent(EventQueue::eEvent *event)
+{
+
+    /*unsigned long long time =
 		Phys::speedOfSound(event->origin->getPosX(),event->origin->getPosY(), posX, posY);
 
 	EventQueue::iEvent *ievent = new EventQueue::iEvent();
@@ -45,7 +47,8 @@ EventQueue::iEvent* AutonListener::handleEvent(EventQueue::eEvent *event){
 	ievent->origin = this;
 	ievent->activationTime = time;
 	ievent->event = event;
-	return ievent;
+    return ievent;*/
+    return NULL;
 }
 
 
@@ -64,9 +67,9 @@ EventQueue::eEvent* AutonListener::initEvent(double macroResolution, unsigned lo
 	return NULL;
 }
 
-EventQueue::eEvent* AutonListener::actOnEvent(EventQueue::iEvent *event){
+EventQueue::eEvent* AutonListener::actOnEvent(std::shared_ptr<EventQueue::iEvent> eventPtr){
 
-	EventQueue::eEvent *sendEvent = new EventQueue::eEvent();
+    /*EventQueue::eEvent *sendEvent = new EventQueue::eEvent();
 	sendEvent->desc = "callEvent";
     sendEvent->targetID = 0;
 	sendEvent->id = ID::generateEventID();
@@ -74,7 +77,7 @@ EventQueue::eEvent* AutonListener::actOnEvent(EventQueue::iEvent *event){
 	sendEvent->origin = this;
 
 	distroEEvent(sendEvent);
-
+    */
 	return NULL;
 }
 

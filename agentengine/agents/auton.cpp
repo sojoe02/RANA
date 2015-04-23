@@ -23,6 +23,7 @@
 
 
 #include <iostream>
+#include <memory>
 #include "auton.h"
 #include "nestene.h"
 
@@ -52,17 +53,14 @@ void Auton::distroEEvent(EventQueue::eEvent *event){
 	nestene->eEventsOutbox.push_back(event);
 }
 
-EventQueue::iEvent* Auton::handleEvent(EventQueue::eEvent* event){
+std::shared_ptr<EventQueue::iEvent> Auton::handleEvent(EventQueue::eEvent* event){
 	return NULL;
 }
 
-EventQueue::eEvent* Auton::initEvent(int macroResolution, unsigned long long tmu){
-	return NULL;
+EventQueue::eEvent* Auton::actOnEvent(std::shared_ptr<EventQueue::iEvent> eventPtr){
+    return NULL;
 }
 
-EventQueue::eEvent* Auton::actOnEvent(EventQueue::iEvent *event){
-	return NULL;
-}
 
 bool Auton::operator==(Auton &other) const{
 	return (this->ID == other.getID());

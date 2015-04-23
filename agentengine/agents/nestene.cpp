@@ -20,12 +20,11 @@
 //
 //--end_license--
 
-#include <map>
 #include <iostream>
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <utility>
 
 #include "nestene.h"
 
@@ -42,10 +41,6 @@ Nestene::Nestene(double posX, double posY, double width, double height, Master* 
 }
 
 Nestene::~Nestene(){
-    for(auto it = begin(LUAs); it != end(LUAs); ++it)
-    {
-        delete it->second;
-    }
 
 }
 
@@ -82,9 +77,11 @@ void Nestene::populate(int listenerSize, int screamerSize, int LUASize,std::stri
         double xtmp = (double)rand()/ RAND_MAX * width + posX;
         double ytmp = (double)rand()/ RAND_MAX * height + posY;
 
-        AutonLUA *auton = new AutonLUA(ID::generateAutonID(),xtmp,ytmp,1,this,filename);
-        itLUAs = LUAs.begin();
-        LUAs.insert(std::pair<int,AutonLUA*>(auton->getID(),auton));
+         std::shared_ptr<AutonLUA> luaPtr = std::make_shared<AutonLUA>(ID::generateAutonID (), xtmp, ytmp, 1, this, filename);
+                                                //AutonLUA(ID::generateAutonID(),xtmp,ytmp,1,this,filename);
+        //itLUAs = LUAs.begin();
+        LUAs.insert(std::make_pair(luaPtr->getID(), luaPtr));
+        //LUAs.insert(<int,AutonLUA*>(auton->getID(),auton));
     }
 }
 
@@ -170,7 +167,7 @@ void Nestene::initPhase(double macroResolution, unsigned long long tmu){
         }
     }
 
-    for(itLUAs = LUAs.begin(); itLUAs !=LUAs.end(); itLUAs++){
+    for(auto itLUAs = LUAs.begin(); itLUAs !=LUAs.end(); itLUAs++){
         EventQueue::eEvent* eevent = itLUAs->second->initEvent();
         if(eevent != NULL){
             master->receiveInitEEventPtr(eevent);
@@ -187,7 +184,6 @@ void Nestene::initPhase(double macroResolution, unsigned long long tmu){
             if(itrLua != LUAs.end())
             {
                 LUAs.erase(itrLua);
-                delete itrLua->second;
             }
         }
         removalIDs.clear();
@@ -199,22 +195,20 @@ void Nestene::initPhase(double macroResolution, unsigned long long tmu){
  * Recieves an eventlist from the Master to distribute among local autons
  * @param event EventQueue ptr holding external events.
  */
-void Nestene::distroPhase(EventQueue::eEvent* event){
-    for(itListeners = listeners.begin(); itListeners != listeners.end(); ++itListeners){
-        if(event->origin->getID() != itListeners->second.getID()){
-            EventQueue::iEvent *ievent = itListeners->second.handleEvent(event);
-            if(ievent != NULL)
-                master->receiveIEventPtr(ievent);
-        }
-    }
-    for(itLUAs = LUAs.begin(); itLUAs != LUAs.end(); ++itLUAs){
-        if(event->origin->getID() != itLUAs->second->getID()){
-            EventQueue::iEvent *ievent = itLUAs->second->handleEvent(event);
-            if(ievent != NULL)
-                master->receiveIEventPtr(ievent);
+void Nestene::distroPhase(EventQueue::eEvent* event)
+{
+   for(auto itLUAs = LUAs.begin(); itLUAs != LUAs.end(); ++itLUAs)
+   {
+        if(event->origin->getID() != itLUAs->second->getID())
+        {
+            std::shared_ptr<EventQueue::iEvent> ieventPtr = itLUAs->second->handleEvent(event);
+
+            if(ieventPtr != NULL)
+                master->receiveIEventPtr(ieventPtr);
         }
     }
 }
+
 /** 
  * End Phase
  * Check local eventQueue 'outbox' if any external events need to distributed.
@@ -239,7 +233,7 @@ void Nestene::simDone(){
     for(itScreamers = screamers.begin(); itScreamers !=screamers.end(); itScreamers++){
         itScreamers->second.simDone();
     }
-    for(itLUAs = LUAs.begin(); itLUAs !=LUAs.end(); itLUAs++){
+    for(auto itLUAs = LUAs.begin(); itLUAs !=LUAs.end(); itLUAs++){
         itLUAs->second->simDone();
     }
 }
@@ -261,9 +255,8 @@ int Nestene::addAuton(double x, double y, double z,
     if(type.compare("Lua") == 0)
     {
         //std::map<int, AutonListener>::iterator luaItr;
-        AutonLUA *auton = new AutonLUA(id,x,y,z,this,filename);
-        //luaItr = LUAs.begin();
-        LUAs.insert(std::pair<int,AutonLUA*>(auton->getID(),auton));
+        std::shared_ptr<AutonLUA> luaPtr = std::make_shared<AutonLUA>(id, x, y, 1, this, filename);
+        LUAs.insert(std::make_pair(luaPtr->getID(),luaPtr));
     }
 
     return id;

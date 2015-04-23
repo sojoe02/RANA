@@ -34,7 +34,7 @@ public:
 
 private:
     //function to receive an event from nestene responsible for this auton, returns an internal Event 'thinking':
-    EventQueue::iEvent* handleEvent(EventQueue::eEvent* event);
+    std::shared_ptr<EventQueue::iEvent> handleEvent(EventQueue::eEvent* event);
 
     //returns an event:
     EventQueue::eEvent* initEvent(double macroResolution, unsigned long long tmu);

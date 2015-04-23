@@ -177,13 +177,13 @@ AutonLUA::~AutonLUA(){
  * @param event pointer to the external event.
  * @return internal event.
  */
-EventQueue::iEvent* AutonLUA::handleEvent(EventQueue::eEvent *event)
+std::shared_ptr<EventQueue::iEvent> AutonLUA::handleEvent(EventQueue::eEvent *event)
 {
     if (removed) return NULL;
 
     if (event->targetID == 0 || event->targetID == ID)
     {
-        EventQueue::iEvent *ievent = new EventQueue::iEvent();
+        std::shared_ptr<EventQueue::iEvent> ievent = std::make_shared<EventQueue::iEvent>();
 
         ievent->origin = this;
         ievent->event = event;
@@ -300,7 +300,7 @@ EventQueue::eEvent* AutonLUA::initEvent()
  * @param event pointer to the internal event.
  * @return external event.
  */
-EventQueue::eEvent* AutonLUA::actOnEvent(EventQueue::iEvent *ievent){
+EventQueue::eEvent* AutonLUA::actOnEvent(std::shared_ptr<EventQueue::iEvent> eventPtr){
 
     if(removed) return NULL;
 
@@ -315,14 +315,14 @@ EventQueue::eEvent* AutonLUA::actOnEvent(EventQueue::iEvent *ievent){
         //set the lua function:
         lua_getglobal(L,"handleEvent");
         //push required arguments for eventhandling to the stack:
-        lua_pushnumber(L,ievent->event->posX);
-        lua_pushnumber(L,ievent->event->posY);
+        lua_pushnumber(L,eventPtr->event->posX);
+        lua_pushnumber(L,eventPtr->event->posY);
         //push events origin ID to the stack:
-        lua_pushnumber(L,ievent->event->originID);
+        lua_pushnumber(L,eventPtr->event->originID);
         //push the events description string to the stack
-        lua_pushstring(L,ievent->event->desc.c_str());
+        lua_pushstring(L,eventPtr->event->desc.c_str());
         //push the table to the stack
-        lua_pushstring(L,ievent->event->table.c_str());
+        lua_pushstring(L,eventPtr->event->table.c_str());
         //make the function call with 5 arguments and 6 returnvalues
         if(lua_pcall(L,5,4,0)!=LUA_OK)
         {

@@ -24,6 +24,7 @@
 #define AUTON_H
 
 #include <vector>
+#include <memory>
 
 #include "eventqueue.h"
 
@@ -34,11 +35,10 @@ class Auton
 public:
     Auton(int ID, double posX, double posY, double posZ, Nestene *nestene);
 
-	virtual ~Auton(){};
+    virtual ~Auton(){}
 
-    virtual EventQueue::iEvent* handleEvent(EventQueue::eEvent* event);
-    virtual EventQueue::eEvent* actOnEvent(EventQueue::iEvent* event);
-    virtual EventQueue::eEvent* initEvent(int macroResolution, unsigned long long tmu);
+    virtual std::shared_ptr<EventQueue::iEvent> handleEvent(EventQueue::eEvent* event);
+    virtual EventQueue::eEvent* actOnEvent(std::shared_ptr<EventQueue::iEvent> event);
 	virtual EventQueue::eEvent* initEvent(){return NULL;};
 	virtual void processFunction(EventQueue::dataEvent *devent, double mapRes,
 								 double x, double y, double &zvalue, double &duration){};

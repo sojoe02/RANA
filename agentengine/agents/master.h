@@ -76,7 +76,7 @@ public:
 	/*
 		   Functions to add events to the masters eventQueue
 		   */
-	void receiveIEventPtr(EventQueue::iEvent *iEvent);
+    void receiveIEventPtr(std::shared_ptr<EventQueue::iEvent> ievent);
 	void addExternalEventPtr(EventQueue::eEvent *eEvent);
 
 	void printStatus();

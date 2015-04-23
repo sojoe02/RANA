@@ -27,6 +27,8 @@
 #include <map>
 #include <list>
 #include <string>
+#include <memory>
+#include <utility>
 
 #include "master.h"
 #include "eventqueue.h"
@@ -52,8 +54,10 @@ class Nestene
 		void populateSquaredListener(int listenerSize);
 
 		void initPhase(double macroResolution, unsigned long long tmu);
-		//function to receive events the master, and distribute them on all local nestenes
-		void distroPhase(EventQueue::eEvent* event);
+
+        //function to receive events the master, and distribute them on all local nestene
+        void distroPhase(EventQueue::eEvent* event);
+
 		std::list<EventQueue::iEvent> responsePhase();
 		void endPhase();
 
@@ -101,8 +105,7 @@ private:
 		std::map<int,AutonScreamer> screamers;
 		std::map<int,AutonScreamer>::iterator itScreamers;
 
-		std::map<int,AutonLUA*> LUAs;
-		std::map<int,AutonLUA*>::iterator itLUAs;
+        std::map<int,std::shared_ptr<AutonLUA>> LUAs;
 
 		//list of ievents to be send back to the master:
 		//std::list<EventQueue::iEvent*>* iEvents;

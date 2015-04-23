@@ -232,7 +232,7 @@ void Master::receiveInitEEventPtr(EventQueue::eEvent *eEvent)
     eventQueue->insertEEvent(eEvent);
 }
 
-void Master::receiveIEventPtr(EventQueue::iEvent *ievent)
+void Master::receiveIEventPtr(std::shared_ptr<EventQueue::iEvent> ievent)
 {
     eventQueue->insertIEvent(ievent);
 }
@@ -268,20 +268,17 @@ void Master::microStep(unsigned long long tmu)
 
     if(eventQueue->iEventsAtTime(tmu))
     {
-        std::list<EventQueue::iEvent*> list = eventQueue->getIEventList(tmu);
-        std::list<EventQueue::iEvent*>::iterator itlist = list.begin();
+        auto list = eventQueue->getIEventList(tmu);
 
-        for(; itlist != list.end(); ++itlist)
+        for(auto itlist = list.begin(); itlist != list.end(); ++itlist)
         {
-            EventQueue::iEvent* event = *itlist;
+            //EventQueue::iEvent* event = *itlist;
             //Output::Inst()->kprintf("origin id is %i", event->originID);
-            if (removedIDs.find(event->originID) == removedIDs.end())
+            if (removedIDs.find((*itlist)->originID) == removedIDs.end())
             {
-                event->origin->actOnEvent(event);
+                std::shared_ptr<EventQueue::iEvent> eventPtr = *itlist;
+                (*itlist)->origin->actOnEvent(eventPtr);
             }
-
-            if (event != NULL) delete event;
-            event=NULL;
         }
     }
 

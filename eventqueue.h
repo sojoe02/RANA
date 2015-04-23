@@ -29,6 +29,7 @@
 #include <vector>
 #include <string>
 #include <unordered_set>
+#include <memory>
 
 class Auton;
 class EventQueue
@@ -104,9 +105,9 @@ class EventQueue
 		void legacyFront();
 
 		//handling of internal Events:
-		void insertIEvent(iEvent *event);
+        void insertIEvent(std::shared_ptr<EventQueue::iEvent> ieventPtr);
 		iEvent* popBackIEvent(unsigned long long tmu);
-		std::list<iEvent*> getIEventList(unsigned long long tmu);
+        std::list<std::shared_ptr<iEvent>> getIEventList(unsigned long long tmu);
 		bool iEventsAtTime(unsigned long long tmu);
 		unsigned long long getNextItmu();
 		void printLTmus();
@@ -127,12 +128,12 @@ class EventQueue
 		void printTest();
 		//the eventmaps, (event):
 		typedef std::list<eEvent *> eEvents;
-		typedef std::list<iEvent *> iEvents;
+        typedef std::list<std::shared_ptr<iEvent>> iEvents;
 		//the eventqueues, (tmu, eventmap):
-		std::unordered_map<unsigned long long,iEvents> *iMap;
+        std::unordered_map<unsigned long long,iEvents> iMap;
 		std::unordered_map<unsigned long long,eEvents> *eMap;
 		//iterators:
-		std::unordered_map<unsigned long long,iEvents>::iterator iMapIt;
+        //std::unordered_map<unsigned long long,iEvents>::iterator iMapIt;
 		std::unordered_map<unsigned long long,eEvents>::iterator eMapIt;
 		//time keeper lists:
 		std::list<unsigned long long> activeTmu;
