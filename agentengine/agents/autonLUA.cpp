@@ -177,16 +177,17 @@ AutonLUA::~AutonLUA(){
  * @param event pointer to the external event.
  * @return internal event.
  */
-std::shared_ptr<EventQueue::iEvent> AutonLUA::handleEvent(EventQueue::eEvent *event)
+std::unique_ptr<EventQueue::iEvent> AutonLUA::handleEvent(EventQueue::eEvent *event)
 {
     if (removed) return NULL;
 
     if (event->targetID == 0 || event->targetID == ID)
     {
-        std::shared_ptr<EventQueue::iEvent> ievent = std::make_shared<EventQueue::iEvent>();
+        std::unique_ptr<EventQueue::iEvent> ievent(new EventQueue::iEvent());
 
         ievent->origin = this;
         ievent->event = event;
+
         if (event->propagationSpeed == 0)
         {
             ievent->activationTime = Phys::getCTime() + 1;
@@ -300,7 +301,7 @@ EventQueue::eEvent* AutonLUA::initEvent()
  * @param event pointer to the internal event.
  * @return external event.
  */
-EventQueue::eEvent* AutonLUA::actOnEvent(std::shared_ptr<EventQueue::iEvent> eventPtr){
+EventQueue::eEvent* AutonLUA::actOnEvent(std::unique_ptr<EventQueue::iEvent> eventPtr){
 
     if(removed) return NULL;
 

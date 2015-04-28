@@ -176,7 +176,6 @@ void Nestene::initPhase(double macroResolution, unsigned long long tmu){
 
     if(!removalIDs.empty())
     {
-
         //remove all autons set for removal
         for(auto itRemove= removalIDs.begin(); itRemove!= removalIDs.end(); ++itRemove)
         {
@@ -201,10 +200,10 @@ void Nestene::distroPhase(EventQueue::eEvent* event)
    {
         if(event->origin->getID() != itLUAs->second->getID())
         {
-            std::shared_ptr<EventQueue::iEvent> ieventPtr = itLUAs->second->handleEvent(event);
+            std::unique_ptr<EventQueue::iEvent> ieventPtr = itLUAs->second->handleEvent(event);
 
             if(ieventPtr != NULL)
-                master->receiveIEventPtr(ieventPtr);
+                master->receiveIEventPtr(std::move(ieventPtr));
         }
     }
 }

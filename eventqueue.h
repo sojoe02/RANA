@@ -105,9 +105,9 @@ class EventQueue
 		void legacyFront();
 
 		//handling of internal Events:
-        void insertIEvent(std::shared_ptr<EventQueue::iEvent> ieventPtr);
+        void insertIEvent(std::unique_ptr<EventQueue::iEvent> ieventPtr);
 		iEvent* popBackIEvent(unsigned long long tmu);
-        std::list<std::shared_ptr<iEvent>> getIEventList(unsigned long long tmu);
+        std::list<std::unique_ptr<iEvent> > getIEventList(unsigned long long tmu);
 		bool iEventsAtTime(unsigned long long tmu);
 		unsigned long long getNextItmu();
 		void printLTmus();
@@ -128,7 +128,7 @@ class EventQueue
 		void printTest();
 		//the eventmaps, (event):
 		typedef std::list<eEvent *> eEvents;
-        typedef std::list<std::shared_ptr<iEvent>> iEvents;
+        typedef std::list<std::unique_ptr<iEvent>> iEvents;
 		//the eventqueues, (tmu, eventmap):
         std::unordered_map<unsigned long long,iEvents> iMap;
 		std::unordered_map<unsigned long long,eEvents> *eMap;

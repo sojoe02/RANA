@@ -98,8 +98,8 @@ class AutonLUA : public Auton
 
 private:
 		//function to receive an event from nestene responsible for this auton, returns an internal Event 'thinking':
-        std::shared_ptr<EventQueue::iEvent> handleEvent(EventQueue::eEvent* event);
-        EventQueue::eEvent* actOnEvent(std::shared_ptr<EventQueue::iEvent> eventPtr);
+        std::unique_ptr<EventQueue::iEvent> handleEvent(EventQueue::eEvent* event);
+        EventQueue::eEvent* actOnEvent(std::unique_ptr<EventQueue::iEvent> eventPtr);
 		//returns an event:
 		EventQueue::eEvent* initEvent();
         void setRemoved();
@@ -110,6 +110,7 @@ private:
 		//The LUA state:
 		lua_State* L;
 		friend class Nestene;
+        friend class Master;
 		bool nofile;
 		bool removed;
 		void getSyncData();

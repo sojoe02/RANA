@@ -53,11 +53,11 @@ void Auton::distroEEvent(EventQueue::eEvent *event){
 	nestene->eEventsOutbox.push_back(event);
 }
 
-std::shared_ptr<EventQueue::iEvent> Auton::handleEvent(EventQueue::eEvent* event){
+std::unique_ptr<EventQueue::iEvent> Auton::handleEvent(EventQueue::eEvent* event){
 	return NULL;
 }
 
-EventQueue::eEvent* Auton::actOnEvent(std::shared_ptr<EventQueue::iEvent> eventPtr){
+EventQueue::eEvent* Auton::actOnEvent(std::unique_ptr<EventQueue::iEvent> eventPtr){
     return NULL;
 }
 

@@ -37,10 +37,11 @@ public:
 
     virtual ~Auton(){}
 
-    virtual std::shared_ptr<EventQueue::iEvent> handleEvent(EventQueue::eEvent* event);
-    virtual EventQueue::eEvent* actOnEvent(std::shared_ptr<EventQueue::iEvent> event);
+    virtual std::unique_ptr<EventQueue::iEvent> handleEvent(EventQueue::eEvent* event);
+    virtual EventQueue::eEvent* actOnEvent(std::unique_ptr<EventQueue::iEvent> event);
 	virtual EventQueue::eEvent* initEvent(){return NULL;};
-	virtual void processFunction(EventQueue::dataEvent *devent, double mapRes,
+
+    virtual void processFunction(EventQueue::dataEvent *devent, double mapRes,
 								 double x, double y, double &zvalue, double &duration){};
     //virtual double eventChance();
 

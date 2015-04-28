@@ -232,9 +232,9 @@ void Master::receiveInitEEventPtr(EventQueue::eEvent *eEvent)
     eventQueue->insertEEvent(eEvent);
 }
 
-void Master::receiveIEventPtr(std::shared_ptr<EventQueue::iEvent> ievent)
+void Master::receiveIEventPtr(std::unique_ptr<EventQueue::iEvent> ievent)
 {
-    eventQueue->insertIEvent(ievent);
+    eventQueue->insertIEvent(std::move(ievent));
 }
 
 
@@ -276,8 +276,9 @@ void Master::microStep(unsigned long long tmu)
             //Output::Inst()->kprintf("origin id is %i", event->originID);
             if (removedIDs.find((*itlist)->originID) == removedIDs.end())
             {
-                std::shared_ptr<EventQueue::iEvent> eventPtr = *itlist;
-                (*itlist)->origin->actOnEvent(eventPtr);
+                std::unique_ptr<EventQueue::iEvent> eventPtr(std::move(*itlist));
+                AutonLUA *luaAgent = (AutonLUA*)eventPtr->origin;
+                luaAgent->actOnEvent(std::move(eventPtr));
             }
         }
     }

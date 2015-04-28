@@ -49,15 +49,6 @@
  */
 EventQueue::~EventQueue(){
 
-//	for(iMapIt = iMap->begin(); iMapIt != iMap->end(); ++iMapIt){
-//		std::list<iEvent *> tmplist = iMapIt->second;
-//		if(!tmplist.empty()){
-//			std::list<iEvent *>::iterator tmplistItr;
-//			for(tmplistItr = tmplist.begin();tmplistItr != tmplist.end();++tmplistItr){
-//				delete *tmplistItr;
-//			}
-//		}
-//	}
 	for(eMapIt = eMap->begin(); eMapIt != eMap->end(); ++eMapIt){
 		std::list<eEvent *> tmplist = eMapIt->second;
 		if(!tmplist.empty()){
@@ -98,6 +89,8 @@ void EventQueue::insertEEvent(eEvent *event){
 		eEvents *tmp = &eMap->find(tmu)->second;
 		tmp->push_back(event);
 	}
+
+    //Insert activation time into the trigger set:
 	if(tmuSet.find(tmu)==tmuSet.end()){
 		tmuSet.insert(tmu);
 		if(activeTmu.empty()){
@@ -159,7 +152,7 @@ bool EventQueue::eEventsAtTime(unsigned long long tmu){
  * event time list via insertion sort.
  * @param event, pointer to an internal event.
  */
-void EventQueue::insertIEvent(std::shared_ptr<EventQueue::iEvent> ieventPtr)
+void EventQueue::insertIEvent(std::unique_ptr<iEvent> ieventPtr)
 {
 	//put event in hashmap.
 	iSize++;
@@ -169,14 +162,16 @@ void EventQueue::insertIEvent(std::shared_ptr<EventQueue::iEvent> ieventPtr)
     if(iMapItr == iMap.end())
     {
 		iEvents tmp;
-        tmp.push_back(ieventPtr);
-        iMap.insert(std::make_pair(tmu,tmp));
+        tmp.push_back(std::move(ieventPtr));
+        iMap.insert(std::make_pair(tmu,std::move(tmp)));
     } else
     {
         auto tmp = iMap.find(tmu);
-        tmp->second.push_back(ieventPtr);
+        tmp->second.push_back(std::move(ieventPtr));
         //Output::Inst()->kprintf("size of list is %i ", iMap.find(tmu)->second.size());
-	}
+    }
+
+    //Insert the activation time into the trigger set:
     if(tmuSet.find(tmu)==tmuSet.end())
     {
 		tmuSet.insert(tmu);
@@ -211,13 +206,12 @@ void EventQueue::insertIEvent(std::shared_ptr<EventQueue::iEvent> ieventPtr)
  * @param tmu timestep for the event ptr list
  * @returns event list at current tmu index in the hashmap, or NULL if there isn't an eventlist 
  */
-std::list<std::shared_ptr<EventQueue::iEvent>> EventQueue::getIEventList(unsigned long long tmu)
+std::list<std::unique_ptr<EventQueue::iEvent>> EventQueue::getIEventList(unsigned long long tmu)
 {
 
     auto imapitr = iMap.find(tmu);
-    std::list<std::shared_ptr<iEvent>> iList = imapitr->second;
-    iMap.erase(imapitr);
-
+    //retrieve the list containing the events:
+    std::list<std::unique_ptr<iEvent>> iList(std::move(imapitr->second));
     return iList;
 }
 
@@ -318,15 +312,11 @@ void EventQueue::saveEEventData(std::string name, std::string luaFileName,
 	dataInfo.areaX = Phys::getEnvX();
 	dataInfo.areaY = Phys::getEnvY();
 	dataInfo.mapResolution = Phys::getScale();
-	//
-
-
 	//Output::Inst()->kprintf("\nsize stuff %d \n", dataInfo.areaX);
 
 	file.write(reinterpret_cast<char*>(&dataInfo),sizeof(dataInfo));
 
 	//then save all the external events:
-
 	auto infoItr = agentFilenames.begin();
 
 	for(eMapIt = eMap->begin(); eMapIt != eMap->end(); ++eMapIt)

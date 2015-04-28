@@ -37,7 +37,7 @@ AutonScreamer::AutonScreamer(int ID, double posX, double posY, double posZ, Nest
 }
 
 
-std::shared_ptr<EventQueue::iEvent> AutonScreamer::handleEvent(EventQueue::eEvent *event){
+std::unique_ptr<EventQueue::iEvent> AutonScreamer::handleEvent(EventQueue::eEvent *event){
     return NULL;
 }
 
