@@ -35,33 +35,33 @@
 #include"ID.h"
 #include"physics/phys.h"
 
-	EventQueue::EventQueue()
-:eSize(0), iSize(0)
+EventQueue::EventQueue()
+        :eSize(0), iSize(0)
 {
     //iMap = new std::unordered_map<unsigned long long, iEvents>();
-	eMap = new std::unordered_map<unsigned long long, eEvents>();
+    //eMap = new std::unordered_map<unsigned long long, eEvents>();
 }
 
 /**
- * @brief EventQueues destructor.
+ * @brief EventQueues destructor
  * @details When the event queue is destroyed it will visit each of the contained event pointers
  * and call a destructor on them, the price of storing pointers is paid here!
  */
 EventQueue::~EventQueue(){
 
-	for(eMapIt = eMap->begin(); eMapIt != eMap->end(); ++eMapIt){
-		std::list<eEvent *> tmplist = eMapIt->second;
-		if(!tmplist.empty()){
-			std::list<eEvent *>::iterator tmplistItr;
-			for(tmplistItr = tmplist.begin();tmplistItr != tmplist.end();++tmplistItr){
-				delete *tmplistItr;
-			}
-		}
-	}
+    /*for(eMapIt = eMap->begin(); eMapIt != eMap->end(); ++eMapIt){
+        std::list<eEvent *> tmplist = eMapIt->second;
+        if(!tmplist.empty()){
+            std::list<eEvent *>::iterator tmplistItr;
+            for(tmplistItr = tmplist.begin();tmplistItr != tmplist.end();++tmplistItr){
+                delete *tmplistItr;
+            }
+        }
+    }
     //delete iMap;
-	delete eMap;
+    delete eMap;
 
-	Output::Inst()->kprintf("EventQueue Cleared\n");
+    Output::Inst()->kprintf("EventQueue Cleared\n");*/
 }
 
 /* **********************************************************************
@@ -71,57 +71,69 @@ EventQueue::~EventQueue(){
 /**
  * Insertion of a External Event.
  * External events are placed in the external events linked list at the defined tmu hashkey.
- * if a list doesn't exist at the given tmu a new one will be initialized. 
+ * if a list doesn't exist at the given tmu a new one will be initialized.
  * @param tmu when the event will be placed.
  * @param event pointer to the event which is to be indexed by the eventqueue.
  */
-void EventQueue::insertEEvent(eEvent *event){
-	eSize++;
-	unsigned long long tmu = event->activationTime;
-	//Output::Inst()->kprintf("eTMU inserted %lld \n", tmu);
-	//if the tmu position is empty:
-	if(eMap->find(tmu) == eMap->end()){
-		eEvents tmp;
-		tmp.push_back(event);
-		eMap->insert(std::pair<unsigned long long,eEvents>(tmu,tmp));
+void EventQueue::insertEEvent(std::unique_ptr<eEvent> eeventPtr)
+{
+    eSize++;
 
-	} else{
-		eEvents *tmp = &eMap->find(tmu)->second;
-		tmp->push_back(event);
-	}
+    unsigned long long tmu = eeventPtr->activationTime;
+
+    if(eMap.find(tmu) == eMap.end())
+    {
+        eEvents tmp;
+        tmp.push_back(std::move(eeventPtr));
+        eMap.insert(std::make_pair(tmu,std::move(tmp)));
+
+    } else
+    {
+        auto eeventItr = eMap.find(tmu);
+        eeventItr->second.push_back(std::move(eeventPtr));
+    }
 
     //Insert activation time into the trigger set:
-	if(tmuSet.find(tmu)==tmuSet.end()){
-		tmuSet.insert(tmu);
-		if(activeTmu.empty()){
-			activeTmu.push_front(tmu);
-		}else{	//do insertion sort:
-			bool inserted = false;	
-			std::list<unsigned long long>::iterator activeIt;
+    if(tmuSet.find(tmu)==tmuSet.end())
+    {
+        tmuSet.insert(tmu);
+        if(activeTmu.empty())
+        {
+            activeTmu.push_front(tmu);
+        }else
+        {
+            //do insertion sort:
+            bool inserted = false;
+            std::list<unsigned long long>::iterator activeIt;
 
-            for(activeIt = activeTmu.begin(); activeIt!=activeTmu.end(); activeIt++){
-				if(*activeIt > tmu){
-					//activeIt;
-					activeTmu.insert(activeIt, tmu);
-					inserted = true;
-					break;
-				}
-			}
-			if(!inserted){
-				activeTmu.push_back(tmu);
-			}
-		}
-	}
+            for(activeIt = activeTmu.begin(); activeIt!=activeTmu.end(); activeIt++)
+            {
+                if(*activeIt > tmu)
+                {
+                    //activeIt;
+                    activeTmu.insert(activeIt, tmu);
+                    inserted = true;
+                    break;
+                }
+            }
+            if(!inserted)
+            {
+                activeTmu.push_back(tmu);
+            }
+        }
+    }
 }
 
 /**
  * Retrieves an external event ptr list.
  * @param tmu timestep for the event ptr list
- * @returns event list at current tmu index in the hashmap, or NULL if there isn't an eventlist 
+ * @returns event list at current tmu index in the hashmap, or NULL if there isn't an eventlist
  */
-std::list<EventQueue::eEvent*> EventQueue::getEEventList(unsigned long long tmu){
-	std::list<eEvent*> eeList = eMap->find(tmu)->second;
-	return eeList;
+std::list<std::unique_ptr<EventQueue::eEvent>> EventQueue::getEEventList(unsigned long long tmu)
+{
+    auto emapItr = eMap.find(tmu);
+    std::list<std::unique_ptr<eEvent>> eList(std::move(emapItr->second)) ;
+    return eList;
 }
 
 /**
@@ -129,16 +141,52 @@ std::list<EventQueue::eEvent*> EventQueue::getEEventList(unsigned long long tmu)
  * @param tmu microstep too look for an event
  * @return false if there are no events, and true of there is
  */
-bool EventQueue::eEventsAtTime(unsigned long long tmu){
-	eMapIt = eMap->find(tmu);
-	if(eMapIt == eMap->end() || eMapIt->second.empty()){
-		return false;
-	} else
-		return true;
+bool EventQueue::eEventsAtTime(unsigned long long tmu)
+{
+    auto eMapIt = eMap.find(tmu);
+
+    if(eMapIt == eMap.end() || eMapIt->second.empty())
+    {
+        return false;
+    } else
+        return true;
 }
 
+const EventQueue::eEvent* EventQueue::addUsedEEvent(std::unique_ptr<eEvent> eEvent)
+{
+    int id = eEvent->id;
+    usedEEvents.insert(std::make_pair(id, std::move(eEvent)));
+    return usedEEvents.find(id)->second.get();
+}
 
+void EventQueue::decrementEeventCounter(unsigned long long id)
+{
+    auto itr = usedEEvents.find(id);
 
+    if(itr != usedEEvents.end())
+    {
+        itr->second->reference_count--;
+
+        //Output::Inst()->kprintf("reference count for event with ID %i is %i", id, itr->second->reference_count.load());
+
+        if (itr->second->reference_count.load() == 0)
+        {
+            //Output::Inst()->kprintf("adding event with id %i to legacy map", id);
+            legacyEvents.push_back(std::move(itr->second));
+        }
+
+    } else Output::Inst()->kprintf("event not found in Used Eevent hash map, something is wrong");
+}
+
+void EventQueue::incrementEeventCounter(unsigned long long id)
+{
+    auto itr = usedEEvents.find(id);
+
+    if(itr != usedEEvents.end())
+    {
+        itr->second->reference_count++;
+    } else Output::Inst()->kprintf("external event not found in Event hash map, cannot increment reference counter");
+}
 
 /* **********************************************************************
  * INTERNAL EVENT HANDLING
@@ -148,70 +196,70 @@ bool EventQueue::eEventsAtTime(unsigned long long tmu){
  * Insert internal event.
  * Adds a pointer to an internal event to the iMap hashmap, it will make a new
  * internal event list at its activation time if none exists.
- * It will also add the internal events activation time to a hashset and 
+ * It will also add the internal events activation time to a hashset and
  * event time list via insertion sort.
  * @param event, pointer to an internal event.
  */
 void EventQueue::insertIEvent(std::unique_ptr<iEvent> ieventPtr)
 {
-	//put event in hashmap.
-	iSize++;
+    //put event in hashmap.
+    iSize++;
     unsigned long long tmu = ieventPtr->activationTime;
-    auto iMapItr = iMap.find(tmu);
 
-    if(iMapItr == iMap.end())
+    if(iMap.find(tmu) == iMap.end())
     {
-		iEvents tmp;
+        iEvents tmp;
         tmp.push_back(std::move(ieventPtr));
         iMap.insert(std::make_pair(tmu,std::move(tmp)));
+
     } else
     {
-        auto tmp = iMap.find(tmu);
-        tmp->second.push_back(std::move(ieventPtr));
+        auto ieventItr = iMap.find(tmu);
+        ieventItr->second.push_back(std::move(ieventPtr));
         //Output::Inst()->kprintf("size of list is %i ", iMap.find(tmu)->second.size());
     }
 
     //Insert the activation time into the trigger set:
     if(tmuSet.find(tmu)==tmuSet.end())
     {
-		tmuSet.insert(tmu);
+        tmuSet.insert(tmu);
         if(activeTmu.empty())
         {
-			activeTmu.push_front(tmu);
+            activeTmu.push_front(tmu);
         }else
         {
             //std::list<unsigned long long>::iterator activeIt;
-			bool inserted = false;			
-			//do insertion sort:
+            bool inserted = false;
+            //do insertion sort:
             for(auto activeIt = activeTmu.begin(); activeIt!=activeTmu.end(); activeIt++)
             {
                 if(*activeIt > tmu)
                 {
-					//Output::Inst()->kprintf("insertinginternal event %llu, %llu \n", *activeIt,tmu);
-					activeTmu.insert(activeIt, tmu);
-					inserted = true;
-					break;
-				}
-			}
+                    //Output::Inst()->kprintf("insertinginternal event %llu, %llu \n", *activeIt,tmu);
+                    activeTmu.insert(activeIt, tmu);
+                    inserted = true;
+                    break;
+                }
+            }
             if(!inserted)
             {
-				//Output::Inst()->kprintf("not inserted event %llu, %llu \n", *activeIt,tmu);
-				activeTmu.push_back(tmu);
-			}
-		}
-	}
+                //Output::Inst()->kprintf("not inserted event %llu, %llu \n", *activeIt,tmu);
+                activeTmu.push_back(tmu);
+            }
+        }
+    }
 }
 
 /* Retrieves an internal event ptr list.
  * @param tmu timestep for the event ptr list
- * @returns event list at current tmu index in the hashmap, or NULL if there isn't an eventlist 
+ * @returns event list at current tmu index in the hashmap, or NULL if there isn't an eventlist
  */
 std::list<std::unique_ptr<EventQueue::iEvent>> EventQueue::getIEventList(unsigned long long tmu)
 {
 
-    auto imapitr = iMap.find(tmu);
+    auto imapItr = iMap.find(tmu);
     //retrieve the list containing the events:
-    std::list<std::unique_ptr<iEvent>> iList(std::move(imapitr->second));
+    std::list<std::unique_ptr<iEvent>> iList(std::move(imapItr->second));
     return iList;
 }
 
@@ -219,10 +267,11 @@ std::list<std::unique_ptr<EventQueue::iEvent>> EventQueue::getIEventList(unsigne
  * Returns the next relevant tmu.
  * @returns tmu
  */
-unsigned long long EventQueue::getNextTmu(){
-	if(activeTmu.empty())
-		return ULLONG_MAX;
-	else return activeTmu.front();
+unsigned long long EventQueue::getNextTmu()
+{
+    if(activeTmu.empty())
+        return ULLONG_MAX;
+    else return activeTmu.front();
 }
 
 /**
@@ -236,10 +285,15 @@ bool EventQueue::iEventsAtTime(unsigned long long tmu)
 
     if(iMapIt == iMap.end() || iMapIt->second.empty())
     {
-		return false;
+        return false;
     } else
         return true;
 }
+
+
+
+
+
 /* **********************************************************************
  * UTILITY FUNCTIONS
  * ******************************************************************** */
@@ -248,11 +302,11 @@ bool EventQueue::iEventsAtTime(unsigned long long tmu)
  * Legacy the front active event tmu.
  * Move the lowest active event tmu (active.front()) to the legacy tmu list. This
  * function is called whenever the simulator has completed the microstep
- * associated with the lowest active event tmu. 
+ * associated with the lowest active event tmu.
  */
 void EventQueue::legacyFront(){
-	legacyTmu.push_back(activeTmu.front());
-	activeTmu.pop_front();
+    legacyTmu.push_back(activeTmu.front());
+    activeTmu.pop_front();
 }
 
 /**
@@ -260,7 +314,7 @@ void EventQueue::legacyFront(){
  * @return number of external events
  */
 unsigned long long EventQueue::getESize(){
-	return eSize;
+    return eSize;
 }
 
 /**
@@ -268,13 +322,13 @@ unsigned long long EventQueue::getESize(){
  * @return number of internal events
  */
 unsigned long long EventQueue::getISize(){
-	return iSize;
+    return iSize;
 }
 
 /**
  * Save eEvent data to disk.
- * Saves eventQueue data to disk writes a binary kas file to 
- * the disk containing a data representation of the external 
+ * Saves eventQueue data to disk writes a binary kas file to
+ * the disk containing a data representation of the external
  * events which contains their LUA distribution function this files
  * data will be visualized in the data tool.
  * It also saves an information struct with relevant information
@@ -287,72 +341,72 @@ unsigned long long EventQueue::getISize(){
  * @param areaX width of the area[m].
  */
 void EventQueue::saveEEventData(std::string name, std::string luaFileName, 
-		int autonAmount, double areaY, double areaX){ 
+                                int autonAmount, double areaY, double areaX){
 
-	std::string filename = name;
+    std::string filename = name;
 
-	//Open the file and set the options:
-	std::ofstream file (filename.c_str(), std::ofstream::binary | std::ofstream::trunc);
-	//int bufferLimit = 100000;
+    //Open the file and set the options:
+    std::ofstream file (filename.c_str(), std::ofstream::binary | std::ofstream::trunc);
+    //int bufferLimit = 100000;
 
-	Output::Inst()->kprintf("Saving event data to file:  %s\n" , luaFileName.c_str());
+    Output::Inst()->kprintf("Saving event data to file:  %s\n" , luaFileName.c_str());
 
-	//first save the dataEvent to the file:
-	simInfo dataInfo;
-	strncpy(dataInfo.luaFileName, luaFileName.c_str(),1024);
+    //first save the dataEvent to the file:
+    simInfo dataInfo;
+    strncpy(dataInfo.luaFileName, luaFileName.c_str(),1024);
 
-	Output::Inst()->kprintf("name %s", luaFileName.c_str());
-	Output::Inst()->kprintf("path saved is: %s", dataInfo.luaFileName);
+    Output::Inst()->kprintf("name %s", luaFileName.c_str());
+    Output::Inst()->kprintf("path saved is: %s", dataInfo.luaFileName);
 
-	dataInfo.eventAmount = eSize;
-	dataInfo.numberOfAutons = autonAmount;
-	dataInfo.timeResolution = 1/Phys::getTimeRes();
-	dataInfo.macroFactor = Phys::getMacroFactor();
-	dataInfo.tmuAmount = Phys::getCTime();
-	dataInfo.areaX = Phys::getEnvX();
-	dataInfo.areaY = Phys::getEnvY();
-	dataInfo.mapResolution = Phys::getScale();
-	//Output::Inst()->kprintf("\nsize stuff %d \n", dataInfo.areaX);
+    dataInfo.eventAmount = eSize;
+    dataInfo.numberOfAutons = autonAmount;
+    dataInfo.timeResolution = 1/Phys::getTimeRes();
+    dataInfo.macroFactor = Phys::getMacroFactor();
+    dataInfo.tmuAmount = Phys::getCTime();
+    dataInfo.areaX = Phys::getEnvX();
+    dataInfo.areaY = Phys::getEnvY();
+    dataInfo.mapResolution = Phys::getScale();
+    //Output::Inst()->kprintf("\nsize stuff %d \n", dataInfo.areaX);
 
-	file.write(reinterpret_cast<char*>(&dataInfo),sizeof(dataInfo));
+    file.write(reinterpret_cast<char*>(&dataInfo),sizeof(dataInfo));
 
-	//then save all the external events:
-	auto infoItr = agentFilenames.begin();
+    //then save all the external events:
+    auto infoItr = agentFilenames.begin();
 
-	for(eMapIt = eMap->begin(); eMapIt != eMap->end(); ++eMapIt)
-	{
-		std::list<eEvent *> tmplist = eMapIt->second;
-		if(!tmplist.empty())
-		{
-			std::list<eEvent *>::iterator tmplistItr;
-			for(tmplistItr = tmplist.begin();tmplistItr != tmplist.end();++tmplistItr)
-			{
-				eEvent* tmp = *tmplistItr;
-				dataEvent devent;
-				devent.id = tmp->id;
-				devent.activationTime = tmp->activationTime;
-				//Output::Inst()->kprintf("%i", devent.activationTime);
+    for(auto eMapIt = eMap.begin(); eMapIt != eMap.end(); ++eMapIt)
+    //{
+        /*std::list<eEvent *> tmplist = eMapIt->second;
+        if(!tmplist.empty())
+        {
+            std::list<eEvent *>::iterator tmplistItr;
+            for(tmplistItr = tmplist.begin();tmplistItr != tmplist.end();++tmplistItr)
+            {
+                eEvent* tmp = *tmplistItr;
+                dataEvent devent;
+                devent.id = tmp->id;
+                devent.activationTime = tmp->activationTime;
+                //Output::Inst()->kprintf("%i", devent.activationTime);
                 devent.targetID = tmp->targetID;
-				devent.originX = tmp->posX;
-				devent.originY = tmp->posY;
+                devent.originX = tmp->posX;
+                devent.originY = tmp->posY;
                 devent.originID = tmp->originID;
-				devent.propagationSpeed = tmp->propagationSpeed;
-				strncpy(devent.desc,tmp->desc.c_str(),150);
-				strncpy(devent.table,tmp->table.c_str(),1024);
-				//Add the filename if it exists:
+                devent.propagationSpeed = tmp->propagationSpeed;
+                strncpy(devent.desc,tmp->desc.c_str(),150);
+                strncpy(devent.table,tmp->table.c_str(),1024);
+                //Add the filename if it exists:
                 infoItr = agentFilenames.find(tmp->originID);
-				if(infoItr != agentFilenames.end())
-				{
-					strncpy(devent.filename, infoItr->second.c_str(), 256);
-				}else strncpy(devent.filename, std::string("NULL").c_str(),256);
+                if(infoItr != agentFilenames.end())
+                {
+                    strncpy(devent.filename, infoItr->second.c_str(), 256);
+                }else strncpy(devent.filename, std::string("NULL").c_str(),256);
 
-				//Output::Inst()->kprintf("Event id %i \n", tmp->id);
-				file.write(reinterpret_cast<char*>(&devent),sizeof(devent));
-			}	
-		} else{
-		}
-	}
-	Output::Inst()->kprintf("Saving data done\n");
+                //Output::Inst()->kprintf("Event id %i \n", tmp->id);
+                file.write(reinterpret_cast<char*>(&devent),sizeof(devent));
+            }
+        } else{
+        }
+    }*/
+    Output::Inst()->kprintf("Saving data done\n");
 
 }
 
@@ -360,27 +414,27 @@ void EventQueue::saveEEventData(std::string name, std::string luaFileName,
  * Prints all unique legacy tmus
  */
 void EventQueue::printLTmus(){
-	Output::Inst()->kprintf("----------------\n");
+    Output::Inst()->kprintf("----------------\n");
 
-	for(legacyIt = legacyTmu.begin(); legacyIt!=legacyTmu.end(); ++legacyIt){
-		Output::Inst()->kprintf("%d\n", *legacyIt);							
-	}
-	Output::Inst()->kprintf("----------------\n");
+    for(legacyIt = legacyTmu.begin(); legacyIt!=legacyTmu.end(); ++legacyIt){
+        Output::Inst()->kprintf("%d\n", *legacyIt);
+    }
+    Output::Inst()->kprintf("----------------\n");
 }
 
 /**
  * Prints all unique active tmus
  */
 void EventQueue::printATmus(){
-	Output::Inst()->kprintf("----------------\n");
+    Output::Inst()->kprintf("----------------\n");
 
-	for(activeIt = activeTmu.begin(); activeIt!=activeTmu.end(); activeIt++){
-		Output::Inst()->kprintf("%llu\n", *activeIt);							
-	}
-	Output::Inst()->kprintf("----------------\n");
+    for(activeIt = activeTmu.begin(); activeIt!=activeTmu.end(); activeIt++){
+        Output::Inst()->kprintf("%llu\n", *activeIt);
+    }
+    Output::Inst()->kprintf("----------------\n");
 }
 
 void EventQueue::addAutonInfo(int id, std::string filename)
 {
-	agentFilenames.insert(std::pair<int, std::string>(id, filename) );
+    agentFilenames.insert(std::pair<int, std::string>(id, filename) );
 }

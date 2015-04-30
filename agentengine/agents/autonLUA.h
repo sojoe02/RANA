@@ -98,10 +98,10 @@ class AutonLUA : public Auton
 
 private:
 		//function to receive an event from nestene responsible for this auton, returns an internal Event 'thinking':
-        std::unique_ptr<EventQueue::iEvent> handleEvent(EventQueue::eEvent* event);
-        EventQueue::eEvent* actOnEvent(std::unique_ptr<EventQueue::iEvent> eventPtr);
-		//returns an event:
-		EventQueue::eEvent* initEvent();
+        std::unique_ptr<EventQueue::iEvent> handleEvent(const EventQueue::eEvent* event);
+        std::unique_ptr<EventQueue::eEvent> actOnEvent(std::unique_ptr<EventQueue::iEvent> eventPtr);
+        std::unique_ptr<EventQueue::eEvent> initEvent();
+
         void setRemoved();
 
 		void simDone();

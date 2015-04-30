@@ -38,9 +38,9 @@ private:
 
     //returns an event:
     EventQueue::eEvent* initEvent(double macroResolution, unsigned long long tmu);
-    EventQueue::eEvent* initEvent(){return NULL;}
+    std::unique_ptr<EventQueue::eEvent> initEvent(){return NULL;}
 	void processFunction(EventQueue::dataEvent *devent, double mapRes,double x, double y, double &zvalue,
-						 double &duration){};
+                         double &duration){}
 
     double eventChance();
 

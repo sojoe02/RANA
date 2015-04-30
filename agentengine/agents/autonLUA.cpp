@@ -177,7 +177,7 @@ AutonLUA::~AutonLUA(){
  * @param event pointer to the external event.
  * @return internal event.
  */
-std::unique_ptr<EventQueue::iEvent> AutonLUA::handleEvent(EventQueue::eEvent *event)
+std::unique_ptr<EventQueue::iEvent> AutonLUA::handleEvent(const EventQueue::eEvent *event)
 {
     if (removed) return NULL;
 
@@ -217,16 +217,13 @@ std::unique_ptr<EventQueue::iEvent> AutonLUA::handleEvent(EventQueue::eEvent *ev
  * @return EventQueue::eEvent pointer to an external event or
  * a null pointer in which case nothing happens.
  */
-EventQueue::eEvent* AutonLUA::initEvent()
+std::unique_ptr<EventQueue::eEvent> AutonLUA::initEvent()
 {
     if(removed) return NULL;
 
     if(nofile) return NULL;
 
-    lua_settop(L,0);
-
-    int isnum;
-
+    lua_settop(L,0);   
     //Output::Inst()->kprintf("position %f, %f \n", posX, posY);
     //lua_settop(L,0);
     try{
@@ -250,7 +247,7 @@ EventQueue::eEvent* AutonLUA::initEvent()
         }
 
         //Generate the internal event:
-        EventQueue::eEvent* sendEvent = new EventQueue::eEvent();
+        std::unique_ptr<EventQueue::eEvent> sendEvent(new EventQueue::eEvent());
 
         sendEvent->origin = this;
         sendEvent->activationTime = Phys::getCTime();
@@ -301,7 +298,7 @@ EventQueue::eEvent* AutonLUA::initEvent()
  * @param event pointer to the internal event.
  * @return external event.
  */
-EventQueue::eEvent* AutonLUA::actOnEvent(std::unique_ptr<EventQueue::iEvent> eventPtr){
+std::unique_ptr<EventQueue::eEvent> AutonLUA::actOnEvent(std::unique_ptr<EventQueue::iEvent> eventPtr){
 
     if(removed) return NULL;
 
@@ -339,7 +336,7 @@ EventQueue::eEvent* AutonLUA::actOnEvent(std::unique_ptr<EventQueue::iEvent> eve
             return NULL;
 
         //Generate the internal event:
-        EventQueue::eEvent* sendEvent = new EventQueue::eEvent();
+        std::unique_ptr<EventQueue::eEvent> sendEvent(new EventQueue::eEvent());
         //first set the two pointers to 'this' and the external event that spurred it:
         sendEvent->origin = this;
         sendEvent->activationTime = Phys::getCTime() + 1;
@@ -361,7 +358,7 @@ EventQueue::eEvent* AutonLUA::actOnEvent(std::unique_ptr<EventQueue::iEvent> eve
         sendEvent->posY = posY;
         sendEvent->originID = ID;
 
-        distroEEvent(sendEvent);
+        return sendEvent;
     }
     catch(std::exception& e)
     {

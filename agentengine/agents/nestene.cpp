@@ -154,7 +154,7 @@ void Nestene::retrievePopPos(std::list<agentInfo> &infolist){
  */
 void Nestene::initPhase(double macroResolution, unsigned long long tmu){
     //query it's population on whether there is going to be an event or not:
-    for(itListeners = listeners.begin(); itListeners !=listeners.end(); itListeners++){
+    /*for(itListeners = listeners.begin(); itListeners !=listeners.end(); itListeners++){
         EventQueue::eEvent* eevent = itListeners->second.initEvent(macroResolution,tmu);
         if(eevent != NULL){
             master->receiveInitEEventPtr(eevent);
@@ -165,12 +165,14 @@ void Nestene::initPhase(double macroResolution, unsigned long long tmu){
         if(eevent != NULL){
             master->receiveInitEEventPtr(eevent);
         }
-    }
+    }*/
 
     for(auto itLUAs = LUAs.begin(); itLUAs !=LUAs.end(); itLUAs++){
-        EventQueue::eEvent* eevent = itLUAs->second->initEvent();
+
+        std::unique_ptr<EventQueue::eEvent> eevent = itLUAs->second->initEvent();
+
         if(eevent != NULL){
-            master->receiveInitEEventPtr(eevent);
+            master->receiveInitEEventPtr(std::move(eevent));
         }
     }
 
@@ -194,7 +196,7 @@ void Nestene::initPhase(double macroResolution, unsigned long long tmu){
  * Recieves an eventlist from the Master to distribute among local autons
  * @param event EventQueue ptr holding external events.
  */
-void Nestene::distroPhase(EventQueue::eEvent* event)
+void Nestene::distroPhase(const EventQueue::eEvent* event)
 {
    for(auto itLUAs = LUAs.begin(); itLUAs != LUAs.end(); ++itLUAs)
    {
@@ -203,7 +205,10 @@ void Nestene::distroPhase(EventQueue::eEvent* event)
             std::unique_ptr<EventQueue::iEvent> ieventPtr = itLUAs->second->handleEvent(event);
 
             if(ieventPtr != NULL)
+            {
+                master->incrementEEventCounter(event->id);
                 master->receiveIEventPtr(std::move(ieventPtr));
+            }
         }
     }
 }
@@ -214,14 +219,14 @@ void Nestene::distroPhase(EventQueue::eEvent* event)
  */
 void Nestene::endPhase(){
     //distribute all Eevents that's in the Eevent outbox:
-    if(!eEventsOutbox.empty()){
+    /*if(!eEventsOutbox.empty()){
         for(iteEventsOutbox = eEventsOutbox.begin(); iteEventsOutbox != eEventsOutbox.end(); iteEventsOutbox++){
             EventQueue::eEvent *event = *iteEventsOutbox;
             //std::cout << "Auton responding on Event with external event " << event->id << std::endl;
             master->receiveEEventPtr(event);
         }
         eEventsOutbox.clear();
-    }
+    }*/
 }
 
 void Nestene::simDone(){

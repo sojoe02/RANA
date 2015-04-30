@@ -37,14 +37,14 @@ class AutonListener : public Auton
 	private:
 		//function to receive an event from nestene responsible for this auton, returns an internal Event 'thinking':
         std::unique_ptr<EventQueue::iEvent> handleEvent(EventQueue::eEvent* event);
-        EventQueue::eEvent* actOnEvent(std::unique_ptr<EventQueue::iEvent> eventPtr);
+        std::unique_ptr<EventQueue::eEvent> actOnEvent(std::unique_ptr<EventQueue::iEvent> eventPtr);
 
 
 		//returns an event:
-		EventQueue::eEvent* initEvent(double macroResolution, unsigned long long tmu);
-		EventQueue::eEvent* initEvent(){return NULL;};
+        std::unique_ptr<EventQueue::eEvent> initEvent(double macroResolution, unsigned long long tmu);
+        std::unique_ptr<EventQueue::eEvent> initEvent(){return NULL;}
 		void processFunction(EventQueue::dataEvent *devent,double mapRes,double x, double y, double &zvalue,
-							 double &duration){};
+                             double &duration){}
 
 		double eventChance;
 

@@ -218,18 +218,23 @@ void Master::populateSquareListenerSystem(int listenerSize)
     }
 }
 
+/********************************************************
+ * Event processing functions: 							*
+ * 														*
+ ********************************************************/
 
-void Master::receiveEEventPtr(EventQueue::eEvent *eEvent)
+
+void Master::receiveEEventPtr(std::unique_ptr<EventQueue::eEvent> eEvent)
 {
-    eventQueue->insertEEvent(eEvent);
+    eventQueue->insertEEvent(std::move(eEvent));
 }
 
-void Master::receiveInitEEventPtr(EventQueue::eEvent *eEvent)
+void Master::receiveInitEEventPtr(std::unique_ptr<EventQueue::eEvent> eEvent)
 {
     //increase the initiated events counter:
     eEventInitAmount++;
     //insert the event into the eventQueue:
-    eventQueue->insertEEvent(eEvent);
+    eventQueue->insertEEvent(std::move(eEvent));
 }
 
 void Master::receiveIEventPtr(std::unique_ptr<EventQueue::iEvent> ievent)
@@ -252,33 +257,41 @@ void Master::microStep(unsigned long long tmu)
     //Output::Inst()->kprintf("Taking microstep at %d \n", tmu);
     if(eventQueue->eEventsAtTime(tmu))
     {
-        std::list<EventQueue::eEvent*> list = eventQueue->getEEventList(tmu);
-        std::list<EventQueue::eEvent*>::iterator itlist = list.begin();
+        auto elist = eventQueue->getEEventList(tmu);
 
-        for(; itlist != list.end(); ++itlist)
+        for(auto eListItr = elist.begin(); eListItr != elist.end(); ++eListItr)
         {
+            const EventQueue::eEvent* eEventPtr = eventQueue->addUsedEEvent(std::move(*eListItr));
+
             for(itNest = nestenes.begin(); itNest != nestenes.end(); itNest++)
             {
                 externalDistroAmount++;
-                //EventQueue::eEvent* event = *itlist;
-                itNest->distroPhase(*itlist);
+                itNest->distroPhase(eEventPtr);
+
             }
         }
     }
 
     if(eventQueue->iEventsAtTime(tmu))
     {
-        auto list = eventQueue->getIEventList(tmu);
+        auto ilist = eventQueue->getIEventList(tmu);
 
-        for(auto itlist = list.begin(); itlist != list.end(); ++itlist)
+        for(auto iListItr = ilist.begin(); iListItr != ilist.end(); ++iListItr)
         {
             //EventQueue::iEvent* event = *itlist;
             //Output::Inst()->kprintf("origin id is %i", event->originID);
-            if (removedIDs.find((*itlist)->originID) == removedIDs.end())
+            if (removedIDs.find((*iListItr)->originID) == removedIDs.end())
             {
-                std::unique_ptr<EventQueue::iEvent> eventPtr(std::move(*itlist));
-                AutonLUA *luaAgent = (AutonLUA*)eventPtr->origin;
-                luaAgent->actOnEvent(std::move(eventPtr));
+                std::unique_ptr<EventQueue::iEvent> iEventPtr(std::move(*iListItr));
+                AutonLUA *luaAgent = (AutonLUA*)iEventPtr->origin;
+                eventQueue->decrementEeventCounter(iEventPtr->event->id);
+
+                std::unique_ptr<EventQueue::eEvent> eEventPtr = luaAgent->actOnEvent(std::move(iEventPtr));
+
+
+                if(eEventPtr != NULL)
+                    eventQueue->insertEEvent(std::move(eEventPtr));
+
             }
         }
     }

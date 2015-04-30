@@ -52,8 +52,9 @@ std::unique_ptr<EventQueue::iEvent> AutonListener::handleEvent(EventQueue::eEven
 }
 
 
-EventQueue::eEvent* AutonListener::initEvent(double macroResolution, unsigned long long tmu){
-	if(!eventInitiated){
+std::unique_ptr<EventQueue::eEvent> AutonListener::initEvent(double macroResolution, unsigned long long tmu){
+
+    /*if(!eventInitiated){
 		eventInitiated = true;
 		EventQueue::eEvent *event = new EventQueue::eEvent();
 		event->desc = "callEvent";
@@ -62,12 +63,12 @@ EventQueue::eEvent* AutonListener::initEvent(double macroResolution, unsigned lo
 		event->activationTime = tmu+1;
 		event->origin = this;
 		return event;
-	}
+    }*/
 
 	return NULL;
 }
 
-EventQueue::eEvent* AutonListener::actOnEvent(std::unique_ptr<EventQueue::iEvent> eventPtr){
+std::unique_ptr<EventQueue::eEvent> AutonListener::actOnEvent(std::unique_ptr<EventQueue::iEvent> eventPtr){
 
     /*EventQueue::eEvent *sendEvent = new EventQueue::eEvent();
 	sendEvent->desc = "callEvent";

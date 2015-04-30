@@ -56,7 +56,7 @@ class Nestene
 		void initPhase(double macroResolution, unsigned long long tmu);
 
         //function to receive events the master, and distribute them on all local nestene
-        void distroPhase(EventQueue::eEvent* event);
+        void distroPhase(const EventQueue::eEvent *event);
 
 		std::list<EventQueue::iEvent> responsePhase();
 		void endPhase();

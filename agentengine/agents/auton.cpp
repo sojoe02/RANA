@@ -49,15 +49,15 @@ double Auton::getPosY(){
 	return posY;
 }
 
-void Auton::distroEEvent(EventQueue::eEvent *event){
-	nestene->eEventsOutbox.push_back(event);
+void Auton::distroEEvent(std::unique_ptr<EventQueue::eEvent> event){
+    //nestene->eEventsOutbox.push_back(std::move(event));
 }
 
 std::unique_ptr<EventQueue::iEvent> Auton::handleEvent(EventQueue::eEvent* event){
 	return NULL;
 }
 
-EventQueue::eEvent* Auton::actOnEvent(std::unique_ptr<EventQueue::iEvent> eventPtr){
+std::unique_ptr<EventQueue::eEvent> Auton::actOnEvent(std::unique_ptr<EventQueue::iEvent> eventPtr){
     return NULL;
 }
 

@@ -30,6 +30,7 @@
 #include <string>
 #include <unordered_set>
 #include <memory>
+#include <atomic>
 
 class Auton;
 class EventQueue
@@ -62,13 +63,15 @@ class EventQueue
 			unsigned long long activationTime;
             int targetID;
 			int originID;
-			//double funcArray[11];
+            std::atomic_uint reference_count;
+
+            eEvent() : reference_count(0){}
 		};
 
 		//define the internal Event:
 		struct iEvent {
 			Auton *origin;
-			eEvent *event;
+            const eEvent *event;
 			unsigned long long activationTime;
 			unsigned long long id;
 			std::string desc;
@@ -97,19 +100,24 @@ class EventQueue
 
 
 		//handling of external Events:
-		void insertEEvent(eEvent *event);
-		eEvent* popBackEEvent(unsigned long long tmu);
-		std::list<eEvent*> getEEventList(unsigned long long tmu);
+        void insertEEvent(std::unique_ptr<eEvent> eeventPtr);
+        std::list<std::unique_ptr<eEvent> > getEEventList(unsigned long long tmu);
 		bool eEventsAtTime(unsigned long long tmu);
-		unsigned long long getNextTmu();
-		void legacyFront();
+        unsigned long long getNextTmu();
+
+        void legacyFront();
+
+        const EventQueue::eEvent* addUsedEEvent(std::unique_ptr<eEvent> eEvent);
+
+        void decrementEeventCounter(unsigned long long id);
+        void incrementEeventCounter(unsigned long long id);
 
 		//handling of internal Events:
         void insertIEvent(std::unique_ptr<EventQueue::iEvent> ieventPtr);
-		iEvent* popBackIEvent(unsigned long long tmu);
         std::list<std::unique_ptr<iEvent> > getIEventList(unsigned long long tmu);
 		bool iEventsAtTime(unsigned long long tmu);
 		unsigned long long getNextItmu();
+
 		void printLTmus();
 		void printATmus();
 
@@ -127,14 +135,15 @@ class EventQueue
 
 		void printTest();
 		//the eventmaps, (event):
-		typedef std::list<eEvent *> eEvents;
+        typedef std::list<std::unique_ptr<eEvent>> eEvents;
         typedef std::list<std::unique_ptr<iEvent>> iEvents;
-		//the eventqueues, (tmu, eventmap):
-        std::unordered_map<unsigned long long,iEvents> iMap;
-		std::unordered_map<unsigned long long,eEvents> *eMap;
-		//iterators:
-        //std::unordered_map<unsigned long long,iEvents>::iterator iMapIt;
-		std::unordered_map<unsigned long long,eEvents>::iterator eMapIt;
+
+        std::unordered_map<unsigned long long, iEvents> iMap;
+        std::unordered_map<unsigned long long, eEvents> eMap;
+        std::unordered_map<unsigned long long, std::unique_ptr<eEvent>> usedEEvents;
+
+        std::list<std::unique_ptr<eEvent>> legacyEvents;
+
 		//time keeper lists:
 		std::list<unsigned long long> activeTmu;
 		std::list<unsigned long long> legacyTmu;

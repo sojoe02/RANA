@@ -70,8 +70,11 @@ public:
 	/*
 		   Functions on what to do when receiving events:
 		   */
-	void receiveEEventPtr(EventQueue::eEvent* eEvent);
-	void receiveInitEEventPtr(EventQueue::eEvent* eEvent);
+    void receiveEEventPtr(std::unique_ptr<EventQueue::eEvent> eEvent);
+    void receiveInitEEventPtr(std::unique_ptr<EventQueue::eEvent> eEvent);
+
+    void decrementEEventCounter(unsigned long long id){eventQueue->decrementEeventCounter(id);}
+    void incrementEEventCounter(unsigned long long id){eventQueue->incrementEeventCounter(id);}
 
 	/*
 		   Functions to add events to the masters eventQueue

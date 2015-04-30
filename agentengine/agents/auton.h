@@ -38,11 +38,11 @@ public:
     virtual ~Auton(){}
 
     virtual std::unique_ptr<EventQueue::iEvent> handleEvent(EventQueue::eEvent* event);
-    virtual EventQueue::eEvent* actOnEvent(std::unique_ptr<EventQueue::iEvent> event);
-	virtual EventQueue::eEvent* initEvent(){return NULL;};
+    virtual std::unique_ptr<EventQueue::eEvent> actOnEvent(std::unique_ptr<EventQueue::iEvent> event);
+    virtual std::unique_ptr<EventQueue::eEvent> initEvent(){return NULL;}
 
     virtual void processFunction(EventQueue::dataEvent *devent, double mapRes,
-								 double x, double y, double &zvalue, double &duration){};
+                                 double x, double y, double &zvalue, double &duration){}
     //virtual double eventChance();
 
 	
@@ -51,14 +51,14 @@ public:
     double getPosX();
     double getPosY();
 
-    void simDone(){};
+    void simDone(){}
 
     bool operator==(Auton &other) const;
     bool operator!=(Auton &other) const;
 
 
 protected:
-    void distroEEvent(EventQueue::eEvent* event);
+    void distroEEvent(std::unique_ptr<EventQueue::eEvent> event);
 
     int ID;
     std::string desc;
