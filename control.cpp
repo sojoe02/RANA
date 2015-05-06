@@ -112,3 +112,9 @@ void Control::saveEvents(QString path)
 {
 	agentDomain->saveExternalEvents(path.toStdString());
 }
+
+void Control::toggleLiveView(bool enable)
+{
+    if(agentDomain != NULL)
+        agentDomain->toggleLiveView(enable);
+}

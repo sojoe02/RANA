@@ -47,21 +47,9 @@ EventQueue::EventQueue()
  * @details When the event queue is destroyed it will visit each of the contained event pointers
  * and call a destructor on them, the price of storing pointers is paid here!
  */
-EventQueue::~EventQueue(){
-
-    /*for(eMapIt = eMap->begin(); eMapIt != eMap->end(); ++eMapIt){
-        std::list<eEvent *> tmplist = eMapIt->second;
-        if(!tmplist.empty()){
-            std::list<eEvent *>::iterator tmplistItr;
-            for(tmplistItr = tmplist.begin();tmplistItr != tmplist.end();++tmplistItr){
-                delete *tmplistItr;
-            }
-        }
-    }
-    //delete iMap;
-    delete eMap;
-
-    Output::Inst()->kprintf("EventQueue Cleared\n");*/
+EventQueue::~EventQueue()
+{
+    
 }
 
 /* **********************************************************************
@@ -85,7 +73,7 @@ void EventQueue::insertEEvent(std::unique_ptr<eEvent> eeventPtr)
     {
         eEvents tmp;
         tmp.push_back(std::move(eeventPtr));
-        eMap.insert(std::make_pair(tmu,std::move(tmp)));
+        eMap.insert(std::make_pair(tmu, std::move(tmp)));
 
     } else
     {
@@ -99,7 +87,7 @@ void EventQueue::insertEEvent(std::unique_ptr<eEvent> eeventPtr)
         tmuSet.insert(tmu);
         if(activeTmu.empty())
         {
-            activeTmu.push_front(tmu);
+            activeTmu.push_front(tmu);            
         }else
         {
             //do insertion sort:

@@ -65,7 +65,8 @@ class AgentDomain
 		void saveExternalEvents(std::string filename);
 		void updateStatus();
 
-    private:
+        void toggleLiveView(bool enable);
+private:
 
         Control *control;
 		bool mapGenerated;
@@ -82,6 +83,7 @@ class AgentDomain
 		//Atomic thread controllers:
 		std::atomic_bool stop;
 		std::mutex stopMutex;
+        std::atomic_bool fetchPositions;
 
         //MainWindow *mainwindow;
 };

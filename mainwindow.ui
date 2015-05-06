@@ -69,7 +69,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>4</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="simControlTab">
        <attribute name="title">
@@ -815,6 +815,13 @@
         </item>
         <item row="0" column="0" colspan="4">
          <widget class="QGraphicsView" name="graphicsView"/>
+        </item>
+        <item row="2" column="0">
+         <widget class="QCheckBox" name="disableAgentsCheckBox">
+          <property name="text">
+           <string>Disable Agents</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>

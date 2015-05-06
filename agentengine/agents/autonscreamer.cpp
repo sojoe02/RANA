@@ -51,7 +51,8 @@ EventQueue::eEvent *AutonScreamer::initEvent(double macroResolution, unsigned lo
         event->targetID = 0;
 		event->id = ID::generateEventID();
 		event->activationTime = tmu+1;
-		event->origin = this;
+
+        //event->origin = this;
 		//Output::Inst()->kprintf("auton starts event at time %lld \n",tmu);
 		return event;
 	} else

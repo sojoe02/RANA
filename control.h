@@ -79,6 +79,8 @@ public:
 
 	void saveEvents(QString path);
 
+    void toggleLiveView(bool enable);
+
 public slots:
 	void on_simDone();
 

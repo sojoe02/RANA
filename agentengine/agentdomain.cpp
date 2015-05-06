@@ -38,7 +38,7 @@ using std::chrono::seconds;
 using std::chrono::steady_clock;
 
 AgentDomain::AgentDomain(Control *control)
-    :control(control), mapGenerated(false), stop(false)
+    :control(control), mapGenerated(false), stop(false), fetchPositions(false)
 	 {
 		 Phys::seedMersenne();
          masteragent = new Master();
@@ -162,6 +162,11 @@ void AgentDomain::retrievePopPos(){
 
 }
 
+void AgentDomain::toggleLiveView(bool enable)
+{
+    fetchPositions.store(enable);
+}
+
 /**
  * Runs the simulation.
  * Start a simulation run, this will run a simulation, width the defined macro and micro
@@ -226,7 +231,7 @@ void AgentDomain::runSimulation(int time)
             //int delay = Output::DelayValue.load();
 			//std::this_thread::sleep_for(std::chrono::milliseconds(5));
             //if(delay != 0)
-			retrievePopPos();
+            if(fetchPositions.load()) retrievePopPos();
 
             start = end;
         }
@@ -236,6 +241,7 @@ void AgentDomain::runSimulation(int time)
             break;
         }
     }
+
     retrievePopPos();
     masteragent->simDone();
     masteragent->printStatus();

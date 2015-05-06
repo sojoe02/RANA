@@ -60,7 +60,6 @@ Master::~Master(){
  */
 void Master::generateMap(double width, double height, int threads, double timeResolution, double macroResolution)
 {
-
     this->timeResolution = timeResolution;
     this->macroResolution = macroResolution;
     this->threads = threads;
@@ -72,7 +71,6 @@ void Master::generateMap(double width, double height, int threads, double timeRe
     {
         nestenes.clear();
     }
-
 
     for(int i=0; i<threads; i++)
     {

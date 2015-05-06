@@ -127,6 +127,8 @@ private slots:
 
 	void on_action_Enable_Visualisation_triggered(bool checked);
 
+    void on_disableAgentsCheckBox_toggled(bool checked);
+
 signals:
 
     void map_updateSignal(INFOLIST infolist);
@@ -151,7 +153,8 @@ private:
     QImage *mapImage;
     QGraphicsPixmapItem *mapItem;
     QGraphicsScene *scene;
-    QMap<int, agentItem* > graphAgents;
+    QMap<int, agentItem* > graphAgents;   
+
     QMutex lock;
     Control *control;
     void defineMap();
@@ -173,6 +176,8 @@ private:
 	QWidget *sim_advancedTab;
 	QWidget *sim_general;
 
+    bool disableLiveView;
+
 	//eventProcessing things:
 	PostControl *postControl;
 	QHash<QString, ZBlock*> *zBlocks;
@@ -183,6 +188,7 @@ private:
 
 	QTimer *zMapTimer;
 	bool playingMap;
+
 
 
 };

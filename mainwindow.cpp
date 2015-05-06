@@ -49,7 +49,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	control(new Control(this)),disableSimOutput(false),
 	postControl(new PostControl(this)),zBlocks(NULL),
 	eventScene(new QGraphicsScene()), zmap(NULL), eventMapScene(new QGraphicsScene()),
-	zMapTimer(new QTimer(this)),playingMap(false)
+    zMapTimer(new QTimer(this)),disableLiveView(true),playingMap(false)
 {
 
 	this->setWindowTitle("RANA QT version");
@@ -87,7 +87,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
 
-    versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.4.2.THREAD:0.6.1");
+    versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.4.3.THREAD:0.6.1");
 
 	ui->statusBar->addWidget(new QLabel(versionString));
 	ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
@@ -375,9 +375,9 @@ void MainWindow::on_updateMap(INFOLIST infolist)
     mapItem->setPixmap(QPixmap::fromImage(*mapImage));
     mapItem->setZValue(1);
 
-    INFOLIST::iterator itr;
+    //INFOLIST::iterator itr;
 
-    for(itr = infolist.begin(); itr != infolist.end(); itr++)
+    for(auto itr = infolist.begin(); itr != infolist.end(); itr++)
     {
         int x = itr->x;
         int y = itr->y;
@@ -389,7 +389,7 @@ void MainWindow::on_updateMap(INFOLIST infolist)
 
         } else
         {
-            QMap<int, agentItem*>::const_iterator i = graphAgents.find(Id);
+            auto i = graphAgents.find(Id);
             agentItem *gfxItem = i.value();
             gfxItem->setX(x);
             gfxItem->setY(y);
@@ -420,6 +420,26 @@ void MainWindow::on_addGraphicAuton(int Id, int posX, int posY)
 
 }
 
+void MainWindow::on_disableAgentsCheckBox_toggled(bool checked)
+{
+    if(checked)
+    {
+        for(auto itr = graphAgents.begin(); itr != graphAgents.end(); ++itr)
+        {
+            itr.value()->hide();
+        }
+    } else
+    {
+        for(auto itr = graphAgents.begin(); itr != graphAgents.end(); ++itr)
+        {
+            itr.value()->show();
+        }
+
+    }
+
+    ui->graphicsView->viewport()->update();
+
+}
 
 void MainWindow::removeGraphicAuton(int id)
 {
@@ -985,7 +1005,9 @@ void MainWindow::on_tabWidget_tabBarClicked(int index)
  */
 void MainWindow::on_tabWidget_currentChanged(int index)
 {
-	if(index == ui->tabWidget->indexOf(vis_mapTab))
+    control->toggleLiveView(false);
+
+    if(index == ui->tabWidget->indexOf(vis_mapTab))
 	{
 		if(zmap != NULL)
 		{
@@ -998,7 +1020,8 @@ void MainWindow::on_tabWidget_currentChanged(int index)
 	} else if(ui->tabWidget->currentIndex() == ui->tabWidget->indexOf(sim_viewTab))
 	{
 		ui->graphicsView->fitInView(scene->sceneRect(),
-									Qt::KeepAspectRatio);
+                                    Qt::KeepAspectRatio);
+        control->toggleLiveView(true);
 
 	}
 }
@@ -1084,3 +1107,4 @@ void MainWindow::on_action_Enable_Visualisation_triggered(bool checked)
 {
 
 }
+

@@ -55,7 +55,7 @@ class EventQueue
 		struct eEvent {
 			unsigned long long id;
 			double propagationSpeed;
-			Auton *origin;
+            Auton *origin;
 			double posX;
 			double posY;
 			std::string table;
@@ -70,7 +70,7 @@ class EventQueue
 
 		//define the internal Event:
 		struct iEvent {
-			Auton *origin;
+            Auton *origin;
             const eEvent *event;
 			unsigned long long activationTime;
 			unsigned long long id;
@@ -109,6 +109,7 @@ class EventQueue
 
         const EventQueue::eEvent* addUsedEEvent(std::unique_ptr<eEvent> eEvent);
 
+        //handle the reference mechanism of the external event pointers:
         void decrementEeventCounter(unsigned long long id);
         void incrementEeventCounter(unsigned long long id);
 
