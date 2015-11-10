@@ -71,7 +71,7 @@ class EventQueue
 		//define the internal Event:
 		struct iEvent {
             Auton *origin;
-            const eEvent *event;
+			const eEvent *event;
 			unsigned long long activationTime;
 			unsigned long long id;
 			std::string desc;
@@ -103,7 +103,8 @@ class EventQueue
         void insertEEvent(std::unique_ptr<eEvent> eeventPtr);
         std::list<std::unique_ptr<eEvent> > getEEventList(unsigned long long tmu);
 		bool eEventsAtTime(unsigned long long tmu);
-        unsigned long long getNextTmu();
+		unsigned long long getNextTmu();
+
 
         void legacyFront();
 

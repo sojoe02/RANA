@@ -259,7 +259,8 @@ void Master::microStep(unsigned long long tmu)
 
         for(auto eListItr = elist.begin(); eListItr != elist.end(); ++eListItr)
         {
-            const EventQueue::eEvent* eEventPtr = eventQueue->addUsedEEvent(std::move(*eListItr));
+			const EventQueue::eEvent* eEventPtr =
+					eventQueue->addUsedEEvent(std::move(*eListItr));
 
             for(itNest = nestenes.begin(); itNest != nestenes.end(); itNest++)
             {
@@ -358,7 +359,8 @@ void Master::simDone()
     }
 }
 
-int Master::addAuton(double x, double y, double z, std::string path, std::string filename, std::string type = "Lua")
+int Master::addAuton(double x, double y, double z, std::string path, 
+					 std::string filename, std::string type = "Lua")
 {
     std::vector<Nestene>::iterator nestItr = nestenes.begin();
 

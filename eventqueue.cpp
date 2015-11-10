@@ -142,9 +142,12 @@ bool EventQueue::eEventsAtTime(unsigned long long tmu)
 
 const EventQueue::eEvent* EventQueue::addUsedEEvent(std::unique_ptr<eEvent> eEvent)
 {
-    int id = eEvent->id;
-    usedEEvents.insert(std::make_pair(id, std::move(eEvent)));
-    return usedEEvents.find(id)->second.get();
+	int id = eEvent->id;
+	//const EventQueue::eEvent* eEventPtr = eEvent.get();
+	//legacyEvents.push_back(std::move(eEvent));
+	usedEEvents.insert(std::make_pair(id, std::move(eEvent)));
+	//return eEventPtr;
+	return usedEEvents.find(id)->second.get();
 }
 
 void EventQueue::decrementEeventCounter(unsigned long long id)
@@ -155,11 +158,11 @@ void EventQueue::decrementEeventCounter(unsigned long long id)
     {
         itr->second->reference_count--;
 
-        //Output::Inst()->kprintf("reference count for event with ID %i is %i", id, itr->second->reference_count.load());
+		Output::Inst()->kprintf("reference count for event with ID %i is %i", id, itr->second->reference_count.load());
 
-        if (itr->second->reference_count.load() == 0)
+		if (itr->second->reference_count.load() == 0)
         {
-            //Output::Inst()->kprintf("adding event with id %i to legacy map", id);
+			Output::Inst()->kprintf("adding event with id %i to legacy map", id);
             legacyEvents.push_back(std::move(itr->second));
         }
 
@@ -359,10 +362,13 @@ void EventQueue::saveEEventData(std::string name, std::string luaFileName,
     file.write(reinterpret_cast<char*>(&dataInfo),sizeof(dataInfo));
 
     //then save all the external events:
-    auto infoItr = agentFilenames.begin();
+    auto file_itr = agentFilenames.begin();
 
-    for(auto eMapIt = eMap.begin(); eMapIt != eMap.end(); ++eMapIt)
-    //{
+    for(auto event_itr = legacyEvents.begin(); 
+		event_itr != legacyEvents.end(); ++event_itr)
+	{
+		Output::Inst()->kprintf("event id: %i", (*event_itr)->id );
+
         /*std::list<eEvent *> tmplist = eMapIt->second;
         if(!tmplist.empty())
         {
@@ -392,8 +398,8 @@ void EventQueue::saveEEventData(std::string name, std::string luaFileName,
                 file.write(reinterpret_cast<char*>(&devent),sizeof(devent));
             }
         } else{
-        }
-    }*/
+        }*/
+    }
     Output::Inst()->kprintf("Saving data done\n");
 
 }
