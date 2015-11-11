@@ -331,23 +331,23 @@ unsigned long long EventQueue::getISize(){
  * @param areaY height of the area[m].
  * @param areaX width of the area[m].
  */
-void EventQueue::saveEEventData(std::string name, std::string luaFileName, 
+void EventQueue::saveEEventData(std::string path, std::string luaFileName,
                                 int autonAmount, double areaY, double areaX){
 
-    std::string filename = name;
+	std::string filename = path;
 
     //Open the file and set the options:
     std::ofstream file (filename.c_str(), std::ofstream::binary | std::ofstream::trunc);
     //int bufferLimit = 100000;
 
-    Output::Inst()->kprintf("Saving event data to file:  %s\n" , luaFileName.c_str());
+	Output::Inst()->kprintf("Saving event data to file:  %s\n" , path.c_str());
 
     //first save the dataEvent to the file:
     simInfo dataInfo;
     strncpy(dataInfo.luaFileName, luaFileName.c_str(),1024);
 
-    Output::Inst()->kprintf("name %s", luaFileName.c_str());
-    Output::Inst()->kprintf("path saved is: %s", dataInfo.luaFileName);
+	//Output::Inst()->kprintf("name %s", luaFileName.c_str());
+	//Output::Inst()->kprintf("path saved is: %s", dataInfo.luaFileName);
 
     dataInfo.eventAmount = eSize;
     dataInfo.numberOfAutons = autonAmount;
@@ -367,7 +367,6 @@ void EventQueue::saveEEventData(std::string name, std::string luaFileName,
     for(auto event_itr = legacyEvents.begin(); 
 		event_itr != legacyEvents.end(); ++event_itr)
 	{
-
 		dataEvent devent;
 
 		devent.id = (*event_itr)->id;
@@ -380,8 +379,10 @@ void EventQueue::saveEEventData(std::string name, std::string luaFileName,
 
 		strncpy(devent.desc,(*event_itr)->desc.c_str(),150);
 		strncpy(devent.table,(*event_itr)->table.c_str(),1024);
+
 		//Add the filename if it exists:
 		auto infoItr = agentFilenames.find((*event_itr)->originID);
+
 		if(infoItr != agentFilenames.end())
 		{
 			strncpy(devent.filename, infoItr->second.c_str(), 256);
@@ -389,38 +390,8 @@ void EventQueue::saveEEventData(std::string name, std::string luaFileName,
 
 		file.write(reinterpret_cast<char*>(&devent),sizeof(devent));
 
-		//Output::Inst()->kprintf("event id: %i", (*event_itr)->id );
-        /*std::list<eEvent *> tmplist = eMapIt->second;
-        if(!tmplist.empty())
-        {
-            std::list<eEvent *>::iterator tmplistItr;
-            for(tmplistItr = tmplist.begin();tmplistItr != tmplist.end();++tmplistItr)
-            {
-                eEvent* tmp = *tmplistItr;
-                dataEvent devent;
-                devent.id = tmp->id;
-                devent.activationTime = tmp->activationTime;
-                //Output::Inst()->kprintf("%i", devent.activationTime);
-                devent.targetID = tmp->targetID;
-                devent.originX = tmp->posX;
-                devent.originY = tmp->posY;
-                devent.originID = tmp->originID;
-                devent.propagationSpeed = tmp->propagationSpeed;
-                strncpy(devent.desc,tmp->desc.c_str(),150);
-                strncpy(devent.table,tmp->table.c_str(),1024);
-                //Add the filename if it exists:
-                infoItr = agentFilenames.find(tmp->originID);
-                if(infoItr != agentFilenames.end())
-                {
-                    strncpy(devent.filename, infoItr->second.c_str(), 256);
-                }else strncpy(devent.filename, std::string("NULL").c_str(),256);
+	}
 
-                //Output::Inst()->kprintf("Event id %i \n", tmp->id);
-                file.write(reinterpret_cast<char*>(&devent),sizeof(devent));
-            }
-        } else{
-        }*/
-    }
     Output::Inst()->kprintf("Saving data done\n");
 
 }

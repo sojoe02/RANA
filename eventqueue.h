@@ -124,7 +124,7 @@ class EventQueue
 		void printATmus();
 
 		//saving events to a binary file:
-		void saveEEventData(std::string filename, std::string luaFileName, 
+		void saveEEventData(std::string path, std::string luaFileName,
 				int autonAmount, double areaY, double areaX);
 
 		//check the size of the eventQueue:
