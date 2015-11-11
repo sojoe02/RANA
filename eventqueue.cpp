@@ -362,13 +362,34 @@ void EventQueue::saveEEventData(std::string name, std::string luaFileName,
     file.write(reinterpret_cast<char*>(&dataInfo),sizeof(dataInfo));
 
     //then save all the external events:
-    auto file_itr = agentFilenames.begin();
+	//auto file_itr = agentFilenames.begin();
 
     for(auto event_itr = legacyEvents.begin(); 
 		event_itr != legacyEvents.end(); ++event_itr)
 	{
-		Output::Inst()->kprintf("event id: %i", (*event_itr)->id );
 
+		dataEvent devent;
+
+		devent.id = (*event_itr)->id;
+		devent.activationTime = (*event_itr)->activationTime;
+		devent.targetID = (*event_itr)->targetID;
+		devent.originX = (*event_itr)->posX;
+		devent.originY = (*event_itr)->posY;
+		devent.originID = (*event_itr)->originID;
+		devent.propagationSpeed = (*event_itr)->propagationSpeed;
+
+		strncpy(devent.desc,(*event_itr)->desc.c_str(),150);
+		strncpy(devent.table,(*event_itr)->table.c_str(),1024);
+		//Add the filename if it exists:
+		auto infoItr = agentFilenames.find((*event_itr)->originID);
+		if(infoItr != agentFilenames.end())
+		{
+			strncpy(devent.filename, infoItr->second.c_str(), 256);
+		}else strncpy(devent.filename, std::string("NULL").c_str(),256);
+
+		file.write(reinterpret_cast<char*>(&devent),sizeof(devent));
+
+		//Output::Inst()->kprintf("event id: %i", (*event_itr)->id );
         /*std::list<eEvent *> tmplist = eMapIt->second;
         if(!tmplist.empty())
         {
