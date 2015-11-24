@@ -41,7 +41,8 @@ SOURCES += main.cpp\
     postprocessing/graphics/zblock.cpp \
     postprocessing/postcontrol.cpp \
     postprocessing/eventrunner.cpp \
-    postprocessing/graphics/zmap.cpp
+    postprocessing/graphics/zmap.cpp \
+    physics/scanning.cpp
 
 HEADERS  += mainwindow.h \
     physics/phys.h \
@@ -71,7 +72,8 @@ HEADERS  += mainwindow.h \
     postprocessing/graphics/zblock.h \
     postprocessing/postcontrol.h \
     postprocessing/eventrunner.h \
-    postprocessing/graphics/zmap.h
+    postprocessing/graphics/zmap.h \
+    physics/scanning.h
 
 FORMS    += mainwindow.ui \
 	eventdialog.ui

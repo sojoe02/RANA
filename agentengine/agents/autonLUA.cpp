@@ -42,6 +42,7 @@
 #include "../../physics/gridmovement.h"
 #include "../../physics/maphandler.h"
 #include "../../physics/shared.h"
+#include "../../physics/scanning.h"
 
 AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *nestene, std::string filename)
         : Auton(ID, posX, posY, posZ, nestene), filename(filename),
@@ -93,18 +94,26 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
     lua_register(L, "l_updatePosition", l_updatePosition);
     lua_register(L, "l_addPosition", l_addPosition);
     lua_register(L, "l_checkCollision", l_checkCollision);
+    lua_register(L, "l_checkCollisionRadial", l_checkCollisionRadial);
     lua_register(L, "l_gridMove", l_gridMove);
+
+    lua_register(L, "l_getMaskRadial", l_getMaskRadial);
     lua_register(L, "l_stopSimulation", l_stopSimulation);
+
     lua_register(L, "l_getSharedNumber", l_getSharedNumber);
     lua_register(L, "l_addSharedNumber",l_addSharedNumber);
     lua_register(L, "l_getSharedString", l_getSharedString);
     lua_register(L, "l_addSharedString", l_addSharedString);
+
     lua_register(L, "l_getAgentPath", l_getAgentPath);
     lua_register(L, "l_getAutonPath", l_getAgentPath);
     lua_register(L, "l_addAuton", l_addAuton);
     lua_register(L, "l_removeAuton", l_removeAuton);
     lua_register(L, "l_removeAgent", l_removeAuton);
     lua_register(L, "l_addAgent", l_addAuton);
+
+    //MapHandler::drawCircle(30,'r',30,40);
+
 
     if(luaL_loadfile(L, filename.c_str() ) || lua_pcall(L,0,0,0)){
         Output::Inst()->kprintf("error : %s \n", lua_tostring(L, -1));
@@ -116,8 +125,8 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
 
     //init the LUA frog:
     lua_getglobal(L,"initAuton");
-    lua_pushnumber(L,posX);
-    lua_pushnumber(L,posY);
+    lua_pushnumber(L,(int)posX);
+    lua_pushnumber(L,(int)posY);
     lua_pushnumber(L,ID);
     int mf = Phys::getMacroFactor();
     double tr = Phys::getTimeRes();
@@ -298,12 +307,11 @@ std::unique_ptr<EventQueue::eEvent> AutonLUA::initEvent()
  * @param event pointer to the internal event.
  * @return external event.
  */
-std::unique_ptr<EventQueue::eEvent> AutonLUA::actOnEvent(std::unique_ptr<EventQueue::iEvent> eventPtr){
+std::unique_ptr<EventQueue::eEvent> AutonLUA::actOnEvent(std::unique_ptr<EventQueue::iEvent> eventPtr)
+{
 
     if(removed) return NULL;
-
     if(nofile) return NULL;
-
 
     //If the event isn't broadcast and the targetID is not mine
     lua_settop(L,0);
@@ -425,7 +433,8 @@ void AutonLUA::setRemoved()
     GridMovement::removePos(ID);
 }
 
-void AutonLUA::simDone(){
+void AutonLUA::simDone()
+{
 
     if(nofile)
         return;
@@ -442,7 +451,8 @@ void AutonLUA::simDone(){
     }
 }
 
-void AutonLUA::getSyncData(){
+void AutonLUA::getSyncData()
+{
 
     if(removed) return;
 
@@ -677,26 +687,82 @@ int AutonLUA::l_checkPosition(lua_State *L)
     return 1;
 }
 
-int AutonLUA::l_scanRadial(lua_State *L)
+
+int AutonLUA::l_checkCollisionRadial(lua_State *L)
 {
-    int radius = lua_tonumber(L, -4);
-    std::string channel = lua_tostring(L, -3);
-    int posX = lua_tonumber(L, -2);
-    int posY = lua_tonumber(L, -1);
+    int radius = lua_tonumber(L, -1);
+    int posX = lua_tonumber(L, -3) - radius;
+    int posY = lua_tonumber(L, -2) - radius;
 
-    MATRICE result = MapHandler::radialScan(radius, channel.at(1), posX, posY);
+    //Output::Inst()->kdebug("collision checked at posX+i %i and posY+");
 
-    lua_newtable(L);
-    for (int i = 0; i < radius*2+1; i++)
+
+    MatriceInt result = Scanning::radialMask(radius);
+
+    bool collision = false;
+
+    for (int i = 1; i < radius*2; i++)
     {
-        for(int j = 0; j < radius*2+1; j++)
+        for(int j = 1; j < radius*2; j++)
         {
-            lua_pushnumber(L, j*i);
-            lua_pushnumber(L, result[i][j]);
-            lua_rawset(L, -3);
+
+            if( result[i][j] == 1 && (posX+i != posX+radius || posY+j != posY+radius ))
+            {
+                //Output::Inst()->kdebug("collision checked at posX+i %i and posY+j %i", posX+i, posY+j);
+                collision = GridMovement::checkCollision(posX+i, posY+j);
+
+                if (collision)
+                {
+                    lua_pushboolean(L, collision);
+                    return 1;
+                }
+            }
         }
     }
+
+    lua_pushboolean(L, collision);
+
     return 1;
+}
+
+int AutonLUA::l_getMaskRadial(lua_State *L)
+{
+    int radius = lua_tonumber(L, -3);
+    int posX = lua_tonumber(L, -2) - radius;
+    int posY = lua_tonumber(L, -1) - radius;
+
+
+    MatriceInt result = Scanning::radialMask(radius);
+
+    lua_newtable(L);
+
+    for (int i = 1; i < radius*2; i++)
+    {
+        for(int j = 1; j < radius*2; j++)
+        {
+            // ii( result[i][j] == 1)//(posX + i != posX+radius || posY + j != posY+radius ))
+            //{
+            lua_pushnumber(L, posX + i);
+            lua_pushnumber(L, posY + j);
+            lua_pushnumber(L, result[i][j]);
+            lua_settable(L, -3);
+            /*rgba color;
+        color.blue = 255;
+        color.green = 0;
+        color.red = 0;
+        MapHandler::setPixelInfo(posX+i, posY+j, color);
+        }
+        else
+        {
+        rgba color2;
+        color2.blue = 0;
+        color2.green = 0;
+        color2.red = 255;
+        MapHandler::setPixelInfo(posX+i, posY+j, color2);
+        */
+        }
+    }
+    return 0;
 }
 
 int AutonLUA::l_gridMove(lua_State *L)

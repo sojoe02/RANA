@@ -30,7 +30,7 @@
 #include <unordered_map>
 #include <vector>
 
-typedef std::vector< std::vector<int> > MATRICE;
+typedef std::vector< std::vector<int> > MatriceInt;
 
 class MainWindow;
 class MapHandler
@@ -41,7 +41,7 @@ public:
     static void setImage(QImage *argImage);
     static rgba getPixelInfo(int argX, int argY);
     static bool setPixelInfo(int argX, int argY, rgba argValue);
-    static MATRICE radialScan(int radius, char channel, int posX, int posY);
+    static MatriceInt drawCircle(int radius, char channel, int posX, int posY);
 
 signals:
 
@@ -50,7 +50,7 @@ signals:
 private:
     static QImage *image;
     static MainWindow *parent;
-	static std::unordered_map<int, MATRICE> radialMasks;
+    static std::unordered_map<int, MatriceInt> radialMasks;
 };
 
 #endif // MAPHANDLER_H

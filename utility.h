@@ -25,6 +25,7 @@
 
 #include <string>
 #include <sstream>
+#include <vector>
 #include <iostream>
 
 #define SSTR(x) dynamic_cast<std::ostringstream & >(\
@@ -52,6 +53,7 @@ struct agentInfo{
 	std::string filename;
 };
 
+typedef std::vector< std::vector<int> > MatriceInt;
 
 
 #endif // UTILITY_H

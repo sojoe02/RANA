@@ -21,12 +21,14 @@
 //--end_license--
 #include <math.h>
 #include <climits>
+#include <output.h>
+#include <physics/phys.h>
 
 #include "maphandler.h"
 
 QImage *MapHandler::image = NULL;
 MainWindow *MapHandler::parent = NULL;
-std::unordered_map<int, MATRICE > MapHandler::radialMasks;
+std::unordered_map<int, MatriceInt > MapHandler::radialMasks;
 
 
 MapHandler::MapHandler(MainWindow *parent)
@@ -42,13 +44,13 @@ void MapHandler::setImage(QImage *argImage)
 rgba MapHandler::getPixelInfo(int argX, int argY)
 {
     rgba values;
-    
+
     if(image != NULL && image->width() > argX && image->height() > argY
-			&& argX >= 0 && argY >= 0)
+                    && argX >= 0 && argY >= 0)
     {
 
         QRgb info = image->pixel(argX, argY);
-        
+
         values.red = qRed(info);
         values.green = qGreen(info);
         values.blue = qBlue(info);
@@ -61,21 +63,21 @@ rgba MapHandler::getPixelInfo(int argX, int argY)
         values.blue = 256;
         values.alpha = 256;
     }
-    
+
     return values;
 }
 
 bool MapHandler::setPixelInfo(int argX, int argY, rgba argValue)
 {
     if (image != NULL && image->width() > argX && image->height() > argY
-			&& argX >= 0 && argY >= 0)
+                    && argX >= 0 && argY >= 0)
     {
         QRgb value;
         //Output::Inst()->kprintf("%i, %i, %i",argValue.red, argValue.green, argValue.blue);
         int red = argValue.red;
         int green = argValue.green;
         int blue = argValue.blue;
-        
+
         value = qRgb(red,green,blue);
         image->setPixel(argX, argY, value);
 
@@ -84,17 +86,17 @@ bool MapHandler::setPixelInfo(int argX, int argY, rgba argValue)
         return false;
 }
 
-MATRICE MapHandler::radialScan( int radius, char channel, int posX, int posY)
+MatriceInt MapHandler::drawCircle( int radius, char channel, int posX, int posY)
 {
     int range = radius*2+1;
     std::vector< std::vector<int> > tmpvec(radius, std::vector<int>(radius) );
-    MATRICE mask = tmpvec;
+    MatriceInt mask = tmpvec;
     std::vector< std::vector<int> > tmpvec1(range, std::vector<int>(range) );
-    MATRICE result = tmpvec1;
-    
-    if(image == NULL)
-        return result;
-    
+    MatriceInt result = tmpvec1;
+
+    //if(image == NULL)
+    //  return result;
+
     if(MapHandler::radialMasks.find(radius) == MapHandler::radialMasks.end())
     {
         //calculate new mask:
@@ -102,37 +104,45 @@ MATRICE MapHandler::radialScan( int radius, char channel, int posX, int posY)
         double angle = 0;
         double dx = 0;
         double dy = 0;
-        
+
         for(int x = 0; x < radius; x++)
         {
-            for(int y =0; y < radius; y++)
+            for(int y = 0; y < radius; y++)
             {
-                angle = atan2(x,y);
-                dx = cos(angle) * (double)x;
-                dy = sin(angle) * (double)y;
-                
-                if(abs(dx + 0.5) > radius || abs(dy + 0.5) > radius)
+
+                double distance = sqrt( pow((double)x, 2) + pow((double)y,2));
+                Output::Inst()->kprintf("%f,d", distance, radius);
+                //if the distance is smaller than the actual radius.
+                if (distance + 0.5  < radius)
                 {
-                    
-                    
-                } else
-                    mask[x][y] = 1;
+                    result[x][y] = 1;
+                    rgba color;
+                    color.blue = 255;
+
+                    setPixelInfo(posX+x, posY+y, color);
+                    setPixelInfo(posX-x, posY+y, color);
+                    setPixelInfo(posX-x, posY-y, color);
+                    setPixelInfo(posX+x, posY-y, color);
+                } else result[x][y] = -1;
+
             }
         }
-        MapHandler::radialMasks[radius] = mask;
+        MapHandler::radialMasks[radius] = result;
     }
     mask = MapHandler::radialMasks[radius];
     //perform the actual scan:
-    
-    for(int x = 0 ; x < range ; x++)
+
+    for(int x = 0 ; x < radius ; x++)
     {
-        for(int y = 0 ; y < range ; y++)
+        for(int y = 0 ; y < radius ; y++)
         {
+
             if(image->width() >= x+posX && image->height() >= y+posY)
             {
+
                 QRgb info = image->pixel(x+posX, y+posY);
                 int value = mask[x][y];
-                
+
                 if(value != -1)
                 {
                     if(channel == 'r')
@@ -145,9 +155,11 @@ MATRICE MapHandler::radialScan( int radius, char channel, int posX, int posY)
                     result[x][y] =  -1;
             } else
                 result[x][y] = -2;
+
+            Output::Inst()->kprintf("x,y : %i,%i, value : %i", x, y, mask[x][y]);
         }
     }
-    return result;
+    return mask;
 }
 
 

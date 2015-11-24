@@ -79,7 +79,9 @@ class AutonLUA : public Auton
 		static int l_checkPosition(lua_State *L);
 		static int l_updatePosition(lua_State *L);
 		static int l_checkCollision(lua_State *L);
-		static int l_scanRadial(lua_State *L);
+        static int l_checkCollisionRadial(lua_State *L);
+
+        static int l_getMaskRadial(lua_State *L);
 		static int l_gridMove(lua_State *L);
 		static int l_stopSimulation(lua_State *L);
 		static int l_getSharedNumber(lua_State *L);
