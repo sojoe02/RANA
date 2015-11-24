@@ -87,7 +87,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
 
-	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.4.4.THREAD:0.6.1");
+	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.4.5.THREAD:0.6.1");
 
 	ui->statusBar->addWidget(new QLabel(versionString));
 	ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
@@ -256,6 +256,20 @@ void MainWindow::on_generateMap_clicked()
 
    defineMap();
 }
+
+
+void MainWindow::on_generateEmptyMapButton_clicked()
+{
+	if(mapImage != NULL)
+		delete mapImage;
+
+	mapImage = new QImage(ui->emptyPXspinBox->value(),
+						  ui->emptyPYspinBox->value(),
+						  QImage::Format_RGB32);
+
+	defineMap();
+}
+
 
 /**
  * @brief Writes a debug string to the current active output window.

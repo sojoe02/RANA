@@ -129,6 +129,8 @@ private slots:
 
     void on_disableAgentsCheckBox_toggled(bool checked);
 
+	void on_generateEmptyMapButton_clicked();
+
 signals:
 
     void map_updateSignal(INFOLIST infolist);
@@ -176,8 +178,6 @@ private:
 	QWidget *sim_advancedTab;
 	QWidget *sim_general;
 
-    bool disableLiveView;
-
 	//eventProcessing things:
 	PostControl *postControl;
 	QHash<QString, ZBlock*> *zBlocks;
@@ -187,8 +187,8 @@ private:
 	int timeOffset;
 
 	QTimer *zMapTimer;
+	bool disableLiveView;
 	bool playingMap;
-
 
 
 };
