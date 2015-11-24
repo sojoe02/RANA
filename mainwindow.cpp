@@ -87,7 +87,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
 
-    versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.4.6.THREAD:0.6.1");
+	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.4.7.THREAD:0.6.1");
 
 	ui->statusBar->addWidget(new QLabel(versionString));
 	ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
@@ -266,6 +266,7 @@ void MainWindow::on_generateEmptyMapButton_clicked()
 	mapImage = new QImage(ui->emptyPXspinBox->value(),
 						  ui->emptyPYspinBox->value(),
 						  QImage::Format_RGB32);
+	mapImage->fill(Qt::GlobalColor::black);
 
 	defineMap();
 }
@@ -414,6 +415,14 @@ void MainWindow::on_updateMap(INFOLIST infolist)
 
 }
 
+/**
+ * @brief MainWindow::addGraphicAuton Sends a qt signal to add a new Agent.
+ * @param id the id of the agent.
+ * @param posX X position of the agent.
+ * @param posY Y position of the agent.
+ * @see MainWindow::on_addGraphicAuton()
+ */
+
 void MainWindow::addGraphicAuton(int id, int posX, int posY)
 {
 	emit addGraphicAutonSignal(id, posX, posY);
@@ -433,6 +442,12 @@ void MainWindow::on_addGraphicAuton(int Id, int posX, int posY)
 	graphAgents.insert(Id, gfxItem);
 
 }
+
+/**
+ * @brief MainWindow::on_disableAgentsCheckBox_toggled Disable agent markers
+ * on the live-map.
+ * @param checked
+ */
 
 void MainWindow::on_disableAgentsCheckBox_toggled(bool checked)
 {
@@ -455,6 +470,12 @@ void MainWindow::on_disableAgentsCheckBox_toggled(bool checked)
 
 }
 
+/**
+ * @brief MainWindow::removeGraphicAuton remove an agent marker item
+ * on the live map for good.
+ * @param id the id of agent to be removed.
+ */
+
 void MainWindow::removeGraphicAuton(int id)
 {
 	emit removeGraphicAutonSignal(id);
@@ -473,22 +494,24 @@ void MainWindow::on_removeGraphicAuton(int id)
 
 void MainWindow::wheelEvent(QWheelEvent* event)
 {
-	//    ui->graphicsView->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-	//    // Scale the view / do the zoom
-	//    double scaleFactor = 1.15;
+	/*
+	ui->graphicsView->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+	// Scale the view / do the zoom
+	double scaleFactor = 1.15;
 
-	//    if(event->delta() > 0) {
-	//        // Zoom in
-	//        factor = .15 + factor;
-	//        ui->graphicsView->scale(scaleFactor, scaleFactor);
+	if(event->delta() > 0) {
+		// Zoom in
+		factor = .15 + factor;
+		ui->graphicsView->scale(scaleFactor, scaleFactor);
 
-	//    } else {
-	//        // Zooming out
-	//        factor =  factor - .15;
-	//        ui->graphicsView->scale(1.0 / scaleFactor, 1.0 / scaleFactor);
-	//    }
+	} else {
+		// Zooming out
+		factor =  factor - .15;
+		ui->graphicsView->scale(1.0 / scaleFactor, 1.0 / scaleFactor);
+	}
 
-	//    ui->zoomLabel->setText(QString().setNum(factor*100));
+	ui->zoomLabel->setText(QString().setNum(factor*100));
+	*/
 }
 
 
@@ -510,8 +533,44 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 		ui->graphicsView->fitInView(scene->sceneRect(),
 									Qt::KeepAspectRatio);
 
+		QTransform transform = ui->graphicsView->transform();
+		ui->zoomSlider->setValue(100*transform.m11());
+		ui->zoomLabel->setText(QString::number(100*transform.m11()));
+
 	}
 }
+
+/**
+ * @brief ensures that the automatic zoom is only set on view change.
+ * @param index current active tabs index
+ */
+void MainWindow::on_tabWidget_currentChanged(int index)
+{
+	control->toggleLiveView(false);
+
+	if(index == ui->tabWidget->indexOf(vis_mapTab))
+	{
+		if(zmap != NULL)
+		{
+			zmap->setPos(0,0);
+			zmap->setSize(ui->vis_mapGraphicsView->width(),ui->vis_mapGraphicsView->height());
+		}
+
+		ui->vis_graphicsView->fitInView(eventScene->sceneRect(),
+										Qt::KeepAspectRatio);
+	} else if(ui->tabWidget->currentIndex() == ui->tabWidget->indexOf(sim_viewTab))
+	{
+		ui->graphicsView->fitInView(scene->sceneRect(),
+									Qt::KeepAspectRatio);
+		control->toggleLiveView(true);
+
+		QTransform transform = ui->graphicsView->transform();
+		ui->zoomSlider->setValue(100*transform.m11());
+		ui->zoomLabel->setText(QString::number(100*transform.m11()));
+
+	}
+}
+
 
 /**
  * @brief Allows browsing for valid lua agents.
@@ -601,6 +660,9 @@ void MainWindow::on_zoomSlider_valueChanged(int value)
 	ui->zoomLabel->setText(QString().setNum(value));
 
 	ui->graphicsView->setTransform(QTransform::fromScale(scale,scale));
+	//QTransform transform = ui->graphicsView->transform();
+	//Output::Inst()->kdebug("tranfrom of X and Y = %f,%f",transform.m11(), transform.m22());
+
 }
 
 /**
@@ -609,7 +671,7 @@ void MainWindow::on_zoomSlider_valueChanged(int value)
 void MainWindow::on_pushButton_clicked()
 {
 	//ui->outputTextEdit->
-    //ui->outputTextBrowser->cl
+	//ui->outputTextBrowser->cl
 	ui->outputTextBrowser->clear();
 }
 
@@ -1011,33 +1073,6 @@ void MainWindow::on_tabWidget_tabBarClicked(int index)
 {
 	//if(zmap != NULL)
 	//zmap->setSize(50,ui->vis_mapGraphicsView->height());
-}
-
-/**
- * @brief ensures that the automatic zoom is only set on view change.
- * @param index current active tabs index
- */
-void MainWindow::on_tabWidget_currentChanged(int index)
-{
-    control->toggleLiveView(false);
-
-    if(index == ui->tabWidget->indexOf(vis_mapTab))
-	{
-		if(zmap != NULL)
-		{
-			zmap->setPos(0,0);
-			zmap->setSize(ui->vis_mapGraphicsView->width(),ui->vis_mapGraphicsView->height());
-		}
-
-		ui->vis_graphicsView->fitInView(eventScene->sceneRect(),
-										Qt::KeepAspectRatio);
-	} else if(ui->tabWidget->currentIndex() == ui->tabWidget->indexOf(sim_viewTab))
-	{
-		ui->graphicsView->fitInView(scene->sceneRect(),
-                                    Qt::KeepAspectRatio);
-        control->toggleLiveView(true);
-
-	}
 }
 
 /**
