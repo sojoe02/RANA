@@ -695,8 +695,6 @@ int AutonLUA::l_checkCollisionRadial(lua_State *L)
     int posY = lua_tonumber(L, -2) - radius;
 
     //Output::Inst()->kdebug("collision checked at posX+i %i and posY+");
-
-
     MatriceInt result = Scanning::radialMask(radius);
 
     bool collision = false;
@@ -762,7 +760,7 @@ int AutonLUA::l_getMaskRadial(lua_State *L)
         */
         }
     }
-    return 0;
+    return 1;
 }
 
 int AutonLUA::l_gridMove(lua_State *L)

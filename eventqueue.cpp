@@ -158,11 +158,11 @@ void EventQueue::decrementEeventCounter(unsigned long long id)
     {
         itr->second->reference_count--;
 
-		Output::Inst()->kprintf("reference count for event with ID %i is %i", id, itr->second->reference_count.load());
+        //Output::Inst()->kprintf("reference count for event with ID %i is %i", id, itr->second->reference_count.load());
 
 		if (itr->second->reference_count.load() == 0)
         {
-			Output::Inst()->kprintf("adding event with id %i to legacy map", id);
+            //Output::Inst()->kprintf("adding event with id %i to legacy map", id);
             legacyEvents.push_back(std::move(itr->second));
         }
 

@@ -131,6 +131,10 @@ private slots:
 
 	void on_generateEmptyMapButton_clicked();
 
+    void on_zoomSlider_actionTriggered(int action);
+
+    void on_zoomSlider_sliderMoved(int position);
+
 signals:
 
     void map_updateSignal(INFOLIST infolist);

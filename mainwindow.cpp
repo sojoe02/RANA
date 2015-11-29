@@ -52,7 +52,7 @@ MainWindow::MainWindow(QWidget *parent) :
     zMapTimer(new QTimer(this)),disableLiveView(true),playingMap(false)
 {
 
-	this->setWindowTitle("RANA QT version");
+    this->setWindowTitle("RANA QT");
 
     ui->setupUi(this);
     ui->progressBar->setMaximum(100);
@@ -87,7 +87,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
 
-	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.4.7.THREAD:0.6.1");
+    versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.4.8.THREAD:0.6.1");
 
 	ui->statusBar->addWidget(new QLabel(versionString));
 	ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
@@ -494,24 +494,27 @@ void MainWindow::on_removeGraphicAuton(int id)
 
 void MainWindow::wheelEvent(QWheelEvent* event)
 {
-	/*
+
 	ui->graphicsView->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
 	// Scale the view / do the zoom
-	double scaleFactor = 1.15;
+    QTransform transform = ui->graphicsView->transform();
+    double scale = .50;
 
 	if(event->delta() > 0) {
 		// Zoom in
-		factor = .15 + factor;
-		ui->graphicsView->scale(scaleFactor, scaleFactor);
+        //factor = .15 + factor;
+        double change = transform.m11() + scale;
+        ui->graphicsView->setTransform(QTransform::fromScale(change,change));
 
-	} else {
-		// Zooming out
-		factor =  factor - .15;
-		ui->graphicsView->scale(1.0 / scaleFactor, 1.0 / scaleFactor);
-	}
+    } else {
+        double change = transform.m11() - scale;
+        ui->graphicsView->setTransform(QTransform::fromScale(change,change));
+    }
 
-	ui->zoomLabel->setText(QString().setNum(factor*100));
-	*/
+    transform = ui->graphicsView->transform();
+    ui->zoomSlider->setValue(100*transform.m11());
+    ui->zoomLabel->setText(QString::number(100*transform.m11()));
+
 }
 
 
@@ -655,7 +658,7 @@ void MainWindow::on_delaySpinBox_valueChanged(int arg1)
  */
 void MainWindow::on_zoomSlider_valueChanged(int value)
 {
-	double scale = (double)value/100;
+    double scale = (double)value/100;
 
 	ui->zoomLabel->setText(QString().setNum(value));
 
@@ -1157,3 +1160,13 @@ void MainWindow::on_action_Enable_Visualisation_triggered(bool checked)
 
 }
 
+
+void MainWindow::on_zoomSlider_actionTriggered(int action)
+{
+
+}
+
+void MainWindow::on_zoomSlider_sliderMoved(int position)
+{
+
+}
