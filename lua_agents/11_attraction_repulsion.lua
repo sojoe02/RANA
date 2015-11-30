@@ -32,7 +32,7 @@ speed = 100 -- speed in m/s
 
 goalThresshold = 2
 closenessThresshold = 25
-repulseFactor = 5
+repulseFactor = 10
 
 phaseDelay = 2
 phaseCountdown = phaseDelay --issue a position event every 10 seconds.
@@ -80,19 +80,17 @@ function handleEvent(origX, origY, origID, origDesc, origTable)
 		goalPosX = origX
 		goalPosY = origY
 
-	
-
 	elseif S_ActiveState == SS_Repulsing and distance <= closenessThresshold  then
 
-		if origX < posX and posX + repulseFactor <= envX then
+		if origX <= posX and posX + repulseFactor < envX and l_getRandomInteger(0,1) == 0 then
 			goalPosX = posX + repulseFactor
-		elseif origX >= posX and posX - repulseFactor > 0 then
+		elseif origX > posX and posX - repulseFactor > 0 and l_getRandomInteger(0,1) == 0 then
 			goalPosX = posX - repulseFactor
 		end
 
-		if origY < posY and posY + repulseFactor <= envY then 
+		if origY <= posY and posY + repulseFactor < envY and l_getRandomInteger(0,1) == 0 then 
 			goalPosY = posY + repulseFactor
-		elseif origY >= posY and posY - repulseFactor > 0 then
+		elseif origY > posY and posY - repulseFactor > 0 and l_getRandomInteger(0,1) == 0 then
 			goalPosY = posY - repulseFactor
 		end
 
@@ -124,6 +122,9 @@ function initiateEvent()
 	if phaseCountdown <= 0 then
 
 		phaseCountdown = phaseDelay
+
+		goalPosX = l_getRandomInteger(1, envX)
+		goalPosY = l_getRandomInteger(1, envY)
 
 		if S_ActiveState == SS_Attraction then
 			S_ActiveState = SS_Repulsing
