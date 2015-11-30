@@ -586,10 +586,18 @@ int AutonLUA::l_getMersenneFloat(lua_State *L){
 }
 
 int AutonLUA::l_getMersenneInteger(lua_State *L){
-    uint64_t low = lua_tonumber(L,-2);
-    uint64_t high = lua_tonumber(L, -1);
+    int64_t low = lua_tonumber(L,-2);
+    int64_t high = lua_tonumber(L, -1);
+    int64_t number = 0;
 
-    uint64_t number = Phys::getMersenneInteger(low,high);
+    if(low > high)
+    {
+        number = Phys::getMersenneInteger(high, low);
+    } else if(high > low)
+    {
+        number = Phys::getMersenneInteger(low, high);
+    }
+
     lua_pushnumber(L,number);
     return 1;
 }

@@ -82,15 +82,17 @@ function handleEvent(origX, origY, origID, origDesc, origTable)
 
 	elseif S_ActiveState == SS_Repulsing and distance <= closenessThresshold  then
 
-		if origX <= posX and posX + repulseFactor < envX and l_getRandomInteger(0,1) == 0 then
+		local repulseFactor = l_getRandomInteger(1, repulseFactor)
+
+		if origX <= posX and posX + repulseFactor < envX then
 			goalPosX = posX + repulseFactor
-		elseif origX > posX and posX - repulseFactor > 0 and l_getRandomInteger(0,1) == 0 then
+		elseif origX > posX and posX - repulseFactor > 0 then
 			goalPosX = posX - repulseFactor
 		end
 
-		if origY <= posY and posY + repulseFactor < envY and l_getRandomInteger(0,1) == 0 then 
+		if origY <= posY and posY + repulseFactor < envY then 
 			goalPosY = posY + repulseFactor
-		elseif origY > posY and posY - repulseFactor > 0 and l_getRandomInteger(0,1) == 0 then
+		elseif origY > posY and posY - repulseFactor > 0 then
 			goalPosY = posY - repulseFactor
 		end
 
@@ -101,7 +103,7 @@ end
 
 --Determine whether or not this Auton will initiate an event.
 function initiateEvent()
-	
+
 	if ActiveState == S_Moving then
 
 		local status = move(speed)		

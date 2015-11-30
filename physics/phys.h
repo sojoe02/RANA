@@ -74,7 +74,7 @@ class Phys
 		static void setTimeRes(double timeResolution);
 
 		static double getMersenneFloat(double min, double max);
-		static uint64_t getMersenneInteger(uint64_t min, uint64_t max);
+        static int64_t getMersenneInteger(int64_t min, int64_t max);
 
 		static void setEnvironment(double x, double y);
 		static double getEnvX();
@@ -97,7 +97,7 @@ private:
 		static unsigned long long c_timeStep;
 
 		//random distribution 0-INT_MAX
-		static std::uniform_int_distribution<uint64_t> uint_dist;
+        static std::uniform_int_distribution<int64_t> int_dist;
 		typedef std::mt19937_64 MyRNG;
         static MyRNG rng;
 

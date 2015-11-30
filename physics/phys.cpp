@@ -34,7 +34,7 @@ double Phys::timeResolution = 0;
 int Phys::macroFactor = 0;
 unsigned long long Phys::c_timeStep = 0;
 MyRNG Phys::rng;
-std::uniform_int_distribution<uint64_t> Phys::uint_dist;
+std::uniform_int_distribution<int64_t> Phys::int_dist;
 double Phys::env_x = 0;
 double Phys::env_y = 0;
 double Phys::scale = 1;
@@ -145,11 +145,12 @@ void Phys::move(double v, double posX, double posY,
 
 double Phys::getMersenneFloat(double min=0, double max=1)
 {
-	return min + (double)Phys::uint_dist(Phys::rng)/((double)ULLONG_MAX/(max-min));
+    return min + (double)Phys::int_dist(Phys::rng)/((double)ULLONG_MAX/(max-min));
 }
 
-uint64_t Phys::getMersenneInteger(uint64_t min=0, uint64_t max=ULLONG_MAX)
+int64_t Phys::getMersenneInteger(int64_t min=0, int64_t max=ULLONG_MAX)
 {
     max++;
-    return min + Phys::uint_dist(Phys::rng)%(max-min);
+
+    return min + Phys::int_dist(Phys::rng)%(max-min);
 }
