@@ -230,8 +230,12 @@ void AgentDomain::runSimulation(int time)
             Output::Inst()->progressBar(cMacroStep,iterations);
             //int delay = Output::DelayValue.load();
 			//std::this_thread::sleep_for(std::chrono::milliseconds(5));
-            //if(delay != 0)
-            if(fetchPositions.load()) retrievePopPos();
+			//if(delay != 0)
+			//fetchPositions.store(true);
+			if(fetchPositions.load())
+			{
+				retrievePopPos();
+			}
 
             start = end;
         }

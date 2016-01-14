@@ -77,6 +77,7 @@ end
 
 
 function getSyncData()
+	l_debug("position"..posX..":"..posY)
 	return posX, posY
 end
 

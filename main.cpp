@@ -40,6 +40,7 @@ int main(int argc, char *argv[])
 {
     Phys::seedMersenne();
     Output::DelayValue = 0;
+	Output::LegacyMode.store(false);
     GridMovement::initGrid();
 
     QApplication a(argc, argv);

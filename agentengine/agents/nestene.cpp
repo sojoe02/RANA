@@ -27,6 +27,7 @@
 #include <utility>
 
 #include "nestene.h"
+#include "doctor.h"
 
 #include "ID.h"
 #include "master.h"
@@ -40,48 +41,31 @@ Nestene::Nestene(double posX, double posY, double width, double height, Master* 
     //iEvents = new std::list<EventQueue::iEvent*>;
 }
 
-Nestene::~Nestene(){
+Nestene::~Nestene()
+{
 
 }
-
 
 void Nestene::generateAuton(){
     //insertAuton(new Auton(generateAutonID(),0,0,0));
 }
 
-void Nestene::populate(int listenerSize, int screamerSize, int LUASize,std::string filename){
-    //Output::Inst()->kprintf("Populating Nestenes\n");
-    //first insert the listener autons:
-    for(int i=0; i<listenerSize; i++){
-        double xtmp = (double)rand()/ RAND_MAX * width + posX;
-        double ytmp = (double)rand()/ RAND_MAX * height + posY;
-
-        AutonListener auton = AutonListener(ID::generateAutonID(),xtmp,ytmp,1,this);
-        itListeners = listeners.begin();
-        listeners.insert(std::pair<int,AutonListener>(auton.getID(),auton));
-    }
-
-    //the screamer autons:
-    for(int i=0; i<screamerSize; i++){
-        double xtmp = (double)rand()/ RAND_MAX * width + posX;
-        double ytmp = (double)rand()/ RAND_MAX * height + posY;
-
-        AutonScreamer auton = AutonScreamer(ID::generateAutonID(),xtmp,ytmp,1,this);
-        itScreamers = screamers.begin();
-        screamers.insert(std::pair<int,AutonScreamer>(auton.getID(),auton));
-    }
+void Nestene::populate(int LUASize ,std::string filename)
+{
 
     //Output::Inst()->kdebug("nestene %i reporting %i autons", LUA);
-    //the LUA autons:
-    for(int i=0; i<LUASize; i++){
+	for(int i=0; i<LUASize; i++)
+	{
         double xtmp = (double)rand()/ RAND_MAX * width + posX;
         double ytmp = (double)rand()/ RAND_MAX * height + posY;
 
-         std::shared_ptr<AutonLUA> luaPtr = std::make_shared<AutonLUA>(ID::generateAutonID (), xtmp, ytmp, 1, this, filename);
-                                                //AutonLUA(ID::generateAutonID(),xtmp,ytmp,1,this,filename);
-        //itLUAs = LUAs.begin();
-        LUAs.insert(std::make_pair(luaPtr->getID(), luaPtr));
-        //LUAs.insert(<int,AutonLUA*>(auton->getID(),auton));
+		std::shared_ptr<AutonLUA> luaPtr =
+				 std::make_shared<AutonLUA>(ID::generateAutonID(), xtmp, ytmp,
+											1, this, filename);
+
+		LUAs.insert(std::make_pair(luaPtr->getID(), luaPtr));
+		Doctor::addLuaAutonPtr(luaPtr);
+
     }
 }
 
@@ -89,13 +73,17 @@ void Nestene::populate(int listenerSize, int screamerSize, int LUASize,std::stri
  * Populate squared with only LUA autons:
  *
  */
-void Nestene::populateSquared(int LUASize,std::string filename){
-    if(LUASize > 0){
+void Nestene::populateSquared(int LUASize,std::string filename)
+{
+	if(LUASize > 0)
+	{
         double chunkX = width/(double)LUASize;
         double chunkY = height/(double)LUASize;
 
-        for(int i=0; i<LUASize; i++){
-            for(int j = 0; j < LUASize; j++){
+		for(int i=0; i<LUASize; i++)
+		{
+			for(int j = 0; j < LUASize; j++)
+			{
                 //AutonLUA auton(ID::generateAutonID(), (chunkX*j)+posX+chunkX/2, (chunkY*i)+posY+chunkY/2,1,this,filename);
                 //itLUAs = LUAs.begin();
                 //LUAs.insert(std::pair<int,AutonLUA*>(&auton.getID(),auton));
@@ -107,13 +95,17 @@ void Nestene::populateSquared(int LUASize,std::string filename){
 /**
  * Populate squared aread with only Listerner autons:
  */
-void Nestene::populateSquaredListener(int listenerSize){
-    if(listenerSize > 0){
+void Nestene::populateSquaredListener(int listenerSize)
+{
+	if(listenerSize > 0)
+	{
         double chunkX = width/(double)listenerSize;
         double chunkY = height/(double)listenerSize;
 
-        for(int i=0; i<listenerSize; i++){
-            for(int j = 0; j < listenerSize; j++){
+		for(int i=0; i<listenerSize; i++)
+		{
+			for(int j = 0; j < listenerSize; j++)
+			{
                 AutonListener auton(ID::generateAutonID(), (chunkX*j)+posX+chunkX/2, (chunkY*i)+posY+chunkY/2,1,this);
                 itListeners = listeners.begin();
                 listeners.insert(std::pair<int,AutonListener>(auton.getID(),auton));
@@ -129,17 +121,18 @@ void Nestene::populateSquaredListener(int listenerSize){
  */
 void Nestene::retrievePopPos(std::list<agentInfo> &infolist){
 
-    for(auto it = LUAs.begin(); it !=LUAs.end(); it++){
+	for(auto it = LUAs.begin(); it !=LUAs.end(); it++)
+	{
 
-        if(master->removedIDs.find(it->second->getID()) == master->removedIDs.end())
-        {
+		if(master->removedIDs.find(it->second->getID()) ==
+				master->removedIDs.end())
+		{
+			Output::Inst()->kprintf("id:%i, y:%i, x:%i", it->second->getID(),it->second->getPosY(), it->second->getPosX());
 
             agentInfo info;
-
-            info.id = it->second->getID();
+			info.id = it->second->getID();
             info.y = it->second->getPosY();
             info.x = it->second->getPosX();
-
             infolist.push_back(info);
         }
     }
@@ -152,34 +145,26 @@ void Nestene::retrievePopPos(std::list<agentInfo> &infolist){
  * an event is initated it will be added the masters eventqueue.
  * @param macroResolution the resolution of the macrostep (microStepRes * macroFactor)
  */
-void Nestene::initPhase(double macroResolution, unsigned long long tmu){
-    //query it's population on whether there is going to be an event or not:
-    /*for(itListeners = listeners.begin(); itListeners !=listeners.end(); itListeners++){
-        EventQueue::eEvent* eevent = itListeners->second.initEvent(macroResolution,tmu);
-        if(eevent != NULL){
-            master->receiveInitEEventPtr(eevent);
-        }
-    }
-    for(itScreamers = screamers.begin(); itScreamers !=screamers.end(); itScreamers++){
-        EventQueue::eEvent* eevent = itScreamers->second.initEvent(macroResolution,tmu);
-        if(eevent != NULL){
-            master->receiveInitEEventPtr(eevent);
-        }
-    }*/
+void Nestene::initPhase(double macroResolution, unsigned long long tmu)
+{
 
-    for(auto itLUAs = LUAs.begin(); itLUAs !=LUAs.end(); itLUAs++){
+	for(auto itLUAs = LUAs.begin(); itLUAs !=LUAs.end(); itLUAs++)
+	{
 
-        std::unique_ptr<EventQueue::eEvent> eevent = itLUAs->second->initEvent();
+		std::unique_ptr<EventQueue::eEvent> eevent =
+				itLUAs->second->initEvent();
 
-        if(eevent != NULL){
-            master->receiveInitEEventPtr(std::move(eevent));
+		if(eevent != NULL)
+		{
+			master->receiveEEventPtr(std::move(eevent));
         }
     }
 
     if(!removalIDs.empty())
     {
         //remove all autons set for removal
-        for(auto itRemove= removalIDs.begin(); itRemove!= removalIDs.end(); ++itRemove)
+		for(auto itRemove= removalIDs.begin(); itRemove!=
+			removalIDs.end(); ++itRemove)
         {
             auto itrLua = LUAs.find(*itRemove);
             if(itrLua != LUAs.end())
@@ -202,7 +187,8 @@ void Nestene::distroPhase(const EventQueue::eEvent* event)
    {
         if(event->origin->getID() != itLUAs->second->getID())
         {
-            std::unique_ptr<EventQueue::iEvent> ieventPtr = itLUAs->second->handleEvent(event);
+			std::unique_ptr<EventQueue::iEvent> ieventPtr =
+					itLUAs->second->handleEvent(event);
 
             if(ieventPtr != NULL)
             {
@@ -217,27 +203,24 @@ void Nestene::distroPhase(const EventQueue::eEvent* event)
  * End Phase
  * Check local eventQueue 'outbox' if any external events need to distributed.
  */
-void Nestene::endPhase(){
-    //distribute all Eevents that's in the Eevent outbox:
-    /*if(!eEventsOutbox.empty()){
-        for(iteEventsOutbox = eEventsOutbox.begin(); iteEventsOutbox != eEventsOutbox.end(); iteEventsOutbox++){
-            EventQueue::eEvent *event = *iteEventsOutbox;
-            //std::cout << "Auton responding on Event with external event " << event->id << std::endl;
-            master->receiveEEventPtr(event);
-        }
-        eEventsOutbox.clear();
-    }*/
+void Nestene::endPhase()
+{
+
 }
 
-void Nestene::simDone(){
+void Nestene::simDone()
+{
     //query it's population on whether there is going to be an event or not:
-    for(itListeners = listeners.begin(); itListeners !=listeners.end(); itListeners++){
+	for(itListeners = listeners.begin(); itListeners !=listeners.end(); itListeners++)
+	{
         itListeners->second.simDone();
     }
-    for(itScreamers = screamers.begin(); itScreamers !=screamers.end(); itScreamers++){
+	for(itScreamers = screamers.begin(); itScreamers !=screamers.end(); itScreamers++)
+	{
         itScreamers->second.simDone();
     }
-    for(auto itLUAs = LUAs.begin(); itLUAs !=LUAs.end(); itLUAs++){
+	for(auto itLUAs = LUAs.begin(); itLUAs !=LUAs.end(); itLUAs++)
+	{
         itLUAs->second->simDone();
     }
 }
@@ -247,9 +230,11 @@ void Nestene::queryPopulation(){
 }
 
 //perform an event for an auton in question:
-void Nestene::performEvent(AutonListener *auton){
-
+void Nestene::performEvent(std::unique_ptr<EventQueue::eEvent> event)
+{
+	master->receiveEEventPtr(std::move(event));
 }
+
 
 int Nestene::addAuton(double x, double y, double z,
                       std::string filename, std::string type="Lua")
@@ -258,9 +243,11 @@ int Nestene::addAuton(double x, double y, double z,
 
     if(type.compare("Lua") == 0)
     {
-        //std::map<int, AutonListener>::iterator luaItr;
-        std::shared_ptr<AutonLUA> luaPtr = std::make_shared<AutonLUA>(id, x, y, 1, this, filename);
-        LUAs.insert(std::make_pair(luaPtr->getID(),luaPtr));
+		std::shared_ptr<AutonLUA> luaPtr =
+				std::make_shared<AutonLUA>(id, x, y, 1, this, filename);
+
+		LUAs.insert(std::make_pair(luaPtr->getID(),luaPtr));
+		Doctor::addLuaAutonPtr(luaPtr);
     }
 
     return id;

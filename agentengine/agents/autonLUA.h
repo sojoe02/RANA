@@ -49,7 +49,6 @@ class AutonLUA : public Auton
 
 		bool operator==(AutonLUA &other) const;
 		bool operator!=(AutonLUA &other) const;
-
 		/*
 		 * General LUA wrapper functions
 		 */
@@ -57,8 +56,7 @@ class AutonLUA : public Auton
 		static int l_print(lua_State *L);
 		static int l_registerIEvent(lua_State *L);
 		static int l_registerEEvent(lua_State *L);
-		static int l_generateEventID(lua_State *L);
-		
+		static int l_generateEventID(lua_State *L);	
 		/**
          * Defining the LUA wrapper functions.
          * This will enable the LUA auton to call physics function phys.h, to
@@ -91,6 +89,7 @@ class AutonLUA : public Auton
 		static int l_getAgentPath(lua_State *L);
 		static int l_addAuton(lua_State *L);
 		static int l_removeAuton(lua_State *L);
+		static int l_addEEvent(lua_State *L);
 
 		static int luapanic(lua_State *L);
 
@@ -100,8 +99,12 @@ class AutonLUA : public Auton
 
 private:
 		//function to receive an event from nestene responsible for this auton, returns an internal Event 'thinking':
-        std::unique_ptr<EventQueue::iEvent> handleEvent(const EventQueue::eEvent* event);
-        std::unique_ptr<EventQueue::eEvent> actOnEvent(std::unique_ptr<EventQueue::iEvent> eventPtr);
+		std::unique_ptr<EventQueue::iEvent>
+		handleEvent(const EventQueue::eEvent* event);
+
+		std::unique_ptr<EventQueue::eEvent>
+		actOnEvent(std::unique_ptr<EventQueue::iEvent> eventPtr);
+
         std::unique_ptr<EventQueue::eEvent> initEvent();
 
         void setRemoved();

@@ -620,6 +620,16 @@
              </item>
             </layout>
            </item>
+           <item row="16" column="2">
+            <widget class="QCheckBox" name="checkBox">
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If you agent returns event data on 'initiateEvent' and 'handleEvent' you need to enable legacy mode.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="text">
+              <string>Lagacy Mode</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </widget>
         </item>

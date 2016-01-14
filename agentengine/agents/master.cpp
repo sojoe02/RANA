@@ -42,7 +42,7 @@ Master::Master()
 {
     //Output::Inst()->kprintf("Initiating master\n");
     eventQueue = new EventQueue;
-    srand (time(NULL));
+	srand(time(NULL));
 }
 
 Master::~Master(){
@@ -99,9 +99,9 @@ std::list<agentInfo> Master::retrievePopPos()
 {
 
     std::list<agentInfo> agentinfo;
-
-    for(itNest = nestenes.begin(); itNest !=nestenes.end(); itNest++)
-    {
+	//Output::Inst()->kprintf("testing retrieve of master");
+	for(auto itNest = nestenes.begin(); itNest !=nestenes.end(); itNest++)
+	{
         itNest->retrievePopPos(agentinfo);
     }
 
@@ -135,43 +135,17 @@ void Master::populateSystem(int listenerSize,
     for(int i = 0; i<LUASize; i++, j++)
     {
         if(i % nestenes.size() == 0) j =0;
-
         LUAVector.at(j)++;
     }
-
     //Output::Inst()->kdebug("working here! %i, %i", LUAVector.size(), LUAVector.at(0));
-
     j = 0;
     for(auto itr = LUAVector.begin(); itr != LUAVector.end(); ++itr, j++)
     {
         Nestene *nestene = &nestenes.at(j);
         //Output::Inst()->kdebug("Working not here %i", *itr);
-        nestene->populate(0,0,*itr,filename);
-    }
-    /*
-
-    while(tmpSize<LUASize){
-        for(uint i=0; i<LUAVector.size(); i++){
-            nSize = rand()%2;
-            tmpSize += nSize;
-            if(tmpSize > LUASize){
-                nSize = LUASize - tmpSize2;
-            }
-            tmpSize2 += nSize;
-            LUAVector.at(i) += nSize;
-        }
+		nestene->populate(*itr, filename);
     }
 
-    autonAmount = LUASize;
-    luaFilename = filename;
-
-    //Output::Inst()->kprintf("lua size from master is : %d \n", LUASize);
-    for(uint i= 0; i<listenerVector.size(); i++){
-        //std::cout<< listenerVector.at(i) << std::endl;
-        Nestene *nest = &nestenes.at(i);
-        nest->populate(listenerVector.at(i), ScreamerVector.at(i),LUAVector.at(i), filename);
-    }
-    */
 }
 
 
@@ -221,13 +195,7 @@ void Master::populateSquareListenerSystem(int listenerSize)
  * 														*
  ********************************************************/
 
-
 void Master::receiveEEventPtr(std::unique_ptr<EventQueue::eEvent> eEvent)
-{
-    eventQueue->insertEEvent(std::move(eEvent));
-}
-
-void Master::receiveInitEEventPtr(std::unique_ptr<EventQueue::eEvent> eEvent)
 {
     //increase the initiated events counter:
     eEventInitAmount++;
@@ -282,10 +250,12 @@ void Master::microStep(unsigned long long tmu)
             if (removedIDs.find((*iListItr)->originID) == removedIDs.end())
             {
                 std::unique_ptr<EventQueue::iEvent> iEventPtr(std::move(*iListItr));
+
                 AutonLUA *luaAgent = (AutonLUA*)iEventPtr->origin;
                 eventQueue->decrementEeventCounter(iEventPtr->event->id);
 
-                std::unique_ptr<EventQueue::eEvent> eEventPtr = luaAgent->actOnEvent(std::move(iEventPtr));
+				std::unique_ptr<EventQueue::eEvent> eEventPtr =
+						luaAgent->actOnEvent(std::move(iEventPtr));
 
 
                 if(eEventPtr != NULL)

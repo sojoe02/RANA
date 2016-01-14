@@ -238,10 +238,13 @@ void EventProcessing::processEvent(EventQueue::dataEvent *event,
 	double z = 0;
 	double duration =0;
 	//calculate the z value at origin, to get thresshold value:
-	auton->processFunction(event, simInfo->mapResolution, event->originX/mapRes,
-						   event->originY/mapRes, z, duration);
+	auton->processFunction(event, simInfo->mapResolution,
+						   event->originX,
+						   event->originY,
+						   z, duration);
 
-	//Output::Inst()->kprintf("z value at origin is = %f, duration is = %f", z, duration);
+	Output::Inst()->kprintf("z value at origin is = %f, duration is = %f, thresshold= %f", z, duration, thresshold);
+
 	double thressholdZ = z * thresshold;
 
 	recursiveZlevel(auton, event, visited,event->originX/mapRes,

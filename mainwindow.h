@@ -135,6 +135,8 @@ private slots:
 
     void on_zoomSlider_sliderMoved(int position);
 
+	void on_checkBox_toggled(bool checked);
+
 signals:
 
     void map_updateSignal(INFOLIST infolist);

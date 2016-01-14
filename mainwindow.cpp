@@ -87,7 +87,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
 
-    versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.4.8.THREAD:0.6.1");
+	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.5.0.THREAD:0.6.1");
 
 	ui->statusBar->addWidget(new QLabel(versionString));
 	ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
@@ -295,7 +295,6 @@ void MainWindow::on_writeOutput(QString string)
 
 	//ui->outputTextBrowser->insertHtml(string);
 	//ui->outputTextBrowser->append("");
-
 }
 
 /**
@@ -1169,4 +1168,12 @@ void MainWindow::on_zoomSlider_actionTriggered(int action)
 void MainWindow::on_zoomSlider_sliderMoved(int position)
 {
 
+}
+
+void MainWindow::on_checkBox_toggled(bool checked)
+{
+   if(checked)
+	   Output::LegacyMode.store(true);
+   else
+	   Output::LegacyMode.store(false);
 }

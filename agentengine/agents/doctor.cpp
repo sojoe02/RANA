@@ -3,6 +3,7 @@
 
 Master* Doctor::master = NULL;
 std::map<int, std::string> Doctor::agentFilenames;
+std::map<int, std::shared_ptr<AutonLUA>> Doctor::agents;
 
 void Doctor::InitDoctor(Master *arg_master)
 {
@@ -33,6 +34,26 @@ bool Doctor::removeAuton(int Id)
 		return true;
 	} return false;
 }
+
+void Doctor::addLuaAutonPtr(std::shared_ptr<AutonLUA> luaPtr)
+{
+	agents.insert(make_pair(luaPtr->getID(), luaPtr));
+}
+
+void Doctor::submitEEvent(std::unique_ptr<EventQueue::eEvent> eEvent)
+{
+	master->receiveEEventPtr(std::move(eEvent));
+}
+
+std::shared_ptr<AutonLUA> Doctor::getAutonPtr(int id)
+{
+	auto itr = agents.find(id);
+	if(itr != agents.end())
+	{
+		return itr->second;
+	} else return NULL;
+}
+
 
 
 

@@ -1,7 +1,7 @@
 //--begin_license--
 //
 //Copyright 	2013 	Søren Vissing Jørgensen.
-//			2014	Søren Vissing Jørgensen, Center for Bio-Robotics, SDU, MMMI.  
+//			2014	Søren Vissing Jørgensen, Center for Bio-Robotics, SDU, MMMI.
 //
 //This file is part of RANA.
 //
@@ -49,19 +49,19 @@ class Nestene
 		~Nestene();
 
 		void generateAuton();
-		void populate(int listenerSize, int screamerSize, int LUASize, std::string filename);
+		void populate(int LUASize, std::string filename);
 		void populateSquared(int LUASize,std::string filename);
 		void populateSquaredListener(int listenerSize);
 
 		void initPhase(double macroResolution, unsigned long long tmu);
 
-        //function to receive events the master, and distribute them on all local nestene
-        void distroPhase(const EventQueue::eEvent *event);
+		//function to receive events the master, and distribute them on all local nestene
+		void distroPhase(const EventQueue::eEvent *event);
 
 		std::list<EventQueue::iEvent> responsePhase();
 		void endPhase();
 
-        void retrievePopPos(std::list<agentInfo> &infolist);
+		void retrievePopPos(std::list<agentInfo> &infolist);
 
 		int initAmount;
 
@@ -86,7 +86,7 @@ private:
 		//check whether or not there is to be initiated an event on one of its residents.
 		void queryPopulation();
 		//Act on event.
-		void performEvent(AutonListener *auton);
+		void performEvent(std::unique_ptr<EventQueue::eEvent> event);
 
 		//initial calculation of whether or not an event will be initiated.
 		void calculateInitEventChance();
@@ -105,7 +105,7 @@ private:
 		std::map<int,AutonScreamer> screamers;
 		std::map<int,AutonScreamer>::iterator itScreamers;
 
-        std::map<int,std::shared_ptr<AutonLUA>> LUAs;
+		std::map<int,std::shared_ptr<AutonLUA>> LUAs;
 
 		//list of ievents to be send back to the master:
 		//std::list<EventQueue::iEvent*>* iEvents;
