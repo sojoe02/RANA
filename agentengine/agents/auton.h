@@ -25,6 +25,7 @@
 
 #include <vector>
 #include <memory>
+#include <unordered_set>
 
 #include "eventqueue.h"
 
@@ -42,25 +43,28 @@ public:
     virtual std::unique_ptr<EventQueue::eEvent> initEvent(){return NULL;}
 
     virtual void processFunction(EventQueue::dataEvent *devent, double mapRes,
-                                 double x, double y, double &zvalue, double &duration){}
-    //virtual double eventChance();
+								 double x, double y, double &zvalue, double &duration){}
 
-	
     std::string getDesc();
     int getID();
     double getPosX();
-    double getPosY();
+	double getPosY();
+
+	bool removeGroup(int group);
+	void addGroup(int group);
 
     void simDone(){}
 
     bool operator==(Auton &other) const;
     bool operator!=(Auton &other) const;
-
+	bool checkGroup(int group);
 
 protected:
-    void distroEEvent(std::unique_ptr<EventQueue::eEvent> event);
 
-    int ID;
+	void distroEEvent(std::unique_ptr<EventQueue::eEvent> event);
+
+	int ID;
+	std::unordered_set<int> groups;
     std::string desc;
     double posX, posY, posZ;
     std::vector<double> statusVector;

@@ -49,24 +49,54 @@ double Auton::getPosY(){
 	return posY;
 }
 
-void Auton::distroEEvent(std::unique_ptr<EventQueue::eEvent> event){
+bool Auton::removeGroup(int group)
+{
+	auto itr = groups.find(group);
+
+	if(itr != groups.end())
+	{
+		groups.erase(itr);
+		return true;
+	}
+	return false;
+}
+
+void Auton::addGroup(int group)
+{
+	groups.insert(group);
+}
+
+bool Auton::checkGroup(int group)
+{
+	auto itr = groups.find(group);
+
+	if(itr != groups.end())
+		return true;
+	else return false;
+}
+
+void Auton::distroEEvent(std::unique_ptr<EventQueue::eEvent> event)
+{
     //nestene->eEventsOutbox.push_back(std::move(event));
 }
 
-std::unique_ptr<EventQueue::iEvent> Auton::handleEvent(EventQueue::eEvent* event){
+std::unique_ptr<EventQueue::iEvent> Auton::handleEvent(EventQueue::eEvent* event)
+{
 	return NULL;
 }
 
-std::unique_ptr<EventQueue::eEvent> Auton::actOnEvent(std::unique_ptr<EventQueue::iEvent> eventPtr){
+std::unique_ptr<EventQueue::eEvent> Auton::actOnEvent(std::unique_ptr<EventQueue::iEvent> eventPtr)
+{
     return NULL;
 }
 
-
-bool Auton::operator==(Auton &other) const{
+bool Auton::operator==(Auton &other) const
+{
 	return (this->ID == other.getID());
 }
 
-bool Auton::operator!=(Auton &other) const{
+bool Auton::operator!=(Auton &other) const
+{
 	return !(*this == other);
 }
 

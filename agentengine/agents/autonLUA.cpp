@@ -110,9 +110,9 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
 	lua_register(L, "l_removeAuton", l_removeAuton);
 	lua_register(L, "l_removeAgent", l_removeAuton);
 	lua_register(L, "l_addAgent", l_addAuton);
-
-	//MapHandler::drawCircle(30,'r',30,40);
-
+	lua_register(L, "l_emitEvent", l_emitEvent);
+	lua_register(L, "l_addGroup", l_addGroup);
+	lua_register(L, "l_removeGroup", l_removeGroup);
 
 	if(luaL_loadfile(L, filename.c_str() ) || lua_pcall(L,0,0,0)){
 		Output::Inst()->kprintf("error : %s \n", lua_tostring(L, -1));
@@ -271,8 +271,9 @@ std::unique_ptr<EventQueue::eEvent> AutonLUA::initEvent()
 
 		}catch(std::exception &e)
 		{
-			Output::Inst()->kprintf("<b><font color=\"red\">Error on Initiate Event..%s</font></b></>", e.what());
+			Output::Inst()->kprintf("<b><font color=\"red\">Error on Initiate Event. maybe you need to disable legacy mode?\t%s</font></b></>", e.what());
 			Output::RunSimulation.store(false);
+			return NULL;
 		}
 	} else
 	{
@@ -281,7 +282,7 @@ std::unique_ptr<EventQueue::eEvent> AutonLUA::initEvent()
 			lua_getglobal(L, "initiateEvent");
 			if(lua_pcall(L,0,0,0) !=LUA_OK)
 			{
-				Output::Inst()->kprintf("<b><font color=\"brown\">error on initiateEvent:\t %s\n</font></b></>",lua_tostring(L,-1));
+				Output::Inst()->kprintf("<b><font color=\"brown\">error on initiateEvent, are you runnig a legacy agent?\t %s\n</font></b></>",lua_tostring(L,-1));
 				Output::RunSimulation.store(false);
 				return NULL;
 			}
@@ -333,7 +334,7 @@ std::unique_ptr<EventQueue::eEvent> AutonLUA::actOnEvent(std::unique_ptr<EventQu
 
 			if(lua_pcall(L,5,4,0)!=LUA_OK)
 			{
-				Output::Inst()->kprintf("<b><font color=\"brown\">error on 'handleEvent':\t %s</font></b></>",lua_tostring(L,-1));
+				Output::Inst()->kprintf("<b><font color=\"brown\">error on 'handleEvent':\t%s</font></b></>",lua_tostring(L,-1));
 				Output::RunSimulation.store(false);
 				return NULL;
 			}
@@ -469,20 +470,25 @@ void AutonLUA::simDone()
 
 void AutonLUA::getSyncData()
 {
-
 	if(removed) return;
 
-	try{
+	try
+	{
 		lua_getglobal(L,"getSyncData");
 
 		if(lua_pcall(L,0,2,0)!=LUA_OK)
-			Output::Inst()->kprintf("<b><font color=\"red\" error on getSyncData:getSyncData:\t %s\n</font></b></>",lua_tostring(L,-1));
+		{
+			Output::Inst()->kprintf("<b><font color=\"red\"Error on getSyncData\t%s\n</font></b></>",lua_tostring(L,-1));
+			return;
+		}
 
 		Auton::posX = lua_tonumber(L,-2);
 		Auton::posY = lua_tonumber(L,-1);
 	}catch(std::exception &e)
 	{
-		Output::Inst()->kprintf("<b><font color=\"red\">Error on getSyncData..%s</font></b></>", e.what());
+		Output::Inst()->kprintf("<b><font color=\"red\">Error on getSyncData\t%s</font></b></>", e.what());
+		Output::RunSimulation.store(false);
+		return;
 	}
 }
 
@@ -805,11 +811,7 @@ int AutonLUA::l_gridMove(lua_State *L)
 	return 0;
 }
 
-int AutonLUA::l_stopSimulation(lua_State *L)
-{
-	Output::RunSimulation = false;
-	return 0;
-}
+
 
 int AutonLUA::l_addSharedNumber(lua_State *L)
 {
@@ -859,6 +861,10 @@ int AutonLUA::l_getSharedString(lua_State *L)
 
 }
 
+/*
+ * Simulation core and actor manipulation.
+ */
+
 int AutonLUA::l_getAgentPath(lua_State *L)
 {
 	lua_pushstring(L,Output::AgentPath.c_str());
@@ -892,7 +898,7 @@ int AutonLUA::l_removeAuton(lua_State *L)
 	return 1;
 }
 
-int AutonLUA::l_addEEvent(lua_State *L)
+int AutonLUA::l_emitEvent(lua_State *L)
 {
 	std::unique_ptr<EventQueue::eEvent>
 			sendEvent(new EventQueue::eEvent());
@@ -907,6 +913,35 @@ int AutonLUA::l_addEEvent(lua_State *L)
 	sendEvent->targetGroup = lua_tonumber(L, -1);
 
 	Doctor::submitEEvent(std::move(sendEvent));
+
+	return 0;
+}
+
+int AutonLUA::l_stopSimulation(lua_State *L)
+{
+	Output::RunSimulation.store(false);
+	return 0;
+}
+
+int AutonLUA::l_addGroup(lua_State *L)
+{
+	int id = lua_tonumber(L, -2);
+	int group = lua_tonumber(L, -1);
+
+	auto autonPtr = Doctor::getAutonPtr(id);
+	autonPtr->addGroup(id);
+
+	return 0;
+}
+
+int AutonLUA::l_removeGroup(lua_State *L)
+{
+	int id = lua_tonumber(L, -2);
+	int group = lua_tonumber(L, -1);
+
+	auto autonPtr = Doctor::getAutonPtr(id);
+	bool removed = autonPtr->removeGroup(group);
+	lua_pushboolean(L, removed);
 
 	return 1;
 }

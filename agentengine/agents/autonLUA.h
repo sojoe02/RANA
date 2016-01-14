@@ -89,7 +89,9 @@ class AutonLUA : public Auton
 		static int l_getAgentPath(lua_State *L);
 		static int l_addAuton(lua_State *L);
 		static int l_removeAuton(lua_State *L);
-		static int l_addEEvent(lua_State *L);
+		static int l_emitEvent(lua_State *L);
+		static int l_addGroup(lua_State *L);
+		static int l_removeGroup(lua_State *L);
 
 		static int luapanic(lua_State *L);
 

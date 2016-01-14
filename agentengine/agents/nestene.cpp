@@ -150,7 +150,6 @@ void Nestene::initPhase(double macroResolution, unsigned long long tmu)
 
 	for(auto itLUAs = LUAs.begin(); itLUAs !=LUAs.end(); itLUAs++)
 	{
-
 		std::unique_ptr<EventQueue::eEvent> eevent =
 				itLUAs->second->initEvent();
 
@@ -174,6 +173,7 @@ void Nestene::initPhase(double macroResolution, unsigned long long tmu)
         }
         removalIDs.clear();
     }
+
 }
 
 /**
@@ -185,7 +185,9 @@ void Nestene::distroPhase(const EventQueue::eEvent* event)
 {
    for(auto itLUAs = LUAs.begin(); itLUAs != LUAs.end(); ++itLUAs)
    {
-        if(event->origin->getID() != itLUAs->second->getID())
+		if(event->origin->getID() != itLUAs->second->getID() &&
+				(event->targetGroup == 0 ||
+				 itLUAs->second->checkGroup(event->targetGroup)==true))
         {
 			std::unique_ptr<EventQueue::iEvent> ieventPtr =
 					itLUAs->second->handleEvent(event);
