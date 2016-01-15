@@ -127,7 +127,7 @@ void Nestene::retrievePopPos(std::list<agentInfo> &infolist){
 		if(master->removedIDs.find(it->second->getID()) ==
 				master->removedIDs.end())
 		{
-			Output::Inst()->kprintf("id:%i, y:%i, x:%i", it->second->getID(),it->second->getPosY(), it->second->getPosX());
+			//Output::Inst()->kprintf("id:%i, y:%i, x:%i", it->second->getID(),it->second->getPosY(), it->second->getPosX());
 
             agentInfo info;
 			info.id = it->second->getID();
