@@ -32,6 +32,7 @@
 #include "ID.h"
 #include "master.h"
 #include "output.h"
+#include "../../physics/phys.h"
 
 Nestene::Nestene(double posX, double posY, double width, double height, Master* master, uint id)
         :initAmount(0),master(master), posX(posX), posY(posY),width(width),height(height),id(id)
@@ -148,14 +149,19 @@ void Nestene::retrievePopPos(std::list<agentInfo> &infolist){
 void Nestene::initPhase(double macroResolution, unsigned long long tmu)
 {
 
-	for(auto itLUAs = LUAs.begin(); itLUAs !=LUAs.end(); itLUAs++)
-	{
-		std::unique_ptr<EventQueue::eEvent> eevent =
-				itLUAs->second->initEvent();
+    for(auto itr = LUAs.begin(); itr !=LUAs.end(); itr++)
+    {
+        int macroFactorMultiple = itr->second->getMacroFactorMultiple();
+        if(macroFactorMultiple > 0 && macroFactorMultiple % Phys::getMacroFactor() == 0 )
+        {
+            std::unique_ptr<EventQueue::eEvent> eevent =
+                    itr->second->initEvent();
 
-		if(eevent != NULL)
-		{
-			master->receiveEEventPtr(std::move(eevent));
+
+            if(eevent != NULL)
+            {
+                master->receiveEEventPtr(std::move(eevent));
+            }
         }
     }
 

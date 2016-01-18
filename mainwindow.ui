@@ -129,7 +129,7 @@
               <number>-1</number>
              </property>
              <property name="text">
-              <string>&lt;b&gt;Time Resolution:</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Event Distribution Precision (s):&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="buddy">
               <cstring>timeResSpinBox</cstring>
@@ -142,7 +142,7 @@
               <string>Number of mirosteps pr macrostep</string>
              </property>
              <property name="text">
-              <string>&lt;b&gt;Macro Factor:</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Step Precision(s):&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="buddy">
               <cstring>macroSpinBox</cstring>
@@ -161,6 +161,43 @@
               <string/>
              </property>
             </widget>
+           </item>
+           <item row="0" column="2">
+            <widget class="QSpinBox" name="timeResSpinBox">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+             <property name="accelerated">
+              <bool>true</bool>
+             </property>
+             <property name="suffix">
+              <string/>
+             </property>
+             <property name="prefix">
+              <string>1e-</string>
+             </property>
+             <property name="maximum">
+              <number>12</number>
+             </property>
+             <property name="singleStep">
+              <number>1</number>
+             </property>
+             <property name="value">
+              <number>12</number>
+             </property>
+             <property name="displayIntegerBase">
+              <number>10</number>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="0" colspan="3">
+            <widget class="QLineEdit" name="mapPathLineEdit"/>
            </item>
            <item row="2" column="0">
             <widget class="QLabel" name="label_13">
@@ -184,37 +221,6 @@
               </size>
              </property>
             </spacer>
-           </item>
-           <item row="8" column="0" colspan="3">
-            <widget class="QLineEdit" name="mapPathLineEdit"/>
-           </item>
-           <item row="0" column="2">
-            <widget class="QSpinBox" name="timeResSpinBox">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-             <property name="accelerated">
-              <bool>true</bool>
-             </property>
-             <property name="maximum">
-              <number>1000000000</number>
-             </property>
-             <property name="singleStep">
-              <number>1000</number>
-             </property>
-             <property name="value">
-              <number>1000000</number>
-             </property>
-             <property name="displayIntegerBase">
-              <number>10</number>
-             </property>
-            </widget>
            </item>
            <item row="3" column="0">
             <widget class="QLabel" name="label_2">
@@ -261,6 +267,13 @@
              </property>
             </widget>
            </item>
+           <item row="24" column="2">
+            <widget class="QPushButton" name="pushButton">
+             <property name="text">
+              <string>Clear Output</string>
+             </property>
+            </widget>
+           </item>
            <item row="2" column="2">
             <widget class="QSpinBox" name="runTimeSpinBox">
              <property name="sizePolicy">
@@ -289,6 +302,19 @@
              </property>
             </widget>
            </item>
+           <item row="20" column="2">
+            <widget class="QPushButton" name="generateButton">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Initialize</string>
+             </property>
+            </widget>
+           </item>
            <item row="4" column="0">
             <spacer name="verticalSpacer_2">
              <property name="orientation">
@@ -304,13 +330,6 @@
               </size>
              </property>
             </spacer>
-           </item>
-           <item row="24" column="2">
-            <widget class="QPushButton" name="pushButton">
-             <property name="text">
-              <string>Clear Output</string>
-             </property>
-            </widget>
            </item>
            <item row="20" column="0">
             <spacer name="horizontalSpacer">
@@ -328,8 +347,8 @@
              </property>
             </spacer>
            </item>
-           <item row="20" column="2">
-            <widget class="QPushButton" name="generateButton">
+           <item row="21" column="2">
+            <widget class="QPushButton" name="runButton">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -337,7 +356,14 @@
               </sizepolicy>
              </property>
              <property name="text">
-              <string>Initialize</string>
+              <string>Run</string>
+             </property>
+            </widget>
+           </item>
+           <item row="16" column="0">
+            <widget class="QLabel" name="label_10">
+             <property name="text">
+              <string/>
              </property>
             </widget>
            </item>
@@ -448,23 +474,25 @@
              </layout>
             </widget>
            </item>
-           <item row="21" column="2">
-            <widget class="QPushButton" name="runButton">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
+           <item row="12" column="2">
+            <widget class="QDoubleSpinBox" name="scaleDoubleSpinBox">
+             <property name="accelerated">
+              <bool>true</bool>
              </property>
-             <property name="text">
-              <string>Run</string>
+             <property name="decimals">
+              <number>5</number>
              </property>
-            </widget>
-           </item>
-           <item row="16" column="0">
-            <widget class="QLabel" name="label_10">
-             <property name="text">
-              <string/>
+             <property name="minimum">
+              <double>0.000100000000000</double>
+             </property>
+             <property name="maximum">
+              <double>100.000000000000000</double>
+             </property>
+             <property name="singleStep">
+              <double>0.001000000000000</double>
+             </property>
+             <property name="value">
+              <double>1.000000000000000</double>
              </property>
             </widget>
            </item>
@@ -500,25 +528,10 @@
              </property>
             </widget>
            </item>
-           <item row="12" column="2">
-            <widget class="QDoubleSpinBox" name="scaleDoubleSpinBox">
-             <property name="accelerated">
-              <bool>true</bool>
-             </property>
-             <property name="decimals">
-              <number>5</number>
-             </property>
-             <property name="minimum">
-              <double>0.000100000000000</double>
-             </property>
-             <property name="maximum">
-              <double>100.000000000000000</double>
-             </property>
-             <property name="singleStep">
-              <double>0.001000000000000</double>
-             </property>
-             <property name="value">
-              <double>1.000000000000000</double>
+           <item row="10" column="2">
+            <widget class="QPushButton" name="generateEmptyMapButton">
+             <property name="text">
+              <string>Generate</string>
              </property>
             </widget>
            </item>
@@ -532,10 +545,13 @@
              </property>
             </widget>
            </item>
-           <item row="10" column="2">
-            <widget class="QPushButton" name="generateEmptyMapButton">
+           <item row="16" column="2">
+            <widget class="QCheckBox" name="checkBox">
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If you agent returns event data on 'initiateEvent' and 'handleEvent' you need to enable legacy mode.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
              <property name="text">
-              <string>Generate</string>
+              <string>Legacy Mode</string>
              </property>
             </widget>
            </item>
@@ -619,16 +635,6 @@
               </widget>
              </item>
             </layout>
-           </item>
-           <item row="16" column="2">
-            <widget class="QCheckBox" name="checkBox">
-             <property name="toolTip">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If you agent returns event data on 'initiateEvent' and 'handleEvent' you need to enable legacy mode.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-             <property name="text">
-              <string>Legacy Mode</string>
-             </property>
-            </widget>
            </item>
           </layout>
          </widget>

@@ -279,7 +279,7 @@ std::unique_ptr<EventQueue::eEvent> AutonLUA::initEvent()
 	{
 		try
 		{
-			lua_getglobal(L, "initiateEvent");
+            lua_getglobal(L, "step");
 			if(lua_pcall(L,0,0,0) !=LUA_OK)
 			{
 				Output::Inst()->kprintf("<b><font color=\"brown\">error on initiateEvent, are you runnig a legacy agent?\t %s\n</font></b></>",lua_tostring(L,-1));
@@ -944,6 +944,16 @@ int AutonLUA::l_removeGroup(lua_State *L)
 	lua_pushboolean(L, removed);
 
 	return 1;
+}
+
+int AutonLUA::l_setMacroFactorMultiple(lua_State *L)
+{
+    int id = lua_tonumber(L, -2);
+    int macroFactorMultiple = lua_tonumber(L, -1);
+
+    auto autonPtr = Doctor::getAutonPtr(id);
+    autonPtr->setMacroFactorMultiple(macroFactorMultiple);
+    return 0;
 }
 
 int AutonLUA::luapanic(lua_State *L)

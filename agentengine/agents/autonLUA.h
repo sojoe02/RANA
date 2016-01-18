@@ -92,8 +92,9 @@ class AutonLUA : public Auton
 		static int l_emitEvent(lua_State *L);
 		static int l_addGroup(lua_State *L);
 		static int l_removeGroup(lua_State *L);
+        static int l_setMacroFactorMultiple(lua_State *L);
 
-		static int luapanic(lua_State *L);
+        static int luapanic(lua_State *L);
 
 		void processFunction(EventQueue::dataEvent *devent, double mapRes,
 							 double x, double y,
