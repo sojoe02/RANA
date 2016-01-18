@@ -48,6 +48,11 @@ Master::Master()
 Master::~Master(){
     delete eventQueue;
 }
+/********************************************************
+ * Simulation initialization functions: 				*
+ * 														*
+ ********************************************************/
+
 /**
  * Generates the map
  * Places all Nestenes at positions to fit the width and height of the map,
@@ -58,6 +63,7 @@ Master::~Master(){
  * @param time resolution seconds between microsteps.
  * @param macroResolution factor to multiply with the time resolution for the macrostep intervals.
  */
+
 void Master::generateMap(double width, double height, int threads, double timeResolution, double macroResolution)
 {
     this->timeResolution = timeResolution;
@@ -95,6 +101,7 @@ void Master::generateMap(double width, double height, int threads, double timeRe
  * @param aylist y positions of all Lua autons
  * @param axlist x positions of all Lua autons
  */
+
 std::list<agentInfo> Master::retrievePopPos()
 {
 
@@ -117,6 +124,7 @@ std::list<agentInfo> Master::retrievePopPos()
  * @param LUASize number of LUAs total.
  * @param filename the lua file of the LUA autons definition.
  */
+
 void Master::populateSystem(int listenerSize,
                             int screamerSize, int LUASize, std::string filename)
 {
@@ -146,48 +154,6 @@ void Master::populateSystem(int listenerSize,
 		nestene->populate(*itr, filename);
     }
 
-}
-
-
-void Master::populateSquareSystem(int LUASize, std::string filename)
-{
-
-    std::vector<int> LUAVector;
-
-    for(uint i = 0; i < nestenes.size(); i++)
-    {
-        LUAVector.push_back(LUASize);
-    }
-
-    autonAmount = LUASize;
-    luaFilename = filename;
-
-    Output::Inst()->kprintf("lua amount is : %d \n", LUASize);
-    for(uint i= 0; i<LUAVector.size(); i++)
-    {
-        Nestene *nest = &nestenes.at(i);
-        nest->populateSquared(LUAVector.at(i), filename);
-    }
-}
-
-void Master::populateSquareListenerSystem(int listenerSize)
-{
-
-    std::vector<int> listenerVector;
-
-    for(uint i = 0; i < nestenes.size(); i++)
-    {
-        listenerVector.push_back(listenerSize);
-    }
-
-    autonAmount = listenerSize;
-
-    Output::Inst()->kprintf("listener amount is : %d \n", listenerSize);
-    for(uint i= 0; i<listenerVector.size(); i++)
-    {
-        Nestene *nest = &nestenes.at(i);
-        nest->populateSquaredListener(listenerVector.at(i));
-    }
 }
 
 /********************************************************

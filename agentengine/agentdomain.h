@@ -42,19 +42,9 @@ class AgentDomain
         AgentDomain(Control *control);
 		~AgentDomain();
 
-		/*
-		   function to intepret the relevant LUA functions for the AgentEngine.
-		   */
-		void interpret(std::string function);
-
 		void generateEnvironment(double width, double height, int resolution,
 				int listenerSize, int screamerSize, int LUASize,
 				double timeResolution, int macroFactor, std::string filename);
-
-		void generateSquaredEnvironment(double width, double height, int resolution,int LUASize,double timeResolution, int macroFactor, std::string filename);
-
-		void generateSquaredListenerEnvironment(double width, double height, int resolution,int LUASize,double timeResolution, int macroFactor);
-
 
         void retrievePopPos();
 
@@ -84,8 +74,6 @@ private:
 		std::atomic_bool stop;
 		std::mutex stopMutex;
         std::atomic_bool fetchPositions;
-
-        //MainWindow *mainwindow;
 };
 
 #endif // AGENTDOMAIN_H

@@ -48,6 +48,7 @@ void Doctor::submitEEvent(std::unique_ptr<EventQueue::eEvent> eEvent)
 std::shared_ptr<AutonLUA> Doctor::getAutonPtr(int id)
 {
 	auto itr = agents.find(id);
+
 	if(itr != agents.end())
 	{
 		return itr->second;

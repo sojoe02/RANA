@@ -151,8 +151,10 @@ void Nestene::initPhase(double macroResolution, unsigned long long tmu)
 
     for(auto itr = LUAs.begin(); itr !=LUAs.end(); itr++)
     {
-        int macroFactorMultiple = itr->second->getMacroFactorMultiple();
-        if(macroFactorMultiple > 0 && macroFactorMultiple % Phys::getMacroFactor() == 0 )
+		int macroFactorMultipler = itr->second->getMacroFactorMultipler();
+
+		if(macroFactorMultipler > 0 &&
+				macroFactorMultipler % Phys::getMacroFactor() == 0 )
         {
             std::unique_ptr<EventQueue::eEvent> eevent =
                     itr->second->initEvent();

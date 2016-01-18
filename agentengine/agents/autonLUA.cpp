@@ -48,6 +48,7 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
 	: Auton(ID, posX, posY, posZ, nestene), filename(filename),
 	  nofile(false),removed(false)
 {
+
 	desc = "LUA";
 	//Output::Inst()->kprintf("%f,%f", posX, posY);
 	/*
@@ -120,25 +121,21 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
 		Output::Inst()->kprintf("Lua Auton disabled\n");
 	}
 
-	//lua_atpanic (L, AutonLUA::luapanic);
-
-	//init the LUA frog:
-	lua_getglobal(L,"initAuton");
-	lua_pushnumber(L,(int)posX);
-	lua_pushnumber(L,(int)posY);
-	lua_pushnumber(L,ID);
-	int mf = Phys::getMacroFactor();
-	double tr = Phys::getTimeRes();
-	lua_pushnumber(L,mf);
-	lua_pushnumber(L,tr);
-
 	if(nestene != NULL)
-	{
 		Output::Inst()->kdebug("I belong to Nestene %i", nestene->getID());
-	}
 
-	try
-	{
+
+	//Call the Initialization function for the agent
+	try{
+		//init the LUA frog:
+		if(Output::LegacyMode.load()) lua_getglobal(L,"initAuton");
+		else lua_getglobal(L, "InitializeAgent");
+
+		lua_pushnumber(L,(int)posX);
+		lua_pushnumber(L,(int)posY);
+		lua_pushnumber(L,ID);
+		lua_pushnumber(L,Phys::getMacroFactor());
+		lua_pushnumber(L,Phys::getTimeRes());
 		//Call the initAuton function (3 arguments, 0 results):
 		if(lua_pcall(L,5,0,0)!=LUA_OK)
 		{
@@ -146,18 +143,7 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
 			nofile = true;
 			Output::Inst()->kprintf("Lua Auton disabled\n");
 		}
-		//sync positions:
-		lua_getglobal(L,"getSyncData");
-		if(lua_pcall(L,0,2,0)!=LUA_OK)
-		{
-			Output::Inst()->kprintf("<b><font color=\"brown\">error on initiateEvent:getSyncData:\t %s\n</font></b></>",lua_tostring(L,-1));
-		}else
-		{
 
-			Auton::posX = lua_tonumber(L,-2);
-			Auton::posY = lua_tonumber(L,-1);
-
-		}
 	}catch(std::exception& e){
 		Output::Inst()->kprintf("<b><font color=\"red\">Error on Agent Initiation..%s, %s</font></b></>" , e.what());
 		Output::RunSimulation = false;
@@ -167,9 +153,8 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
 	getSyncData();
 }
 
-AutonLUA::~AutonLUA(){
-	//delete L;
-	//lua_close(L);
+AutonLUA::~AutonLUA()
+{
 	lua_settop(L,0);
 	lua_close(L);
 }
@@ -256,7 +241,6 @@ std::unique_ptr<EventQueue::eEvent> AutonLUA::initEvent()
 			sendEvent->origin = this;
 			sendEvent->activationTime = Phys::getCTime();
 			sendEvent->id = ID::generateEventID();
-			//the description string:
 			sendEvent->targetID = lua_tonumber(L, -1);
 			sendEvent->desc = lua_tostring(L,-2);
 			sendEvent->table = lua_tostring(L,-3);
@@ -279,7 +263,7 @@ std::unique_ptr<EventQueue::eEvent> AutonLUA::initEvent()
 	{
 		try
 		{
-            lua_getglobal(L, "step");
+			lua_getglobal(L, "takeStep");
 			if(lua_pcall(L,0,0,0) !=LUA_OK)
 			{
 				Output::Inst()->kprintf("<b><font color=\"brown\">error on initiateEvent, are you runnig a legacy agent?\t %s\n</font></b></>",lua_tostring(L,-1));
@@ -381,7 +365,7 @@ std::unique_ptr<EventQueue::eEvent> AutonLUA::actOnEvent(std::unique_ptr<EventQu
 
 			if(lua_pcall(L,5,0,0)!=LUA_OK)
 			{
-				Output::Inst()->kprintf("<b><font color=\"brown\">error on 'handleEvent':\t %s</font></b></>",lua_tostring(L,-1));
+				Output::Inst()->kprintf("<b><font color=\"brown\">error on 'EVENT':\t %s</font></b></>",lua_tostring(L,-1));
 				Output::RunSimulation.store(false);
 				return NULL;
 			}
@@ -390,13 +374,13 @@ std::unique_ptr<EventQueue::eEvent> AutonLUA::actOnEvent(std::unique_ptr<EventQu
 
 		}catch(std::exception &e)
 		{
-			Output::Inst()->kprintf("<b><font color=\"red\">Error on handleEvent..%s</font></b></>", e.what());
+			Output::Inst()->kprintf("<b><font color=\"red\">Error on EVENT..%s</font></b></>", e.what());
 			Output::RunSimulation = false;
 		}
 
 	}
 
-return NULL;
+	return NULL;
 
 }
 
@@ -457,7 +441,9 @@ void AutonLUA::simDone()
 		return;
 
 	try{
-		lua_getglobal(L,"simDone");
+		if(Output::LegacyMode.load()) lua_getglobal(L,"simDone");
+		else lua_getglobal(L, "cleanUp");
+
 		if(lua_pcall(L,0,0,0)!=LUA_OK)
 		{
 			Output::Inst()->kprintf("<b><font color=\"brown\">error on 'simDone':\t %s\n</font></b></>",lua_tostring(L,-1));
@@ -474,7 +460,8 @@ void AutonLUA::getSyncData()
 
 	try
 	{
-		lua_getglobal(L,"getSyncData");
+		if(Output::LegacyMode.load()) lua_getglobal(L,"getSyncData");
+		else lua_getglobal(L, "synchronizePosition");
 
 		if(lua_pcall(L,0,2,0)!=LUA_OK)
 		{
@@ -946,14 +933,14 @@ int AutonLUA::l_removeGroup(lua_State *L)
 	return 1;
 }
 
-int AutonLUA::l_setMacroFactorMultiple(lua_State *L)
+int AutonLUA::l_setMacroFactorMultipler(lua_State *L)
 {
-    int id = lua_tonumber(L, -2);
-    int macroFactorMultiple = lua_tonumber(L, -1);
+	int id = lua_tonumber(L, -2);
+	int macroFactorMultiple = lua_tonumber(L, -1);
 
-    auto autonPtr = Doctor::getAutonPtr(id);
-    autonPtr->setMacroFactorMultiple(macroFactorMultiple);
-    return 0;
+	auto autonPtr = Doctor::getAutonPtr(id);
+	autonPtr->setMacroFactorMultipler(macroFactorMultiple);
+	return 0;
 }
 
 int AutonLUA::luapanic(lua_State *L)

@@ -28,7 +28,7 @@
 #include "nestene.h"
 
 	Auton::Auton(int ID, double posX, double posY, double posZ, Nestene* nestene)
-:ID(ID), macroFactorMultiple(1), posX(posX), posY(posY), posZ(posZ), nestene(nestene)
+:ID(ID), macroFactorMultipler(1), posX(posX), posY(posY), posZ(posZ), nestene(nestene)
 {
 
 }
@@ -75,14 +75,14 @@ bool Auton::checkGroup(int group)
 	else return false;
 }
 
-uint Auton::getMacroFactorMultiple()
+int Auton::getMacroFactorMultipler()
 {
-    return macroFactorMultiple;
+	return macroFactorMultipler;
 }
 
-void Auton::setMacroFactorMultiple(uint multiple)
+void Auton::setMacroFactorMultipler(int multipler)
 {
-    macroFactorMultiple = multiple;
+	macroFactorMultipler = multipler;
 }
 
 void Auton::distroEEvent(std::unique_ptr<EventQueue::eEvent> event)

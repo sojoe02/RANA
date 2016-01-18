@@ -140,8 +140,12 @@ void MainWindow::on_generateButton_clicked()
         QFile path(ui->agentPathLineEdit->text());
         if(path.exists())
 		{
-            double timeRes = 1/(double)ui->timeResSpinBox->value();
-            double macroRes = ui->macroSpinBox->value();
+			double exponent = (double)ui->timeResSpinBox->value();
+			double timeRes = 1/(double)std::pow(10,exponent);
+			//Output::Inst()->kprintf("resolution is: %.20f", timeRes);
+			double macroRes = std::pow(10,ui->macroSpinBox->value());
+			//Output::Inst()->kprintf("macro resolution is: %f", macroRes);
+
             int agentAmount = ui->luaSpinBox->value();
 			QString agentPath = ui->agentPathLineEdit->text();
 
@@ -966,7 +970,7 @@ void MainWindow::on_vis_readInfoPushButton_clicked()
 		int runtime = int(info->tmuAmount + info->macroFactor)/(info->timeResolution);
 		int step = runtime/10;
 
-		if (step == 0) step = 1;
+		if(step == 0) step = 1;
 
 		ui->vis_fromTimeSpinBox->setMinimum(0);
 		ui->vis_fromTimeSpinBox->setMaximum(runtime-1);
@@ -1176,4 +1180,14 @@ void MainWindow::on_checkBox_toggled(bool checked)
 	   Output::LegacyMode.store(true);
    else
 	   Output::LegacyMode.store(false);
+}
+
+void MainWindow::on_macroSpinBox_valueChanged(int arg1)
+{
+	if( arg1 > ui->timeResSpinBox->value()) ui->timeResSpinBox->setValue(arg1);
+}
+
+void MainWindow::on_timeResSpinBox_valueChanged(int arg1)
+{
+	if( arg1 < ui->macroSpinBox->value()) ui->macroSpinBox->setValue(arg1);
 }

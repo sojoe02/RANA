@@ -53,11 +53,9 @@ AgentDomain::~AgentDomain(){
  * Checks if an environment has been generated.
  * @return bool false if there is not environment, true if there is.
  * */
-bool AgentDomain::checkEnvPresence(){
+bool AgentDomain::checkEnvPresence()
+{
 	return mapGenerated;	
-}
-
-void AgentDomain::interpret(std::string function){
 }
 
 /**
@@ -94,61 +92,6 @@ void AgentDomain::generateEnvironment(double width, double height, int resolutio
 	retrievePopPos();
 	mapGenerated = true;
 }
-
-
-/**
- * Generates the environment.
- * Upon environment generation the nestenes will be placed, autons will be 
- * assigned to a nestene and placed within it's parameters.
- */
-void AgentDomain::generateSquaredEnvironment(double width, double height, int resolution,int LUASize,double timeResolution, int macroFactor, std::string filename){
-
-	this->timeResolution = timeResolution;
-	this->macroFactor = macroFactor;
-	macroResolution = macroFactor * timeResolution;
-
-
-	Phys::setTimeRes(timeResolution);
-	Phys::setCTime(0);
-	Phys::setMacroFactor(macroFactor);
-	Phys::setEnvironment(width, height);
-
-    masteragent->generateMap(width,height,resolution,timeResolution, macroResolution);
-	//std::string filename = "frog.lua";
-
-	mapWidth = width;
-	mapHeight = height;
-
-    masteragent->populateSquareSystem(LUASize, filename);
-	mapGenerated = true;
-}
-/**
- * Generates the environment.
- * Upon environment generation the nestenes will be placed, autons will be 
- * assigned to a nestene and placed within it's parameters.
- */
-void AgentDomain::generateSquaredListenerEnvironment(double width, double height, int resolution,int listenerSize,double timeResolution, int macroFactor){
-
-	this->timeResolution = timeResolution;
-	this->macroFactor = macroFactor;
-	macroResolution = macroFactor * timeResolution;
-
-	Phys::setTimeRes(timeResolution);
-	Phys::setCTime(0);
-	Phys::setMacroFactor(macroFactor);
-	Phys::setEnvironment(width, height);
-
-    masteragent->generateMap(width,height,resolution,timeResolution, macroResolution);
-
-	//std::string filename = "frog.lua";
-
-	mapWidth = width;
-	mapHeight = height;
-
-    masteragent->populateSquareListenerSystem(listenerSize);
-	mapGenerated = true;
-}
-
 
 /**
  * Retrieval of auton positions.

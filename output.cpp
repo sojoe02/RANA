@@ -77,6 +77,8 @@ void Output::kprintf(const char* msg, ...)
 
     QString string(buffer);
 
+	qDebug() << buffer;
+
 	mainWindow->write_regularOutput(string);
 
     va_end(args);

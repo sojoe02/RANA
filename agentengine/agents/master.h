@@ -37,47 +37,26 @@ class Nestene;
 class Master
 {
 public:
-	/*
-		  resolution is microseconds pr. turn
-		*/
 	Master();
 	~Master();
-	/*
-		   height of map
-		   width of map
-		   resolution is is number of nestenes squared
-		   */
+
 	void generateMap(double width, double height, int resolution,
 					 double timeResolution, double macroResolution);
 
 
-	/*
-		   Populate the system with a give population size
-		   */
 	void populateSystem(int listenerSize, int screamerSize,
 						int LUASize, std::string filename);
 
-	void populateSquareSystem(int LUASize, std::string filename);
-	void populateSquareListenerSystem(int listenerSize);
 
-	/*
-		   Functions to excecute a microStep and macroStep
-		   */
-	//void microStep();
 	void microStep(unsigned long long tmu);
 	void macroStep(unsigned long long tmu);
 	unsigned long long getNextMicroTmu();
-	/*
-		   Functions on what to do when receiving events:
-		   */
-    void receiveEEventPtr(std::unique_ptr<EventQueue::eEvent> eEvent);
+
+	void receiveEEventPtr(std::unique_ptr<EventQueue::eEvent> eEvent);
 
     void decrementEEventCounter(unsigned long long id){eventQueue->decrementEeventCounter(id);}
     void incrementEEventCounter(unsigned long long id){eventQueue->incrementEeventCounter(id);}
 
-	/*
-		   Functions to add events to the masters eventQueue
-		   */
     void receiveIEventPtr(std::unique_ptr<EventQueue::iEvent> ievent);
 	void addExternalEventPtr(EventQueue::eEvent *eEvent);
 

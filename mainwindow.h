@@ -137,6 +137,10 @@ private slots:
 
 	void on_checkBox_toggled(bool checked);
 
+	void on_macroSpinBox_valueChanged(int arg1);
+
+	void on_timeResSpinBox_valueChanged(int arg1);
+
 signals:
 
     void map_updateSignal(INFOLIST infolist);
