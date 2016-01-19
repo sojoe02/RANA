@@ -44,89 +44,90 @@
 class Nestene;
 class AutonLUA : public Auton
 {
-	public:
-		AutonLUA(int ID, double posX, double posY, double posZ,	Nestene *nestene, std::string filename);
-		~AutonLUA();
+public:
+    AutonLUA(int ID, double posX, double posY, double posZ,	Nestene *nestene, std::string filename);
+    ~AutonLUA();
 
-		bool operator==(AutonLUA &other) const;
-		bool operator!=(AutonLUA &other) const;
+    bool operator==(AutonLUA &other) const;
+    bool operator!=(AutonLUA &other) const;
 
-        /*********************************************
-         * Lua wrapper functions
-         ********************************************/
+    /*******************************************
+    * Lua wrapper functions
+    *
+    ********************************************/
 
-        //Interface.
-		static int l_debug(lua_State *L);
-        static int l_print(lua_State *L);
-        static int l_generateEventID(lua_State *L);
+    //Interface.
+    static int l_debug(lua_State *L);
+    static int l_print(lua_State *L);
+    static int l_generateEventID(lua_State *L);
 
-        //Physics.
-		static int l_speedOfSound(lua_State *L);	
-        static int l_distance(lua_State *L);
-        static int l_currentTime(lua_State *L);
-		static int l_getMacroFactor(lua_State *L);
-		static int l_getTimeResolution(lua_State *L);
-		static int l_getMersenneFloat(lua_State *L);
-		static int l_getMersenneInteger(lua_State *L);
+    //Physics.
+    static int l_speedOfSound(lua_State *L);
+    static int l_distance(lua_State *L);
+    static int l_currentTime(lua_State *L);
+    static int l_getMacroFactor(lua_State *L);
+    static int l_getTimeResolution(lua_State *L);
+    static int l_getMersenneFloat(lua_State *L);
+    static int l_getMersenneInteger(lua_State *L);
 
-        //Map and movement.
-        static int l_getEnvironmentSize(lua_State *L);
-        static int l_modifyMap(lua_State *L);
-        static int l_checkMap(lua_State *L);
-        static int l_addPosition(lua_State *L);
-		static int l_checkPosition(lua_State *L);
-		static int l_updatePosition(lua_State *L);
-		static int l_checkCollision(lua_State *L);
-        static int l_checkCollisionRadial(lua_State *L);
-        static int l_getMaskRadial(lua_State *L);
-        static int l_gridMove(lua_State *L);
+    //Map and movement.
+    static int l_getEnvironmentSize(lua_State *L);
+    static int l_modifyMap(lua_State *L);
+    static int l_checkMap(lua_State *L);
+    static int l_addPosition(lua_State *L);
+    static int l_checkPosition(lua_State *L);
+    static int l_updatePosition(lua_State *L);
+    static int l_checkCollision(lua_State *L);
+    static int l_checkCollisionRadial(lua_State *L);
+    static int l_getMaskRadial(lua_State *L);
+    static int l_gridMove(lua_State *L);
 
-        //Shared values.
-        static int l_getSharedNumber(lua_State *L);
-        static int l_addSharedNumber(lua_State *L);
-        static int l_addSharedString(lua_State *L);
-        static int l_getSharedString(lua_State *L);
+    //Shared values.
+    static int l_getSharedNumber(lua_State *L);
+    static int l_addSharedNumber(lua_State *L);
+    static int l_addSharedString(lua_State *L);
+    static int l_getSharedString(lua_State *L);
 
-        //Simulation core.
-        static int l_stopSimulation(lua_State *L);
-		static int l_getAgentPath(lua_State *L);
-		static int l_addAuton(lua_State *L);
-        static int l_removeAuton(lua_State *L);
+    //Simulation core.
+    static int l_stopSimulation(lua_State *L);
+    static int l_getAgentPath(lua_State *L);
+    static int l_addAuton(lua_State *L);
+    static int l_removeAuton(lua_State *L);
 
-        //Agents.
-		static int l_emitEvent(lua_State *L);
-		static int l_addGroup(lua_State *L);
-		static int l_removeGroup(lua_State *L);
-		static int l_setMacroFactorMultipler(lua_State *L);
+    //Agents.
+    static int l_emitEvent(lua_State *L);
+    static int l_addGroup(lua_State *L);
+    static int l_removeGroup(lua_State *L);
+    static int l_setMacroFactorMultipler(lua_State *L);
 
-        static int luapanic(lua_State *L);
+    static int luapanic(lua_State *L);
 
-		void processFunction(EventQueue::dataEvent *devent, double mapRes,
-							 double x, double y,
-							 double &zvalue, double &duration);
+    void processFunction(EventQueue::dataEvent *devent, double mapRes,
+                         double x, double y,
+                         double &zvalue, double &duration);
 
 private:
 
-		std::unique_ptr<EventQueue::iEvent>
-		handleEvent(const EventQueue::eEvent* event);
+    std::unique_ptr<EventQueue::iEvent>
+    handleEvent(const EventQueue::eEvent* event);
 
-		std::unique_ptr<EventQueue::eEvent>
-		actOnEvent(std::unique_ptr<EventQueue::iEvent> eventPtr);
+    std::unique_ptr<EventQueue::eEvent>
+    actOnEvent(std::unique_ptr<EventQueue::iEvent> eventPtr);
 
-        std::unique_ptr<EventQueue::eEvent> initEvent();
+    std::unique_ptr<EventQueue::eEvent> initEvent();
 
-        void setRemoved();
+    void setRemoved();
 
-		void simDone();
-		double eventChance();
-		std::string filename;
-		//The LUA state:
-		lua_State* L;
-		friend class Nestene;
-        friend class Master;
-		bool nofile;
-		bool removed;
-		void getSyncData();
+    void simDone();
+    double eventChance();
+    std::string filename;
+    //The LUA state:
+    lua_State* L;
+    friend class Nestene;
+    friend class Master;
+    bool nofile;
+    bool removed;
+    void getSyncData();
 };
 
 #endif // AUTONLUA_H
