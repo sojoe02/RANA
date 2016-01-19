@@ -132,10 +132,10 @@ void Nestene::retrievePopPos(std::list<agentInfo> &infolist){
 
             agentInfo info;
 			info.id = it->second->getID();
-            info.y = it->second->getPosY();
-            info.x = it->second->getPosX();
-            infolist.push_back(info);
-        }
+        info.y = it->second->getPosY();
+        info.x = it->second->getPosX();
+        infolist.push_back(info);
+    }
     }
 }
 
@@ -151,13 +151,13 @@ void Nestene::initPhase(double macroResolution, unsigned long long tmu)
 
     for(auto itr = LUAs.begin(); itr !=LUAs.end(); itr++)
     {
-		int macroFactorMultipler = itr->second->getMacroFactorMultipler();
+        int macroFactorMultipler = itr->second->getMacroFactorMultipler();
 
-		if(macroFactorMultipler > 0 &&
-				macroFactorMultipler % Phys::getMacroFactor() == 0 )
+        if(macroFactorMultipler > 0 &&
+                        (tmu-1)%macroFactorMultipler*Phys::getMacroFactor() == 0 )
         {
             std::unique_ptr<EventQueue::eEvent> eevent =
-                    itr->second->initEvent();
+                            itr->second->initEvent();
 
 
             if(eevent != NULL)
@@ -170,8 +170,8 @@ void Nestene::initPhase(double macroResolution, unsigned long long tmu)
     if(!removalIDs.empty())
     {
         //remove all autons set for removal
-		for(auto itRemove= removalIDs.begin(); itRemove!=
-			removalIDs.end(); ++itRemove)
+        for(auto itRemove= removalIDs.begin(); itRemove!=
+            removalIDs.end(); ++itRemove)
         {
             auto itrLua = LUAs.find(*itRemove);
             if(itrLua != LUAs.end())
@@ -191,14 +191,14 @@ void Nestene::initPhase(double macroResolution, unsigned long long tmu)
  */
 void Nestene::distroPhase(const EventQueue::eEvent* event)
 {
-   for(auto itLUAs = LUAs.begin(); itLUAs != LUAs.end(); ++itLUAs)
-   {
-		if(event->origin->getID() != itLUAs->second->getID() &&
-				(event->targetGroup == 0 ||
-				 itLUAs->second->checkGroup(event->targetGroup)==true))
+    for(auto itLUAs = LUAs.begin(); itLUAs != LUAs.end(); ++itLUAs)
+    {
+        if(event->originID != itLUAs->second->getID() &&
+                        (event->targetGroup == 0 ||
+                         itLUAs->second->checkGroup(event->targetGroup) == true))
         {
-			std::unique_ptr<EventQueue::iEvent> ieventPtr =
-					itLUAs->second->handleEvent(event);
+            std::unique_ptr<EventQueue::iEvent> ieventPtr =
+                            itLUAs->second->handleEvent(event);
 
             if(ieventPtr != NULL)
             {
@@ -221,16 +221,16 @@ void Nestene::endPhase()
 void Nestene::simDone()
 {
     //query it's population on whether there is going to be an event or not:
-	for(itListeners = listeners.begin(); itListeners !=listeners.end(); itListeners++)
-	{
+    for(itListeners = listeners.begin(); itListeners !=listeners.end(); itListeners++)
+    {
         itListeners->second.simDone();
     }
-	for(itScreamers = screamers.begin(); itScreamers !=screamers.end(); itScreamers++)
-	{
+    for(itScreamers = screamers.begin(); itScreamers !=screamers.end(); itScreamers++)
+    {
         itScreamers->second.simDone();
     }
-	for(auto itLUAs = LUAs.begin(); itLUAs !=LUAs.end(); itLUAs++)
-	{
+    for(auto itLUAs = LUAs.begin(); itLUAs !=LUAs.end(); itLUAs++)
+    {
         itLUAs->second->simDone();
     }
 }
@@ -242,7 +242,7 @@ void Nestene::queryPopulation(){
 //perform an event for an auton in question:
 void Nestene::performEvent(std::unique_ptr<EventQueue::eEvent> event)
 {
-	master->receiveEEventPtr(std::move(event));
+    master->receiveEEventPtr(std::move(event));
 }
 
 
@@ -253,11 +253,11 @@ int Nestene::addAuton(double x, double y, double z,
 
     if(type.compare("Lua") == 0)
     {
-		std::shared_ptr<AutonLUA> luaPtr =
-				std::make_shared<AutonLUA>(id, x, y, 1, this, filename);
+        std::shared_ptr<AutonLUA> luaPtr =
+                        std::make_shared<AutonLUA>(id, x, y, 1, this, filename);
 
-		LUAs.insert(std::make_pair(luaPtr->getID(),luaPtr));
-		Doctor::addLuaAutonPtr(luaPtr);
+        LUAs.insert(std::make_pair(luaPtr->getID(),luaPtr));
+        Doctor::addLuaAutonPtr(luaPtr);
     }
 
     return id;

@@ -45,12 +45,13 @@ Master::Master()
 	srand(time(NULL));
 }
 
-Master::~Master(){
+Master::~Master()
+{
     delete eventQueue;
 }
 /********************************************************
- * Simulation initialization functions: 				*
- * 														*
+ * Simulation initialization functions.
+ *
  ********************************************************/
 
 /**

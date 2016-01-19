@@ -31,6 +31,7 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
+#include "nestene.h"
 #include "auton.h"
 
 #define LUA_OK          0
@@ -49,46 +50,50 @@ class AutonLUA : public Auton
 
 		bool operator==(AutonLUA &other) const;
 		bool operator!=(AutonLUA &other) const;
-		/*
-		 * General LUA wrapper functions
-		 */
+
+        /*********************************************
+         * Lua wrapper functions
+         ********************************************/
+
+        //Interface.
 		static int l_debug(lua_State *L);
-		static int l_print(lua_State *L);
-		static int l_registerIEvent(lua_State *L);
-		static int l_registerEEvent(lua_State *L);
-		static int l_generateEventID(lua_State *L);	
-		/**
-         * Defining the LUA wrapper functions.
-         * This will enable the LUA auton to call physics function phys.h, to
-		 * calculate speed of sound etc.
-		 */
-		static int l_speedOfSound(lua_State *L);
-		static int l_currentTime(lua_State *L);
-		static int l_distance(lua_State *L);
+        static int l_print(lua_State *L);
+        static int l_generateEventID(lua_State *L);
+
+        //Physics.
+		static int l_speedOfSound(lua_State *L);	
+        static int l_distance(lua_State *L);
+        static int l_currentTime(lua_State *L);
 		static int l_getMacroFactor(lua_State *L);
 		static int l_getTimeResolution(lua_State *L);
 		static int l_getMersenneFloat(lua_State *L);
 		static int l_getMersenneInteger(lua_State *L);
-		static int l_getEnvironmentSize(lua_State *L);
-		static int l_modifyMap(lua_State *L);
-		static int l_checkMap(lua_State *L);
-        static int l_addPosition(lua_State *L);
 
+        //Map and movement.
+        static int l_getEnvironmentSize(lua_State *L);
+        static int l_modifyMap(lua_State *L);
+        static int l_checkMap(lua_State *L);
+        static int l_addPosition(lua_State *L);
 		static int l_checkPosition(lua_State *L);
 		static int l_updatePosition(lua_State *L);
 		static int l_checkCollision(lua_State *L);
         static int l_checkCollisionRadial(lua_State *L);
-
         static int l_getMaskRadial(lua_State *L);
-		static int l_gridMove(lua_State *L);
-		static int l_stopSimulation(lua_State *L);
-		static int l_getSharedNumber(lua_State *L);
-		static int l_addSharedNumber(lua_State *L);
-		static int l_addSharedString(lua_State *L);
-		static int l_getSharedString(lua_State *L);
+        static int l_gridMove(lua_State *L);
+
+        //Shared values.
+        static int l_getSharedNumber(lua_State *L);
+        static int l_addSharedNumber(lua_State *L);
+        static int l_addSharedString(lua_State *L);
+        static int l_getSharedString(lua_State *L);
+
+        //Simulation core.
+        static int l_stopSimulation(lua_State *L);
 		static int l_getAgentPath(lua_State *L);
 		static int l_addAuton(lua_State *L);
-		static int l_removeAuton(lua_State *L);
+        static int l_removeAuton(lua_State *L);
+
+        //Agents.
 		static int l_emitEvent(lua_State *L);
 		static int l_addGroup(lua_State *L);
 		static int l_removeGroup(lua_State *L);
@@ -101,7 +106,7 @@ class AutonLUA : public Auton
 							 double &zvalue, double &duration);
 
 private:
-		//function to receive an event from nestene responsible for this auton, returns an internal Event 'thinking':
+
 		std::unique_ptr<EventQueue::iEvent>
 		handleEvent(const EventQueue::eEvent* event);
 
