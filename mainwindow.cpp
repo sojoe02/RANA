@@ -87,7 +87,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
 
-	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.5.1.THREAD:0.6.1");
+	versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.5.3.THREAD:0.6.1");
 
 	ui->statusBar->addWidget(new QLabel(versionString));
 	ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
@@ -116,12 +116,12 @@ MainWindow::~MainWindow()
 void MainWindow::on_generateButton_clicked()
 {
 	int i = 0;
-	for(auto iter=graphAgents.begin(); iter!=graphAgents.end(); ++iter, i++) {
+	for(auto iter=graphAgents.begin(); iter!=graphAgents.end(); ++iter, i++) 
+	{
 		//Output::Inst()->kprintf("item #%i ", i);
 		scene->removeItem(*iter);
 		delete *iter;
 	}
-
 
 	ui->graphicsView->viewport()->update();
 
@@ -185,7 +185,8 @@ void MainWindow::advanceProgess(int percentage)
     //ui->progressBar->setValue(percentage);
 }
 
-void MainWindow::actionExit(){
+void MainWindow::actionExit()
+{
     QApplication::quit();
 }
 
@@ -470,7 +471,6 @@ void MainWindow::on_disableAgentsCheckBox_toggled(bool checked)
     }
 
     ui->graphicsView->viewport()->update();
-
 }
 
 /**
@@ -689,10 +689,31 @@ void MainWindow::actionPrintInfo()
 	write_output(versionString);
 }
 
-/*
- * POSTPROCESSING PART:
+void MainWindow::on_checkBox_toggled(bool checked)
+{
+   if(checked)
+	   Output::LegacyMode.store(true);
+   else
+	   Output::LegacyMode.store(false);
+}
+
+void MainWindow::on_macroSpinBox_valueChanged(int arg1)
+{
+	if( arg1 > ui->timeResSpinBox->value()) ui->timeResSpinBox->setValue(arg1);
+}
+
+void MainWindow::on_timeResSpinBox_valueChanged(int arg1)
+{
+	if( arg1 < ui->macroSpinBox->value()) ui->macroSpinBox->setValue(arg1);
+}
+
+
+/********************************************************
+ * 
+ * Post-processing.
  *
- */
+ *******************************************************/
+
 
 /**
  * @brief Constructs the postprossing widgets and their connections
@@ -1128,7 +1149,12 @@ void MainWindow::on_vis_clearOutputPushButton_clicked()
 
 }
 
-//DIALOGS:
+/********************************************************
+ * 
+ * Dialogs.
+ *
+ ********************************************************/
+
 void MainWindow::dialogConstruction()
 {
 	QObject::connect(ui->actionSave_Current_Events, SIGNAL(triggered()),this, SLOT(eventDialog()));
@@ -1174,20 +1200,4 @@ void MainWindow::on_zoomSlider_sliderMoved(int position)
 
 }
 
-void MainWindow::on_checkBox_toggled(bool checked)
-{
-   if(checked)
-	   Output::LegacyMode.store(true);
-   else
-	   Output::LegacyMode.store(false);
-}
 
-void MainWindow::on_macroSpinBox_valueChanged(int arg1)
-{
-	if( arg1 > ui->timeResSpinBox->value()) ui->timeResSpinBox->setValue(arg1);
-}
-
-void MainWindow::on_timeResSpinBox_valueChanged(int arg1)
-{
-	if( arg1 < ui->macroSpinBox->value()) ui->macroSpinBox->setValue(arg1);
-}
