@@ -21,55 +21,54 @@
 ----end_license--
 
 -- set the global variables:
-posX = 0
-posY = 0
+myX = 0
+myY = 0
 ID = 0
-macroF = 0
-timeRes = 0
+stepPrecision = 0
+eventPrecision = 0
 
 -- Import valid Rana lua libraries.
-API = require "ranalib_api"
+EventLib = require "ranalib_event"
 
--- Init of the lua frog, function called upon initilization of the LUA auton:
-function initializeAgent(x, y, id, stepPrecision, eventPrecision)
+-- Init of the lua frog, function called upon initilization of the LUA auton.
+function initializeAgent(x, y, ID, stepPrecision, eventPrecision)
 
-	posX = x
-	posY = y
-	ID = id
-	macroF = macroFactor
-	timeRes = timeResolution
+	myX = x
+	myY = y
+	ID = ID
+	stepPrecision = stepPrecision
+	eventPrecision = eventPrecision
 
 	l_debug("Agent #: " .. ID .. " has been initialized")
 
 end
 
-function handleEvent(origX, origY, eventID, eventDesc, eventTable)
-
+function handleEvent(sourceX, sourceY, sourceID, eventDescription, eventTable)
 	
-	if eventDesc == "ping" then
-		l_print("Agent: "..ID .." emits pong")	
-		propagationSpeed = 343
-		API.emitEvent(progagationSpeed, "pong")
+	if eventDescription == "ping" then
+		l_print("Agent: "..ID .." received a ping from agent: "
+			..sourceID.." emitting pong")
+
+                EventLib.emit{speed=343, description="pong"}
+
+	elseif eventDescription == "pong" then
+		l_print("Agent: "..ID.." received a pong from agent: ".. sourceID)
+
 	end
 
 end
 
 function takeStep()
 
-
-	if l_getMersenneInteger(1,100) <= 5 then
-
-		l_debug("emiting event")
-		
-		propagationSpeed = 343
-		API.emitEvent(propagationSpeed, "ping")
-
+	if l_getMersenneInteger(1,1000) <= 1 then
+		l_debug("Agent:"..ID.." is emiting ping")
+                EventLib.emit{speed=343, description="ping"}
 	end
 
 end
 
 function synchronizePosition()
-	return posX, posY
+	return myX, myY
 end
 
 function cleanUp()

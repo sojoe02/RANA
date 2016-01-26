@@ -165,7 +165,7 @@ void Master::populateSystem(int listenerSize,
 void Master::receiveEEventPtr(std::unique_ptr<EventQueue::eEvent> eEvent)
 {
     //increase the initiated events counter:
-    eEventInitAmount++;
+    //eEventInitAmount++;
     //insert the event into the eventQueue:
     eventQueue->insertEEvent(std::move(eEvent));
 }

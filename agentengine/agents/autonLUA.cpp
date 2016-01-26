@@ -948,11 +948,10 @@ int AutonLUA::l_emitEvent(lua_State *L)
     sendEvent->desc = lua_tostring(L, -3);
     sendEvent->targetID = lua_tonumber(L, -2);
     sendEvent->targetGroup = lua_tonumber(L, -1);
-
-    sendEvent->activationTime = Phys::getCTime();
+    sendEvent->activationTime = Phys::getCTime()+1;
     sendEvent->id = ID::generateEventID();
 
-    Output::Inst()->kprintf("time is: %d", sendEvent->activationTime);
+//    Output::Inst()->kprintf("time is: %d, description is: %s", sendEvent->activationTime, sendEvent->desc.c_str());
 
     Doctor::submitEEvent(std::move(sendEvent));
 
