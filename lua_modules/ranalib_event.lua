@@ -42,4 +42,4 @@ _EmitEvent = function(speed, desc, table, targetID, targetGroup)
 end
 
 
-return RanaLibAPI
+return RanaLibEvent

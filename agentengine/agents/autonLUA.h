@@ -65,6 +65,7 @@ public:
     static int l_speedOfSound(lua_State *L);
     static int l_distance(lua_State *L);
     static int l_currentTime(lua_State *L);
+	static int l_currentTimeS(lua_State *L);
     static int l_getMacroFactor(lua_State *L);
     static int l_getTimeResolution(lua_State *L);
     static int l_getMersenneFloat(lua_State *L);

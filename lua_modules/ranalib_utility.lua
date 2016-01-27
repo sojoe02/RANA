@@ -1,4 +1,4 @@
-local ranalib_utility = {}
+local RanaLibUtility = {}
 
 -- Deserialize an event table
 function RanaLibUtility.deserializeTable(string)
@@ -11,7 +11,7 @@ function RanaLibUtility.deserializeTable(string)
 	return table
 end
 
-function RanaLibUtility.serializeTable = function(val, name, debth)
+function RanaLibUtility.serializeTable(val, name, debth)
 	--skipnewlines = skipnewlines or false
 	depth = depth or 0
 	local tbl = string.rep("", depth)
@@ -44,4 +44,4 @@ function RanaLibUtility.serializeTable = function(val, name, debth)
 	return tbl
 end
 
-return ranalib_utility
+return RanaLibUtility

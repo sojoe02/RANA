@@ -84,6 +84,7 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
     lua_register(L, "l_speedOfSound", l_speedOfSound);
     lua_register(L, "l_distance", l_distance);
     lua_register(L, "l_currentTime",l_currentTime);
+	lua_register(L, "l_currentTimeS", l_currentTimeS);
     lua_register(L, "l_generateEventID", l_generateEventID);
     lua_register(L, "l_getMacroFactor", l_getMacroFactor);
     lua_register(L, "l_getTimeResolution", l_getTimeResolution);
@@ -150,8 +151,8 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
         lua_pushnumber(L,(int)posX);
         lua_pushnumber(L,(int)posY);
         lua_pushnumber(L,ID);
-        lua_pushnumber(L,1/Phys::getMacroFactor());
-        lua_pushnumber(L,1/Phys::getTimeRes());
+		lua_pushnumber(L,Phys::getMacroFactor()*Phys::getTimeRes());
+		lua_pushnumber(L,Phys::getTimeRes());
         //Call the initAuton function (3 arguments, 0 results):
         if(lua_pcall(L,5,0,0)!=LUA_OK)
         {
@@ -615,6 +616,13 @@ int AutonLUA::l_currentTime(lua_State *L)
     unsigned long long t = Phys::getCTime();
     lua_pushnumber(L,t);
     return 1;
+}
+
+int AutonLUA::l_currentTimeS(lua_State *L)
+{
+	double time = (double)Phys::getCTime()*Phys::getTimeRes();
+	lua_pushnumber(L,time);
+	return 1;
 }
 
 int AutonLUA::l_getMacroFactor(lua_State *L)
