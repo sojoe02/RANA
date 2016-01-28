@@ -49,6 +49,7 @@ peaked = false
 -- Import Rana lua libraries.
 Event	= require "ranalib_event"
 Core	= require "ranalib_core"
+Stat = require "ranalib_statistic"
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
 function initializeAgent(x, y, id, step_precision, event_precision)
@@ -59,8 +60,7 @@ function initializeAgent(x, y, id, step_precision, event_precision)
 	eventPrecision = event_precision
 	stepPrecision = step_precision
 
-	Tt = T + Core.randomMean(e,0)
-	Tn = Tt
+	Tt = T + Stat.randomMean(e,0)
 
 	l_debug("Oscillator agent #: " .. ID .. " has been initialized"..Tt)
 
@@ -72,29 +72,23 @@ end
 
 function takeStep()
 
-	Tn = Tn - stepPrecision
-	Ol = 1/Tn
-
-	step = step +1
-	--l_print("time: "..Core.time())
-	--l_print("value: "..Tn.." : "..stepPrecision.." : "..ID)
-	if step%dataFactor == 0 then	
-		l_print("time"..Core.time())
-		Olevels[iteration] = Ol..","..Tn
-		iteration = iteration + 1
-	end
+	Tn = Tn + stepPrecision
+	step = step 
 
 	if Tn >= Tt-r and peaked == false then
 		Event.emit{description="Signal"}
+		table.insert(Olevels, Core.time()..",".. 1)
 		peaked = true
 
 	end
 
-	if Tn <= 0 then 
-		Tt = T + Core.randomMean(e, 0)
-		Tn = Tt
+	if Tn >= Tt then 
+		Tt = T + Stat.randomMean(e, 0)
+		Tn = 0
 		peaked = false
-		l_print("Oscillator Emitting signal")
+
+		table.insert(Olevels, Core.time()..",".. 0)
+		l_print("Oscillator Emitting signal at time: ".. Core.time().."[s]")
 	end
 end
 

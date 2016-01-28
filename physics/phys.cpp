@@ -26,6 +26,7 @@
 #include <limits.h>
 
 #include "phys.h"
+#include "output.h"
 
 
 
@@ -145,7 +146,12 @@ void Phys::move(double v, double posX, double posY,
 
 double Phys::getMersenneFloat(double min=0, double max=1)
 {
-    return min + (double)Phys::int_dist(Phys::rng)/((double)ULLONG_MAX/(max-min));
+
+    double random = ((double)Phys::int_dist(Phys::rng))/(double)LLONG_MAX;
+    //Output::Inst()->kdebug("%f", random);
+    double diff = max - min;
+    double r = random * diff;
+    return min + r;
 }
 
 int64_t Phys::getMersenneInteger(int64_t min=0, int64_t max=ULLONG_MAX)

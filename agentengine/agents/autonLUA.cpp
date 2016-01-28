@@ -644,6 +644,7 @@ int AutonLUA::l_getMersenneFloat(lua_State *L)
     double low = lua_tonumber(L,-2);
     double high = lua_tonumber(L, -1);
 
+    //Output::Inst()->kdebug("%f,%f", low, high);
     double number = Phys::getMersenneFloat(low,high);
 
     lua_pushnumber(L,number);
