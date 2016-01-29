@@ -58,7 +58,7 @@ end
 -- Update the agents position in the central collision table.
 -- If the agent is currently not in the table it will be added automatically.
 function RanaLibAPI.updatePosition(newX, newY)
-	
+	tab
 	l_updatePosition(myX, myY, newPosX, newPosY, ID)
 end
 

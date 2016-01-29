@@ -1,6 +1,7 @@
 local RanaLibUtility = {}
 
--- Deserialize an event table
+-- Deserialize a string representation of a table.
+-- This is usually used to deserialize event tables.
 function RanaLibUtility.deserializeTable(string)
 
 	if string.len(string) < 3 then 
@@ -11,6 +12,7 @@ function RanaLibUtility.deserializeTable(string)
 	return table
 end
 
+-- Generate a string representation of a lua table recursively.
 function RanaLibUtility.serializeTable(val, name, debth)
 	--skipnewlines = skipnewlines or false
 	depth = depth or 0
