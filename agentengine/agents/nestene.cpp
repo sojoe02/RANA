@@ -56,7 +56,10 @@ void Nestene::populate(int LUASize ,std::string filename)
 
     //Output::Inst()->kdebug("nestene %i reporting %i autons", LUA);
 	for(int i=0; i<LUASize; i++)
-	{
+    {
+
+
+        if(Output::KillSimulation.load()) return;
         double xtmp = (double)rand()/ RAND_MAX * width + posX;
         double ytmp = (double)rand()/ RAND_MAX * height + posY;
 

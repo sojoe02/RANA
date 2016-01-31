@@ -46,7 +46,7 @@
 
 AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *nestene, std::string filename)
         : Auton(ID, posX, posY, posZ, nestene), filename(filename),
-          nofile(false),removed(false)
+          nofile(false),removed(false),L(NULL)
 {
 
     desc = "LUA";
@@ -54,126 +54,141 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
     /*
      * Setup up the LUA stack:
      */
-	L = luaL_newstate();
-    luaL_openlibs(L);
+    L = luaL_newstate();
+    if(L == NULL)
+    {
+        Output::Inst()->kprintf("<b><font color=\"brown\">A new Agent cannot be initialized. Lua is out of memory, Killing simulation</font></b></>");
+        Output::KillSimulation.store(true);
+        removed = true;
 
-    //Lua jit control:
-    //luaJIT_setmode(L, 0, LUAJIT_MODE_ENGINE|LUAJIT_MODE_ON);
+    }else{
 
-    /* Register the path to the Rana specific lua modules
+        luaL_openlibs(L);
+
+        //Lua jit control:
+
+        /* Register the path to the Rana specific lua modules
      *
      */
-    lua_getglobal(L, "package");
-    lua_getfield(L, -1, "path");
-    std::string cur_path = lua_tostring(L, -1);
-    cur_path.append(";lua_modules/?.lua");
-    lua_pop(L,1);
-    lua_pushstring(L, cur_path.c_str());
-    lua_setfield(L,-2,"path");
-    lua_pop(L,1);
+        lua_getglobal(L, "package");
+        lua_getfield(L, -1, "path");
+        std::string cur_path = lua_tostring(L, -1);
+        cur_path.append(";lua_modules/?.lua");
+        lua_pop(L,1);
+        lua_pushstring(L, cur_path.c_str());
+        lua_setfield(L,-2,"path");
+        lua_pop(L,1);
 
-    /*
+        /*
      * Register all the API functions:
      */
 
-    //Interface.
-    lua_register(L, "l_debug", l_debug);
-    lua_register(L, "l_print", l_print);
+        //Interface.
+        lua_register(L, "l_debug", l_debug);
+        lua_register(L, "l_print", l_print);
 
-    //Physics and generator.
-    lua_register(L, "l_speedOfSound", l_speedOfSound);
-    lua_register(L, "l_distance", l_distance);
-    lua_register(L, "l_currentTime",l_currentTime);
-	lua_register(L, "l_currentTimeS", l_currentTimeS);
-    lua_register(L, "l_generateEventID", l_generateEventID);
-    lua_register(L, "l_getMacroFactor", l_getMacroFactor);
-    lua_register(L, "l_getTimeResolution", l_getTimeResolution);
-    lua_register(L, "l_getMersenneFloat", l_getMersenneFloat);
-    lua_register(L, "l_getRandomFloat", l_getMersenneFloat);
-    lua_register(L, "l_getRandomInteger", l_getMersenneInteger);
-    lua_register(L, "l_getMersenneInteger", l_getMersenneInteger);
+        //Physics and generator.
+        lua_register(L, "l_speedOfSound", l_speedOfSound);
+        lua_register(L, "l_distance", l_distance);
+        lua_register(L, "l_currentTime",l_currentTime);
+        lua_register(L, "l_currentTimeS", l_currentTimeS);
+        lua_register(L, "l_generateEventID", l_generateEventID);
+        lua_register(L, "l_getMacroFactor", l_getMacroFactor);
+        lua_register(L, "l_getTimeResolution", l_getTimeResolution);
+        lua_register(L, "l_getMersenneFloat", l_getMersenneFloat);
+        lua_register(L, "l_getRandomFloat", l_getMersenneFloat);
+        lua_register(L, "l_getRandomInteger", l_getMersenneInteger);
+        lua_register(L, "l_getMersenneInteger", l_getMersenneInteger);
 
-    //Map and movement.
-    lua_register(L, "l_getEnvironmentSize", l_getEnvironmentSize);
-    lua_register(L, "l_modifyMap", l_modifyMap);
-    lua_register(L, "l_checkMap", l_checkMap);
-    lua_register(L, "l_checkPosition", l_checkPosition);
-    lua_register(L, "l_updatePosition", l_updatePosition);
-    lua_register(L, "l_addPosition", l_addPosition);
-    lua_register(L, "l_checkCollision", l_checkCollision);
-    lua_register(L, "l_checkCollisionRadial", l_checkCollisionRadial);
-    lua_register(L, "l_gridMove", l_gridMove);
-    lua_register(L, "l_getMaskRadial", l_getMaskRadial);
+        //Map and movement.
+        lua_register(L, "l_getEnvironmentSize", l_getEnvironmentSize);
+        lua_register(L, "l_modifyMap", l_modifyMap);
+        lua_register(L, "l_checkMap", l_checkMap);
+        lua_register(L, "l_checkPosition", l_checkPosition);
+        lua_register(L, "l_updatePosition", l_updatePosition);
+        lua_register(L, "l_addPosition", l_addPosition);
+        lua_register(L, "l_checkCollision", l_checkCollision);
+        lua_register(L, "l_checkCollisionRadial", l_checkCollisionRadial);
+        lua_register(L, "l_gridMove", l_gridMove);
+        lua_register(L, "l_getMaskRadial", l_getMaskRadial);
 
-    //Shared values.
-    lua_register(L, "l_getSharedNumber", l_getSharedNumber);
-    lua_register(L, "l_addSharedNumber",l_addSharedNumber);
-    lua_register(L, "l_getSharedString", l_getSharedString);
-    lua_register(L, "l_addSharedString", l_addSharedString);
+        //Shared values.
+        lua_register(L, "l_getSharedNumber", l_getSharedNumber);
+        lua_register(L, "l_addSharedNumber",l_addSharedNumber);
+        lua_register(L, "l_getSharedString", l_getSharedString);
+        lua_register(L, "l_addSharedString", l_addSharedString);
 
-    //Simulation core.
-    lua_register(L, "l_getAgentPath", l_getAgentPath);
-    lua_register(L, "l_getAutonPath", l_getAgentPath);
-    lua_register(L, "l_stopSimulation", l_stopSimulation);
-    lua_register(L, "l_addAuton", l_addAuton);
-    lua_register(L, "l_removeAuton", l_removeAuton);
-    lua_register(L, "l_removeAgent", l_removeAuton);
-    lua_register(L, "l_addAgent", l_addAuton);
+        //Simulation core.
+        lua_register(L, "l_getAgentPath", l_getAgentPath);
+        lua_register(L, "l_getAutonPath", l_getAgentPath);
+        lua_register(L, "l_stopSimulation", l_stopSimulation);
+        lua_register(L, "l_addAuton", l_addAuton);
+        lua_register(L, "l_removeAuton", l_removeAuton);
+        lua_register(L, "l_removeAgent", l_removeAuton);
+        lua_register(L, "l_addAgent", l_addAuton);
 
-    //Agent.
-    lua_register(L, "l_emitEvent", l_emitEvent);
-    lua_register(L, "l_addGroup", l_addGroup);
-    lua_register(L, "l_removeGroup", l_removeGroup);
-    lua_register(L, "l_setStepMultiplier", l_setMacroFactorMultipler);
+        //Agent.
+        lua_register(L, "l_emitEvent", l_emitEvent);
+        lua_register(L, "l_addGroup", l_addGroup);
+        lua_register(L, "l_removeGroup", l_removeGroup);
+        lua_register(L, "l_setStepMultiplier", l_setMacroFactorMultipler);
 
-    if(luaL_loadfile(L, filename.c_str() ) || lua_pcall(L,0,0,0))
-    {
-        Output::Inst()->kprintf("error : %s \n", lua_tostring(L, -1));
-        nofile = true;
-        Output::Inst()->kprintf("Lua Auton disabled\n");
-    }
-
-    if(nestene != NULL)
-        Output::Inst()->kdebug("I belong to Nestene %i", nestene->getID());
-
-
-    //Call the Initialization function for the agent
-    try{
-        //init the LUA frog:
-        if(Output::LegacyMode.load())
+        if(luaL_loadfile(L, filename.c_str() ) || lua_pcall(L,0,0,0))
         {
-            lua_getglobal(L,"initAuton");
-        }else
-        {
-            lua_getglobal(L, "initializeAgent");
-        }
-
-        lua_pushnumber(L,(int)posX);
-        lua_pushnumber(L,(int)posY);
-        lua_pushnumber(L,ID);
-		lua_pushnumber(L,Phys::getMacroFactor()*Phys::getTimeRes());
-		lua_pushnumber(L,Phys::getTimeRes());
-        //Call the initAuton function (3 arguments, 0 results):
-        if(lua_pcall(L,5,0,0)!=LUA_OK)
-        {
-            Output::Inst()->kprintf("<b><font color=\"brown\">error on agent initialization, %s\n</font></b></>",	lua_tostring(L,-1));
+            Output::Inst()->kprintf("error : %s \n", lua_tostring(L, -1));
             nofile = true;
             Output::Inst()->kprintf("Lua Auton disabled\n");
         }
 
-    }catch(std::exception& e){
-        Output::Inst()->kprintf("<b><font color=\"red\">Error on Agent Initiation..%s, %s</font></b></>" , e.what());
-        Output::RunSimulation = false;
-    }
+        if(nestene != NULL)
+            Output::Inst()->kdebug("I belong to Nestene %i", nestene->getID());
 
-    lua_settop(L,0);
-    getSyncData();
+
+        //Call the Initialization function for the agent
+        try{
+            //init the LUA frog:
+            if(Output::LegacyMode.load())
+            {
+                lua_getglobal(L,"initAuton");
+            }else
+            {
+                lua_getglobal(L, "initializeAgent");
+            }
+
+            lua_pushnumber(L,(int)posX);
+            lua_pushnumber(L,(int)posY);
+            lua_pushnumber(L,ID);
+            lua_pushnumber(L,Phys::getMacroFactor()*Phys::getTimeRes());
+            lua_pushnumber(L,Phys::getTimeRes());
+            //Call the initAuton function (3 arguments, 0 results):
+            if(lua_pcall(L,5,0,0)!=LUA_OK)
+            {
+                Output::Inst()->kprintf("<b><font color=\"brown\">error on agent initialization, %s\n</font></b></>",	lua_tostring(L,-1));
+                nofile = true;
+                Output::Inst()->kprintf("Lua Auton disabled\n");
+            }
+
+        }catch(std::exception& e){
+            Output::Inst()->kprintf("<b><font color=\"red\">Error on Agent Initiation..%s, %s</font></b></>" , e.what());
+            Output::RunSimulation = false;
+        }
+
+        lua_settop(L,0);
+        getSyncData();
+    }
 }
 
 AutonLUA::~AutonLUA()
 {
-    lua_settop(L,0);
-    lua_close(L);
+    if(L != NULL)
+    {
+        //Output::Inst()->kprintf("Deleting agent %d", ID);
+        lua_settop(L,0);
+        //lua_gc(L,LUA_GCCOLLECT,0);
+        lua_close(L);
+        //delete L;
+        L = NULL;
+    }
 }
 
 /********************************************************
@@ -207,9 +222,9 @@ std::unique_ptr<EventQueue::iEvent> AutonLUA::handleEvent(const EventQueue::eEve
         } else
         {
             ievent->activationTime =
-                            Phys::speedOfSound(event->posX,
-                                               event->posY,
-                                               posX, posY, event->propagationSpeed) + 1;
+                    Phys::speedOfSound(event->posX,
+                                       event->posY,
+                                       posX, posY, event->propagationSpeed) + 1;
         }
 
         ievent->id = ID::generateEventID();
@@ -257,7 +272,7 @@ std::unique_ptr<EventQueue::eEvent> AutonLUA::initEvent()
 
             //Generate the internal event:
             std::unique_ptr<EventQueue::eEvent>
-                            sendEvent(new EventQueue::eEvent());
+                    sendEvent(new EventQueue::eEvent());
 
             sendEvent->origin = this;
             sendEvent->activationTime = Phys::getCTime();
@@ -580,7 +595,7 @@ int AutonLUA::l_speedOfSound(lua_State *L)
     double propagationSpeed = lua_tonumber(L,-5);
 
     unsigned long long t =
-                    Phys::speedOfSound(posX, posY, origX, origY, propagationSpeed);
+            Phys::speedOfSound(posX, posY, origX, origY, propagationSpeed);
 
     lua_pushnumber(L,t);
 
@@ -620,9 +635,9 @@ int AutonLUA::l_currentTime(lua_State *L)
 
 int AutonLUA::l_currentTimeS(lua_State *L)
 {
-	double time = (double)Phys::getCTime()*Phys::getTimeRes();
-	lua_pushnumber(L,time);
-	return 1;
+    double time = (double)Phys::getCTime()*Phys::getTimeRes();
+    lua_pushnumber(L,time);
+    return 1;
 }
 
 int AutonLUA::l_getMacroFactor(lua_State *L)
@@ -960,7 +975,7 @@ int AutonLUA::l_emitEvent(lua_State *L)
     sendEvent->activationTime = Phys::getCTime()+1;
     sendEvent->id = ID::generateEventID();
 
-//    Output::Inst()->kprintf("time is: %d, description is: %s", sendEvent->activationTime, sendEvent->desc.c_str());
+    //    Output::Inst()->kprintf("time is: %d, description is: %s", sendEvent->activationTime, sendEvent->desc.c_str());
 
     Doctor::submitEEvent(std::move(sendEvent));
 

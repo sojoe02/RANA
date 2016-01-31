@@ -8,7 +8,8 @@ std::map<int, std::shared_ptr<AutonLUA>> Doctor::agents;
 void Doctor::InitDoctor(Master *arg_master)
 {
 	master = arg_master;
-	agentFilenames.clear();
+    agentFilenames.clear();
+    agents.clear();
 	//activeNestene = arg_activeNestene;
 }
 
@@ -37,7 +38,7 @@ bool Doctor::removeAuton(int Id)
 
 void Doctor::addLuaAutonPtr(std::shared_ptr<AutonLUA> luaPtr)
 {
-	agents.insert(make_pair(luaPtr->getID(), luaPtr));
+    agents.insert(make_pair(luaPtr->getID(), luaPtr));
 }
 
 void Doctor::submitEEvent(std::unique_ptr<EventQueue::eEvent> eEvent)

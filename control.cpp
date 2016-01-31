@@ -19,6 +19,7 @@
 //along with RANA.  If not, see <http://www.gnu.org/licenses/>.
 //
 //--end_license--
+
 #include "control.h"
 #include "mainwindow.h"
 #include "output.h"
@@ -45,7 +46,7 @@ Control::~Control()
 void Control::runSimulation(unsigned long long runTime)
 {
 	running = true;
-	runThread.setStackSize(1024*1024*1024);
+    //runThread.setStackSize(1024*1024*1024);
 	Output::SimRunning.store(true);
 	mainwindow->changeRunButton("Stop");
 	emit startDoWork(agentDomain, runTime);
@@ -64,20 +65,40 @@ void Control::generateEnvironment(QImage *map, double scale,
 {
     if(!running)
     {
+        if(populateFuture.isRunning())
+        {
+            Output::Inst()->kprintf("A previous system was being populated, it will be cancelled");
+            populateFuture.cancel();
+            populateFuture.waitForFinished();
+        }
+        Output::KillSimulation.store(true);
+
         Output::Inst()->kprintf("Generating environment");
 
         if(agentDomain != NULL)
         {
+            //Output::Inst()->kprintf("Deleting agent domain");
             delete agentDomain;
             agentDomain = NULL;
         }
 
         agentDomain = new AgentDomain(this);
-		agentDomain->generateEnvironment(map->width(),map->height(),4,0,0,
+
+
+        agentDomain->generateEnvironment(map->width(),map->height(),4,0,0,
                                          agentAmount,timeRes,macroRes,agentPath);
+        //agentDomain->populateSystem();
+        populateFuture = QtConcurrent::run(agentDomain, &AgentDomain::populateSystem);
+
+        //future.waitForFinished();
     } else
         Output::Inst()->kprintf("Simulation thread is running, so you need to stop it");
     //retrieve and update the positions:
+}
+
+void Control::threadTest(std::string something)
+{
+    int i = 0;
 }
 
 void Control::on_simDone()

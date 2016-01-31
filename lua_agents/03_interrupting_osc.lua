@@ -123,11 +123,13 @@ end
 function cleanUp()
 
 	--Write the oscillation data to a csv file.
-	file = io.open("03_data"..ID..".csv", "w")
-	for i,v in pairs(Olevels) do
-		file:write(i..","..v.."\n")
+	if ID <= 4 then
+		file = io.open("03_data"..ID..".csv", "w")
+		for i,v in pairs(Olevels) do
+			file:write(i..","..v.."\n")
+		end
+		file:close()
 	end
-	file:close()
 
 	l_debug("Agent #: " .. ID .. " is done\n")
 end

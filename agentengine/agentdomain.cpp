@@ -38,7 +38,8 @@ using std::chrono::seconds;
 using std::chrono::steady_clock;
 
 AgentDomain::AgentDomain(Control *control)
-    :control(control), mapGenerated(false), stop(false), fetchPositions(false)
+    :control(control), mapGenerated(false), stop(false), fetchPositions(false),
+      LuaAgentAmount(0),luaFilename("")
 	 {
 		 Phys::seedMersenne();
          masteragent = new Master();
@@ -86,12 +87,24 @@ void AgentDomain::generateEnvironment(double width, double height, int resolutio
     masteragent->generateMap(width,height,resolution,timeResolution, macroResolution);
 
 	mapWidth = width;
-	mapHeight = height;
+    mapHeight = height;
 
-    masteragent->populateSystem(listenerSize, screamerSize, LUASize, filename);
-	retrievePopPos();
-	mapGenerated = true;
+    LuaAgentAmount = LUASize;
+    luaFilename = filename;
+
+//    masteragent->populateSystem(listenerSize, screamerSize, LUASize, filename);
+    //retrievePopPos();
+    //mapGenerated = true;
 }
+
+void AgentDomain::populateSystem()
+{
+
+    masteragent->populateSystem(0,0, LuaAgentAmount, luaFilename);
+    retrievePopPos();
+    mapGenerated = true;
+}
+
 
 /**
  * Retrieval of auton positions.

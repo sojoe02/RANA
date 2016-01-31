@@ -24,6 +24,7 @@
 
 
 #include <QtGui>
+#include <QtConcurrent/qtconcurrentrun.h>
 
 //STL libraries:
 #include <string>
@@ -81,6 +82,7 @@ public:
 
     void toggleLiveView(bool enable);
 
+    void threadTest(std::string something);
 public slots:
 	void on_simDone();
 
@@ -92,7 +94,8 @@ private:
     AgentDomain *agentDomain;
     MainWindow *mainwindow;
     Runner *runner;
-	QThread runThread;
+    QThread runThread;
+    QFuture<void> populateFuture;
 
     bool running;
     bool generated;

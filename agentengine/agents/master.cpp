@@ -143,7 +143,7 @@ void Master::populateSystem(int listenerSize,
     uint j = 0;
     for(int i = 0; i<LUASize; i++, j++)
     {
-        if(i % nestenes.size() == 0) j =0;
+        if(i % nestenes.size() == 0) j = 0;
         LUAVector.at(j)++;
     }
     //Output::Inst()->kdebug("working here! %i, %i", LUAVector.size(), LUAVector.at(0));

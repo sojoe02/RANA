@@ -56,6 +56,7 @@ class AgentDomain
 		void updateStatus();
 
         void toggleLiveView(bool enable);
+        void populateSystem();
 private:
 
         Control *control;
@@ -74,6 +75,9 @@ private:
 		std::atomic_bool stop;
 		std::mutex stopMutex;
         std::atomic_bool fetchPositions;
+
+        std::string luaFilename;
+        int LuaAgentAmount;
 };
 
 #endif // AGENTDOMAIN_H
