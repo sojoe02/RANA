@@ -44,7 +44,8 @@ Control::~Control()
 
 void Control::runSimulation(unsigned long long runTime)
 {
-    running = true;
+	running = true;
+	runThread.setStackSize(1024*1024*1024);
 	Output::SimRunning.store(true);
 	mainwindow->changeRunButton("Stop");
 	emit startDoWork(agentDomain, runTime);

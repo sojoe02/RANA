@@ -22,7 +22,11 @@
 
 -- @Description:
 -- This agent will oscilate between 0 and 1, with a time period. Upon peaking it will emit an event. 
--- And then rapidly fall down towards zero and restart.
+-- and then rapidly fall down towards zero and restart.
+--
+-- Upon receiving a signal from another oscillator it will, interrupt it's current cycle, reset
+-- and after a small pause it will resume a new cycle.
+--
 -- Data for each period will stored it a table, which upon simulation cleanUp is written
 -- to the harddrive.
 
@@ -40,12 +44,15 @@ step = 0
 iteration = 1
 
 -- Oscillator values:
-T = 0.500 -- Time period.
-e = 0.030 -- Period variance with mean of 0.
+T = 0.500 -- time period.
+e = 0.030 -- period variance with mean of 0.
 r = 0.100 -- falltime.
-Tt = 0 -- active period targeted time. Peak is then equal to Tt-r
+Tt = 0 -- active period targeted time.
 Tn = 0 -- active period time
-peaked = false -- boolean helping with numeric imprecision issues.
+y = 0.05 -- interrupt pause
+
+peaked = false
+pause = false
 
 -- Import Rana lua libraries.
 Event	= require "ranalib_event"
@@ -71,6 +78,13 @@ function takeStep()
 	Tn = Tn + stepPrecision
 	step = step 
 
+	if pause == true then
+		if Tn > y then
+			table.insert(Olevels, Core.time()..","..0)
+			pause = false
+		end
+	end
+
 	if Tn >= Tt-r and peaked == false then
 		Event.emit{description="Signal"}
 		table.insert(Olevels, Core.time()..",".. 1)
@@ -82,13 +96,24 @@ function takeStep()
 		Tt = T + Stat.randomMean(e, 0)
 		Tn = 0
 		table.insert(Olevels, Core.time()..",".. 0)
-		l_print("Oscillator Emitting signal at time: ".. Core.time().."[s]")
+		l_print("Interrupt Oscillator "..ID.." Emitting signal at time: ".. Core.time().."[s]")
 		peaked = false
 	end
 end
 
 function handleEvent(sourceX, sourceY, sourceID, eventDescription, eventTable)
 	
+	if peaked == false then
+		-- write data to the Olevel table:
+		table.insert(Olevels, Core.time()..","..Tn/Tt)
+		table.insert(Olevels, Core.time()+eventPrecision..","..0)
+		--calculate new period
+		Tt = T + Stat.randomMean(e, 0) + y
+		Tn = 0
+		pause = true
+	end
+
+
 end
 
 function synchronizePosition()
@@ -98,7 +123,7 @@ end
 function cleanUp()
 
 	--Write the oscillation data to a csv file.
-	file = io.open("02_data"..ID..".csv", "w")
+	file = io.open("03_data"..ID..".csv", "w")
 	for i,v in pairs(Olevels) do
 		file:write(i..","..v.."\n")
 	end

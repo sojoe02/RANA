@@ -54,7 +54,7 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
     /*
      * Setup up the LUA stack:
      */
-    L = luaL_newstate();
+	L = luaL_newstate();
     luaL_openlibs(L);
 
     //Lua jit control:
