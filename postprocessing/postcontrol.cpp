@@ -57,9 +57,9 @@ void PostControl::runProcessEvents(QRegExp regex, QString eventPath, int to, int
 	processing = true;
 
 	runner->setStackSize(256*1024*1024);
-
-	runner->setParameters(regex, eventprocessor, eventPath, to, from,
-						  timeResolution, agentPath, mapResolution, zThresshold);
+	runner->setParameters(regex, eventprocessor, eventPath, to,
+						  from, timeResolution, agentPath,
+						  mapResolution, zThresshold);
 	runner->start();
 }
 

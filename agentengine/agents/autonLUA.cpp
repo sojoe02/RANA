@@ -51,25 +51,20 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
 
     desc = "LUA";
     //Output::Inst()->kprintf("%f,%f", posX, posY);
-    /*
-     * Setup up the LUA stack:
-     */
-    L = luaL_newstate();
-    if(L == NULL)
+
+	//Setup up the LUA stack:
+	L = luaL_newstate();
+	if(L == NULL)
     {
-        Output::Inst()->kprintf("<b><font color=\"brown\">A new Agent cannot be initialized. Lua is out of memory, Killing simulation</font></b></>");
+		Output::Inst()->kprintf("<b><font color=\"brown\">A new Agent cannot be initialized. Lua(%s) is out of memory, Killing simulation</font></b></>", LUAJIT_VERSION);
         Output::KillSimulation.store(true);
         removed = true;
 
-    }else{
-
+	}else
+	{
         luaL_openlibs(L);
 
-        //Lua jit control:
-
-        /* Register the path to the Rana specific lua modules
-     *
-     */
+		// Register the path to the Rana specific lua modules
         lua_getglobal(L, "package");
         lua_getfield(L, -1, "path");
         std::string cur_path = lua_tostring(L, -1);
@@ -79,9 +74,8 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
         lua_setfield(L,-2,"path");
         lua_pop(L,1);
 
-        /*
-     * Register all the API functions:
-     */
+
+		//Register all the API functions:
 
         //Interface.
         lua_register(L, "l_debug", l_debug);
