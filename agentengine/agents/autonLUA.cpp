@@ -72,8 +72,11 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
         lua_pop(L,1);
         lua_pushstring(L, cur_path.c_str());
         lua_setfield(L,-2,"path");
-        lua_pop(L,1);
+		lua_pop(L,1);
 
+		//set the global values for the agent:
+		lua_pushnumber(L,ID);
+		lua_setglobal(L,"ID");
 
 		//Register all the API functions:
 

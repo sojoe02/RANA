@@ -23,7 +23,6 @@
 -- set the global variables:
 myX = 0
 myY = 0
-ID = 0
 stepPrecision = 0
 eventPrecision = 0
 
@@ -31,11 +30,10 @@ eventPrecision = 0
 EventLib = require "ranalib_event"
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
-function initializeAgent(x, y, ID, stepPrecision, eventPrecision)
+function initializeAgent(x, y, id, stepPrecision, eventPrecision)
 
 	myX = x
 	myY = y
-	ID = ID
 	stepPrecision = stepPrecision
 	eventPrecision = eventPrecision
 

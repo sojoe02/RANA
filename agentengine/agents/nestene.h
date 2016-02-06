@@ -88,11 +88,6 @@ private:
 		double height;
 		int id;
 
-		//double listenerEventChance;
-		//double screamerEventChance;
-
-
-
 };
 
 #endif // NESTENE_H
