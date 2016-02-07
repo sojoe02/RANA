@@ -28,8 +28,7 @@ stepPrecision = 0
 eventPrecision = 0
 
 -- Import valid Rana lua libraries.
-EventLib = require "ranalib_event"
-Util = require "ranalib_utility"
+Event = require "ranalib_event"
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
 function initializeAgent(x, y, id, stepPrecision, eventPrecision)
@@ -44,9 +43,9 @@ function initializeAgent(x, y, id, stepPrecision, eventPrecision)
 
 end
 
-function handleEvent(sourceX, sourceY, sourceID, eventDescription, eventTable)
+function handleEvent(sourceX, sourceY, sourceID, eventDescription, eventSerialTable)
 
-	realtable = EventLib.loadTable(eventTable)
+	realtable = Event.loadTable(eventSerialTable)
 
 	
 	
@@ -68,7 +67,7 @@ function takeStep()
 
 
 	if l_getMersenneInteger(1,1000) <= 1 then
-		l_debug("Agent:"..ID.." is emiting ping")
+	--	l_debug("Agent:"..ID.." is emiting ping")
                 EventLib.emit{speed=343, description="ping",table={desc="something", id=ID,4,2,2,24,2424,2324,1249,23220,293,203,2298,23029,23928,23,232,211,1210}}
 	end
 
