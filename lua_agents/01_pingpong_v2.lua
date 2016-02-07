@@ -20,10 +20,13 @@
 --
 ----end_license--
 
+--The following global values are set via the simulation core:
+-- ID -- id of the agent.
+-- PositionX --	
+
+
 -- Import valid Rana lua libraries.
 Event = require "ranalib_event"
---EventTable = {}
-
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
 function initializeAgent()
@@ -34,7 +37,7 @@ end
 
 function handleEvent(sourceX, sourceY, sourceID, eventDescription, eventTable)
 	
---	l_print(eventTable.desc.." : "..eventTable.id)
+	l_print(eventTable.desc.." : id: " ..eventTable.id)
 	--if eventDescription == "ping" then
 	--	etable={desc="something", a="4"}
 --		l_print("Agent: "..ID .." received a ping from agent: "..sourceID.." emitting pong")
@@ -50,9 +53,9 @@ end
 function takeStep()
 
 	if l_getMersenneInteger(1,1000) <= 1 then
-		--l_debug("Agent:"..ID.." is emiting ping")
+		l_debug("Agent:"..ID.." is emiting ping")
 
-	 Event.emit{speed=343, description="ping",table={desc="something", id=ID,4,2,2,24,2424,2324,1249,23220,293,203,2298,23029,23928,23,232,211,1210}}
+	 	Event.emit{speed=343, description="ping",table={desc="something", id=ID}}
 	
    
 	 --Event.emit{speed=343, description="ping",table={desc="something", id=ID}}

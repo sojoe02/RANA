@@ -58,7 +58,7 @@ class EventQueue
 			double propagationSpeed;
 			double posX;
 			double posY;
-            std::unordered_map<std::string, std::tuple<std::string, double, bool>> luatable;
+            std::string luatable;
 			std::string desc;
 			unsigned long long activationTime;
 			int targetID;

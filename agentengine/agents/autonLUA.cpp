@@ -85,6 +85,8 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
         lua_setglobal(L, "StepResolution");
         lua_pushnumber(L, Phys::getTimeRes());
         lua_setglobal(L, "EventResolution");
+        lua_pushstring(L, "");
+        lua_setglobal(L,"_EventTableString");
         //lua_newtable(L);
         //lua_setglobal(L, "EventTable");
         //Register all the API functions:
@@ -138,6 +140,13 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
         lua_register(L, "l_addGroup", l_addGroup);
         lua_register(L, "l_removeGroup", l_removeGroup);
         lua_register(L, "l_setStepMultiplier", l_setMacroFactorMultipler);
+
+        if(luaL_loadfile(L, "lua_modules/auxiliary.lua") || lua_pcall(L,0,0,0))
+        {
+            Output::Inst()->kprintf("error : %s \n", lua_tostring(L, -1));
+            nofile = true;
+            Output::Inst()->kprintf("Lua Auton disabled\n");
+        }
 
         if(luaL_loadfile(L, filename.c_str() ) || lua_pcall(L,0,0,0))
         {
@@ -284,31 +293,13 @@ std::unique_ptr<EventQueue::eEvent> AutonLUA::handleEvent(std::unique_ptr<EventQ
     lua_settop(L,0);
     try
     {
-        lua_getglobal(L,"handleEvent");
 
-        lua_pushnumber(L,eventPtr->event->posX);
-        lua_pushnumber(L,eventPtr->event->posY);
-        lua_pushnumber(L,eventPtr->event->originID);
-        lua_pushstring(L,eventPtr->event->desc.c_str());
-
-        lua_newtable(L);
-        auto luatable = eventPtr->event->luatable;
-        for(auto itr = luatable.begin(); itr != luatable.end(); ++itr )
-        {
-            auto key = itr->first;
-            auto tuple = itr->second;
-            if(std::get<2>(tuple) == true)
-            {
-                lua_pushstring(L, key.c_str());
-                lua_pushnumber(L, std::get<1>(tuple));
-
-            }else
-            {
-                lua_pushstring(L, key.c_str());
-                lua_pushstring(L, std::get<0>(tuple).c_str());
-            }
-            lua_settable(L,-3);
-        }
+        lua_getglobal(L,"_HandleEvent");
+        lua_pushnumber(L, eventPtr->event->posX);
+        lua_pushnumber(L, eventPtr->event->posY);
+        lua_pushnumber(L, eventPtr->event->originID);
+        lua_pushstring(L, eventPtr->event->desc.c_str());
+        lua_pushstring(L, eventPtr->event->luatable.c_str());
 
         if(lua_pcall(L,5,0,0)!=LUA_OK)
         {
@@ -862,36 +853,7 @@ int AutonLUA::l_emitEvent(lua_State *L)
     sendEvent->desc = lua_tostring(L, -4);
     sendEvent->targetID = lua_tonumber(L, -3);
     sendEvent->targetGroup = lua_tonumber(L, -2);
-
-    //iterate through the eventtable and store it as an unordered map.
-    lua_pushnil(L);
-    while(lua_next(L,-2) !=0)
-    {
-        lua_pushvalue(L,-2);
-        double value = 0;
-        std::string stringvalue = "";
-        bool isnumber = true;
-        std::string key = lua_tostring(L,-1);
-
-        if(lua_type(L,-2 ) == LUA_TSTRING)
-        {
-            stringvalue = lua_tostring(L,-2);
-            isnumber = false;
-            sendEvent->luatable.insert(
-                        std::make_pair(key, std::make_tuple(stringvalue,value,isnumber))
-                        );
-
-            //Output::Inst()->kprintf( "Key:%s \t Value:%s", 	lua_tostring(L,-1),lua_tostring(L,-2));
-        } else if(lua_type(L,-2) == LUA_TNUMBER)
-        {
-            value = lua_tonumber(L,-2);
-            sendEvent->luatable.insert(
-                        std::make_pair(key, std::make_tuple(stringvalue,value,isnumber))
-                        );
-        }
-        lua_pop(L,2);
-    }
-    lua_pop(L,1);
+    sendEvent->luatable = lua_tostring(L, -1);
 
     Doctor::submitEEvent(std::move(sendEvent));
     return 0;
