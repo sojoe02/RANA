@@ -85,8 +85,6 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
         lua_setglobal(L, "StepResolution");
         lua_pushnumber(L, Phys::getTimeRes());
         lua_setglobal(L, "EventResolution");
-        lua_pushstring(L, "");
-        lua_setglobal(L,"_EventTableString");
         //lua_newtable(L);
         //lua_setglobal(L, "EventTable");
         //Register all the API functions:

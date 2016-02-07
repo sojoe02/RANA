@@ -87,7 +87,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
 
-    versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.7.0.NewThread:0.6.1");
+    versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.7.1.NewThread:0.6.1");
 
 	ui->statusBar->addWidget(new QLabel(versionString));
 	ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
@@ -163,8 +163,6 @@ void MainWindow::on_generateButton_clicked()
             //Output::Inst()->kprintf("generating environment, %d, %s",
                           //          agentAmount, stringPath.c_str());
 			ui->runButton->setEnabled(true);
-
-
 
         } else
 			Output::Inst()->kprintf("Cannot generate Environment: Valid path not given");

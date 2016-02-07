@@ -22,7 +22,10 @@
 
 --The following global values are set via the simulation core:
 -- ID -- id of the agent.
--- PositionX --	
+-- PositionX --	this agents x position.
+-- PositionY -- this agents y position.
+-- StepResolution 	-- precision of steps.
+-- EventResolution 	-- precision of event distribution.
 
 
 -- Import valid Rana lua libraries.
@@ -37,29 +40,26 @@ end
 
 function handleEvent(sourceX, sourceY, sourceID, eventDescription, eventTable)
 	
-	l_print(eventTable.desc.." : id: " ..eventTable.id)
-	--if eventDescription == "ping" then
-	--	etable={desc="something", a="4"}
---		l_print("Agent: "..ID .." received a ping from agent: "..sourceID.." emitting pong")
---		Event.emit{speed=343, description="pong", table=etable}
+	if eventDescription == "ping" then
+	
+		l_print("Agent: "..ID .." received a ping from: "..sourceID ..", saying: "..eventTable.msg)
+		Event.emit{targetID=sourceID, speed=343, description="pong"}
 
---	elseif eventDescription == "pong" then
---	l_print("Agent: "..ID.." received a pong from agent: ".. sourceID)
+	elseif eventDescription == "pong" then
+		
+		l_print("Agent: "..ID.." received a pong from agent: ".. sourceID)
 
---	end
+	end
 
 end
 
 function takeStep()
 
 	if l_getMersenneInteger(1,1000) <= 1 then
+		
 		l_debug("Agent:"..ID.." is emiting ping")
+	 	Event.emit{speed=343, description="ping",table={msg="I am agent "..ID}}
 
-	 	Event.emit{speed=343, description="ping",table={desc="something", id=ID}}
-	
-   
-	 --Event.emit{speed=343, description="ping",table={desc="something", id=ID}}
-		--EventTable = {desc="something", a="34"}
 	end
 
 end
