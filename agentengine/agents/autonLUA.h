@@ -110,12 +110,12 @@ public:
 private:
 
     std::unique_ptr<EventQueue::iEvent>
-    handleEvent(const EventQueue::eEvent* event);
+    processEvent(const EventQueue::eEvent* event);
 
     std::unique_ptr<EventQueue::eEvent>
-    actOnEvent(std::unique_ptr<EventQueue::iEvent> eventPtr);
+    handleEvent(std::unique_ptr<EventQueue::iEvent> eventPtr);
 
-    std::unique_ptr<EventQueue::eEvent> initEvent();
+    std::unique_ptr<EventQueue::eEvent> takeStep();
 
     void setRemoved();
 

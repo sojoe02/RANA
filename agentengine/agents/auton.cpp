@@ -90,12 +90,12 @@ void Auton::distroEEvent(std::unique_ptr<EventQueue::eEvent> event)
     //nestene->eEventsOutbox.push_back(std::move(event));
 }
 
-std::unique_ptr<EventQueue::iEvent> Auton::handleEvent(EventQueue::eEvent* event)
+std::unique_ptr<EventQueue::iEvent> Auton::processEvent(EventQueue::eEvent* event)
 {
 	return NULL;
 }
 
-std::unique_ptr<EventQueue::eEvent> Auton::actOnEvent(std::unique_ptr<EventQueue::iEvent> eventPtr)
+std::unique_ptr<EventQueue::eEvent> Auton::handleEvent(std::unique_ptr<EventQueue::iEvent> eventPtr)
 {
     return NULL;
 }

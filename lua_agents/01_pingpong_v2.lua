@@ -20,22 +20,13 @@
 --
 ----end_license--
 
--- set the global variables:
-myX = 0
-myY = 0
-stepPrecision = 0
-eventPrecision = 0
-
 -- Import valid Rana lua libraries.
-EventLib = require "ranalib_event"
+Event = require "ranalib_event"
+--EventTable = {}
+
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
-function initializeAgent(x, y, id, stepPrecision, eventPrecision)
-
-	myX = x
-	myY = y
-	stepPrecision = stepPrecision
-	eventPrecision = eventPrecision
+function initializeAgent()
 
 	l_debug("Agent #: " .. ID .. " has been initialized")
 
@@ -43,24 +34,27 @@ end
 
 function handleEvent(sourceX, sourceY, sourceID, eventDescription, eventTable)
 	
-	if eventDescription == "ping" then
-		l_print("Agent: "..ID .." received a ping from agent: "
-			..sourceID.." emitting pong")
+	l_print(eventTable.desc.." : "..eventTable.id)
+	--if eventDescription == "ping" then
+	--	etable={desc="something", a="4"}
+--		l_print("Agent: "..ID .." received a ping from agent: "..sourceID.." emitting pong")
+--		Event.emit{speed=343, description="pong", table=etable}
 
-                EventLib.emit{speed=343, description="pong"}
+--	elseif eventDescription == "pong" then
+	l_print("Agent: "..ID.." received a pong from agent: ".. sourceID)
 
-	elseif eventDescription == "pong" then
-		l_print("Agent: "..ID.." received a pong from agent: ".. sourceID)
-
-	end
+--	end
 
 end
 
 function takeStep()
 
 	if l_getMersenneInteger(1,1000) <= 1 then
-		l_debug("Agent:"..ID.." is emiting ping")
-                EventLib.emit{speed=343, description="ping"}
+		--l_debug("Agent:"..ID.." is emiting ping")
+
+		etable={desc="something", a="4"}
+       	Event.emit{targetID=2,speed=343, description="ping",table={desc="something", id=ID,[4]=4, 5,4330}}
+		--EventTable = {desc="something", a="34"}
 	end
 
 end

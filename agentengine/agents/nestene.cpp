@@ -110,7 +110,7 @@ void Nestene::initPhase(double macroResolution, unsigned long long tmu)
 				(tmu-1)%macroFactorMultipler*Phys::getMacroFactor() == 0 )
 		{
 			std::unique_ptr<EventQueue::eEvent> eevent =
-					itr->second->initEvent();
+                    itr->second->takeStep();
 
 
 			if(eevent != NULL)
@@ -151,7 +151,7 @@ void Nestene::distroPhase(const EventQueue::eEvent* event)
 				 itLUAs->second->checkGroup(event->targetGroup) == true))
 		{
 			std::unique_ptr<EventQueue::iEvent> ieventPtr =
-					itLUAs->second->handleEvent(event);
+                    itLUAs->second->processEvent(event);
 
 			if(ieventPtr != NULL)
 			{

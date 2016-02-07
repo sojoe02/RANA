@@ -222,7 +222,7 @@ void Master::microStep(unsigned long long tmu)
                 eventQueue->decrementEeventCounter(iEventPtr->event->id);
 
 				std::unique_ptr<EventQueue::eEvent> eEventPtr =
-						luaAgent->actOnEvent(std::move(iEventPtr));
+						luaAgent->handleEvent(std::move(iEventPtr));
 
 
                 if(eEventPtr != NULL)

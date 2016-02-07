@@ -43,7 +43,7 @@ void Doctor::addLuaAutonPtr(std::shared_ptr<AutonLUA> luaPtr)
 
 void Doctor::submitEEvent(std::unique_ptr<EventQueue::eEvent> eEvent)
 {
-	master->receiveEEventPtr(std::move(eEvent));
+    master->receiveEEventPtr(std::move(eEvent));
 }
 
 std::shared_ptr<AutonLUA> Doctor::getAutonPtr(int id)

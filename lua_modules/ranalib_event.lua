@@ -33,13 +33,14 @@ end
 
 _EmitEvent = function(speed, desc, table, targetID, targetGroup)
 
-	if table ~= false then
-		tableString = _SerializeTable(table)
-	else
-		tableString = ""
-	end
+	--if table ~= false then
+	--	tableString = _SerializeTable(table)
+	--else
+	--	tableString = ""
+	--end
 
-	l_emitEvent(ID, posX, posY, speed, tableString, desc, targetID, targetGroup)
+	EventTable = table;
+	l_emitEvent(ID, posX, posY, speed, desc, targetID, targetGroup, table)
 end
 
 

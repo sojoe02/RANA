@@ -38,9 +38,9 @@ public:
 
     virtual ~Auton(){}
 
-    virtual std::unique_ptr<EventQueue::iEvent> handleEvent(EventQueue::eEvent* event);
-    virtual std::unique_ptr<EventQueue::eEvent> actOnEvent(std::unique_ptr<EventQueue::iEvent> event);
-    virtual std::unique_ptr<EventQueue::eEvent> initEvent(){return NULL;}
+    virtual std::unique_ptr<EventQueue::iEvent> processEvent(EventQueue::eEvent* event);
+    virtual std::unique_ptr<EventQueue::eEvent> handleEvent(std::unique_ptr<EventQueue::iEvent> event);
+    virtual std::unique_ptr<EventQueue::eEvent> takeStep(){return NULL;}
 
     virtual void processFunction(EventQueue::dataEvent *devent, double mapRes,
 								 double x, double y, double &zvalue, double &duration){}
