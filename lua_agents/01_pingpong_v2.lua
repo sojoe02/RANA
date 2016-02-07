@@ -34,14 +34,14 @@ end
 
 function handleEvent(sourceX, sourceY, sourceID, eventDescription, eventTable)
 	
-	l_print(eventTable.desc.." : "..eventTable.id)
+--	l_print(eventTable.desc.." : "..eventTable.id)
 	--if eventDescription == "ping" then
 	--	etable={desc="something", a="4"}
 --		l_print("Agent: "..ID .." received a ping from agent: "..sourceID.." emitting pong")
 --		Event.emit{speed=343, description="pong", table=etable}
 
 --	elseif eventDescription == "pong" then
-	l_print("Agent: "..ID.." received a pong from agent: ".. sourceID)
+--	l_print("Agent: "..ID.." received a pong from agent: ".. sourceID)
 
 --	end
 
@@ -52,8 +52,8 @@ function takeStep()
 	if l_getMersenneInteger(1,1000) <= 1 then
 		--l_debug("Agent:"..ID.." is emiting ping")
 
-		etable={desc="something", a="4"}
-       	Event.emit{targetID=2,speed=343, description="ping",table={desc="something", id=ID,[4]=4, 5,4330}}
+		
+       	Event.emit{speed=343, description="ping",table={desc="something", id=ID}}
 		--EventTable = {desc="something", a="34"}
 	end
 
