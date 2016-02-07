@@ -52,8 +52,10 @@ function takeStep()
 	if l_getMersenneInteger(1,1000) <= 1 then
 		--l_debug("Agent:"..ID.." is emiting ping")
 
-		
-       	Event.emit{speed=343, description="ping",table={desc="something", id=ID}}
+	 Event.emit{speed=343, description="ping",table={desc="something", id=ID,4,2,2,24,2424,2324,1249,23220,293,203,2298,23029,23928,23,232,211,1210}}
+	
+   
+	 --Event.emit{speed=343, description="ping",table={desc="something", id=ID}}
 		--EventTable = {desc="something", a="34"}
 	end
 

@@ -39,7 +39,7 @@ _EmitEvent = function(speed, desc, table, targetID, targetGroup)
 	--	tableString = ""
 	--end
 
-	EventTable = table;
+	--EventTable = table;
 	l_emitEvent(ID, posX, posY, speed, desc, targetID, targetGroup, table)
 end
 
