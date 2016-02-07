@@ -29,13 +29,14 @@ eventPrecision = 0
 
 -- Import valid Rana lua libraries.
 EventLib = require "ranalib_event"
+Util = require "ranalib_utility"
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
-function initializeAgent(x, y, ID, stepPrecision, eventPrecision)
+function initializeAgent(x, y, id, stepPrecision, eventPrecision)
 
 	myX = x
 	myY = y
-	ID = ID
+	ID = id
 	stepPrecision = stepPrecision
 	eventPrecision = eventPrecision
 
@@ -44,25 +45,31 @@ function initializeAgent(x, y, ID, stepPrecision, eventPrecision)
 end
 
 function handleEvent(sourceX, sourceY, sourceID, eventDescription, eventTable)
+
+	realtable = EventLib.loadTable(eventTable)
+
 	
-	if eventDescription == "ping" then
-		l_print("Agent: "..ID .." received a ping from agent: "
-			..sourceID.." emitting pong")
+	
+	--if eventDescription == "ping" then
+	--	l_print("Agent: "..ID .." received a ping from agent: "
+	--		..sourceID.." emitting pong")
+--
+  --              EventLib.emit{speed=343, description="pong"}
 
-                EventLib.emit{speed=343, description="pong"}
+	--elseif eventDescription == "pong" then
+	--	l_print("Agent: "..ID.." received a pong from agent: ".. sourceID)
 
-	elseif eventDescription == "pong" then
-		l_print("Agent: "..ID.." received a pong from agent: ".. sourceID)
-
-	end
+--	end
+--
 
 end
 
 function takeStep()
 
+
 	if l_getMersenneInteger(1,1000) <= 1 then
 		l_debug("Agent:"..ID.." is emiting ping")
-                EventLib.emit{speed=343, description="ping"}
+                EventLib.emit{speed=343, description="ping",table={desc="something", id=ID}}
 	end
 
 end

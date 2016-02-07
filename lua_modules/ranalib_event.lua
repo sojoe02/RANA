@@ -34,7 +34,7 @@ end
 _EmitEvent = function(speed, desc, table, targetID, targetGroup)
 
 	if table ~= false then
-		tableString = _SerializeTable(table)
+		tableString = utility.serializeTable(table)
 	else
 		tableString = ""
 	end
