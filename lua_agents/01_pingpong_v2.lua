@@ -24,8 +24,9 @@
 -- ID -- id of the agent.
 -- PositionX --	this agents x position.
 -- PositionY -- this agents y position.
--- StepResolution 	-- precision of steps.
--- EventResolution 	-- precision of event distribution.
+-- STEP_RESOLUTION 	-- resolution of steps, in the simulation core.
+-- EVENT_RESOLUTION	-- resolution of event distribution.
+-- StepMultiple 	-- amount of steps to skip.
 
 
 -- Import valid Rana lua libraries.
@@ -62,10 +63,6 @@ function takeStep()
 
 	end
 
-end
-
-function synchronizePosition()
-	return myX, myY
 end
 
 function cleanUp()

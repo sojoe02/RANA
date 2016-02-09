@@ -1,7 +1,5 @@
 local ranaLibAgent = {}
 
-local stepMultiple = 1
-
 -- Add an agent to the simulation. This agent will only receive 
 -- events emitted after it has been added.
 -- For simulation consistency it is recommended to use this mostly during takeStep, 
@@ -83,26 +81,21 @@ end
 -- if the stepPrecision is at 1e-3[s] and this agent only needs
 -- a 1e-2 precision level the user can set the multiple at 10.
 -- E.g. setStepMultiple(10)
-function ranaLibAgent.setStepMultiple(multiple)
+--function ranaLibAgent.setStepMultiple(multiple)
 
-	local success
+--	local success
 	
-	if type(multiple) == "number" and multiple >= 0 then
+--	if type(multiple) == "number" and multiple >= 0 then
 
-		l_setMacroFactorMultiple(ID, multiple)
-		stepPrecision = multiple * stepPrecision/stepMultiple
-		stepMultiple = multiple
-		success = true
-	else 
-		success = false
-	end
+--		l_setMacroFactorMultiple(ID, multiple)
+		--StepPrecision = multiple * stepPrecision/stepMultiple
+--		StepMultiple = multiple
+--		success = true
+--	else 
+--		success = false
+--	end
 
-	return success
-end
-
--- Returns the stepmultiplier of the agent... in case it forget.
-function ranaLibAgent.getStepMultiple()
-	return stepMultiple
-end
+--	return success
+--end
  
 return ranaLibAgent

@@ -39,7 +39,7 @@ _EmitEvent = function(speed, desc, table, targetID, targetGroup)
 		tableString = ""
 	end
 
-	l_emitEvent(ID, posX, posY, speed, desc, targetID, targetGroup, tableString)
+	l_emitEvent(ID, PositionX, PositionY, speed, desc, targetID, targetGroup, tableString)
 end
 
 

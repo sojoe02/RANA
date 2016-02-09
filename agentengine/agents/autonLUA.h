@@ -123,11 +123,12 @@ private:
     double eventChance();
     std::string filename;
     //The LUA state:
-    lua_State* L;
     friend class Nestene;
     friend class Master;
     bool nofile;
     bool removed;
+    lua_State* L;
+
     void getSyncData();
 };
 

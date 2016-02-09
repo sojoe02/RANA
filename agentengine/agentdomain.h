@@ -76,8 +76,8 @@ private:
 		std::mutex stopMutex;
         std::atomic_bool fetchPositions;
 
-        std::string luaFilename;
         int LuaAgentAmount;
+        std::string luaFilename;
 };
 
 #endif // AGENTDOMAIN_H

@@ -82,9 +82,11 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
         lua_pushnumber(L,posY);
         lua_setglobal(L, "PositionY");
         lua_pushnumber(L, Phys::getMacroFactor()*Phys::getTimeRes());
-        lua_setglobal(L, "StepResolution");
+        lua_setglobal(L, "STEP_PRECISION");
         lua_pushnumber(L, Phys::getTimeRes());
-        lua_setglobal(L, "EventResolution");
+        lua_setglobal(L, "EVENT_PRECISION");
+        lua_pushnumber(L, macroFactorMultiple);
+        lua_setglobal(L, "StepMultiple");
         //lua_newtable(L);
         //lua_setglobal(L, "EventTable");
         //Register all the API functions:
@@ -401,10 +403,17 @@ void AutonLUA::getSyncData()
 {
     if(removed) return;
     try{
+        lua_getglobal(L,"StepMultiple");
         lua_getglobal(L,"PositionX");
         lua_getglobal(L,"PositionY");
-        Auton::posX = lua_tonumber(L,-2);
-        Auton::posY = lua_tonumber(L,-1);
+
+        int stepMultiple = (int)lua_tonumber(L, -3);
+        if(stepMultiple >=0 )
+        {
+            macroFactorMultiple = stepMultiple;
+        }
+        posX = lua_tonumber(L, -2);
+        posY = lua_tonumber(L, -1);
     }catch(std::exception &e)
     {
         Output::Inst()->kprintf("<b><font color=\"red\">Error on retrieving X and Y\t%s</font></b></>", e.what());
