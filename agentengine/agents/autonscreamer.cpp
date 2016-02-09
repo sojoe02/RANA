@@ -37,12 +37,12 @@ AutonScreamer::AutonScreamer(int ID, double posX, double posY, double posZ, Nest
 }
 
 
-std::unique_ptr<EventQueue::iEvent> AutonScreamer::handleEvent(EventQueue::eEvent *event){
+std::unique_ptr<EventQueue::iEvent> AutonScreamer::processEvent(EventQueue::eEvent *event){
     return NULL;
 }
 
 
-EventQueue::eEvent *AutonScreamer::initEvent(double macroResolution, unsigned long long tmu ){
+EventQueue::eEvent *AutonScreamer::takeStep(double macroResolution, unsigned long long tmu ){
 	double random = (double)rand() /  double(RAND_MAX);
 	
 	if( random < (0.1 * macroResolution) ){

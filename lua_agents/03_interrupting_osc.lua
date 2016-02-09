@@ -30,16 +30,15 @@
 -- Data for each period will stored it a table, which upon simulation cleanUp is written
 -- to the harddrive.
 
--- set the global variables:
-myX = 0
-myY = 0
-ID = 0
-stepPrecision = 0
-eventPrecision = 0
+-- ID -- id of the agent.
+-- PositionX --	this agents x position.
+-- PositionY -- this agents y position.
+-- STEP_RESOLUTION 	-- resolution of steps.
+-- EVENT_RESOLUTION 	-- resolution of event distribution.
+-- StepMultiple 	-- step resolution multiplier (default = 1).
 
 -- data sets
 Olevels = {}
-dataFactor = 100
 step = 0
 iteration = 1
 
@@ -60,13 +59,7 @@ Core	= require "ranalib_core"
 Stat	= require "ranalib_statistic"
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
-function initializeAgent(x, y, id, step_precision, event_precision)
-
-	myX = x
-	myY = y
-	ID = id
-	eventPrecision = event_precision
-	stepPrecision = step_precision
+function initializeAgent()
 
 	Tt = T + Stat.randomMean(e,0)
 
@@ -75,7 +68,7 @@ end
 
 function takeStep()
 
-	Tn = Tn + stepPrecision
+	Tn = Tn + STEP_RESOLUTION
 	step = step 
 
 	if pause == true then
@@ -89,7 +82,6 @@ function takeStep()
 		Event.emit{description="Signal"}
 		table.insert(Olevels, Core.time()..",".. 1)
 		peaked = true
-
 	end
 
 	if Tn >= Tt then 
@@ -106,18 +98,12 @@ function handleEvent(sourceX, sourceY, sourceID, eventDescription, eventTable)
 	if peaked == false then
 		-- write data to the Olevel table:
 		table.insert(Olevels, Core.time()..","..Tn/Tt)
-		table.insert(Olevels, Core.time()+eventPrecision..","..0)
+		table.insert(Olevels, Core.time() + EVENT_RESOLUTION..","..0)
 		--calculate new period
 		Tt = T + Stat.randomMean(e, 0) + y
 		Tn = 0
 		pause = true
 	end
-
-
-end
-
-function synchronizePosition()
-	return myX, myY
 end
 
 function cleanUp()

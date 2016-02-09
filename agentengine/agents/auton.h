@@ -38,9 +38,9 @@ public:
 
     virtual ~Auton(){}
 
-    virtual std::unique_ptr<EventQueue::iEvent> handleEvent(EventQueue::eEvent* event);
-    virtual std::unique_ptr<EventQueue::eEvent> actOnEvent(std::unique_ptr<EventQueue::iEvent> event);
-    virtual std::unique_ptr<EventQueue::eEvent> initEvent(){return NULL;}
+    virtual std::unique_ptr<EventQueue::iEvent> processEvent(EventQueue::eEvent* event);
+    virtual std::unique_ptr<EventQueue::eEvent> handleEvent(std::unique_ptr<EventQueue::iEvent> event);
+    virtual std::unique_ptr<EventQueue::eEvent> takeStep(){return NULL;}
 
     virtual void processFunction(EventQueue::dataEvent *devent, double mapRes,
 								 double x, double y, double &zvalue, double &duration){}
@@ -67,7 +67,7 @@ protected:
 	void distroEEvent(std::unique_ptr<EventQueue::eEvent> event);
 
     int ID;
-	uint macroFactorMultipler; //how many macrostep pr. macrostep(if 0 the agent will be ignored completely).
+	uint macroFactorMultiple; //how many macrostep pr. macrostep(if 0 the agent will be ignored completely).
 	std::unordered_set<int> groups;
     std::string desc;
     double posX, posY, posZ;

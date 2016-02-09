@@ -20,46 +20,36 @@
 --
 ----end_license--
 
--- set the global variables:
-myX = 0
-myY = 0
-ID = 0
-stepPrecision = 0
-eventPrecision = 0
+--The following global values are set via the simulation core:
+-- ID -- id of the agent.
+-- PositionX --	this agents x position.
+-- PositionY -- this agents y position.
+-- STEP_RESOLUTION 	-- resolution of steps, in the simulation core.
+-- EVENT_RESOLUTION	-- resolution of event distribution.
+-- StepMultiple 	-- amount of steps to skip.
+
 
 -- Import valid Rana lua libraries.
 Event = require "ranalib_event"
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
-function initializeAgent(x, y, id, stepPrecision, eventPrecision)
-
-	myX = x
-	myY = y
-	ID = id
-	stepPrecision = stepPrecision
-	eventPrecision = eventPrecision
+function initializeAgent()
 
 	l_debug("Agent #: " .. ID .. " has been initialized")
 
 end
 
-function handleEvent(sourceX, sourceY, sourceID, eventDescription, eventSerialTable)
-
-	realtable = Event.loadTable(eventSerialTable)
-
+function handleEvent(sourceX, sourceY, sourceID, eventDescription, eventTable)
 	
+	if eventDescription == "ping" then
 	
-	--if eventDescription == "ping" then
-	--	l_print("Agent: "..ID .." received a ping from agent: "
-	--		..sourceID.." emitting pong")
---
-  --              EventLib.emit{speed=343, description="pong"}
+		l_print("Agent: "..ID .." received a ping from: "..sourceID ..", saying: "..eventTable.msg)
+		Event.emit{targetID=sourceID, speed=343, description="pong"}
 
-	--elseif eventDescription == "pong" then
-	--	l_print("Agent: "..ID.." received a pong from agent: ".. sourceID)
-
---	end
---
+	elseif eventDescription == "pong" then
+		
+		l_print("Agent: "..ID.." received a pong from agent: ".. sourceID)
+	end
 
 end
 
@@ -67,14 +57,10 @@ function takeStep()
 
 
 	if l_getMersenneInteger(1,1000) <= 1 then
-	--	l_debug("Agent:"..ID.." is emiting ping")
-                EventLib.emit{speed=343, description="ping",table={desc="something", id=ID,4,2,2,24,2424,2324,1249,23220,293,203,2298,23029,23928,23,232,211,1210}}
+		l_debug("Agent:"..ID.." is emiting ping")
+	 	Event.emit{speed=343, description="ping",table={msg="I am agent "..ID}}
 	end
 
-end
-
-function synchronizePosition()
-	return myX, myY
 end
 
 function cleanUp()

@@ -4,7 +4,7 @@ local RanaLibCollision = {}
 -- If the agent is currently not in the table it will be added automatically.
 function RanaLibCollision.updatePosition(newX, newY)
 	
-	l_updatePosition(myX, myY, newPosX, newPosY, ID)
+	l_updatePosition(PositionX, PositionY, newPosX, newPosY, ID)
 end
 
 -- Adds the agents position to the contral collision table.
@@ -12,7 +12,7 @@ end
 -- for collision check puposes only.
 function RanaLibCollision.addPosition()
 
-	l_addPosition(myX, myY, ID)
+	l_addPosition(PositionX, PositionY, ID)
 end
 
 -- Perform a check on a given position.

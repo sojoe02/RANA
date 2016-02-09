@@ -222,7 +222,7 @@ void Master::microStep(unsigned long long tmu)
                 eventQueue->decrementEeventCounter(iEventPtr->event->id);
 
 				std::unique_ptr<EventQueue::eEvent> eEventPtr =
-						luaAgent->actOnEvent(std::move(iEventPtr));
+						luaAgent->handleEvent(std::move(iEventPtr));
 
 
                 if(eEventPtr != NULL)
@@ -230,12 +230,6 @@ void Master::microStep(unsigned long long tmu)
 
             }
         }
-    }
-
-    //then run the endPhase on the nestenes, this will handle the responses of the Autons:
-    for(itNest =nestenes.begin(); itNest !=nestenes.end(); ++itNest)
-    {
-        itNest->endPhase();
     }
 
     eventQueue->legacyFront();

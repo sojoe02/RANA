@@ -180,7 +180,7 @@ void EventQueue::incrementEeventCounter(unsigned long long id)
 }
 
 /* **********************************************************************
- * INTERNAL EVENT HANDLING
+ * INTERNAL EVENT HANDLING have no interest in the stash tab. So for him to feel that way does not really affect me. Give it to seasons, not going to make me play seasons any more than I did before which is none.
  * ******************************************************************** */
 
 /**
@@ -378,7 +378,7 @@ void EventQueue::saveEEventData(std::string path, std::string luaFileName,
 		devent.propagationSpeed = (*event_itr)->propagationSpeed;
 
 		strncpy(devent.desc,(*event_itr)->desc.c_str(),150);
-		strncpy(devent.table,(*event_itr)->table.c_str(),1024);
+        //strncpy(devent.table,(*event_itr)->table.c_str(),1024);
 
 		//Add the filename if it exists:
 		auto infoItr = agentFilenames.find((*event_itr)->originID);

@@ -31,6 +31,7 @@
 #include <unordered_set>
 #include <memory>
 #include <atomic>
+#include <tuple>
 
 class Auton;
 class EventQueue
@@ -55,18 +56,19 @@ class EventQueue
 		struct eEvent {
 			unsigned long long id;
 			double propagationSpeed;
-            Auton *origin;
 			double posX;
 			double posY;
-			std::string table;
+            std::string luatable;
 			std::string desc;
 			unsigned long long activationTime;
 			int targetID;
 			int targetGroup;
 			int originID;
 			std::atomic_uint reference_count;
-			eEvent() : targetGroup(0), reference_count(0){}
+            eEvent() : targetGroup(0), reference_count(0){}
 		};
+
+
 
 		//define the internal Event:
 		struct iEvent {
@@ -104,8 +106,6 @@ class EventQueue
         std::list<std::unique_ptr<eEvent> > getEEventList(unsigned long long tmu);
 		bool eEventsAtTime(unsigned long long tmu);
 		unsigned long long getNextTmu();
-
-
         void legacyFront();
 
         const EventQueue::eEvent* addUsedEEvent(std::unique_ptr<eEvent> eEvent);
@@ -136,7 +136,6 @@ class EventQueue
 	private:
 
 		void printTest();
-		//the eventmaps, (event):
         typedef std::list<std::unique_ptr<eEvent>> eEvents;
         typedef std::list<std::unique_ptr<iEvent>> iEvents;
 

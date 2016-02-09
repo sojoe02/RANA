@@ -23,19 +23,19 @@
 -- @Description:
 -- This agent will oscilate between 0 and 1, with a time period. Upon peaking it will emit an event. 
 -- And then rapidly fall down towards zero and restart.
--- Data for each period will stored it a table, which upon simulation cleanUp is written
--- to the harddrive.
+-- Data for each period will be stored a table, which upon simulation cleanUp is written
+-- to to a csv file.
 
--- set the global variables:
-myX = 0
-myY = 0
-ID = 0
-stepPrecision = 0
-eventPrecision = 0
+--The following global values are set via the simulation core:
+-- ID -- id of the agent.
+-- PositionX --	this agents x position.
+-- PositionY -- this agents y position.
+-- STEP_RESOLUTION 	-- resolution of steps.
+-- EVENT_RESOLUTION -- resolution of event distribution.
+-- StepMultiple 	-- step resolution multiplier (default = 1).
 
 -- data sets
 Olevels = {}
-dataFactor = 100
 step = 0
 iteration = 1
 
@@ -45,7 +45,7 @@ e = 0.030 -- Period variance with mean of 0.
 r = 0.100 -- falltime.
 Tt = 0 -- active period targeted time. Peak is then equal to Tt-r
 Tn = 0 -- active period time
-peaked = false -- boolean helping with numeric imprecision issues.
+peaked = false -- boolean helping with numeric imresolution issues.
 
 -- Import Rana lua libraries.
 Event	= require "ranalib_event"
@@ -53,13 +53,7 @@ Core	= require "ranalib_core"
 Stat	= require "ranalib_statistic"
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
-function initializeAgent(x, y, id, step_precision, event_precision)
-
-	myX = x
-	myY = y
-	ID = id
-	eventPrecision = event_precision
-	stepPrecision = step_precision
+function initializeAgent()
 
 	Tt = T + Stat.randomMean(e,0)
 
@@ -68,7 +62,7 @@ end
 
 function takeStep()
 
-	Tn = Tn + stepPrecision
+	Tn = Tn + STEP_RESOLUTION
 	step = step 
 
 	if Tn >= Tt-r and peaked == false then
@@ -82,7 +76,7 @@ function takeStep()
 		Tt = T + Stat.randomMean(e, 0)
 		Tn = 0
 		table.insert(Olevels, Core.time()..",".. 0)
-		l_print("Oscillator Emitting signal at time: ".. Core.time().."[s]")
+		l_print("Oscillator #"..ID.." Emitting signal at time: ".. Core.time().."[s]")
 		peaked = false
 	end
 end
@@ -91,19 +85,16 @@ function handleEvent(sourceX, sourceY, sourceID, eventDescription, eventTable)
 	
 end
 
-function synchronizePosition()
-	return myX, myY
-end
-
 function cleanUp()
-
+	-- only the two first agents will write data:
+	if ID == 1 then
 	--Write the oscillation data to a csv file.
-	file = io.open("02_data"..ID..".csv", "w")
-	for i,v in pairs(Olevels) do
-		file:write(i..","..v.."\n")
+		file = io.open("02_data"..ID..".csv", "w")
+		for i,v in pairs(Olevels) do
+			file:write(i..","..v.."\n")
+		end
+		file:close()
 	end
-	file:close()
-
 	l_debug("Agent #: " .. ID .. " is done\n")
 end
 

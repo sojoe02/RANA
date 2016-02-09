@@ -45,30 +45,19 @@ class AutonLUA;
 class Nestene
 {
 	public:
-		Nestene(double posX,double posY, double width, double height, Master* master, uint id);
+		Nestene(double posX,double posY, double width, double height, Master* master, int id);
 		~Nestene();
 
 		void generateAuton();
 		void populate(int LUASize, std::string filename);
-		void populateSquared(int LUASize,std::string filename);
-		void populateSquaredListener(int listenerSize);
-
 		void initPhase(double macroResolution, unsigned long long tmu);
-
 		//function to receive events the master, and distribute them on all local nestene
 		void distroPhase(const EventQueue::eEvent *event);
-
 		std::list<EventQueue::iEvent> responsePhase();
-		void endPhase();
-
 		void retrievePopPos(std::list<agentInfo> &infolist);
-
 		int initAmount;
-
 		void simDone();
-
-		uint getID(){ return id; }
-
+		int getID(){ return id; }
 		int addAuton(double x, double y, double z,
 					  std::string filename, std::string type);
 
@@ -84,51 +73,20 @@ private:
 		void purgeEvents();
 		//Functions to perform during a microStep.
 		//check whether or not there is to be initiated an event on one of its residents.
-		void queryPopulation();
-		//Act on event.
 		void performEvent(std::unique_ptr<EventQueue::eEvent> event);
-
-		//initial calculation of whether or not an event will be initiated.
-		void calculateInitEventChance();
-
-		void registerIEvent(EventQueue::iEvent *event);
-		void registerEEvent(EventQueue::eEvent *event);
-		//EventQueue *ievents;
-		//EventQueue *eevents;
-
 		Master *master;
 
-		//map of local autons with ID, and auton.
-		std::map<int,AutonListener> listeners;
-		std::map<int,AutonListener>::iterator itListeners;
-
-		std::map<int,AutonScreamer> screamers;
-		std::map<int,AutonScreamer>::iterator itScreamers;
-
-		std::map<int,std::shared_ptr<AutonLUA>> LUAs;
-
-		//list of ievents to be send back to the master:
-		//std::list<EventQueue::iEvent*>* iEvents;
-
-		//list of eeEvents that wants to send out,
-		//Autons will register the external events they want to send out here:
-		std::list<EventQueue::eEvent*> eEventsOutbox;
-		std::list<EventQueue::eEvent*>::iterator iteEventsOutbox;
+		std::map<int,std::shared_ptr<AutonLUA>> luaAutons;
 
 		std::list<int> removalIDs;
 
 		friend class Auton;
-		friend class AutonListener;
-		friend class AutonScreamer;
 		friend class AutonLUA;
 		double posX;
 		double posY;
 		double width;
 		double height;
-		uint id;
-
-		double listenerEventChance;
-		double screamerEventChance;
+		int id;
 
 };
 
