@@ -82,9 +82,9 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
         lua_pushnumber(L,posY);
         lua_setglobal(L, "PositionY");
         lua_pushnumber(L, Phys::getMacroFactor()*Phys::getTimeRes());
-        lua_setglobal(L, "STEP_PRECISION");
+        lua_setglobal(L, "STEP_RESOLUTION");
         lua_pushnumber(L, Phys::getTimeRes());
-        lua_setglobal(L, "EVENT_PRECISION");
+        lua_setglobal(L, "EVENT_RESOLUTION");
         lua_pushnumber(L, macroFactorMultiple);
         lua_setglobal(L, "StepMultiple");
         //lua_newtable(L);
