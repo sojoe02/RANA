@@ -82,9 +82,9 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
         lua_pushnumber(L,posY);
         lua_setglobal(L, "PositionY");
         lua_pushnumber(L, Phys::getMacroFactor()*Phys::getTimeRes());
-        lua_setglobal(L, "STEP_PRECISION");
+		lua_setglobal(L, "STEP_RESOLUTION");
         lua_pushnumber(L, Phys::getTimeRes());
-        lua_setglobal(L, "EVENT_PRECISION");
+		lua_setglobal(L, "EVENT_RESOLUTION");
         lua_pushnumber(L, macroFactorMultiple);
         lua_setglobal(L, "StepMultiple");
         //lua_newtable(L);
@@ -191,7 +191,7 @@ AutonLUA::~AutonLUA()
         //lua_gc(L,LUA_GCCOLLECT,0);
         lua_close(L);
         //delete L;
-        L = NULL;
+		//L = NULL;
     }
 }
 
@@ -857,15 +857,11 @@ int AutonLUA::l_emitEvent(lua_State *L)
     sendEvent->propagationSpeed = lua_tonumber(L,-5);
     sendEvent->activationTime = Phys::getCTime()+1;
     sendEvent->id = ID::generateEventID();
-<<<<<<< HEAD
-    //    Output::Inst()->kprintf("time is: %d, description is: %s", sendEvent->activationTime, sendEvent->desc.c_str());
-=======
     sendEvent->desc = lua_tostring(L, -4);
     sendEvent->targetID = lua_tonumber(L, -3);
     sendEvent->targetGroup = lua_tonumber(L, -2);
     sendEvent->luatable = lua_tostring(L, -1);
 
->>>>>>> 6fb553d7a432e1a0f9d9735501da4e87ff87a500
     Doctor::submitEEvent(std::move(sendEvent));
     return 0;
 }
