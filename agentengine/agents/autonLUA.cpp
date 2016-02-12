@@ -191,7 +191,7 @@ AutonLUA::~AutonLUA()
         //lua_gc(L,LUA_GCCOLLECT,0);
         lua_close(L);
         //delete L;
-        L = NULL;
+		//L = NULL;
     }
 }
 

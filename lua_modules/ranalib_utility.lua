@@ -8,10 +8,11 @@ function RanaLibUtility.deserializeTable(string)
 		return nil
 	end
 	
-	load("table="..string)()
-	return table
+	load("stable="..string)()
+	return stable
 end
 
+-- Generate a string representation of a lua table recursively.
 function RanaLibUtility.serializeTable(val, name, depth)
 	--skipnewlines = skipnewlines or false
 	depth = depth or 0
@@ -46,5 +47,6 @@ function RanaLibUtility.serializeTable(val, name, depth)
 
 	return tbl
 end
+
 
 return RanaLibUtility

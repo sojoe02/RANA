@@ -49,18 +49,16 @@ function handleEvent(sourceX, sourceY, sourceID, eventDescription, eventTable)
 	elseif eventDescription == "pong" then
 		
 		l_print("Agent: "..ID.." received a pong from agent: ".. sourceID)
-
 	end
 
 end
 
 function takeStep()
 
+
 	if l_getMersenneInteger(1,1000) <= 1 then
-		
 		l_debug("Agent:"..ID.." is emiting ping")
 	 	Event.emit{speed=343, description="ping",table={msg="I am agent "..ID}}
-
 	end
 
 end
