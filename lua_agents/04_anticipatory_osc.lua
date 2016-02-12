@@ -51,9 +51,13 @@ Tt = 0 -- active period targeted time.
 Tn = 0 -- active period time
 y = 0.05 -- interrupt pause
 s = 0.1 -- Prc(phase response) slope, how quickly the oscillator recover from inhibition.
+t = 0.060
+x = 0.040
+yy = 0
 
-peaked = false
 pause = false
+reset = false
+peaked = false
 
 -- Import Rana lua libraries.
 Event	= require "ranalib_event"
@@ -70,43 +74,44 @@ end
 function takeStep()
 
 	Tn = Tn + STEP_RESOLUTION
-	step = step 
 
-	if pause == true then
-		if Tn > y then
-			table.insert(Olevels, Core.time()..","..0)
-			pause = false
-		end
+	if pause == true and Tn >= yy then
+		table.insert(Olevels, Core.time()..",".. 0)
+		pause = false	
 	end
 
-	if Tn >= Tt-r and peaked == false then
-		Event.emit{description="Signal"}
-		table.insert(Olevels, Core.time()..",".. 1)
+	if peaked == false and Tn >= Tt-t then
+		table.insert(Olevels, Core.time()..",".. 1 ..",peak")
 		peaked = true
-
 	end
 
-	if Tn >= Tt then 
+	if reset==false and Tn >= r then
+		table.insert(Olevels,Core.time()..",".. 0)
+		reset = true
+	end
+
+	if Tn >= Tt then
+		l_print("Interrupt Oscillator "..ID.." Emitting signal at time: ".. Core.time().."[s]")
+		Event.emit{description="Signal"}	
 		Tt = T + Stat.randomMean(e, 0)
 		Tn = 0
-		table.insert(Olevels, Core.time()..",".. 0)
-		l_print("Interrupt Oscillator "..ID.." Emitting signal at time: ".. Core.time().."[s]")
+		table.insert(Olevels, Core.time()..",".. (Tt-r-t)/Tt ..",call")	
 		peaked = false
+		reset = false
 	end
 end
 
 function handleEvent(sourceX, sourceY, sourceID, eventDescription, eventTable)
 	
-	if peaked == false then
+	if Tn >= x then
 		-- write data to the Olevel table:
-		table.insert(Olevels, Core.time()..","..Tn/Tt)
-		table.insert(Olevels, Core.time()+EVENT_RESOLUTION..","..0)
+		table.insert(Olevels, Core.time()..","..Tn/Tt..",interrupt")
+		table.insert(Olevels, Core.time()..",".. 0)
 		--calculate new period
 		Tt = Tn * s + Tt
+		yy = y+Tn
 		pause = true
 	end
-
-
 end
 
 function cleanUp()
