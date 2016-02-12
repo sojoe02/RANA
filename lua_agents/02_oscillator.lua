@@ -57,6 +57,8 @@ function initializeAgent()
 
 	Tt = T + Stat.randomMean(e,0)
 
+	table.insert(Olevels, Core.time()..",".. 0)
+
 	l_debug("Oscillator agent #: " .. ID .. " has been initialized")
 end
 
