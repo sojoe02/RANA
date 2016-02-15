@@ -30,12 +30,12 @@
 -- Data for each period will stored it a table, which upon simulation cleanUp is written
 -- to the harddrive.
 
--- set the global variables:
-myX = 0
-myY = 0
-ID = 0
-stepPrecision = 0
-eventPrecision = 0
+-- ID -- id of the agent.
+-- PositionX --	this agents x position.
+-- PositionY -- this agents y position.
+-- STEP_RESOLUTION 	-- resolution of steps.
+-- EVENT_RESOLUTION 	-- resolution of event distribution.
+-- StepMultiple 	-- step resolution multiplier (default = 1).
 
 -- data sets
 Olevels = {}
@@ -50,10 +50,14 @@ r = 0.100 -- falltime.
 Tt = 0 -- active period targeted time.
 Tn = 0 -- active period time
 y = 0.05 -- interrupt pause
-s = 0.1 -- Prc(phase response) slope, how quickly the oscillator recover from inhibition.
+s = 0.7 -- Prc(phase response) slope, how quickly the oscillator recover from inhibition.
+t = 0.060
+x = 0.040
+yy = 0
 
-peaked = false
 pause = false
+reset = false
+peaked = false
 
 -- Import Rana lua libraries.
 Event	= require "ranalib_event"
@@ -61,70 +65,68 @@ Core	= require "ranalib_core"
 Stat	= require "ranalib_statistic"
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
-function initializeAgent(x, y, id, step_precision, event_precision)
-
-	myX = x
-	myY = y
-	ID = id
-	eventPrecision = event_precision
-	stepPrecision = step_precision
-
+function initializeAgent()
 	Tt = T + Stat.randomMean(e,0)
+
+	if ID==1 then 
+		PositionX=10 
+		PositionY=10
+	elseif ID==2 then
+		PositionX=20
+		PositionY=10
+	end
 
 	l_debug("Oscillator agent #: " .. ID .. " has been initialized")
 end
 
 function takeStep()
 
-	Tn = Tn + stepPrecision
-	step = step 
+	Tn = Tn + STEP_RESOLUTION
 
-	if pause == true then
-		if Tn > y then
-			table.insert(Olevels, Core.time()..","..0)
-			pause = false
-		end
+	if pause == true and Tn >= yy then
+		table.insert(Olevels, Core.time()..",".. 0)
+		pause = false	
 	end
 
-	if Tn >= Tt-r and peaked == false then
-		Event.emit{description="Signal"}
-		table.insert(Olevels, Core.time()..",".. 1)
+	if peaked == false and Tn >= Tt-t then
+		table.insert(Olevels, Core.time()..",".. 1 ..",peak")
 		peaked = true
-
 	end
 
-	if Tn >= Tt then 
+	if reset==false and Tn >= r then
+		table.insert(Olevels,Core.time()..",".. 0)
+		reset = true
+	end
+
+	if Tn >= Tt then
+		l_print("Interrupt Oscillator "..ID.." Emitting signal at time: ".. Core.time().."[s]")
+		Event.emit{description="Signal"}	
 		Tt = T + Stat.randomMean(e, 0)
 		Tn = 0
-		table.insert(Olevels, Core.time()..",".. 0)
-		l_print("Interrupt Oscillator "..ID.." Emitting signal at time: ".. Core.time().."[s]")
+		--table.insert(Olevels, Core.time()..",".. 1 ..",call")	
 		peaked = false
+		reset = false
 	end
 end
 
 function handleEvent(sourceX, sourceY, sourceID, eventDescription, eventTable)
 	
-	if peaked == false then
+	if Tn >= x then
 		-- write data to the Olevel table:
-		table.insert(Olevels, Core.time()..","..Tn/Tt)
-		table.insert(Olevels, Core.time()+eventPrecision..","..0)
+		table.insert(Olevels, Core.time()..","..Tn/Tt..",interrupt")
+		table.insert(Olevels, Core.time()..",".. 0)
 		--calculate new period
-		Tt = (Tn) * s + Tt
+		Tt = Tn * s + Tt
+		yy = y+Tn
 		pause = true
 	end
-
-
-end
-
-function synchronizePosition()
-	return myX, myY
 end
 
 function cleanUp()
 
 	--Write the oscillation data to a csv file.
 	if ID <= 4 then
-		file = io.open("03_data"..ID..".csv", "w")
+		file = io.open("04_data"..ID..".csv", "w")
 		for i,v in pairs(Olevels) do
 			file:write(i..","..v.."\n")
 		end

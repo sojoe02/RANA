@@ -50,7 +50,7 @@ r = 0.100 -- falltime.
 Tt = 0 -- active period targeted time.
 Tn = 0 -- active period time
 y = 0.05 -- interrupt pause
-s = 0.1 -- Prc(phase response) slope, how quickly the oscillator recover from inhibition.
+s = 0.7 -- Prc(phase response) slope, how quickly the oscillator recover from inhibition.
 t = 0.060
 x = 0.040
 yy = 0
@@ -67,6 +67,14 @@ Stat	= require "ranalib_statistic"
 -- Init of the lua frog, function called upon initilization of the LUA auton.
 function initializeAgent()
 	Tt = T + Stat.randomMean(e,0)
+
+	if ID==1 then 
+		PositionX=10 
+		PositionY=10
+	elseif ID==2 then
+		PositionX=20
+		PositionY=10
+	end
 
 	l_debug("Oscillator agent #: " .. ID .. " has been initialized")
 end
@@ -95,7 +103,7 @@ function takeStep()
 		Event.emit{description="Signal"}	
 		Tt = T + Stat.randomMean(e, 0)
 		Tn = 0
-		table.insert(Olevels, Core.time()..",".. (Tt-r-t)/Tt ..",call")	
+		--table.insert(Olevels, Core.time()..",".. 1 ..",call")	
 		peaked = false
 		reset = false
 	end
