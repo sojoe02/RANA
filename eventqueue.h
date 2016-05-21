@@ -53,7 +53,8 @@ class EventQueue
 		};
 
 		//define the external Event:
-		struct eEvent {
+		struct eEvent
+		{
 			unsigned long long id;
 			double propagationSpeed;
 			double posX;
@@ -71,7 +72,8 @@ class EventQueue
 
 
 		//define the internal Event:
-		struct iEvent {
+		struct iEvent
+		{
             Auton *origin;
 			const eEvent *event;
 			unsigned long long activationTime;
@@ -81,7 +83,8 @@ class EventQueue
 		};
 
 		//define the data event, precisely the same as events:
-		struct dataEvent{
+		struct dataEvent
+		{
 			unsigned long long id;
             int targetID;
 			unsigned long long activationTime;
@@ -94,7 +97,8 @@ class EventQueue
 			char filename[256];
 		};
 
-		struct autonInfo{
+		struct autonInfo
+		{
 			int ID;
 			int eventAmount;
 			char info[1000];

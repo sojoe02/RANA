@@ -23,6 +23,8 @@
 #include <chrono>
 #include <climits>
 #include <thread>
+#include <iostream>
+#include <fstream>
 
 #include "agentdomain.h"
 #include "../physics/phys.h"
@@ -39,7 +41,8 @@ using std::chrono::steady_clock;
 
 AgentDomain::AgentDomain(Control *control)
     :control(control), mapGenerated(false), stop(false), fetchPositions(false),
-      LuaAgentAmount(0),luaFilename("")
+	  LuaAgentAmount(0),luaFilename(""),storePositions(true),
+	  positionFilename("_positionData.pos")
 	 {
 		 Phys::seedMersenne();
          masteragent = new Master();
@@ -99,8 +102,7 @@ void AgentDomain::generateEnvironment(double width, double height, int resolutio
 
 void AgentDomain::populateSystem()
 {
-
-    masteragent->populateSystem(0,0, LuaAgentAmount, luaFilename);
+	masteragent->populateSystem(0, 0, LuaAgentAmount, luaFilename);
     retrievePopPos();
     mapGenerated = true;
 }
@@ -112,9 +114,28 @@ void AgentDomain::populateSystem()
  * @see Master::retrievePopPos()
  * @see Control::refreshPopPos()
  */
-void AgentDomain::retrievePopPos(){
+void AgentDomain::retrievePopPos()
+{
 
-    control->refreshPopPos(masteragent->retrievePopPos());
+	std::list<agentInfo> agentPositions = masteragent->retrievePopPos();
+
+	control->refreshPopPos(agentPositions);
+
+	if(storePositions == true )
+	{
+		std::ofstream file(positionFilename.c_str(),std::ofstream::out | std::ofstream::app);
+
+		for(auto itr = agentPositions.begin(); itr != agentPositions.end(); ++itr)
+		{
+
+			agentTmu agenttmu;
+			agenttmu.info = *itr;
+			agenttmu.tmu = cMacroStep;
+
+			file.write(reinterpret_cast<char*>(&agenttmu), sizeof(agenttmu));
+		}
+		file.close();
+	}
 
 }
 
@@ -144,8 +165,8 @@ void AgentDomain::runSimulation(int time)
 	auto end = steady_clock::now();
 
 	//unsigned long long run_time = 0;
-	unsigned long long cMacroStep = 0;
-	unsigned long long cMicroStep = ULLONG_MAX;
+	cMacroStep = 0;
+	cMicroStep = ULLONG_MAX;
 	unsigned long long i = 0;//, j = 0;
 
     for(i = 0; i < iterations;)
@@ -211,7 +232,7 @@ void AgentDomain::runSimulation(int time)
 
     auto endsim = steady_clock::now();
     duration_cast<seconds>(start2-endsim).count();
-    Output::Inst()->kprintf("Simulation run took:\t %llu[s] "
+	Output::Inst()->kprintf("Simulation run took:\t %llu[s] of computing time"
                             , duration_cast<seconds>(endsim - start2).count()
                             );
 }
@@ -220,14 +241,16 @@ void AgentDomain::runSimulation(int time)
  * Stop currently running simulation
  * Stops the active simulation run via setting an atomic boolean.
  */
-void AgentDomain::stopSimulation(){
-	stop = true;
+void AgentDomain::stopSimulation()
+{
+	stop.store(true);
 }
 
 /**
  * Save eEvent data to disk
  * @see EventQueue::saveEEventData
  */
-void AgentDomain::saveExternalEvents(std::string filename){
+void AgentDomain::saveExternalEvents(std::string filename)
+{
     masteragent->saveExternalEvents(filename);
 }

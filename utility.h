@@ -39,18 +39,26 @@ bool util_toNumber(T& t,const std::string& s,
 	return !(iss >> f >> t).fail();
 }
 
-struct rgba{
+struct rgba
+{
     int red;
     int green;
     int blue;
     int alpha;
 };
 
-struct agentInfo{
+struct agentInfo
+{
     int x;
     int y;
     int id;
 	std::string filename;
+};
+
+struct agentTmu
+{
+	agentInfo info;
+	unsigned long long tmu;
 };
 
 typedef std::vector< std::vector<int> > MatriceInt;

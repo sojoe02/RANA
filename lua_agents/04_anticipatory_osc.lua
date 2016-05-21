@@ -50,7 +50,7 @@ r = 0.100 -- falltime.
 Tt = 0 -- active period targeted time.
 Tn = 0 -- active period time
 y = 0.05 -- interrupt pause
-s = 0.7 -- Prc(phase response) slope, how quickly the oscillator recover from inhibition.
+s = 0.1 -- Prc(phase response) slope, how quickly the oscillator recover from inhibition.
 t = 0.060
 x = 0.040
 yy = 0
@@ -99,11 +99,11 @@ function takeStep()
 	end
 
 	if Tn >= Tt then
-		l_print("Interrupt Oscillator "..ID.." Emitting signal at time: ".. Core.time().."[s]")
-		Event.emit{description="Signal"}	
+		l_print("PRC Oscillator "..ID.." Emitting signal at time: ".. Core.time().."[s]")
+		Event.emit{description="Signal"}
+		table.insert(Olevels, Core.time()..",".. (Tn-r)/(Tt) ..",call")
 		Tt = T + Stat.randomMean(e, 0)
 		Tn = 0
-		--table.insert(Olevels, Core.time()..",".. 1 ..",call")	
 		peaked = false
 		reset = false
 	end
@@ -118,6 +118,9 @@ function handleEvent(sourceX, sourceY, sourceID, eventDescription, eventTable)
 		--calculate new period
 		Tt = Tn * s + Tt
 		yy = y+Tn
+		if peaked == true then
+			Tn = Tt-y
+		end
 		pause = true
 	end
 end

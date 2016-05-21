@@ -66,6 +66,10 @@ private:
 
 		double timeResolution;
 		double macroResolution;
+
+		unsigned long long cMacroStep;
+		unsigned long long cMicroStep;
+
 		int macroFactor;
 		int mapWidth, mapHeight;
 		unsigned long long iterations;
@@ -78,6 +82,11 @@ private:
 
         int LuaAgentAmount;
         std::string luaFilename;
+
+		typedef std::list<agentInfo> onlineAgents;
+		std::unordered_map<unsigned long long, onlineAgents> positionMap;
+		bool storePositions;
+		std::string positionFilename;
 };
 
 #endif // AGENTDOMAIN_H

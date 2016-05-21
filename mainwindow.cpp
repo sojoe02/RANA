@@ -27,6 +27,7 @@
 #include <string>
 #include <thread>
 #include <chrono>
+#include <fstream>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -849,8 +850,6 @@ void MainWindow::setupVisualTab(QHash<QString, ZBlock *> *argZBlocks)
 	//Output::Inst()->ppprintf("adding item to something fierce...")
 	eventScene->clear();
 	//eventScene->setSceneRect(0,0,10,10);
-
-
 	for(auto it = zBlocks->begin(); it != zBlocks->end(); ++it)
 	{
 		//Output::Inst()->ppprintf("adding item to something fierce...");
@@ -876,6 +875,21 @@ void MainWindow::setupVisualTab(QHash<QString, ZBlock *> *argZBlocks)
 
 	zmap->setPos(0,0);
 	zmap->setSize(ui->vis_mapGraphicsView->maximumWidth(),ui->vis_outputTextBrowser->height());
+
+	//Parse agent information and load it into memory.
+	std::string agenttmupath = "_agentPositions";
+	std::ifstream file(agenttmupath.c_str(), std::ifstream::binary);
+
+	if(file.is_open())
+	{
+		while(!file.eof())
+		{
+			agentTmu agenttmu;
+			file.read(reinterpret_cast<char*>(&agenttmu),sizeof(&agenttmu));
+
+		}
+	}
+	file.close();
 
 }
 
@@ -1066,6 +1080,9 @@ void MainWindow::on_vis_activeMapSpinBox_valueChanged(int arg1)
 	stringtmp.append("\t - \t");
 	stringtmp.append(QString::number(currentTime + ui->vis_activeTimeResolutionLabel->text().toDouble()));
 	ui->vis_activeTimeLabel->setText(stringtmp);
+
+	//draw agents from the position map:
+
 }
 
 /**

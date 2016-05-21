@@ -196,6 +196,9 @@ private:
 	QGraphicsScene *eventMapScene;
 	int timeOffset;
 
+	QGraphicsItemGroup PPactiveAgents;
+	QMap<unsigned long long, agentInfo> agentpositionMap;
+
 	QTimer *zMapTimer;
 	bool disableLiveView;
 	bool playingMap;

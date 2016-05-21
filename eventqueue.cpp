@@ -337,7 +337,7 @@ void EventQueue::saveEEventData(std::string path, std::string luaFileName,
 	std::string filename = path;
 
     //Open the file and set the options:
-    std::ofstream file (filename.c_str(), std::ofstream::binary | std::ofstream::trunc);
+	std::ofstream file(filename.c_str(), std::ofstream::binary | std::ofstream::trunc);
     //int bufferLimit = 100000;
 
 	Output::Inst()->kprintf("Saving event data to file:  %s\n" , path.c_str());
@@ -386,11 +386,14 @@ void EventQueue::saveEEventData(std::string path, std::string luaFileName,
 		if(infoItr != agentFilenames.end())
 		{
 			strncpy(devent.filename, infoItr->second.c_str(), 256);
-		}else strncpy(devent.filename, std::string("NULL").c_str(),256);
+		}
+		else
+			strncpy(devent.filename, std::string("NULL").c_str(),256);
 
 		file.write(reinterpret_cast<char*>(&devent),sizeof(devent));
 
 	}
+	file.close();
 
     Output::Inst()->kprintf("Saving data done\n");
 
