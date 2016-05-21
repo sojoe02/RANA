@@ -25,6 +25,7 @@
 #include <thread>
 #include <iostream>
 #include <fstream>
+#include <stdio.h>
 
 #include "agentdomain.h"
 #include "../physics/phys.h"
@@ -41,16 +42,16 @@ using std::chrono::steady_clock;
 
 AgentDomain::AgentDomain(Control *control)
     :control(control), mapGenerated(false), stop(false), fetchPositions(false),
-	  LuaAgentAmount(0),luaFilename(""),storePositions(true),
-	  positionFilename("_positionData.pos")
-	 {
-		 Phys::seedMersenne();
-         masteragent = new Master();
+      LuaAgentAmount(0),luaFilename(""),storePositions(true),
+      positionFilename("_positionData.pos")
+{
+    Phys::seedMersenne();
+    masteragent = new Master();
 }
 
 AgentDomain::~AgentDomain(){
-	//ID::resetSystem();
-	Phys::setCTime(0);
+    //ID::resetSystem();
+    Phys::setCTime(0);
     delete masteragent;
 }
 /**
@@ -59,50 +60,50 @@ AgentDomain::~AgentDomain(){
  * */
 bool AgentDomain::checkEnvPresence()
 {
-	return mapGenerated;	
+    return mapGenerated;
 }
 
 /**
  * Generates the environment.
- * Upon environment generation the nestenes will be placed, autons will be 
+ * Upon environment generation the nestenes will be placed, autons will be
  * assigned to a nestene and placed within it's parameters.
  */
 void AgentDomain::generateEnvironment(double width, double height, int resolution,
-		int listenerSize, int screamerSize, int LUASize,
-        double timeResolution, int macroFactor, std::string filename)
+                                      int listenerSize, int screamerSize, int LUASize,
+                                      double timeResolution, int macroFactor, std::string filename)
 {
 
-	this->timeResolution = timeResolution;
-	this->macroFactor = macroFactor;
+    this->timeResolution = timeResolution;
+    this->macroFactor = macroFactor;
 
     macroResolution = macroFactor * timeResolution;
 
     Output::KillSimulation = false;
 
-	ID::resetSystem();
-	Phys::setTimeRes(timeResolution);
-	Phys::setCTime(0);
-	Phys::setMacroFactor(macroFactor);
+    ID::resetSystem();
+    Phys::setTimeRes(timeResolution);
+    Phys::setCTime(0);
+    Phys::setMacroFactor(macroFactor);
     Phys::setEnvironment(width, height);
     Shared::initShared();
-	Doctor::InitDoctor(masteragent);
+    Doctor::InitDoctor(masteragent);
 
     masteragent->generateMap(width,height,resolution,timeResolution, macroResolution);
 
-	mapWidth = width;
+    mapWidth = width;
     mapHeight = height;
 
     LuaAgentAmount = LUASize;
     luaFilename = filename;
 
-//    masteragent->populateSystem(listenerSize, screamerSize, LUASize, filename);
+    //    masteragent->populateSystem(listenerSize, screamerSize, LUASize, filename);
     //retrievePopPos();
     //mapGenerated = true;
 }
 
 void AgentDomain::populateSystem()
 {
-	masteragent->populateSystem(0, 0, LuaAgentAmount, luaFilename);
+    masteragent->populateSystem(0, 0, LuaAgentAmount, luaFilename);
     retrievePopPos();
     mapGenerated = true;
 }
@@ -117,26 +118,28 @@ void AgentDomain::populateSystem()
 void AgentDomain::retrievePopPos()
 {
 
-	std::list<agentInfo> agentPositions = masteragent->retrievePopPos();
+    std::list<agentInfo> agentPositions = masteragent->retrievePopPos();
 
-	control->refreshPopPos(agentPositions);
+    control->refreshPopPos(agentPositions);
 
-	if(storePositions == true )
-	{
-		std::ofstream file(positionFilename.c_str(),std::ofstream::out | std::ofstream::app);
+    if(Output::RunSimulation.load())
+    {
+        if(storePositions == true )
+        {
+            std::ofstream file(positionFilename.c_str(),std::ofstream::out | std::ofstream::app);
 
-		for(auto itr = agentPositions.begin(); itr != agentPositions.end(); ++itr)
-		{
+            for(auto itr = agentPositions.begin(); itr != agentPositions.end(); ++itr)
+            {
 
-			agentTmu agenttmu;
-			agenttmu.info = *itr;
-			agenttmu.tmu = cMacroStep;
+                agentTmu agenttmu;
+                agenttmu.info = *(itr);
+                agenttmu.tmu = cMacroStep;
 
-			file.write(reinterpret_cast<char*>(&agenttmu), sizeof(agenttmu));
-		}
-		file.close();
-	}
-
+                file.write(reinterpret_cast<char*>(&agenttmu), sizeof(agentTmu));
+            }
+            file.close();
+        }
+    }
 }
 
 void AgentDomain::toggleLiveView(bool enable)
@@ -153,21 +156,26 @@ void AgentDomain::toggleLiveView(bool enable)
  */
 void AgentDomain::runSimulation(int time)
 {
-	stop = false;
+    if(remove(positionFilename.c_str()) != 0)
+    {
+        Output::Inst()->kprintf("Position file does not exist");
+    }
+
+    stop = false;
     Output::Inst()->kprintf("Running Simulation of: %i[s], with resolution of %f \n",
                             time, timeResolution);
     Output::RunSimulation = true;
 
-	unsigned long long iterations = (double)time/timeResolution;
+    unsigned long long iterations = (double)time/timeResolution;
 
-	auto start = steady_clock::now();
-	auto start2 = steady_clock::now();
-	auto end = steady_clock::now();
+    auto start = steady_clock::now();
+    auto start2 = steady_clock::now();
+    auto end = steady_clock::now();
 
-	//unsigned long long run_time = 0;
-	cMacroStep = 0;
-	cMicroStep = ULLONG_MAX;
-	unsigned long long i = 0;//, j = 0;
+    //unsigned long long run_time = 0;
+    cMacroStep = 0;
+    cMicroStep = ULLONG_MAX;
+    unsigned long long i = 0;//, j = 0;
 
     for(i = 0; i < iterations;)
     {
@@ -190,6 +198,8 @@ void AgentDomain::runSimulation(int time)
             {
                 std::this_thread::sleep_for(std::chrono::milliseconds(delay));
             }
+            if(cMacroSter % 1000 == 0)
+                retrievePopPos();
         }
         i = cMacroStep;
         cMicroStep = masteragent->getNextMicroTmu();
@@ -200,19 +210,19 @@ void AgentDomain::runSimulation(int time)
         }
 
         //		//Update the status and progress bar screens:
-		end = steady_clock::now();
-		if(duration_cast<milliseconds>(end-start).count() > 50)
+        end = steady_clock::now();
+        if(duration_cast<milliseconds>(end-start).count() > 50)
         {
             masteragent->printStatus();
             Output::Inst()->progressBar(cMacroStep,iterations);
             //int delay = Output::DelayValue.load();
-			//std::this_thread::sleep_for(std::chrono::milliseconds(5));
-			//if(delay != 0)
-			//fetchPositions.store(true);
-			if(fetchPositions.load())
-			{
-				retrievePopPos();
-			}
+            //std::this_thread::sleep_for(std::chrono::milliseconds(5));
+            //if(delay != 0)
+            //fetchPositions.store(true);
+            //if(fetchPositions.load())
+            //{
+            //   retrievePopPos();
+            //}
 
             start = end;
         }
@@ -228,11 +238,11 @@ void AgentDomain::runSimulation(int time)
     masteragent->printStatus();
     Output::Inst()->progressBar(i,iterations);
 
-	Output::RUNTIME = i;
+    Output::RUNTIME = i;
 
     auto endsim = steady_clock::now();
     duration_cast<seconds>(start2-endsim).count();
-	Output::Inst()->kprintf("Simulation run took:\t %llu[s] of computing time"
+    Output::Inst()->kprintf("Simulation run took:\t %llu[s] of computing time"
                             , duration_cast<seconds>(endsim - start2).count()
                             );
 }
@@ -243,7 +253,7 @@ void AgentDomain::runSimulation(int time)
  */
 void AgentDomain::stopSimulation()
 {
-	stop.store(true);
+    stop.store(true);
 }
 
 /**

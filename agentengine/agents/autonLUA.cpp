@@ -341,7 +341,7 @@ void AutonLUA::processFunction(EventQueue::dataEvent *devent, double time, doubl
     try{
         lua_settop(L,0);
 
-        lua_getglobal(L, "processFunction");
+        lua_getglobal(L, "_ProcessEventFunction");
         lua_pushnumber(L, devent->originX);
         lua_pushnumber(L, devent->originY);
         lua_pushnumber(L, x);
@@ -350,7 +350,7 @@ void AutonLUA::processFunction(EventQueue::dataEvent *devent, double time, doubl
         lua_pushstring(L, devent->table);
 
         if(lua_pcall(L,6,2,0)!=LUA_OK){
-            Output::Inst()->ppprintf("error on calling processfunction : %s\n,",
+            Output::Inst()->ppprintf("error on calling _ProcessEventFunction : %s\n,",
                                      lua_tostring(L,-1));
             Output::RunEventProcessing.store(false);
             return;
@@ -384,16 +384,16 @@ void AutonLUA::simDone()
 
     if(nofile)
         return;
-
-    try{
-
+    try
+    {
         lua_getglobal(L, "cleanUp");
 
         if(lua_pcall(L,0,0,0)!=LUA_OK)
         {
             Output::Inst()->kprintf("<b><font color=\"brown\">error on 'simDone':\t %s\n</font></b></>",lua_tostring(L,-1));
         }
-    } catch(std::exception& e)
+    }
+    catch(std::exception& e)
     {
         Output::Inst()->kprintf("<b><font color=\"red\">Error on simulationDone..%s</font></b></>", e.what());
     }
@@ -414,7 +414,8 @@ void AutonLUA::getSyncData()
         }
         posX = lua_tonumber(L, -2);
         posY = lua_tonumber(L, -1);
-    }catch(std::exception &e)
+    }
+    catch(std::exception &e)
     {
         Output::Inst()->kprintf("<b><font color=\"red\">Error on retrieving X and Y\t%s</font></b></>", e.what());
         Output::RunSimulation.store(false);

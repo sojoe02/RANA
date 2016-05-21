@@ -25,6 +25,7 @@
 #include <QMainWindow>
 #include <QWidget>
 #include <QGraphicsScene>
+#include <QList>
 #include <map>
 
 #include "graphics/agentItem.h"
@@ -126,19 +127,12 @@ private slots:
 	void on_vis_clearOutputPushButton_clicked();
 
 	void on_action_Enable_Visualisation_triggered(bool checked);
-
     void on_disableAgentsCheckBox_toggled(bool checked);
-
 	void on_generateEmptyMapButton_clicked();
-
     void on_zoomSlider_actionTriggered(int action);
-
     void on_zoomSlider_sliderMoved(int position);
-
 	void on_checkBox_toggled(bool checked);
-
 	void on_macroSpinBox_valueChanged(int arg1);
-
 	void on_timeResSpinBox_valueChanged(int arg1);
 
 signals:
@@ -192,12 +186,14 @@ private:
 	PostControl *postControl;
 	QHash<QString, ZBlock*> *zBlocks;
 	QGraphicsScene *eventScene;
-	ZMap *zmap;
+    ZMap *zmap;
+    EventQueue::simInfo *siminfo;
 	QGraphicsScene *eventMapScene;
 	int timeOffset;
 
-	QGraphicsItemGroup PPactiveAgents;
-	QMap<unsigned long long, agentInfo> agentpositionMap;
+    QGraphicsItemGroup *PPactiveAgents;
+    typedef QMap<int,agentInfo> agentIDMap;
+    QMap<double, agentIDMap> agentpositionMap;
 
 	QTimer *zMapTimer;
 	bool disableLiveView;

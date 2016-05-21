@@ -52,7 +52,7 @@ struct agentInfo
     int x;
     int y;
     int id;
-	std::string filename;
+    //std::string filename;
 };
 
 struct agentTmu

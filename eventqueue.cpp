@@ -262,7 +262,8 @@ unsigned long long EventQueue::getNextTmu()
 {
     if(activeTmu.empty())
         return ULLONG_MAX;
-    else return activeTmu.front();
+    else
+        return activeTmu.front();
 }
 
 /**
@@ -277,7 +278,8 @@ bool EventQueue::iEventsAtTime(unsigned long long tmu)
     if(iMapIt == iMap.end() || iMapIt->second.empty())
     {
         return false;
-    } else
+    }
+    else
         return true;
 }
 

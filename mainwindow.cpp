@@ -38,6 +38,7 @@
 #include "eventqueue.h"
 #include "postprocessing/colorutility.h"
 
+
 #include "eventdialog.h"
 
 
@@ -50,7 +51,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	control(new Control(this)),disableSimOutput(false),
 	postControl(new PostControl(this)),zBlocks(NULL),
 	eventScene(new QGraphicsScene()), zmap(NULL), eventMapScene(new QGraphicsScene()),
-    zMapTimer(new QTimer(this)),disableLiveView(true),playingMap(false)
+    zMapTimer(new QTimer(this)),disableLiveView(true),playingMap(false),
+    PPactiveAgents(NULL)
 {
 
     this->setWindowTitle("RANA QT");
@@ -88,7 +90,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
 
-    versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.7.2.NewThread:0.6.1");
+    versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.7.3.NewThread:0.7.0");
 
 	ui->statusBar->addWidget(new QLabel(versionString));
 	ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
@@ -460,7 +462,8 @@ void MainWindow::on_disableAgentsCheckBox_toggled(bool checked)
         {
             itr.value()->hide();
         }
-    } else
+    }
+    else
     {
         for(auto itr = graphAgents.begin(); itr != graphAgents.end(); ++itr)
         {
@@ -502,13 +505,16 @@ void MainWindow::wheelEvent(QWheelEvent* event)
     QTransform transform = ui->graphicsView->transform();
     double scale = .50;
 
-	if(event->delta() > 0) {
+    if(event->delta() > 0)
+    {
 		// Zoom in
         //factor = .15 + factor;
         double change = transform.m11() + scale;
         ui->graphicsView->setTransform(QTransform::fromScale(change,change));
 
-    } else {
+    }
+    else
+    {
         double change = transform.m11() - scale;
         ui->graphicsView->setTransform(QTransform::fromScale(change,change));
     }
@@ -533,7 +539,8 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 
 		ui->vis_graphicsView->fitInView(eventScene->sceneRect(),
 										Qt::KeepAspectRatio);
-	} else if(ui->tabWidget->currentIndex() == ui->tabWidget->indexOf(sim_viewTab))
+    }
+    else if(ui->tabWidget->currentIndex() == ui->tabWidget->indexOf(sim_viewTab))
 	{
 		ui->graphicsView->fitInView(scene->sceneRect(),
 									Qt::KeepAspectRatio);
@@ -563,7 +570,8 @@ void MainWindow::on_tabWidget_currentChanged(int index)
 
 		ui->vis_graphicsView->fitInView(eventScene->sceneRect(),
 										Qt::KeepAspectRatio);
-	} else if(ui->tabWidget->currentIndex() == ui->tabWidget->indexOf(sim_viewTab))
+    }
+    else if(ui->tabWidget->currentIndex() == ui->tabWidget->indexOf(sim_viewTab))
 	{
 		ui->graphicsView->fitInView(scene->sceneRect(),
 									Qt::KeepAspectRatio);
@@ -600,7 +608,8 @@ void MainWindow::on_runButton_clicked()
 
 	if(control->isRunning()){
 		control->stopSimulation();
-	} else
+    }
+    else
 		control->runSimulation(ui->runTimeSpinBox->value());
 }
 
@@ -631,7 +640,8 @@ void MainWindow::defineMap()
 	{
 		mapItem = new QGraphicsPixmapItem(QPixmap::fromImage(*mapImage));
 		scene->addItem(mapItem);
-	}else
+    }
+    else
 	{
 		mapItem->setPixmap(QPixmap::fromImage(*mapImage));
 		scene->setSceneRect(mapItem->boundingRect());
@@ -768,7 +778,8 @@ void MainWindow::ppIsChecked()
 
 			ui->tabWidget->insertTab(ui->tabWidget->count()+1,vis_controlTab,"Event Process Control");
 			//ui->tabWidget->insertTab(3,vis_mapTabptr,"Event Map");
-		}else
+        }
+        else
 		{
 			ui->tabWidget->removeTab(ui->tabWidget->indexOf(vis_controlTab));
 			ui->tabWidget->removeTab(ui->tabWidget->indexOf(vis_mapTab));
@@ -830,7 +841,8 @@ void MainWindow::on_vis_processEventsPushButton_clicked()
 		stringTmp = QString::number(0);
 		ui->vis_activeTimeLabel->setText(stringTmp);
 
-	} else
+    }
+    else
 		Output::Inst()->ppprintf("agent- %s or event path %s, not found",
 								 agentPath.toStdString().c_str(),
 								 eventPath.toStdString().c_str());
@@ -847,12 +859,12 @@ void MainWindow::setupVisualTab(QHash<QString, ZBlock *> *argZBlocks)
 {
 	zBlocks = argZBlocks;
 
-	//Output::Inst()->ppprintf("adding item to something fierce...")
+    //Output::Inst()->ppprintf("adding item to something fierce...");
 	eventScene->clear();
 	//eventScene->setSceneRect(0,0,10,10);
 	for(auto it = zBlocks->begin(); it != zBlocks->end(); ++it)
 	{
-		//Output::Inst()->ppprintf("adding item to something fierce...");
+      //  Output::Inst()->ppprintf("adding item to something fierce...");
 		eventScene->addItem(it.value());
 	}
 
@@ -876,22 +888,46 @@ void MainWindow::setupVisualTab(QHash<QString, ZBlock *> *argZBlocks)
 	zmap->setPos(0,0);
 	zmap->setSize(ui->vis_mapGraphicsView->maximumWidth(),ui->vis_outputTextBrowser->height());
 
-	//Parse agent information and load it into memory.
-	std::string agenttmupath = "_agentPositions";
-	std::ifstream file(agenttmupath.c_str(), std::ifstream::binary);
+    //Parse agent positions and load them into memory.
+    std::string agenttmupath = "_positionData.pos";
+    std::ifstream file(agenttmupath.c_str(), std::ifstream::binary);
 
 	if(file.is_open())
 	{
 		while(!file.eof())
 		{
 			agentTmu agenttmu;
-			file.read(reinterpret_cast<char*>(&agenttmu),sizeof(&agenttmu));
+            file.read(reinterpret_cast<char*>(&agenttmu),sizeof(agentTmu));
+
+            auto itr = agentpositionMap.find(double(agenttmu.tmu)/siminfo->timeResolution);
+
+            if(itr == agentpositionMap.constEnd())
+            {
+                agentIDMap idMap;
+                idMap.insert(agenttmu.info.id, agenttmu.info);
+                agentpositionMap.insert(double(agenttmu.tmu)/siminfo->timeResolution, idMap);
+
+            }
+            else
+            {
+                auto dItr = itr->find(agenttmu.info.id);
+                if(dItr == itr->constEnd())
+                {
+                    *itr->insert(agenttmu.info.id, agenttmu.info);
+                }
+            }
 
 		}
 	}
-	file.close();
+    file.close();
+
+    Output::Inst()->kprintf("Visual Tab Ready");
+
 
 }
+
+//void MainWindow::determineAgentPositions()
+
 
 void MainWindow::setEventSceneRect(int x, int y)
 {
@@ -999,6 +1035,8 @@ void MainWindow::on_vis_readInfoPushButton_clicked()
 	{
 		Output::Inst()->ppprintf("path is again %s", path.toStdString().c_str());
 		info = postControl->getEventInfo(path);
+        //bad bad practice... fix when time allows...
+        siminfo = info;
 
 		int runtime = int(info->tmuAmount + info->macroFactor)/(info->timeResolution);
 		int step = runtime/10;
@@ -1070,7 +1108,8 @@ void MainWindow::on_vis_activeMapSpinBox_valueChanged(int arg1)
 		{
 			it.value()->setTime(arg1);
 		}
-	}
+    }
+
 
 
 	double currentTime = ui->vis_activeMapSpinBox->value() *
@@ -1081,7 +1120,24 @@ void MainWindow::on_vis_activeMapSpinBox_valueChanged(int arg1)
 	stringtmp.append(QString::number(currentTime + ui->vis_activeTimeResolutionLabel->text().toDouble()));
 	ui->vis_activeTimeLabel->setText(stringtmp);
 
-	//draw agents from the position map:
+    //draw agents from the position map:
+    QList<QGraphicsItem*> groupItems;
+    auto itr = agentpositionMap.lowerBound(currentTime);
+    if (itr != agentpositionMap.constEnd())
+    {
+        for(auto ditr = itr.value().begin(); ditr != itr.value().end(); ++ditr)
+        {
+            agentItem *item = new agentItem(QString::number(ditr.value().id));
+            item->setX(ditr.value().x/ui->vis_resolutionSpinBox->value());
+            item->setY(ditr.value().y/ui->vis_resolutionSpinBox->value());
+            item->setZValue(3);
+            //eventScene->addItem(item);
+            groupItems.append(item);
+        }
+    }
+    PPactiveAgents = eventScene->createItemGroup(groupItems);
+    //ui->vis_gra
+    //ui->vis_graphicsView->viewport()->update();
 
 }
 
