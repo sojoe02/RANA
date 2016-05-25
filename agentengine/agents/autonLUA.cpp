@@ -87,6 +87,10 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
         lua_setglobal(L, "EVENT_RESOLUTION");
         lua_pushnumber(L, macroFactorMultiple);
         lua_setglobal(L, "StepMultiple");
+        lua_pushnumber(L, Phys::getEnvX());
+        lua_setglobal(L, "ENV_WIDTH");
+        lua_pushnumber(L, Phys::getEnvY());
+        lua_setglobal(L, "ENV_HEIGHT");
         //lua_newtable(L);
         //lua_setglobal(L, "EventTable");
         //Register all the API functions:

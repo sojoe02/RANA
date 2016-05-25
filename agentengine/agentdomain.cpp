@@ -198,7 +198,7 @@ void AgentDomain::runSimulation(int time)
             {
                 std::this_thread::sleep_for(std::chrono::milliseconds(delay));
             }
-            if(cMacroSter % 1000 == 0)
+            if(cMacroStep % 1000 == 0)
                 retrievePopPos();
         }
         i = cMacroStep;

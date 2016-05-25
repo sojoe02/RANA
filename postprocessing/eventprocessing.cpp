@@ -284,8 +284,8 @@ void EventProcessing::recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *ev
 	double distance = sqrt( pow((event->originX - (x+displaceX)*mapRes), 2)
 							+ pow((event->originY - (y+displaceY)*mapRes), 2) );
 
-	double arrivalTime = (event->activationTime/simInfo->timeResolution/timeRes) +
-			distance/(event->propagationSpeed)/timeRes;
+    double arrivalTime = (event->activationTime/simInfo->timeResolution/timeRes)
+             + distance/(event->propagationSpeed)/timeRes;
 	//Output::Inst()->ppprintf("arrival time: %f, x: %i, y: %i", arrivalTime,
 	//2					 x+displaceX, y+displaceY);
 
@@ -295,7 +295,8 @@ void EventProcessing::recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *ev
 
 	if(zitr == zBlocks->end())
 		return;
-	else{
+    else
+    {
 
 		double duration = 0;
 		double xArg = double(x+displaceX)*mapRes;
@@ -311,20 +312,22 @@ void EventProcessing::recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *ev
 		if(zitr != zBlocks->end())
 		{
 			zitr.value()->addZValue(z, arrivalTime);
-		}
-		double max = 0;
+        }
+
+        double max = 0;
+
 		if (duration != 0)
 			max = duration/timeRes;
 
-		for(int i = 1; i < max; i++)
-		{
-			if(zitr != zBlocks->end())
-			{
+        //for(int i = 0; i < (int)max; i++)
+        //{
+            //if(zitr != zBlocks->end())
+            //{
 				//auton->processFunction(event, i/timeRes,x+displaceX*mapRes,
 				//				   y+displaceY*mapRes,z,duration);
-				zitr.value()->addZValue(z, arrivalTime+i);
-			}
-		}
+                zitr.value()->addZValue(z, arrivalTime);
+            //}
+        //}
 
 	}
 

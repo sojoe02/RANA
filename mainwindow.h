@@ -194,6 +194,7 @@ private:
     QGraphicsItemGroup *PPactiveAgents;
     typedef QMap<int,agentInfo> agentIDMap;
     QMap<double, agentIDMap> agentpositionMap;
+    QList<QGraphicsItem*> groupItems;
 
 	QTimer *zMapTimer;
 	bool disableLiveView;

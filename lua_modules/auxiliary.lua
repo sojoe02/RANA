@@ -6,8 +6,10 @@ function _HandleEvent(sourceX, sourceY, originID, description, serialTable)
 	else 
 		_eventTable = {}
 	end
-
-	handleEvent(sourceX, sourceY, originID, description, _eventTable)
+	
+	if handleEvent ~= nil then
+		handleEvent(sourceX, sourceY, originID, description, _eventTable)
+	end
 
 end
 
@@ -25,7 +27,7 @@ function _ProcessEventFunction(sourceX, sourceY, posX, posY, time, serialTable)
 		if posX == sourceX and posY == sourceY then
 			return 1
 		else
-			return 0.5
+			return .5
 		end
 	else 
 		return processEventFunction(sourceX, sourceY, posX, posY, time, _eventTable)

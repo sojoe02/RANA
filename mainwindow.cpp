@@ -90,7 +90,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
 
-    versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.7.3.NewThread:0.7.0");
+    versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.7.3.NewThread:0.7.1");
 
 	ui->statusBar->addWidget(new QLabel(versionString));
 	ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
@@ -857,6 +857,7 @@ void MainWindow::on_vis_processEventsPushButton_clicked()
  */
 void MainWindow::setupVisualTab(QHash<QString, ZBlock *> *argZBlocks)
 {
+    PPactiveAgents = NULL;
 	zBlocks = argZBlocks;
 
     //Output::Inst()->ppprintf("adding item to something fierce...");
@@ -1119,9 +1120,19 @@ void MainWindow::on_vis_activeMapSpinBox_valueChanged(int arg1)
 	stringtmp.append("\t - \t");
 	stringtmp.append(QString::number(currentTime + ui->vis_activeTimeResolutionLabel->text().toDouble()));
 	ui->vis_activeTimeLabel->setText(stringtmp);
-
+    if(PPactiveAgents != NULL)
+    {
+      eventScene->removeItem(PPactiveAgents);
+      eventScene->destroyItemGroup(PPactiveAgents);
+      PPactiveAgents = NULL;
+}
     //draw agents from the position map:
-    QList<QGraphicsItem*> groupItems;
+    //for(auto itr = groupItems.begin(); itr != groupItems.end(); ++itr)
+    //{
+    //    eventScene->re
+    //}
+
+    groupItems.clear();
     auto itr = agentpositionMap.lowerBound(currentTime);
     if (itr != agentpositionMap.constEnd())
     {
@@ -1136,8 +1147,7 @@ void MainWindow::on_vis_activeMapSpinBox_valueChanged(int arg1)
         }
     }
     PPactiveAgents = eventScene->createItemGroup(groupItems);
-    //ui->vis_gra
-    //ui->vis_graphicsView->viewport()->update();
+    ui->vis_graphicsView->viewport()->update();
 
 }
 
