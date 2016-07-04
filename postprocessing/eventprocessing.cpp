@@ -319,8 +319,8 @@ void EventProcessing::recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *ev
 		if (duration != 0)
 			max = duration/timeRes;
 
-        //for(int i = 0; i < (int)max; i++)
-        //{
+		//for(int i = 0; i < (int)max; i++)
+		//{
             //if(zitr != zBlocks->end())
             //{
 				//auton->processFunction(event, i/timeRes,x+displaceX*mapRes,

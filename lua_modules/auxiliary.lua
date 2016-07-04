@@ -15,8 +15,8 @@ end
 
 function _ProcessEventFunction(sourceX, sourceY, posX, posY, time, serialTable)
 	
-	--
-	if string.len(serialTable) > 3 then
+
+	if string.len(serialTable) > 3 then	
 		load("_eventTable="..serialTable)()
 	else
 		_eventTable = {}

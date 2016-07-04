@@ -60,7 +60,8 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
         Output::KillSimulation.store(true);
         removed = true;
 
-    }else
+	}
+	else
     {
         luaL_openlibs(L);
 
@@ -343,7 +344,9 @@ void AutonLUA::processFunction(EventQueue::dataEvent *devent, double time, doubl
     if(removed) return;
 
     try{
-        lua_settop(L,0);
+		lua_settop(L,0);
+
+		Output::Inst()->kprintf("hugahuga--%s", devent->table);
 
         lua_getglobal(L, "_ProcessEventFunction");
         lua_pushnumber(L, devent->originX);

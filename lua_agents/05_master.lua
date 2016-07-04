@@ -35,7 +35,7 @@ Agent = require "ranalib_agent"
 -- Init of the lua frog, function called upon initilization of the LUA auton.
 function initializeAgent()
 
-	l_debug("Master Agent#: " .. ID .. " has been initialized")
+	ntl_debug("Master Agent#: " .. ID .. " has been initialized")
 	
 	for i=1, ENV_WIDTH/10-1 do
 		Agent.addAgent("05_pole.lua",i*10, ENV_HEIGHT-150)	

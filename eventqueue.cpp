@@ -380,7 +380,7 @@ void EventQueue::saveEEventData(std::string path, std::string luaFileName,
 		devent.propagationSpeed = (*event_itr)->propagationSpeed;
 
 		strncpy(devent.desc,(*event_itr)->desc.c_str(),150);
-        //strncpy(devent.table,(*event_itr)->table.c_str(),1024);
+		strncpy(devent.table,(*event_itr)->luatable.c_str(),1024);
 
 		//Add the filename if it exists:
 		auto infoItr = agentFilenames.find((*event_itr)->originID);
