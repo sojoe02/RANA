@@ -95,7 +95,7 @@ private:
 	double macroResolution;
 
 	int autonAmount;
-	uint threads;
+    int threads;
 	std::string luaFilename;
 	double areaX;
 	double areaY;

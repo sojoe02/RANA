@@ -30,8 +30,8 @@
 #include <climits>
 
 #include "lua.hpp"
-#include "lauxlib.h"
-#include "lualib.h"
+//#include "lauxlib.h"
+//#include "lualib.h"
 
 #include "output.h"
 
@@ -56,7 +56,7 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
     L = luaL_newstate();
     if(L == NULL)
     {
-        Output::Inst()->kprintf("<b><font color=\"brown\">A new Agent cannot be initialized. Lua(%s) is out of memory, Killing simulation</font></b></>", LUAJIT_VERSION);
+        Output::Inst()->kprintf("<b><font color=\"brown\">A new Agent cannot be initialized. Lua(%s) is out of memory, Killing simulation</font></b></>", LUA_VERSION);
         Output::KillSimulation.store(true);
         removed = true;
 

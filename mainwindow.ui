@@ -76,14 +76,20 @@
         <string>Simulation</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_10">
-        <item row="2" column="3">
-         <widget class="QWidget" name="widget_6" native="true"/>
-        </item>
-        <item row="0" column="2" colspan="2">
-         <widget class="QTextEdit" name="outputTextBrowser"/>
-        </item>
         <item row="0" column="1">
          <widget class="QScrollArea" name="scrollArea">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="baseSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="widgetResizable">
            <bool>true</bool>
           </property>
@@ -92,8 +98,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>604</width>
-             <height>619</height>
+             <width>466</width>
+             <height>639</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -107,7 +113,7 @@
               </property>
               <property name="minimumSize">
                <size>
-                <width>500</width>
+                <width>0</width>
                 <height>0</height>
                </size>
               </property>
@@ -658,10 +664,11 @@
              </widget>
             </item>
            </layout>
-           <zorder>widget_3</zorder>
-           <zorder>outputTextBrowser</zorder>
           </widget>
          </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QTextEdit" name="outputTextBrowser"/>
         </item>
        </layout>
       </widget>
@@ -1589,7 +1596,7 @@
      <x>0</x>
      <y>0</y>
      <width>908</width>
-     <height>19</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -1675,7 +1682,6 @@
   <tabstop>generateButton</tabstop>
   <tabstop>runButton</tabstop>
   <tabstop>pushButton</tabstop>
-  <tabstop>outputTextBrowser</tabstop>
   <tabstop>delaySpinBox</tabstop>
   <tabstop>graphicsView</tabstop>
   <tabstop>zoomSlider</tabstop>

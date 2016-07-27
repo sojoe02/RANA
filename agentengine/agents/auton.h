@@ -67,7 +67,7 @@ protected:
 	void distroEEvent(std::unique_ptr<EventQueue::eEvent> event);
 
     int ID;
-	uint macroFactorMultiple; //how many macrostep pr. macrostep(if 0 the agent will be ignored completely).
+    int macroFactorMultiple; //how many macrostep pr. macrostep(if 0 the agent will be ignored completely).
 	std::unordered_set<int> groups;
     std::string desc;
     double posX, posY, posZ;

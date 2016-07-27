@@ -14,6 +14,7 @@ TEMPLATE = app
 
 
 
+
 SOURCES += main.cpp\
         mainwindow.cpp \
     eventqueue.cpp \
@@ -95,6 +96,8 @@ unix: PKGCONFIG += luajit
 #unix: PKGCONFIG += lua
 #unix: PKGCONFIG += lua5.2
 
+
+
 macx: QMAKE_CXXFLAGS += -std=c++11 -mmacosx-version-min=10.7
 
 macx: LIBS += -stdlib=libc++ -mmacosx-version-min=10.7
@@ -105,3 +108,12 @@ macx: DEPENDPATH += $$PWD/../lua-5.2_MacOS107_lib/include
 
 macx: PRE_TARGETDEPS += $$PWD/../lua-5.2_MacOS107_lib/liblua52.a
 
+
+
+
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../lua51/ -llua5.1
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../lua51/ -llua5.1
+
+INCLUDEPATH += $$PWD/../lua51/include
+DEPENDPATH += $$PWD/../lua51/include
