@@ -20,20 +20,12 @@
 --
 ----end_license--
 
---The following global values are set via the simulation core:
--- ID -- id of the agent.
--- PositionX --	this agents x position.
--- PositionY -- this agents y position.
--- STEP_RESOLUTION 	-- resolution of steps, in the simulation core.
--- EVENT_RESOLUTION	-- resolution of event distribution.
--- StepMultiple 	-- amount of steps to skip.
-
-
 -- Import valid Rana lua libraries.
 Event = require "ranalib_event"
 Stat = require "ranalib_statistic"
+Move = require "ranalib_movement"
 
--- Init of the lua frog, function called upon initilization of the LUA auton.
+-- Initialization of the agent.
 function initializeAgent()
 	say("Agent #: " .. ID .. " has been initialized")
 
@@ -48,23 +40,17 @@ function initializeAgent()
 
 end
 
-function handleEvent(sourceX, sourceY, sourceID, eventDescription, eventTable)
-
-end
 
 function takeStep()
 
 	if Moving == false then
+		
+		local x = Stat.randomInteger(1, ENV_WIDTH)
+		local y = Stat.randomInteger(1, ENV_HEIGHT)		
 
-		DestinationX = Stat.randomInteger(1, ENV_WIDTH)
-		DestinationY = Stat.randomInteger(1, ENV_HEIGHT)
-		Moving = true
+		Move.to{x=x, y=y}
 		
 	end
 
-end
-
-function cleanUp()
-	say("Agent #: " .. ID .. " is done\n")
 end
 

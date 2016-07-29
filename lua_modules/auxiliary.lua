@@ -17,6 +17,8 @@ function _TakeStep()
 
         if takeStep ~= nil then
 	        takeStep()
+	else
+	        StepMultiple = 0
 	end
 end
 

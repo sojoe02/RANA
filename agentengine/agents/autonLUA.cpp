@@ -98,7 +98,7 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
         lua_pushnumber(L,destinationY);
         lua_setglobal(L, "DestinationY");
         lua_pushnumber(L, speed);
-        lua_setglobal(L, "Speed");
+        lua_setglobal(L, "MovementSpeed");
         lua_pushboolean(L, moving);
         lua_setglobal(L, "Moving");
 
