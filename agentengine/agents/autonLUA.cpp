@@ -28,6 +28,7 @@
 #include <iostream>
 #include <exception>
 #include <climits>
+#include <cmath>
 
 #include "lua.hpp"
 //#include "lauxlib.h"
@@ -45,7 +46,7 @@
 #include "../../physics/scanning.h"
 
 AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *nestene, std::string filename)
-    : Auton(ID, posX, posY, posZ, nestene), filename(filename),
+    : Auton(ID, posX, posY, posZ, nestene), destinationX(posX), destinationY(posY), movementPrecision(0.01),speed(1), moving(false),filename(filename),
       nofile(false),removed(false),L(NULL)
 {
 
@@ -92,6 +93,15 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
         lua_setglobal(L, "ENV_WIDTH");
         lua_pushnumber(L, Phys::getEnvY());
         lua_setglobal(L, "ENV_HEIGHT");
+        lua_pushnumber(L, destinationX);
+        lua_setglobal(L, "DestinationX");
+        lua_pushnumber(L,destinationY);
+        lua_setglobal(L, "DestinationY");
+        lua_pushnumber(L, speed);
+        lua_setglobal(L, "Speed");
+        lua_pushboolean(L, moving);
+        lua_setglobal(L, "Moving");
+
         //lua_newtable(L);
         //lua_setglobal(L, "EventTable");
         //Register all the API functions:
@@ -99,6 +109,8 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
         //Interface.
         lua_register(L, "l_debug", l_debug);
         lua_register(L, "l_print", l_print);
+        lua_register(L, "say", l_debug);
+        lua_register(L, "shout", l_print);
 
         //Physics and generator.
         lua_register(L, "l_speedOfSound", l_speedOfSound);
@@ -168,7 +180,7 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
         try
         {
             //init the LUA frog:
-            lua_getglobal(L, "initializeAgent");
+            lua_getglobal(L, "_InitializeAgent");
             //Call the initAuton function (3 arguments, 0 results):
             if(lua_pcall(L,0,0,0)!=LUA_OK)
             {
@@ -259,10 +271,9 @@ std::unique_ptr<EventQueue::eEvent> AutonLUA::takeStep()
     if(nofile) return NULL;
     lua_settop(L,0);
 
-
     try
     {
-        lua_getglobal(L, "takeStep");
+        lua_getglobal(L, "_TakeStep");
         if(lua_pcall(L,0,0,0) !=LUA_OK)
         {
             Output::Inst()->kprintf("<b><font color=\"brown\">error on initiateEvent\t %s\n</font></b></>",lua_tostring(L,-1));
@@ -270,6 +281,12 @@ std::unique_ptr<EventQueue::eEvent> AutonLUA::takeStep()
             return NULL;
         }
         getSyncData();
+
+        if(moving)
+        {
+            movement();
+        }
+
         return NULL;
 
     }catch(std::exception &e)
@@ -277,6 +294,7 @@ std::unique_ptr<EventQueue::eEvent> AutonLUA::takeStep()
         Output::Inst()->kprintf("<b><font color=\"red\">Error on Initiate Event..%s</font></b></>", e.what());
         Output::RunSimulation.store(false);
     }
+
 
 
     return NULL;
@@ -324,6 +342,34 @@ std::unique_ptr<EventQueue::eEvent> AutonLUA::handleEvent(std::unique_ptr<EventQ
     return NULL;
 }
 
+void AutonLUA::movement()
+{
+    if(std::fabs(posX-destinationX) > movementPrecision ||
+            std::fabs(posY-destinationY) > movementPrecision)
+    {
+        double angle = std::atan2(destinationX-posX, destinationY-posY);
+        double vY = speed * std::cos(angle);
+        double vX = speed * std::sin(angle);
+
+        posX += Phys::getMacroFactor()*Phys::getTimeRes() * vX;
+        posY += Phys::getMacroFactor()*Phys::getTimeRes() * vY;
+
+        lua_pushnumber(L, posX);
+        lua_setglobal(L, "PositionX");
+        lua_pushnumber(L, posY);
+        lua_setglobal(L, "PositionY");
+
+        //Output::Inst()->kprintf("angular speed %f, new position %f", vX*Phys::getMacroFactor()*Phys::getTimeRes(), posX);
+    } else
+    {
+        moving = false;
+        lua_pushboolean(L, moving);
+        lua_setglobal(L, "Moving");
+        destinationX = posX;
+        destinationY = posY;
+    }
+}
+
 /********************************************************
  * post processing.
  *
@@ -346,7 +392,7 @@ void AutonLUA::processFunction(EventQueue::dataEvent *devent, double time, doubl
     try{
 		lua_settop(L,0);
 
-		Output::Inst()->kprintf("hugahuga--%s", devent->table);
+        //Output::Inst()->kprintf("hugahuga--%s", devent->table);
 
         lua_getglobal(L, "_ProcessEventFunction");
         lua_pushnumber(L, devent->originX);
@@ -388,12 +434,11 @@ void AutonLUA::setRemoved()
 
 void AutonLUA::simDone()
 {
-
     if(nofile)
         return;
     try
     {
-        lua_getglobal(L, "cleanUp");
+        lua_getglobal(L, "_CleanUp");
 
         if(lua_pcall(L,0,0,0)!=LUA_OK)
         {
@@ -410,17 +455,28 @@ void AutonLUA::getSyncData()
 {
     if(removed) return;
     try{
+
         lua_getglobal(L,"StepMultiple");
         lua_getglobal(L,"PositionX");
         lua_getglobal(L,"PositionY");
+        lua_getglobal(L,"DestinationX");
+        lua_getglobal(L,"DestinationY");
+        lua_getglobal(L,"Speed");
+        lua_getglobal(L,"Moving");
 
-        int stepMultiple = (int)lua_tonumber(L, -3);
+        int stepMultiple = (int)lua_tonumber(L, -7);
         if(stepMultiple >=0 )
         {
             macroFactorMultiple = stepMultiple;
         }
-        posX = lua_tonumber(L, -2);
-        posY = lua_tonumber(L, -1);
+        posX = lua_tonumber(L, -6);
+        posY = lua_tonumber(L, -5);
+
+        destinationX = lua_tonumber(L, -4);
+        destinationY = lua_tonumber(L, -3);
+        speed = lua_tonumber(L, -2);
+        moving = lua_toboolean(L, -1);
+        //Output::Inst()->kprintf("destinationX = %f, moving %d", destinationX, moving);
     }
     catch(std::exception &e)
     {

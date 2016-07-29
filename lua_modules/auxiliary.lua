@@ -13,6 +13,32 @@ function _HandleEvent(sourceX, sourceY, originID, description, serialTable)
 
 end
 
+function _TakeStep()
+
+        if takeStep ~= nil then
+	        takeStep()
+	end
+end
+
+function _InitializeAgent()
+
+        if initializeAgent ~= nil then
+	        initializeAgent()
+	else
+	        say("Agent #: "..ID.. " has been initialized")
+	end
+end
+
+function _CleanUp()
+
+        if cleanUp ~= nil then
+	        cleanUp()
+	else
+	        say("Agent #: "..ID.." is done")
+	end
+
+end
+
 function _ProcessEventFunction(sourceX, sourceY, posX, posY, time, serialTable)
 	
 
@@ -34,3 +60,4 @@ function _ProcessEventFunction(sourceX, sourceY, posX, posY, time, serialTable)
 	end
 
 end
+

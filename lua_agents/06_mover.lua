@@ -30,34 +30,41 @@
 
 
 -- Import valid Rana lua libraries.
-Agent = require "ranalib_agent"
+Event = require "ranalib_event"
+Stat = require "ranalib_statistic"
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
 function initializeAgent()
+	say("Agent #: " .. ID .. " has been initialized")
 
-	l_debug("Master Agent#: " .. ID .. " has been initialized")
-	
-	for i=1, ENV_WIDTH/10-1 do
-		Agent.addAgent("05_pole.lua",i*10, ENV_HEIGHT-150)	
+	if Moving ~= true then
+		say("I am not moving".. STEP_RESOLUTION.. ":" .. PositionX)
 	end
 
-	for i=1, ENV_WIDTH/20-1 do
-		Agent.addAgent("05_pole.lua",i*20, ENV_HEIGHT-50)
-	end
-
-	PositionX = -1
-	PositionY = -1
-
-	Agent.addAgent("05_bat.lua")
+	Moving = true
+	DestinationX = 1
+	DestinationY = 1
+	Speed = 5
 
 end
 
+function handleEvent(sourceX, sourceY, sourceID, eventDescription, eventTable)
+
+end
 
 function takeStep()
+
+	if Moving == false then
+
+		DestinationX = Stat.randomInteger(1, ENV_WIDTH)
+		DestinationY = Stat.randomInteger(1, ENV_HEIGHT)
+		Moving = true
+		
+	end
 
 end
 
 function cleanUp()
-	l_debug("Agent #: " .. ID .. " is done\n")
+	say("Agent #: " .. ID .. " is done\n")
 end
 

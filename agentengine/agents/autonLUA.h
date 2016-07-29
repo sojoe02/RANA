@@ -117,10 +117,17 @@ private:
 
     std::unique_ptr<EventQueue::eEvent> takeStep();
 
-    void setRemoved();
+    void movement();
+    double destinationX;
+    double destinationY;
+    double movementPrecision; //meters
+    double speed; //meters pr second
+    bool moving;
 
+    void setRemoved();
     void simDone();
     double eventChance();
+
     std::string filename;
     //The LUA state:
     friend class Nestene;
