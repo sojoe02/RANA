@@ -355,6 +355,7 @@ void AutonLUA::movement()
         double newPosX = posX + Phys::getMacroFactor()*Phys::getTimeRes() * vX;
         double newPosY = posY + Phys::getMacroFactor()*Phys::getTimeRes() * vY;
 
+        //Check if the agent overshoots it's target destinations.
         if(		(posX > destinationX && newPosX < destinationX && posY > destinationY && newPosY < destinationY) ||
                 (posX < destinationX && newPosX > destinationX && posY > destinationY && newPosY < destinationY) ||
                 (posX > destinationX && newPosX < destinationX && posY < destinationY && newPosY > destinationY) ||
@@ -384,8 +385,13 @@ void AutonLUA::movement()
         moving = false;
         lua_pushboolean(L, moving);
         lua_setglobal(L, "Moving");
-        destinationX = posX;
-        destinationY = posY;
+        posX = destinationX;
+        posY = destinationY;
+
+        lua_pushnumber(L, posX);
+        lua_setglobal(L, "PositionX");
+        lua_pushnumber(L, posY);
+        lua_setglobal(L, "PositionY");
     }
 }
 
