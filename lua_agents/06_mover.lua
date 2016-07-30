@@ -36,7 +36,7 @@ function initializeAgent()
 	Moving = true
 	DestinationX = 1
 	DestinationY = 1
-	Speed = 250
+	Speed = 40
 
 end
 

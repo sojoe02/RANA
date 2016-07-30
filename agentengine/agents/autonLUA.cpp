@@ -101,8 +101,6 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
         lua_setglobal(L, "MovementSpeed");
         lua_pushboolean(L, moving);
         lua_setglobal(L, "Moving");
-        lua_pushnumber(L, movementPrecision);
-        lua_setglobal(L, "MovementPrecision");
         //lua_newtable(L);
         //lua_setglobal(L, "EventTable");
         //Register all the API functions:
@@ -345,8 +343,7 @@ std::unique_ptr<EventQueue::eEvent> AutonLUA::handleEvent(std::unique_ptr<EventQ
 
 void AutonLUA::movement()
 {
-    if(std::fabs(posX-destinationX) > movementPrecision ||
-            std::fabs(posY-destinationY) > movementPrecision)
+    if(posX != destinationX || posY != destinationY)
     {
         double angle = std::atan2(destinationX-posX, destinationY-posY);
         double vY = speed * std::cos(angle);
@@ -356,10 +353,10 @@ void AutonLUA::movement()
         double newPosY = posY + Phys::getMacroFactor()*Phys::getTimeRes() * vY;
 
         //Check if the agent overshoots it's target destinations.
-        if(		(posX > destinationX && newPosX < destinationX && posY > destinationY && newPosY < destinationY) ||
-                (posX < destinationX && newPosX > destinationX && posY > destinationY && newPosY < destinationY) ||
-                (posX > destinationX && newPosX < destinationX && posY < destinationY && newPosY > destinationY) ||
-                (posX < destinationX && newPosX > destinationX && posY < destinationY && newPosY > destinationY)
+        if(		(posX >= destinationX && newPosX <= destinationX && posY >= destinationY && newPosY <= destinationY) ||
+                (posX <= destinationX && newPosX >= destinationX && posY >= destinationY && newPosY <= destinationY) ||
+                (posX >= destinationX && newPosX <= destinationX && posY <= destinationY && newPosY >= destinationY) ||
+                (posX <= destinationX && newPosX >= destinationX && posY <= destinationY && newPosY >= destinationY)
                 )
         {
             moving = false;
