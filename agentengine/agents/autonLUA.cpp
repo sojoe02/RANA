@@ -61,8 +61,8 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
         Output::KillSimulation.store(true);
         removed = true;
 
-	}
-	else
+    }
+    else
     {
         luaL_openlibs(L);
 
@@ -101,7 +101,8 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
         lua_setglobal(L, "MovementSpeed");
         lua_pushboolean(L, moving);
         lua_setglobal(L, "Moving");
-
+        lua_pushnumber(L, movementPrecision);
+        lua_setglobal(L, "MovementPrecision");
         //lua_newtable(L);
         //lua_setglobal(L, "EventTable");
         //Register all the API functions:
@@ -208,7 +209,7 @@ AutonLUA::~AutonLUA()
         //lua_gc(L,LUA_GCCOLLECT,0);
         lua_close(L);
         //delete L;
-		//L = NULL;
+        //L = NULL;
     }
 }
 
@@ -351,13 +352,31 @@ void AutonLUA::movement()
         double vY = speed * std::cos(angle);
         double vX = speed * std::sin(angle);
 
-        posX += Phys::getMacroFactor()*Phys::getTimeRes() * vX;
-        posY += Phys::getMacroFactor()*Phys::getTimeRes() * vY;
+        double newPosX = posX + Phys::getMacroFactor()*Phys::getTimeRes() * vX;
+        double newPosY = posY + Phys::getMacroFactor()*Phys::getTimeRes() * vY;
+
+        if(		(posX > destinationX && newPosX < destinationX && posY > destinationY && newPosY < destinationY) ||
+                (posX < destinationX && newPosX > destinationX && posY > destinationY && newPosY < destinationY) ||
+                (posX > destinationX && newPosX < destinationX && posY < destinationY && newPosY > destinationY) ||
+                (posX < destinationX && newPosX > destinationX && posY < destinationY && newPosY > destinationY)
+                )
+        {
+            moving = false;
+            lua_pushboolean(L, moving);
+            lua_setglobal(L, "Moving");
+            posX = destinationX;
+            posY = destinationY;
+        } else
+        {
+            posX = newPosX;
+            posY = newPosY;
+        }
 
         lua_pushnumber(L, posX);
         lua_setglobal(L, "PositionX");
         lua_pushnumber(L, posY);
         lua_setglobal(L, "PositionY");
+
 
         //Output::Inst()->kprintf("angular speed %f, new position %f", vX*Phys::getMacroFactor()*Phys::getTimeRes(), posX);
     } else
@@ -390,7 +409,7 @@ void AutonLUA::processFunction(EventQueue::dataEvent *devent, double time, doubl
     if(removed) return;
 
     try{
-		lua_settop(L,0);
+        lua_settop(L,0);
 
         //Output::Inst()->kprintf("hugahuga--%s", devent->table);
 
@@ -456,27 +475,28 @@ void AutonLUA::getSyncData()
     if(removed) return;
     try{
 
-        lua_getglobal(L,"StepMultiple");
-        lua_getglobal(L,"PositionX");
-        lua_getglobal(L,"PositionY");
-        lua_getglobal(L,"DestinationX");
-        lua_getglobal(L,"DestinationY");
-        lua_getglobal(L,"Speed");
-        lua_getglobal(L,"Moving");
+        lua_getglobal(L, "StepMultiple");
+        lua_getglobal(L, "PositionX");
+        lua_getglobal(L, "PositionY");
+        lua_getglobal(L, "DestinationX");
+        lua_getglobal(L, "DestinationY");
+        lua_getglobal(L, "Speed");
+        lua_getglobal(L, "Moving");
+        lua_getglobal(L, "MovementPrecision");
 
-        int stepMultiple = (int)lua_tonumber(L, -7);
+        int stepMultiple = (int)lua_tonumber(L, -8);
         if(stepMultiple >=0 )
         {
             macroFactorMultiple = stepMultiple;
         }
-        posX = lua_tonumber(L, -6);
-        posY = lua_tonumber(L, -5);
+        posX = lua_tonumber(L, -7);
+        posY = lua_tonumber(L, -6);
 
-        destinationX = lua_tonumber(L, -4);
-        destinationY = lua_tonumber(L, -3);
-        speed = lua_tonumber(L, -2);
-        moving = lua_toboolean(L, -1);
-        //Output::Inst()->kprintf("destinationX = %f, moving %d", destinationX, moving);
+        destinationX = lua_tonumber(L, -5);
+        destinationY = lua_tonumber(L, -4);
+        speed = lua_tonumber(L, -3);
+        moving = lua_toboolean(L, -2);
+        movementPrecision = lua_tonumber(L, -1);
     }
     catch(std::exception &e)
     {
