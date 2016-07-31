@@ -80,7 +80,7 @@ FORMS    += mainwindow.ui \
 	eventdialog.ui
 
 #copy the lua modules to the correct directory, "wherever" Qmake puts it
-unix: copydata.commands = $(COPY_DIR) $$PWD/lua_modules $$OUT_PWD
+unix: copydata.commands = $(COPY_DIR) $$PWD/modules $$OUT_PWD
 unix: first.depends = $(first) copydata
 unix: export(first.depends)
 unix: export(copydata.commands)
@@ -107,10 +107,6 @@ macx: INCLUDEPATH += $$PWD/../lua-5.2_MacOS107_lib/include
 macx: DEPENDPATH += $$PWD/../lua-5.2_MacOS107_lib/include
 
 macx: PRE_TARGETDEPS += $$PWD/../lua-5.2_MacOS107_lib/liblua52.a
-
-
-
-
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../lua51/ -llua5.1
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../lua51/ -llua5.1

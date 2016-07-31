@@ -74,7 +74,7 @@ end
 -- Submit a shared number to a central register, similar to @RanalibShared.sharetable()
 -- @param check, default is false, if set to true the type of key and number
 -- will be checked, and again this will adversely affect performance.
-function RanaLibShared.shareNumber(key, number, check)
+function RanaLibShared.storeNumber(key, number, check)
 	
 	local check = check or valueCheck
 
