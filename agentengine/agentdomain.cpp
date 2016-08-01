@@ -23,6 +23,7 @@
 #include <chrono>
 #include <climits>
 #include <thread>
+#include <time.h>
 
 #include "agentdomain.h"
 #include "../physics/phys.h"
@@ -42,7 +43,7 @@ AgentDomain::AgentDomain(Control *control)
       LuaAgentAmount(0),luaFilename(""),storePositions(true),
       positionFilename("_positionData.pos")
 {
-    Phys::seedMersenne();
+    //Phys::seedMersenne();
     //file = std::ofstream(positionFilename.c_str(),std::ofstream::out| std::ofstream::trunc);
     //file.open(positionFilename.c_str(),std::ofstream::out | std::ofstream::binary | std::ofstream::trunc);
 
@@ -73,6 +74,7 @@ void AgentDomain::generateEnvironment(double width, double height, int resolutio
                                       double timeResolution, int macroFactor, std::string filename)
 {
 
+    srand(time(0));
     this->timeResolution = timeResolution;
     this->macroFactor = macroFactor;
 
@@ -103,6 +105,7 @@ void AgentDomain::generateEnvironment(double width, double height, int resolutio
 
 void AgentDomain::populateSystem()
 {
+    srand(time(0));
     masteragent->populateSystem(0, 0, LuaAgentAmount, luaFilename);
     retrievePopPos();
     mapGenerated = true;

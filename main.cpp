@@ -38,10 +38,12 @@ unsigned long long ID::nID = 0;
 
 int main(int argc, char *argv[])
 {
+    srand(time(0));
     Phys::seedMersenne();
     Output::DelayValue = 0;
 	Output::LegacyMode.store(false);
     GridMovement::initGrid();
+    qDebug() << rand() << rand() << rand() << rand() << rand() << rand() << rand() ;
 
     QApplication a(argc, argv);
     MainWindow *w = new MainWindow();

@@ -30,7 +30,7 @@
 
 
 //auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
-std::mt19937_64 Phys::rng;  // the Mersenne Twister with a popular choice of parameters
+std::mt19937 Phys::rng;  // the Mersenne Twister with a popular choice of parameters
 double Phys::timeResolution = 0;
 int Phys::macroFactor = 0;
 unsigned long long Phys::c_timeStep = 0;
@@ -42,7 +42,9 @@ double Phys::scale = 1;
 
 void Phys::seedMersenne()
 {
-    rng.seed(std::random_device()());
+   // rng.seed(std::random_device()());
+
+    //srand(time(0));
 }
 
 
@@ -145,16 +147,17 @@ void Phys::move(double v, double posX, double posY,
 double Phys::getMersenneFloat(double min=0, double max=1)
 {
 
-    double random = ((double)Phys::int_dist(Phys::rng))/(double)LLONG_MAX;
+    //double random = ((double)std::uniform_int_distribution<int64_t>()(rand()))/(double)LLONG_MAX;
     //Output::Inst()->kdebug("%f", random);
+    double random = ((double)rand()/(double)(RAND_MAX));
     double diff = max - min;
-    double r = random * diff;
+   double r = random * diff;
     return min + r;
 }
 
 int64_t Phys::getMersenneInteger(int64_t min=0, int64_t max=ULLONG_MAX)
 {
     max++;
-
-    return min + Phys::int_dist(Phys::rng)%(max-min);
+    return rand() %max;
+    //return min + Phys::int_dist(Phys::rng)%(max-min);
 }
