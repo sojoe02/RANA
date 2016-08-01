@@ -132,8 +132,11 @@ void AgentDomain::retrievePopPos()
             {
 
                 agentTmu agenttmu;
-                agenttmu.info = *(itr);
+                agenttmu.x = (*itr).x;
+                agenttmu.y = (*itr).y;
+                agenttmu.id = (*itr).id;
                 agenttmu.tmu = cMacroStep;
+                //Output::Inst()->kprintf("id %d, posx %d, posY %d",agenttmu.info.id, agenttmu.info.x, agenttmu.info.y);
 
                 file.write(reinterpret_cast<char*>(&agenttmu), sizeof(agentTmu));
             }
@@ -200,7 +203,7 @@ void AgentDomain::runSimulation(int time)
             {
                 std::this_thread::sleep_for(std::chrono::milliseconds(delay));
             }
-			if(cMacroStep % 200 == 0)
+            if(cMacroStep % 1000 == 0)
                 retrievePopPos();
         }
         i = cMacroStep;

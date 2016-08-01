@@ -196,6 +196,7 @@ private:
     QMap<double, agentIDMap> agentpositionMap;
     QList<QGraphicsItem*> groupItems;
 
+
 	QTimer *zMapTimer;
 	bool disableLiveView;
 	bool playingMap;

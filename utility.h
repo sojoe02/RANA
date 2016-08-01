@@ -57,7 +57,9 @@ struct agentInfo
 
 struct agentTmu
 {
-	agentInfo info;
+    int x;
+    int y;
+    int id;
 	unsigned long long tmu;
 };
 

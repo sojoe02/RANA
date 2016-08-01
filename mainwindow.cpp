@@ -902,22 +902,27 @@ void MainWindow::setupVisualTab(QHash<QString, ZBlock *> *argZBlocks)
 		{
 			agentTmu agenttmu;
             file.read(reinterpret_cast<char*>(&agenttmu),sizeof(agentTmu));
+            Output::Inst()->kprintf("id %d, posx %d, posY %d",agenttmu.id, agenttmu.x, agenttmu.y);
+            agentInfo agentinfo;
+            agentinfo.x = agenttmu.x;
+            agentinfo.y = agenttmu.y;
+            agentinfo.id = agenttmu.id;
 
             auto itr = agentpositionMap.find(double(agenttmu.tmu)/siminfo->timeResolution);
 
             if(itr == agentpositionMap.constEnd())
             {
                 agentIDMap idMap;
-                idMap.insert(agenttmu.info.id, agenttmu.info);
-                agentpositionMap.insert(double(agenttmu.tmu)/siminfo->timeResolution, idMap);
 
+                idMap.insert(agenttmu.id, agentinfo);
+                agentpositionMap.insert(double(agenttmu.tmu)/siminfo->timeResolution, idMap);
             }
             else
             {
-                auto dItr = itr->find(agenttmu.info.id);
+                auto dItr = itr->find(agenttmu.id);
                 if(dItr == itr->constEnd())
                 {
-                    *itr->insert(agenttmu.info.id, agenttmu.info);
+                    *itr->insert(agenttmu.id, agentinfo);
                 }
             }
 
@@ -1123,17 +1128,23 @@ void MainWindow::on_vis_activeMapSpinBox_valueChanged(int arg1)
 	stringtmp.append("\t - \t");
 	stringtmp.append(QString::number(currentTime + ui->vis_activeTimeResolutionLabel->text().toDouble()));
 	ui->vis_activeTimeLabel->setText(stringtmp);
-    if(PPactiveAgents != NULL)
-    {
-      eventScene->removeItem(PPactiveAgents);
-      eventScene->destroyItemGroup(PPactiveAgents);
-      PPactiveAgents = NULL;
-}
+    //if(PPactiveAgents != NULL)
+    //{
+      //eventScene->removeItem(PPactiveAgents);
+     // eventScene->destroyItemGroup(PPactiveAgents);
+     // PPactiveAgents = NULL;
+//}
     //draw agents from the position map:
     //for(auto itr = groupItems.begin(); itr != groupItems.end(); ++itr)
     //{
     //    eventScene->re
     //}
+
+    for (auto itr = groupItems.begin(); itr != groupItems.end(); ++itr)
+    {
+       eventScene->removeItem(*itr);
+
+    }
 
     groupItems.clear();
     auto itr = agentpositionMap.lowerBound(currentTime);
@@ -1144,12 +1155,16 @@ void MainWindow::on_vis_activeMapSpinBox_valueChanged(int arg1)
             agentItem *item = new agentItem(QString::number(ditr.value().id));
             item->setX(ditr.value().x/ui->vis_resolutionSpinBox->value());
             item->setY(ditr.value().y/ui->vis_resolutionSpinBox->value());
+            //item->setX(20);
+            //item->setY(20);
             item->setZValue(3);
-            //eventScene->addItem(item);
+            eventScene->addItem(item);
             groupItems.append(item);
+            //Output::Inst()->kprintf("agent item found");
         }
     }
-    PPactiveAgents = eventScene->createItemGroup(groupItems);
+    //PPactiveAgents = eventScene->createItemGroup(groupItems);
+    ///PPactiveAgents->setZValue(3);
     ui->vis_graphicsView->viewport()->update();
 
 }

@@ -43,7 +43,7 @@ double Phys::scale = 1;
 
 void Phys::seedMersenne()
 {
-	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
 	rng.seed(seed);
 }
 
