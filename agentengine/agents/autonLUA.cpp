@@ -157,7 +157,7 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
         lua_register(L, "l_removeGroup", l_removeGroup);
         lua_register(L, "l_setStepMultiplier", l_setMacroFactorMultipler);
 
-        if(luaL_loadfile(L, "lua_modules/auxiliary.lua") || lua_pcall(L,0,0,0))
+        if(luaL_loadfile(L, "modules/auxiliary.lua") || lua_pcall(L,0,0,0))
         {
             Output::Inst()->kprintf("error : %s \n", lua_tostring(L, -1));
             nofile = true;

@@ -84,7 +84,6 @@ void Control::generateEnvironment(QImage *map, double scale,
 
         agentDomain = new AgentDomain(this);
 
-
         agentDomain->generateEnvironment(map->width(),map->height(),4,0,0,
                                          agentAmount,timeRes,macroRes,agentPath);
         //agentDomain->populateSystem();

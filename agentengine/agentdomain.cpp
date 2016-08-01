@@ -23,9 +23,6 @@
 #include <chrono>
 #include <climits>
 #include <thread>
-#include <iostream>
-#include <fstream>
-#include <stdio.h>
 
 #include "agentdomain.h"
 #include "../physics/phys.h"
@@ -41,12 +38,14 @@ using std::chrono::seconds;
 using std::chrono::steady_clock;
 
 AgentDomain::AgentDomain(Control *control)
-    :control(control), mapGenerated(false), stop(false), fetchPositions(false),
+    :control(control), mapGenerated(false),masteragent(new Master()), stop(false), fetchPositions(false),
       LuaAgentAmount(0),luaFilename(""),storePositions(true),
       positionFilename("_positionData.pos")
 {
     Phys::seedMersenne();
-    masteragent = new Master();
+    file = std::ofstream(positionFilename.c_str(),std::ofstream::out | std::ofstream::binary | std::ofstream::trunc);
+
+
 }
 
 AgentDomain::~AgentDomain(){
@@ -126,8 +125,7 @@ void AgentDomain::retrievePopPos()
     {
         if(storePositions == true )
         {
-            std::ofstream file(positionFilename.c_str(),std::ofstream::out | std::ofstream::app);
-
+            //std::ofstream file(positionFilename.c_str(),std::ofstream::out | std::ofstream::app);
             for(auto itr = agentPositions.begin(); itr != agentPositions.end(); ++itr)
             {
 
@@ -137,7 +135,7 @@ void AgentDomain::retrievePopPos()
 
                 file.write(reinterpret_cast<char*>(&agenttmu), sizeof(agentTmu));
             }
-            file.close();
+            //file.close();
         }
     }
 }
@@ -245,6 +243,7 @@ void AgentDomain::runSimulation(int time)
     Output::Inst()->kprintf("Simulation run took:\t %llu[s] of computing time"
                             , duration_cast<seconds>(endsim - start2).count()
                             );
+    file.close();
 }
 
 /**

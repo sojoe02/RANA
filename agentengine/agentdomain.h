@@ -27,6 +27,8 @@
 #include<mutex>
 #include<atomic>
 #include<sys/types.h>
+#include<stdio.h>
+#include<fstream>
 
 #include "agents/master.h"
 #include "../agentengine/agents/doctor.h"
@@ -86,7 +88,9 @@ private:
 		typedef std::list<agentInfo> onlineAgents;
 		std::unordered_map<unsigned long long, onlineAgents> positionMap;
 		bool storePositions;
-		std::string positionFilename;
+        std::string positionFilename;
+
+        std::ofstream file;
 };
 
 #endif // AGENTDOMAIN_H

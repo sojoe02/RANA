@@ -64,7 +64,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->graphicsView->setScene(scene);
     scene->setBackgroundBrush(Qt::gray);
 	ui->runButton->setDisabled(true);
-	ui->adv_spinBox->hide();
+//dr.	ui->adv_spinBox->hide();
 
     qRegisterMetaType<INFOLIST>("INFOLIST");
 
@@ -90,7 +90,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
 
-    versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.7.8.NewThread:0.7.1");
+    versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.7.9:0.7.1");
 
     ui->statusBar->addWidget(new QLabel(versionString));
 	ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);

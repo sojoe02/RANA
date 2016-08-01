@@ -108,8 +108,8 @@ macx: DEPENDPATH += $$PWD/../lua-5.2_MacOS107_lib/include
 
 macx: PRE_TARGETDEPS += $$PWD/../lua-5.2_MacOS107_lib/liblua52.a
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../lua51/ -llua5.1
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../lua51/ -llua5.1
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../lua51_64bit/ -llua5.1
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../lua51_64bit/ -llua5.1
 
-INCLUDEPATH += $$PWD/../lua51/include
-DEPENDPATH += $$PWD/../lua51/include
+INCLUDEPATH += $$PWD/../lua51_64bit/include
+DEPENDPATH += $$PWD/../lua51_64bit/include
