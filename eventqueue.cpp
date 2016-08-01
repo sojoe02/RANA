@@ -36,7 +36,7 @@
 #include"physics/phys.h"
 
 EventQueue::EventQueue()
-        :eSize(0), iSize(0)
+    :eSize(0), iSize(0)
 {
     //iMap = new std::unordered_map<unsigned long long, iEvents>();
     //eMap = new std::unordered_map<unsigned long long, eEvents>();
@@ -49,7 +49,7 @@ EventQueue::EventQueue()
  */
 EventQueue::~EventQueue()
 {
-    
+
 }
 
 /* **********************************************************************
@@ -87,7 +87,7 @@ void EventQueue::insertEEvent(std::unique_ptr<eEvent> eeventPtr)
         tmuSet.insert(tmu);
         if(activeTmu.empty())
         {
-            activeTmu.push_front(tmu);            
+            activeTmu.push_front(tmu);
         }else
         {
             //do insertion sort:
@@ -142,12 +142,12 @@ bool EventQueue::eEventsAtTime(unsigned long long tmu)
 
 const EventQueue::eEvent* EventQueue::addUsedEEvent(std::unique_ptr<eEvent> eEvent)
 {
-	int id = eEvent->id;
-	//const EventQueue::eEvent* eEventPtr = eEvent.get();
-	//legacyEvents.push_back(std::move(eEvent));
-	usedEEvents.insert(std::make_pair(id, std::move(eEvent)));
-	//return eEventPtr;
-	return usedEEvents.find(id)->second.get();
+    int id = eEvent->id;
+    //const EventQueue::eEvent* eEventPtr = eEvent.get();
+    //legacyEvents.push_back(std::move(eEvent));
+    usedEEvents.insert(std::make_pair(id, std::move(eEvent)));
+    //return eEventPtr;
+    return usedEEvents.find(id)->second.get();
 }
 
 void EventQueue::decrementEeventCounter(unsigned long long id)
@@ -162,7 +162,7 @@ void EventQueue::decrementEeventCounter(unsigned long long id)
 
         if (itr->second->reference_count.load() <= 0)
         {
-            Output::Inst()->kprintf("adding event with id %i to legacy map", id);
+            // Output::Inst()->kprintf("adding event with id %i to legacy map", id);
             legacyEvents.push_back(std::move(itr->second));
         }
 
@@ -332,20 +332,20 @@ unsigned long long EventQueue::getISize(){
 void EventQueue::saveEEventData(std::string path, std::string luaFileName,
                                 int autonAmount, double areaY, double areaX){
 
-	std::string filename = path;
+    std::string filename = path;
 
     //Open the file and set the options:
-	std::ofstream file(filename.c_str(), std::ofstream::binary | std::ofstream::trunc);
+    std::ofstream file(filename.c_str(), std::ofstream::binary | std::ofstream::trunc);
     //int bufferLimit = 100000;
 
-	Output::Inst()->kprintf("Saving event data to file:  %s\n" , path.c_str());
+    Output::Inst()->kprintf("Saving event data to file:  %s\n" , path.c_str());
 
     //first save the dataEvent to the file:
     simInfo dataInfo;
     strncpy(dataInfo.luaFileName, luaFileName.c_str(),1024);
 
-	//Output::Inst()->kprintf("name %s", luaFileName.c_str());
-	//Output::Inst()->kprintf("path saved is: %s", dataInfo.luaFileName);
+    //Output::Inst()->kprintf("name %s", luaFileName.c_str());
+    //Output::Inst()->kprintf("path saved is: %s", dataInfo.luaFileName);
 
     dataInfo.eventAmount = eSize;
     dataInfo.numberOfAutons = autonAmount;
@@ -360,35 +360,35 @@ void EventQueue::saveEEventData(std::string path, std::string luaFileName,
     file.write(reinterpret_cast<char*>(&dataInfo),sizeof(dataInfo));
 
     //then save all the external events:
-	//auto file_itr = agentFilenames.begin();
+    //auto file_itr = agentFilenames.begin();
 
-    for(auto event_itr = legacyEvents.begin(); 
-		event_itr != legacyEvents.end(); ++event_itr)
-	{
-		dataEvent devent;
+    for(auto event_itr = legacyEvents.begin();
+        event_itr != legacyEvents.end(); ++event_itr)
+    {
+        dataEvent devent;
 
-		devent.id = (*event_itr)->id;
-		devent.activationTime = (*event_itr)->activationTime;
-		devent.targetID = (*event_itr)->targetID;
-		devent.originX = (*event_itr)->posX;
-		devent.originY = (*event_itr)->posY;
-		devent.originID = (*event_itr)->originID;
-		devent.propagationSpeed = (*event_itr)->propagationSpeed;
+        devent.id = (*event_itr)->id;
+        devent.activationTime = (*event_itr)->activationTime;
+        devent.targetID = (*event_itr)->targetID;
+        devent.originX = (*event_itr)->posX;
+        devent.originY = (*event_itr)->posY;
+        devent.originID = (*event_itr)->originID;
+        devent.propagationSpeed = (*event_itr)->propagationSpeed;
 
-		strncpy(devent.desc,(*event_itr)->desc.c_str(),150);
-		strncpy(devent.table,(*event_itr)->luatable.c_str(),1024);
+        strncpy(devent.desc,(*event_itr)->desc.c_str(),150);
+        strncpy(devent.table,(*event_itr)->luatable.c_str(),1024);
 
-		//Add the filename if it exists:
-		auto infoItr = agentFilenames.find((*event_itr)->originID);
+        //Add the filename if it exists:
+        auto infoItr = agentFilenames.find((*event_itr)->originID);
 
-		if(infoItr != agentFilenames.end())
-		{
-			strncpy(devent.filename, infoItr->second.c_str(), 256);
-		}
-		else
+        if(infoItr != agentFilenames.end())
+        {
+            strncpy(devent.filename, infoItr->second.c_str(), 256);
+        }
+        else
             strncpy(devent.filename, std::string("NULL").c_str(),256);
 
-        Output::Inst()->kprintf("data event des.%s ", devent.desc);
+        //Output::Inst()->kprintf("data event des.%s ", devent.desc);
 
         file.write(reinterpret_cast<char*>(&devent),sizeof(dataEvent));
 
@@ -397,7 +397,10 @@ void EventQueue::saveEEventData(std::string path, std::string luaFileName,
 
     for(auto event_itr = usedEEvents.begin(); event_itr!=usedEEvents.end(); event_itr++)
     {
-            dataEvent devent;
+        dataEvent devent;
+
+        if(event_itr->second != NULL)
+        {
 
             devent.id = (*event_itr->second).id;
             devent.activationTime = (*event_itr->second).activationTime;
@@ -420,9 +423,10 @@ void EventQueue::saveEEventData(std::string path, std::string luaFileName,
             else
                 strncpy(devent.filename, std::string("NULL").c_str(),256);
 
-            Output::Inst()->kprintf("data event des.%s ", devent.desc);
+            //Output::Inst()->kprintf("data event des.%s ", devent.desc);
 
             file.write(reinterpret_cast<char*>(&devent),sizeof(dataEvent));
+        }
     }
 
 

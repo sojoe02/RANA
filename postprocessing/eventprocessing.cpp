@@ -95,7 +95,7 @@ void EventProcessing::binEvents(QRegExp regex, std::string path, int to, int fro
             //calculate the activation in seconds:
             int activation = devent.activationTime/simInfo->timeResolution;
             //Output::Inst()->kdebug("devent activation time %i" , devent.activationTime);
-            Output::Inst()->kprintf("Event description %s", devent.desc);
+            //Output::Inst()->kprintf("Event description %s", devent.desc);
 
             if(activation > from && activation < to)
             {
@@ -103,7 +103,7 @@ void EventProcessing::binEvents(QRegExp regex, std::string path, int to, int fro
                 //Output::Inst()->kprintf("%s,you never know",devent.desc);
                 if(desc.contains(regex))
                 {
-                    Output::Inst()->ppprintf("Binning event with ID %i",devent.id);
+                    //Output::Inst()->ppprintf("Binning event with ID %i",devent.id);
                     eventbin.push_back(devent);
                 }
             }
