@@ -90,7 +90,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
 
-    versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.7.9:0.7.1");
+    versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.7.10:0.8.0");
 
     ui->statusBar->addWidget(new QLabel(versionString));
 	ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
@@ -890,8 +890,11 @@ void MainWindow::setupVisualTab(QHash<QString, ZBlock *> *argZBlocks)
 	zmap->setSize(ui->vis_mapGraphicsView->maximumWidth(),ui->vis_outputTextBrowser->height());
 
     //Parse agent positions and load them into memory.
-    std::string agenttmupath = "_positionData.pos";
-    std::ifstream file(agenttmupath.c_str(), std::ifstream::binary);
+    QString agenttmupath = ui->vis_eventPathLineEdit->text();
+    agenttmupath.chop(3);
+    agenttmupath.append("pos");
+    Output::Inst()->kprintf("PATH to position file %s", agenttmupath.toUtf8().constData());
+    std::ifstream file(agenttmupath.toUtf8().constData(), std::ifstream::binary);
 
 	if(file.is_open())
 	{

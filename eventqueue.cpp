@@ -160,9 +160,9 @@ void EventQueue::decrementEeventCounter(unsigned long long id)
 
         //Output::Inst()->kprintf("reference count for event with ID %i is %i", id, itr->second->reference_count.load());
 
-		if (itr->second->reference_count.load() == 0)
+        if (itr->second->reference_count.load() <= 0)
         {
-            //Output::Inst()->kprintf("adding event with id %i to legacy map", id);
+            Output::Inst()->kprintf("adding event with id %i to legacy map", id);
             legacyEvents.push_back(std::move(itr->second));
         }
 
@@ -283,10 +283,6 @@ bool EventQueue::iEventsAtTime(unsigned long long tmu)
         return true;
 }
 
-
-
-
-
 /* **********************************************************************
  * UTILITY FUNCTIONS
  * ******************************************************************** */
@@ -390,12 +386,49 @@ void EventQueue::saveEEventData(std::string path, std::string luaFileName,
 			strncpy(devent.filename, infoItr->second.c_str(), 256);
 		}
 		else
-			strncpy(devent.filename, std::string("NULL").c_str(),256);
+            strncpy(devent.filename, std::string("NULL").c_str(),256);
 
-		file.write(reinterpret_cast<char*>(&devent),sizeof(devent));
+        Output::Inst()->kprintf("data event des.%s ", devent.desc);
 
-	}
-	file.close();
+        file.write(reinterpret_cast<char*>(&devent),sizeof(dataEvent));
+
+    }
+
+
+    for(auto event_itr = usedEEvents.begin(); event_itr!=usedEEvents.end(); event_itr++)
+    {
+            dataEvent devent;
+
+            devent.id = (*event_itr->second).id;
+            devent.activationTime = (*event_itr->second).activationTime;
+            devent.targetID = (*event_itr->second).targetID;
+            devent.originX = (*event_itr->second).posX;
+            devent.originY = (*event_itr->second).posY;
+            devent.originID = (*event_itr->second).originID;
+            devent.propagationSpeed = (*event_itr->second).propagationSpeed;
+
+            strncpy(devent.desc,(*event_itr->second).desc.c_str(),150);
+            strncpy(devent.table,(*event_itr->second).luatable.c_str(),1024);
+
+            //Add the filename if it exists:
+            auto infoItr = agentFilenames.find((*event_itr->second).originID);
+
+            if(infoItr != agentFilenames.end())
+            {
+                strncpy(devent.filename, infoItr->second.c_str(), 256);
+            }
+            else
+                strncpy(devent.filename, std::string("NULL").c_str(),256);
+
+            Output::Inst()->kprintf("data event des.%s ", devent.desc);
+
+            file.write(reinterpret_cast<char*>(&devent),sizeof(dataEvent));
+    }
+
+
+
+
+    file.close();
 
     Output::Inst()->kprintf("Saving position data");
     std::string position_path = path;

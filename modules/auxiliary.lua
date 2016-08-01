@@ -43,9 +43,9 @@ end
 
 function _ProcessEventFunction(sourceX, sourceY, posX, posY, time, serialTable)
 	
-
-	if string.len(serialTable) > 3 then	
-		load("_eventTable="..serialTable)()
+	if string.len(serialTable) > 3 then
+		--say(serialTable)
+		loadstring("_eventTable="..serialTable)()
 	else
 		_eventTable = {}
 	end
@@ -53,9 +53,9 @@ function _ProcessEventFunction(sourceX, sourceY, posX, posY, time, serialTable)
 	if processEventFunction == nil then
 
 		if posX == sourceX and posY == sourceY then
-			return 1
+			return 1,0
 		else
-			return .5
+			return .5,0
 		end
 	else 
 		return processEventFunction(sourceX, sourceY, posX, posY, time, _eventTable)

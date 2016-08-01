@@ -43,7 +43,8 @@ AgentDomain::AgentDomain(Control *control)
       positionFilename("_positionData.pos")
 {
     Phys::seedMersenne();
-    file = std::ofstream(positionFilename.c_str(),std::ofstream::out | std::ofstream::binary | std::ofstream::trunc);
+    //file = std::ofstream(positionFilename.c_str(),std::ofstream::out| std::ofstream::trunc);
+    //file.open(positionFilename.c_str(),std::ofstream::out | std::ofstream::binary | std::ofstream::trunc);
 
 
 }
@@ -125,6 +126,7 @@ void AgentDomain::retrievePopPos()
     {
         if(storePositions == true )
         {
+
             //std::ofstream file(positionFilename.c_str(),std::ofstream::out | std::ofstream::app);
             for(auto itr = agentPositions.begin(); itr != agentPositions.end(); ++itr)
             {
@@ -158,6 +160,8 @@ void AgentDomain::runSimulation(int time)
     {
         Output::Inst()->kprintf("Position file does not exist");
     }
+
+    file.open(positionFilename.c_str(),std::ofstream::out | std::ofstream::trunc);
 
     stop = false;
     Output::Inst()->kprintf("Running Simulation of: %i[s], with resolution of %f \n",
@@ -243,6 +247,8 @@ void AgentDomain::runSimulation(int time)
     Output::Inst()->kprintf("Simulation run took:\t %llu[s] of computing time"
                             , duration_cast<seconds>(endsim - start2).count()
                             );
+    //
+
     file.close();
 }
 
