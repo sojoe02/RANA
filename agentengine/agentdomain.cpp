@@ -164,7 +164,7 @@ void AgentDomain::runSimulation(int time)
         Output::Inst()->kprintf("Position file does not exist");
     }
 
-    file.open(positionFilename.c_str(),std::ofstream::out | std::ofstream::trunc);
+    file.open(positionFilename.c_str(),std::ofstream::out | std::ofstream::app | std::ofstream::binary);
 
     stop = false;
     Output::Inst()->kprintf("Running Simulation of: %i[s], with resolution of %f \n",

@@ -29,12 +29,11 @@
 #include "output.h"
 
 
-
-typedef std::mt19937_64 MyRNG;  // the Mersenne Twister with a popular choice of parameters
+auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+std::mt19937_64 MyRNG(seed);  // the Mersenne Twister with a popular choice of parameters
 double Phys::timeResolution = 0;
 int Phys::macroFactor = 0;
 unsigned long long Phys::c_timeStep = 0;
-MyRNG Phys::rng;
 std::uniform_int_distribution<int64_t> Phys::int_dist;
 double Phys::env_x = 0;
 double Phys::env_y = 0;
@@ -43,7 +42,6 @@ double Phys::scale = 1;
 
 void Phys::seedMersenne()
 {
-    auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
 	rng.seed(seed);
 }
 
