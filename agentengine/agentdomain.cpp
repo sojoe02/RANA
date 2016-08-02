@@ -74,7 +74,8 @@ void AgentDomain::generateEnvironment(double width, double height, int resolutio
                                       double timeResolution, int macroFactor, std::string filename)
 {
 
-    srand(time(0));
+    //srand(time(0));
+    //Phys::seedMersenne();
     this->timeResolution = timeResolution;
     this->macroFactor = macroFactor;
 
@@ -105,7 +106,8 @@ void AgentDomain::generateEnvironment(double width, double height, int resolutio
 
 void AgentDomain::populateSystem()
 {
-    srand(time(0));
+    //srand(time(0));
+    //Phys::seedMersenne();
     masteragent->populateSystem(0, 0, LuaAgentAmount, luaFilename);
     retrievePopPos();
     mapGenerated = true;

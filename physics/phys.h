@@ -99,7 +99,7 @@ private:
 		//random distribution 0-INT_MAX
         static std::uniform_int_distribution<int64_t> int_dist;
 		typedef std::mt19937_64 MyRNG;
-        static std::mt19937 rng;
+        static std::mt19937_64 rng;
 
 		static double scale;
 };

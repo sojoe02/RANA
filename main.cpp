@@ -38,13 +38,12 @@ unsigned long long ID::nID = 0;
 
 int main(int argc, char *argv[])
 {
-    srand(time(0));
+    //srand(time(0));
     Phys::seedMersenne();
     Output::DelayValue = 0;
 	Output::LegacyMode.store(false);
     GridMovement::initGrid();
-    qDebug() << rand() << rand() << rand() << rand() << rand() << rand() << rand() ;
-
+    qDebug() << Phys::getMersenneInteger(1, RAND_MAX) << Phys::getMersenneInteger(1, RAND_MAX) << Phys::getMersenneFloat(1, RAND_MAX) <<Phys::getMersenneInteger(1, RAND_MAX) ;
     QApplication a(argc, argv);
     MainWindow *w = new MainWindow();
 
