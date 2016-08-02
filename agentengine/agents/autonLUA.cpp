@@ -46,7 +46,7 @@
 #include "../../physics/scanning.h"
 
 AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *nestene, std::string filename)
-    : Auton(ID, posX, posY, posZ, nestene), destinationX(posX), destinationY(posY), movementPrecision(0.01),speed(1), moving(false),filename(filename),
+    : Auton(ID, posX, posY, posZ, nestene), destinationX(posX), destinationY(posY), movementPrecision(0.01),speed(1), moving(false),gridmove(false),filename(filename),
       nofile(false),removed(false),L(NULL)
 {
 
@@ -101,6 +101,8 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
         lua_setglobal(L, "MovementSpeed");
         lua_pushboolean(L, moving);
         lua_setglobal(L, "Moving");
+        lua_pushboolean(L, gridmove);
+        lua_setglobal(L, "GridMove");
         //lua_newtable(L);
         //lua_setglobal(L, "EventTable");
         //Register all the API functions:
@@ -135,7 +137,7 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
         lua_register(L, "l_checkCollisionRadial", l_checkCollisionRadial);
         lua_register(L, "l_gridMove", l_gridMove);
         lua_register(L, "l_getMaskRadial", l_getMaskRadial);
-        lua_register(L, "l_setGridScale", l_setGridScale);
+        lua_register(L, "l_initializeGrid", l_initializeGrid);
         lua_register(L, "l_getGridScale", l_getGridScale);
 
         //Shared values.
@@ -345,6 +347,14 @@ std::unique_ptr<EventQueue::eEvent> AutonLUA::handleEvent(std::unique_ptr<EventQ
 
 void AutonLUA::movement()
 {
+    lua_getglobal(L, "GridMove");
+    gridmove = lua_toboolean(L,-1);
+
+    int sohe = GridMovement::getScale();
+
+    double oldX = posX * GridMovement::getScale();
+    double oldY = posY * GridMovement::getScale();
+
     if(posX != destinationX || posY != destinationY)
     {
         double angle = std::atan2(destinationX-posX, destinationY-posY);
@@ -377,7 +387,13 @@ void AutonLUA::movement()
         lua_pushnumber(L, posY);
         lua_setglobal(L, "PositionY");
 
-
+        if(gridmove)
+        {
+            GridMovement::updatePos(oldX, oldY,
+                                    (int)(posX*GridMovement::getScale()),
+                                    (int)(posY*GridMovement::getScale()),
+                                    ID);
+        }
         //Output::Inst()->kprintf("angular speed %f, new position %f", vX*Phys::getMacroFactor()*Phys::getTimeRes(), posX);
     } else
     {
@@ -391,6 +407,14 @@ void AutonLUA::movement()
         lua_setglobal(L, "PositionX");
         lua_pushnumber(L, posY);
         lua_setglobal(L, "PositionY");
+
+        if(gridmove)
+        {
+            GridMovement::updatePos(oldX, oldY,
+                                    (int)(posX*GridMovement::getScale()),
+                                    (int)(posY*GridMovement::getScale()),
+                                    ID);
+        }
     }
 }
 
@@ -743,8 +767,8 @@ int AutonLUA::l_checkPosition(lua_State *L)
     int posX = 0;
     int posY = 0;
 
-    posX = lua_tonumber(L, -2);
-    posY = lua_tonumber(L, -1);
+    posX = lua_tonumber(L, -2) * GridMovement::getScale();
+    posY = lua_tonumber(L, -1) * GridMovement::getScale();
 
     pList agentList = GridMovement::checkPosition(posX, posY);
 
@@ -852,9 +876,10 @@ int AutonLUA::l_getGridScale(lua_State *L)
     return 1;
 }
 
-int AutonLUA::l_setGridScale(lua_State *L)
+int AutonLUA::l_initializeGrid(lua_State *L)
 {
-    GridMovement::setScale( lua_tonumber(L, -1));
+    GridMovement::initGrid(lua_tonumber(L, -1));
+
     return 0;
 }
 

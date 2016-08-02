@@ -83,7 +83,7 @@ public:
     static int l_getMaskRadial(lua_State *L);
     static int l_gridMove(lua_State *L);
     static int l_getGridScale(lua_State *L);
-    static int l_setGridScale(lua_State *L);
+    static int l_initializeGrid(lua_State *L);
 
     //Shared values.
     static int l_getSharedNumber(lua_State *L);
@@ -125,6 +125,7 @@ private:
     double movementPrecision; //meters
     double speed; //meters pr second
     bool moving;
+    bool gridmove;
 
     void setRemoved();
     void simDone();

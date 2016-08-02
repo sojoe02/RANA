@@ -21,9 +21,9 @@
 ----end_license--
 
 -- Import valid Rana lua libraries.
-Event = require "ranalib_event"
 Stat = require "ranalib_statistic"
 Move = require "ranalib_movement"
+Collision = require "ranalib_collision"
 
 -- Initialization of the agent.
 function initializeAgent()
@@ -33,12 +33,13 @@ function initializeAgent()
 		say("I am not moving".. STEP_RESOLUTION.. ":" .. PositionX)
 	end
 
-	GridMove = true
 	Moving = true
 	DestinationX = 1
 	DestinationY = 1
-	Speed = 40
 
+	Speed = 40
+	GridMove = true
+	--Moving = true
 end
 
 
@@ -49,9 +50,20 @@ function takeStep()
 		local x = Stat.randomInteger(1, ENV_WIDTH)
 		local y = Stat.randomInteger(1, ENV_HEIGHT)		
 
-		Move.to{x=x, y=y}
+		--Move.to{x=x, y=y}
 		
 	end
 
+end
+
+function cleanUp()
+	
+	positionTable = {}
+	positionTable = Collision.checkPosition(PositionX, PositionY)
+
+	say("agent #"..ID.." has these collisions...")
+	 for i = 1, #positionTable do
+		say(positionTable[i])
+	end
 end
 
