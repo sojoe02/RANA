@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <utility>
+#include <physics/phys.h>
 
 #include "lua.hpp"
 #include "lauxlib.h"
@@ -55,8 +56,10 @@ void Nestene::populate(int LUASize ,std::string filename)
 	{
 
 		if(Output::KillSimulation.load()) return;
-		double xtmp = (double)rand()/ RAND_MAX * width + posX;
-		double ytmp = (double)rand()/ RAND_MAX * height + posY;
+        double xtmp = Phys::getMersenneFloat(0,width);
+        double ytmp = Phys::getMersenneFloat(0,height);
+        //double xtmp = (double)rand()/ RAND_MAX * width + posX;
+        //double ytmp = (double)rand()/ RAND_MAX * height + posY;
 
 		std::shared_ptr<AutonLUA> luaPtr =
 				std::make_shared<AutonLUA>(ID::generateAutonID(), xtmp, ytmp,
