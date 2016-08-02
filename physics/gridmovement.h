@@ -42,6 +42,9 @@ public:
 
 	static void clearGrid();
     static void removePos(int id);
+
+    static void setScale(int scale);
+    static int getScale();
 private:
 
     //maps that contain the amount of agents at a givin x,y position
@@ -50,6 +53,7 @@ private:
 
     static int width;
     static int height;
+    static int scale;
 
 
 };

@@ -24,23 +24,33 @@
 #include "gridmovement.h"
 #include "output.h"
 
-
-
 std::unordered_map< std::string, pList > *GridMovement::posMap;
 std::unordered_map< std::string, pList >::iterator GridMovement::positr;
 
 int GridMovement::width;
 int GridMovement::height;
+int GridMovement::scale;
 
 void GridMovement::initGrid()
 {
-
 	posMap = new std::unordered_map<std::string, pList>();
+    scale = 1;
 }
 
 void GridMovement::clearGrid()
 {
     posMap->clear();
+}
+
+void GridMovement::setScale(int scale)
+{
+    if (scale > 0)
+        scale = GridMovement::scale;
+}
+
+int GridMovement::getScale()
+{
+    return scale;
 }
 
 void GridMovement::addPos(int x, int y, int id)

@@ -135,6 +135,8 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
         lua_register(L, "l_checkCollisionRadial", l_checkCollisionRadial);
         lua_register(L, "l_gridMove", l_gridMove);
         lua_register(L, "l_getMaskRadial", l_getMaskRadial);
+        lua_register(L, "l_setGridScale", l_setGridScale);
+        lua_register(L, "l_getGridScale", l_getGridScale);
 
         //Shared values.
         lua_register(L, "l_getSharedNumber", l_getSharedNumber);
@@ -844,6 +846,17 @@ int AutonLUA::l_gridMove(lua_State *L)
     return 0;
 }
 
+int AutonLUA::l_getGridScale(lua_State *L)
+{
+    lua_pushnumber(L, GridMovement::getScale());
+    return 1;
+}
+
+int AutonLUA::l_setGridScale(lua_State *L)
+{
+    GridMovement::setScale( lua_tonumber(L, -1));
+    return 0;
+}
 
 //Shared values.
 
