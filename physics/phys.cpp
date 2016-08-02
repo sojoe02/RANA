@@ -77,7 +77,7 @@ unsigned long long Phys::speedOfSound(double x_origin, double y_origin,
 		double x_dest, double y_dest)
 {
 
-	double distance = sqrt( pow((x_origin-x_dest), 2) + pow((y_origin-y_dest),2) ) * scale;
+	double distance = sqrt( pow((x_origin-x_dest), 2) + pow((y_origin-y_dest),2) );
 
 	unsigned long long tmp = uint64_t (distance / (343.2 * Phys::timeResolution));
 	unsigned long long a_timestep = tmp + Phys::c_timeStep;
@@ -85,11 +85,11 @@ unsigned long long Phys::speedOfSound(double x_origin, double y_origin,
 	return a_timestep;
 }
 
-unsigned long long Phys::speedOfSound(double x_origin, double y_origin,
+unsigned long long Phys::speedOfEvent(double x_origin, double y_origin,
 		double x_dest, double y_dest, double propagationSpeed)
 {
 
-	double distance = sqrt( pow((x_origin-x_dest), 2) + pow((y_origin-y_dest),2) ) * scale;
+	double distance = sqrt( pow((x_origin-x_dest), 2) + pow((y_origin-y_dest),2) );
 
 	double tmp = distance / (propagationSpeed * Phys::timeResolution);
 	unsigned long long a_timestep = tmp + Phys::c_timeStep;
@@ -100,7 +100,7 @@ unsigned long long Phys::speedOfSound(double x_origin, double y_origin,
 double Phys::calcDistance(double x_origin, double y_origin, 
 		double x_dest, double y_dest)
 {
-	return  sqrt( pow((x_origin-x_dest), 2) + pow((y_origin-y_dest),2) ) * scale;
+	return  sqrt( pow((x_origin-x_dest), 2) + pow((y_origin-y_dest),2) );
 }
 
 unsigned long long Phys::getCTime()
@@ -127,21 +127,6 @@ double Phys::getEnvX()
 double Phys::getEnvY()
 {
 	return env_y * scale;
-}
-
-
-void Phys::move(double v, double posX, double posY,
-                double desX, double desY,
-                double &newX, double &newY)
-{
-    double vf = v*(Phys::macroFactor * Phys::timeResolution);
-    double angle = atan2(desX-posX, desY-posY);
-
-    double vX = vf * cos(angle);
-    double vY = vf * sin(angle);
-
-	newX = vX*scale + posX;
-	newY = vY*scale + posY;
 }
 
 double Phys::getMersenneFloat(double min=0, double max=1)

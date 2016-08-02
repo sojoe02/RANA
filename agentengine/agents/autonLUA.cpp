@@ -242,7 +242,7 @@ std::unique_ptr<EventQueue::iEvent> AutonLUA::processEvent(const EventQueue::eEv
         } else
         {
             ievent->activationTime =
-                    Phys::speedOfSound(event->posX,
+                    Phys::speedOfEvent(event->posX,
                                        event->posY,
                                        posX, posY, event->propagationSpeed) + 1;
         }
@@ -569,7 +569,7 @@ int AutonLUA::l_speedOfSound(lua_State *L)
     double propagationSpeed = lua_tonumber(L,-5);
 
     unsigned long long t =
-            Phys::speedOfSound(posX, posY, origX, origY, propagationSpeed);
+            Phys::speedOfEvent(posX, posY, origX, origY, propagationSpeed);
 
     lua_pushnumber(L,t);
 

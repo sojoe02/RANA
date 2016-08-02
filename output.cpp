@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include <thread>
 #include <chrono>
+#include "physics/phys.h"
 
 #include "output.h"
 
@@ -192,5 +193,5 @@ void Output::removeGraphicAuton(int Id)
 
 void Output::addGraphicAuton(int Id, double posX, double posY)
 {
-	mainWindow->addGraphicAuton(Id, int(posX), int(posY));
+    mainWindow->addGraphicAuton(Id, int(posX)/Phys::getScale(), int(posY)/Phys::getScale());
 }

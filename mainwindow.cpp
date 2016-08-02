@@ -90,7 +90,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
 
-    versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.7.11:0.8.2");
+    versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.7.12:0.8.2");
 
     ui->statusBar->addWidget(new QLabel(versionString));
 	ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
@@ -399,8 +399,8 @@ void MainWindow::on_updateMap(INFOLIST infolist)
 
     for(auto itr = infolist.begin(); itr != infolist.end(); itr++)
     {
-        int x = itr->x;
-        int y = itr->y;
+        int x = itr->x/Phys::getScale();
+        int y = itr->y/Phys::getScale();
 		int Id = itr->id;
 
         if(!graphAgents.contains(Id))

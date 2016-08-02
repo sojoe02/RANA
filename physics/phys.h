@@ -59,10 +59,10 @@ class Phys
         static void setMacroFactor(int macroFactor);
         static void setCTime(unsigned long long ctime);
 
-		static unsigned long long speedOfSound(double x_origin, double y_origin,
+        static unsigned long long speedOfSound(double x_origin, double y_origin,
 				double x_dest, double y_dest);
 
-		static unsigned long long speedOfSound(double x_origin, double y_origin,
+		static unsigned long long speedOfEvent(double x_origin, double y_origin,
 				double x_dest, double y_dest, double propagationSpeed);
 
 		static double calcDistance(double x_origin, double y_origin, 
