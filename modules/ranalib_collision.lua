@@ -1,34 +1,71 @@
-local RanaLibCollision = {}
+local ranaLibCollisionGrid = {}
 
--- Update the agents position in the central collision table.
--- If the agent is currently not in the table it will be added automatically.
-function RanaLibCollision.updatePosition(newX, newY)
+-- Initializes the movement grid, if one exists all data will be deletet and 
+-- a new dataset with agent positions will be generated with the provided scale.
+-- @Param scale of the grids precision level in meters.
+function ranaLibCollisionGrid.reinitializeGrid(scale)
+
+	local scale = scale or 1
+
+	if type(scale)=="number" then
+		l_initializeGrid(1/scale)
+	end
+
+end
+
+-- Returns a Table with a list of agents at the queried
+-- positions.
+function ranaLibCollisionGrid.checkPosition(x, y)
+
+	local xx = x or PositionX
+	local yy = y or PositionY
+
+	if type(xx) = "number" and type(yy)="number" then
+
+		return l_checkPosition(x, y)
+
+	end
+
+	return nil
+end
+
+-- Returns a boolean denoting whether or not there is an
+-- agent at the queried position.
+function ranaLibCollisionGrid.checkCollision(x, y)
+
+	local xx = x or PositionX
+	local yy = y or PositionY
+
+	if type(xx) = "number" and type(yy)="number" then
+
+		return l_checkCollision(x, y)
+
+	end
+
+	return nil
+end
+
+-- Add another position to the grid 
+-- If the agent wants this to change it has to use 
+-- ranaLibCollsionGrid.updatePosition.
+function ranaLibCollisionGrid.addPosition(x,y,id)
+
+	local iid = id or ID
 	
-	l_updatePosition(PositionX, PositionY, newPosX, newPosY, ID)
+	if type(x) = "number" and type(y)="number" then
+		l_addPosition(x,y,iid)
+	end
 end
 
--- Adds the agents position to the contral collision table.
--- Allows the agent to occupy more than one x,y at a time,
--- for collision check puposes only.
-function RanaLibCollision.addPosition()
-
-	l_addPosition(PositionX, PositionY, ID)
-end
-
--- Perform a check on a given position.
--- Returns table containing the IDs present at that location.
--- Example(getting table and printing it's contents): 
--- table = API.checkPosition(50,50)
--- for i=#table do l_print(positionTable[i]) end
-function RanaLibCollision.checkPosition(x, y)
+-- Updates a position with ID in the collision grid... if it exists.
+function ranaLibCollisionGrid.updatePosition(oldY,oldY,newX,oldY,id)
 	
-	return l_checkPosition(x, y)
+	if type(newX) = "number" and type(newY)="number" and type(oldX) = "number" and type(oldY) = "number" and type(id)="number" then
+
+		l_updatePosition(oldX,oldY,newX,newY,iid)
+
+	end
+
 end
 
--- return true or false whether there is a collision at x,y
-function RanaLibCollision.checkCollision(x, y)
-
-	return l_checkCollision(x,y)
-end
-
-return RanaLibCollision
+return ranaLibCollisionGrid
