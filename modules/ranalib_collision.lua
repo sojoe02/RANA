@@ -20,7 +20,7 @@ function ranaLibCollisionGrid.checkPosition(x, y)
 	local xx = x or PositionX
 	local yy = y or PositionY
 
-	if type(xx) = "number" and type(yy)="number" then
+	if type(xx) == "number" and type(yy) == "number" then
 
 		return l_checkPosition(x, y)
 
@@ -36,7 +36,7 @@ function ranaLibCollisionGrid.checkCollision(x, y)
 	local xx = x or PositionX
 	local yy = y or PositionY
 
-	if type(xx) = "number" and type(yy)="number" then
+	if type(xx) == "number" and type(yy) == "number" then
 
 		return l_checkCollision(x, y)
 
@@ -52,7 +52,7 @@ function ranaLibCollisionGrid.addPosition(x,y,id)
 
 	local iid = id or ID
 	
-	if type(x) = "number" and type(y)="number" then
+	if type(x) == "number" and type(y) == "number" then
 		l_addPosition(x,y,iid)
 	end
 end
@@ -60,7 +60,7 @@ end
 -- Updates a position with ID in the collision grid... if it exists.
 function ranaLibCollisionGrid.updatePosition(oldY,oldY,newX,oldY,id)
 	
-	if type(newX) = "number" and type(newY)="number" and type(oldX) = "number" and type(oldY) = "number" and type(id)="number" then
+	if type(newX) == "number" and type(newY) == "number" and type(oldX) == "number" and type(oldY) == "number" and type(id) == "number" then
 
 		l_updatePosition(oldX,oldY,newX,newY,iid)
 
