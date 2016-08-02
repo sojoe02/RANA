@@ -46,7 +46,7 @@
 #include "../../physics/scanning.h"
 
 AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *nestene, std::string filename)
-    : Auton(ID, posX, posY, posZ, nestene), destinationX(posX), destinationY(posY), movementPrecision(0.01),speed(1), moving(false),gridmove(false),filename(filename),
+    : Auton(ID, posX, posY, posZ, nestene), destinationX(posX), destinationY(posY),speed(1), moving(false),gridmove(false),filename(filename),
       nofile(false),removed(false),L(NULL)
 {
 
@@ -511,21 +511,21 @@ void AutonLUA::getSyncData()
         lua_getglobal(L, "DestinationY");
         lua_getglobal(L, "Speed");
         lua_getglobal(L, "Moving");
-        lua_getglobal(L, "MovementPrecision");
 
-        int stepMultiple = (int)lua_tonumber(L, -8);
+
+        int stepMultiple = (int)lua_tonumber(L, -7);
         if(stepMultiple >=0 )
         {
             macroFactorMultiple = stepMultiple;
         }
-        posX = lua_tonumber(L, -7);
-        posY = lua_tonumber(L, -6);
+        posX = lua_tonumber(L, -6);
+        posY = lua_tonumber(L, -5);
 
-        destinationX = lua_tonumber(L, -5);
-        destinationY = lua_tonumber(L, -4);
-        speed = lua_tonumber(L, -3);
-        moving = lua_toboolean(L, -2);
-        movementPrecision = lua_tonumber(L, -1);
+        destinationX = lua_tonumber(L, -4);
+        destinationY = lua_tonumber(L, -3);
+        speed = lua_tonumber(L, -2);
+        moving = lua_toboolean(L, -1);
+
     }
     catch(std::exception &e)
     {

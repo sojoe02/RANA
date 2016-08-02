@@ -5,15 +5,15 @@ local ranaLibMovement = {}
 -- with a speed of 5 meters pr second
 function ranaLibMovement.to(options)
 
-	local X = options.x or posX
-	local Y = options.y or posY
-	local collision = options.collision or false
-	
-	ranaLibMovement.setSpeed(options.speed)
+	local xx = options.x or posX
+	local yy = options.y or posY
+	local sspeed = options.speed or 1
+
+	ranaLibMovement.setSpeed(sspeed)
 
 	Moving = true
-	DestinationX = X
-	DestinationY = Y
+	DestinationX = xx
+	DestinationY = yy
 
 end
 
@@ -31,7 +31,7 @@ end
 function ranaLibMovement.setSpeed(speed)
 
 	if type(speed) == "number" and speed > 0 then
-		MovementSpeed = speed	
+		Speed = speed	
 	end
 
 end

@@ -32,26 +32,24 @@ function initializeAgent()
 	if Moving ~= true then
 		say("I am not moving".. STEP_RESOLUTION.. ":" .. PositionX)
 	end
-
-	GridMove = true
-	Moving = true
-	DestinationX = 1
-	DestinationY = 1
-	Speed = 40
-
+	--Moving = true
+	--DestinationX = 1
+	--DestinationY = 1
+	--Speed = 3
 end
 
 
 function takeStep()
 
 	if Moving == false then
+
+		say("nothing")
 		
 		local x = Stat.randomInteger(1, ENV_WIDTH)
 		local y = Stat.randomInteger(1, ENV_HEIGHT)		
 
-		Move.to{x=x, y=y}
+		Move.to{x=x, y=y, speed=10}
 		
 	end
-
 end
 

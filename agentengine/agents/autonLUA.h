@@ -122,7 +122,6 @@ private:
     void movement();
     double destinationX;
     double destinationY;
-    double movementPrecision; //meters
     double speed; //meters pr second
     bool moving;
     bool gridmove;
