@@ -11,7 +11,7 @@ test/
 *.kas
 *.out.*
 *.out
-*.png
+#*.png
 *.autosave
 *.lua~
 *.tmp
