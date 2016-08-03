@@ -43,7 +43,8 @@ SOURCES += main.cpp\
     postprocessing/postcontrol.cpp \
     postprocessing/eventrunner.cpp \
     postprocessing/graphics/zmap.cpp \
-    physics/scanning.cpp
+    physics/scanning.cpp \
+    helpdialog.cpp
 
 HEADERS  += mainwindow.h \
     physics/phys.h \
@@ -74,10 +75,12 @@ HEADERS  += mainwindow.h \
     postprocessing/postcontrol.h \
     postprocessing/eventrunner.h \
     postprocessing/graphics/zmap.h \
-    physics/scanning.h
+    physics/scanning.h \
+    helpdialog.h
 
 FORMS    += mainwindow.ui \
-	eventdialog.ui
+	eventdialog.ui \
+    about.ui
 
 #copy the lua modules to the correct directory, "wherever" Qmake puts it
 unix: copydata.commands = $(COPY_DIR) $$PWD/modules $$OUT_PWD
@@ -113,3 +116,6 @@ else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../lua51_64bit/ -llua5.
 
 INCLUDEPATH += $$PWD/../lua51_64bit/include
 DEPENDPATH += $$PWD/../lua51_64bit/include
+
+RESOURCES += \
+    images.qrc

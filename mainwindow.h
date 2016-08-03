@@ -58,8 +58,6 @@ public:
     void runButtonHide();
 
 	void updateMap(std::list<agentInfo> infolist);
-
-
     void write_output(QString argMsg);
     void write_status(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents);
 	void write_regularOutput(QString argMsg);
@@ -126,7 +124,8 @@ private slots:
 	void on_vis_eventPlayPushButton_clicked();
 	void on_vis_clearOutputPushButton_clicked();
 
-	void on_action_Enable_Visualisation_triggered(bool checked);
+    void helpDialog();
+    void on_action_Enable_Visualisation_triggered(bool checked);
     void on_disableAgentsCheckBox_toggled(bool checked);
 	void on_generateEmptyMapButton_clicked();
     void on_zoomSlider_actionTriggered(int action);

@@ -40,7 +40,7 @@
 
 
 #include "eventdialog.h"
-
+#include "helpdialog.h"
 
 //QImage *MainWindow::mapItem = NULL;
 
@@ -90,9 +90,9 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
 
-    versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.7.14:0.8.2");
+    //versionString = QString("<b><font color=\"green\">RANA</b></font> version 1.7.14:0.8.2");
 
-    ui->statusBar->addWidget(new QLabel(versionString));
+    //ui->statusBar->addWidget(new QLabel(versionString));
 	ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
 
 	sim_controlTab = ui->simControlTab;
@@ -101,8 +101,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	sim_general = ui->simGeneralWidget;
 
 	ppConstruction();
-	dialogConstruction();
-
+    dialogConstruction();
 }
 
 MainWindow::~MainWindow()
@@ -695,7 +694,8 @@ void MainWindow::on_pushButton_clicked()
  */
 void MainWindow::actionPrintInfo()
 {
-	write_output(versionString);
+//	write_output(versionString);
+
 }
 
 void MainWindow::on_checkBox_toggled(bool checked)
@@ -1257,8 +1257,15 @@ void MainWindow::on_vis_clearOutputPushButton_clicked()
 void MainWindow::dialogConstruction()
 {
 	QObject::connect(ui->actionSave_Current_Events, SIGNAL(triggered()),this, SLOT(eventDialog()));
+    QObject::connect(ui->action_Info,SIGNAL(triggered(bool)),this,SLOT(helpDialog()));
 	//Output::Inst()->kprintf("dialog start now");
 	//Output::Inst()->kprintf("No map has been loaded, please do that...");
+}
+
+void MainWindow::helpDialog()
+{
+    HelpDialog *dialog = new HelpDialog(this);
+    dialog->exec();
 }
 
 void MainWindow::eventDialog()
@@ -1298,5 +1305,4 @@ void MainWindow::on_zoomSlider_sliderMoved(int position)
 {
 
 }
-
 
