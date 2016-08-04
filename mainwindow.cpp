@@ -133,7 +133,9 @@ void MainWindow::on_generateButton_clicked()
 	if(mapItem != NULL){
 
 		//mapItem->setPixmap(QPixmap::fromImage(*mapImage));
-		//mapItem->setZValue(1);
+        //mapItem->setZValue(1);
+
+        ui->disableAgentsCheckBox->setChecked(false);
 
 		Phys::setScale(ui->scaleDoubleSpinBox->value());
         //Output::Inst()->kprintf("Setting map scale to %f", Phys::getScale());

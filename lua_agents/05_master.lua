@@ -1,7 +1,6 @@
-----begin_license--
+--begin_license--
 --
---Copyright 	2013 	Søren Vissing Jørgensen.
---			2014	Søren Vissing Jørgensen, Center for Bio-Robotics, SDU, MMMI.  
+--Copyright 	2013 - 2016 	Søren Vissing Jørgensen.
 --
 --This file is part of RANA.
 --
@@ -21,12 +20,26 @@
 ----end_license--
 
 --The following global values are set via the simulation core:
+-- ------------------------------------
+-- IMMUTABLES.
+-- ------------------------------------
 -- ID -- id of the agent.
--- PositionX --	this agents x position.
--- PositionY -- this agents y position.
 -- STEP_RESOLUTION 	-- resolution of steps, in the simulation core.
 -- EVENT_RESOLUTION	-- resolution of event distribution.
--- StepMultiple 	-- amount of steps to skip.
+-- ENV_WIDTH -- Width of the environment in meters.
+-- ENV_HEIGHT -- Height of the environment in meters.
+-- ------------------------------------
+-- VARIABLES.
+-- ------------------------------------
+-- PositionX	 	-- Agents position in the X plane.
+-- PositionY	 	-- Agents position in the Y plane.
+-- DestinationX 	-- Agents destination in the X plane. 
+-- DestinationY 	-- Agents destination in the Y plane.
+-- StepMultiple 	-- Amount of steps to skip.
+-- Speed 			-- Movement speed of the agent in meters pr. second.
+-- Moving 			-- Denotes wether this agent is moving (default = false).
+-- GridMove 		-- Is collision detection active (default = false).
+-- ------------------------------------
 
 
 -- Import valid Rana lua libraries.

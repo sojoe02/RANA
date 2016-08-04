@@ -8,7 +8,7 @@ HelpDialog::HelpDialog(QWidget *parent) :
     ui(new Ui::HelpDialog)
 {
     ui->setupUi(this);
-    ui->helpTextBrowser->append("<b><center>Rana 1.7 (revision 15:0.8.2:JIT)</b> </center>");
+    ui->helpTextBrowser->append("<b><center>Rana 1.7 (revision 17:0.8.2:JIT)</b> </center>");
     QString system = QSysInfo::kernelType();
     system.append(" : ");
     system.append(QSysInfo::buildCpuArchitecture());
