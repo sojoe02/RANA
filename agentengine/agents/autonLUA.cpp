@@ -98,7 +98,7 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
         lua_pushnumber(L,destinationY);
         lua_setglobal(L, "DestinationY");
         lua_pushnumber(L, speed);
-        lua_setglobal(L, "MovementSpeed");
+        lua_setglobal(L, "Speed");
         lua_pushboolean(L, moving);
         lua_setglobal(L, "Moving");
         lua_pushboolean(L, gridmove);
@@ -687,8 +687,8 @@ int AutonLUA::l_getMersenneInteger(lua_State *L)
 //Map and position.
 int AutonLUA::l_getEnvironmentSize(lua_State *L)
 {
-    lua_pushnumber(L,Phys::getEnvX()-1);
-    lua_pushnumber(L,Phys::getEnvY()-1);
+    lua_pushnumber(L,Phys::getEnvX());
+    lua_pushnumber(L,Phys::getEnvY());
     return 2;
 
 }
@@ -696,8 +696,11 @@ int AutonLUA::l_getEnvironmentSize(lua_State *L)
 
 int AutonLUA::l_modifyMap(lua_State *L)
 {
-    int x = lua_tonumber(L, -5);
-    int y = lua_tonumber(L, -4);
+    double x = lua_tonumber(L, -5);
+    double y = lua_tonumber(L, -4);
+
+    int modX = x * Phys::getScale();
+    int modY = y * Phys::getScale();
 
     rgba color;
 
@@ -706,17 +709,20 @@ int AutonLUA::l_modifyMap(lua_State *L)
     color.blue = lua_tonumber(L, -1);
     color.alpha = 0;
 
-    bool success = MapHandler::setPixelInfo(x, y, color);
+    bool success = MapHandler::setPixelInfo(modX, modY, color);
     lua_pushboolean(L, success);
     return 1;
 }
 
 int AutonLUA::l_checkMap(lua_State *L)
 {
-    int x = lua_tonumber(L, -2);
-    int y = lua_tonumber(L, -1);
+    double x = lua_tonumber(L, -2);
+    double y = lua_tonumber(L, -1);
 
-    rgba color = MapHandler::getPixelInfo(x, y);
+    int checkX = x * Phys::getScale();
+    int checkY = y * Phys::getScale();
+
+    rgba color = MapHandler::getPixelInfo(checkX, checkY);
 
     lua_pushnumber(L, color.red);
     lua_pushnumber(L, color.green);
