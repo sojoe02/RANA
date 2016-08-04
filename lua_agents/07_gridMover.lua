@@ -29,17 +29,13 @@ Collision = require "ranalib_collision"
 function initializeAgent()
 	say("Agent #: " .. ID .. " has been initialized")
 
-	if Moving ~= true then
-		say("I am not moving".. STEP_RESOLUTION.. ":" .. PositionX)
-	end
-
 	Moving = true
 	DestinationX = 1
 	DestinationY = 1
-
 	Speed = 40
 	GridMove = true
 	--Moving = true
+	--
 end
 
 
@@ -58,12 +54,14 @@ end
 
 function cleanUp()
 	
-	positionTable = {}
-	positionTable = Collision.checkPosition(PositionX, PositionY)
+	if ID == 1 then
+		positionTable = {}
+		positionTable = Collision.checkPosition(PositionX, PositionY)
 
-	say("agent #"..ID.." has these collisions...")
-	 for i = 1, #positionTable do
-		say(positionTable[i])
+		say("agent #"..ID.." has these collisions...")
+	 	for i = 1, #positionTable do
+			say(positionTable[i])
+		end
 	end
 end
 

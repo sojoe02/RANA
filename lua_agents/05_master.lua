@@ -55,6 +55,8 @@ end
 
 function takeStep()
 
+	Agent.removeAgent(ID)
+
 end
 
 function cleanUp()
