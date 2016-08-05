@@ -26,7 +26,6 @@ function RanaLibShared.storeTable(key, table, check)
 
 	else 
 		tableString = utility.serializeTable(table)
-		say(tableString)
 		l_addSharedString(key, tableString)
 	end 
 

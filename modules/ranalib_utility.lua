@@ -8,8 +8,6 @@ function RanaLibUtility.deserializeTable(string)
 		return nil
 	end
 
-	say(string)
-	
 	loadstring("stable="..string)()
 	return stable
 end
