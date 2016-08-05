@@ -43,6 +43,7 @@
 
 -- Import valid Rana lua libraries.
 Event = require "ranalib_event"
+Shared = require "ranalib_shared"	
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
 function initializeAgent()
@@ -66,7 +67,6 @@ function handleEvent(sourceX, sourceY, sourceID, eventDescription, eventTable)
 end
 
 function takeStep()
-
 
 	if l_getMersenneInteger(1,1000) <= 1 and ID==1 then
 		l_debug("Agent:"..ID.." is emiting ping")

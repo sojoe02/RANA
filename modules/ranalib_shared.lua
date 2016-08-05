@@ -9,9 +9,10 @@ local valueCheck = false
 -- @param check, it's possible to enable check for table type, 
 -- this will adversely affect performance)
 -- Example: API.shareTable("agent1",{myX, myY, myID}, true)
-function RanaLibShared.storeTable(key, tableString, check)
+function RanaLibShared.storeTable(key, table, check)
 
 	local check = check or valueCheck
+	local tableString
 
 	if check==true then
 
@@ -25,6 +26,7 @@ function RanaLibShared.storeTable(key, tableString, check)
 
 	else 
 		tableString = utility.serializeTable(table)
+		say(tableString)
 		l_addSharedString(key, tableString)
 	end 
 
@@ -33,13 +35,13 @@ end
 -- Retrieve the shared table from the central string register, using a known key.
 function RanaLibShared.getTable(key)
 
-	local string 
+	local tableString
 
 	if type(key)~="table" then
 		tableString = l_getSharedString(key)
 	end
 
-	return utility.deserialize(tableString)
+	return utility.deserializeTable(tableString)
 end
 
 -- Nearly the same as shareTable except the value argument will be interpreted as a
@@ -102,7 +104,7 @@ end
 -- enabling this will adversely affect performance.
 function RanaLibShared.checkValues(boolean)
 
-	if type(boolean) = "boolean" then
+	if type(boolean) == "boolean" then
 		valueCheck = boolean
 	end
 

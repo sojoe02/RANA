@@ -7,8 +7,10 @@ function RanaLibUtility.deserializeTable(string)
 	if string.len(string) < 3 then 
 		return nil
 	end
+
+	say(string)
 	
-	load("stable="..string)()
+	loadstring("stable="..string)()
 	return stable
 end
 
