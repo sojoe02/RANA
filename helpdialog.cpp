@@ -1,5 +1,5 @@
 #include <QSysInfo>
-
+#include <QtGlobal>
 #include "helpdialog.h"
 #include "ui_about.h"
 
@@ -8,10 +8,10 @@ HelpDialog::HelpDialog(QWidget *parent) :
     ui(new Ui::HelpDialog)
 {
     ui->setupUi(this);
-	ui->helpTextBrowser->append("<b><center>Rana 1.7 (revision 20:0.8.3:JIT)</b> </center>");
+    ui->helpTextBrowser->append("<b><center>Rana 1.7 (revision 21:0.8.4:JIT)</b> </center>");
     QString system = QSysInfo::kernelType();
 
-	if(QT_VERSION_MINOR > 4 && QT_VERSION_MAJOR >= 5)
+    if(QT_VERSION >= QT_VERSION_CHECK(5,4,0))
 	{
 		system.append(" : ");
 		system.append(QSysInfo::buildCpuArchitecture());

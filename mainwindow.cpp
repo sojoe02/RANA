@@ -905,13 +905,15 @@ void MainWindow::setupVisualTab(QHash<QString, ZBlock *> *argZBlocks)
     //Output::Inst()->kprintf("PATH to position file %s", agenttmupath.toUtf8().constData());
     std::ifstream file(agenttmupath.toUtf8().constData(), std::ifstream::binary);
 
+    agentpositionMap.clear();
+
 	if(file.is_open())
 	{
 		while(!file.eof())
 		{
 			agentTmu agenttmu;
             file.read(reinterpret_cast<char*>(&agenttmu),sizeof(agentTmu));
-            //Output::Inst()->kprintf("id %d, posx %d, posY %d",agenttmu.id, agenttmu.x, agenttmu.y);
+          // Output::Inst()->kprintf("id %d, posx %d, posY %d",agenttmu.id, agenttmu.x, agenttmu.y);
             agentInfo agentinfo;
             agentinfo.x = agenttmu.x;
             agentinfo.y = agenttmu.y;
