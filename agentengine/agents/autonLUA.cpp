@@ -69,8 +69,13 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
         // Register the path to the Rana specific lua modules
         lua_getglobal(L, "package");
         lua_getfield(L, -1, "path");
-        std::string cur_path = lua_tostring(L, -1);
-        cur_path.append(";modules/?.lua");
+		std::string cur_path = lua_tostring(L, -1);
+		std::string module_path = Output::Inst()->RanaDir;
+		//Output::Inst()->kdebug(module_path.c_str());
+		module_path.append("/modules/?.lua");
+		//Output::Inst()->kdebug(module_path.c_str());
+		cur_path.append(";");
+		cur_path.append(module_path);
         lua_pop(L,1);
         lua_pushstring(L, cur_path.c_str());
         lua_setfield(L,-2,"path");
@@ -159,9 +164,12 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
         lua_register(L, "l_emitEvent", l_emitEvent);
         lua_register(L, "l_addGroup", l_addGroup);
         lua_register(L, "l_removeGroup", l_removeGroup);
-        lua_register(L, "l_setStepMultiplier", l_setMacroFactorMultipler);
+		lua_register(L, "l_setStepMultiplier", l_setMacroFactorMultipler);
 
-        if(luaL_loadfile(L, "modules/auxiliary.lua") || lua_pcall(L,0,0,0))
+		std::string auxLib = Output::Inst()->RanaDir;
+		auxLib.append("/modules/auxiliary.lua");
+
+		if(luaL_loadfile(L, auxLib.c_str()) || lua_pcall(L,0,0,0))
         {
             Output::Inst()->kprintf("error : %s \n", lua_tostring(L, -1));
             nofile = true;

@@ -102,6 +102,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	ppConstruction();
     dialogConstruction();
+
+	Output::Inst()->RanaDir =
+			QCoreApplication::applicationDirPath().toUtf8().constData();
+
+	qDebug() << qVersion() << QT_VERSION_MINOR <<QT_VERSION_MAJOR;
 }
 
 MainWindow::~MainWindow()
@@ -861,6 +866,8 @@ void MainWindow::setupVisualTab(QHash<QString, ZBlock *> *argZBlocks)
 {
     PPactiveAgents = NULL;
 	zBlocks = argZBlocks;
+
+	groupItems.clear();
 
     //Output::Inst()->ppprintf("adding item to something fierce...");
 	eventScene->clear();

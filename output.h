@@ -63,6 +63,7 @@ public:
 	static unsigned long long RUNTIME;
 	static std::string AgentPath;
 	static std::string AgentFile;
+	static std::string RanaDir;
 
 	void updateZvalue(QString string);
 

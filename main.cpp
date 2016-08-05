@@ -44,8 +44,10 @@ int main(int argc, char *argv[])
 	Output::LegacyMode.store(false);
     GridMovement::initGrid(1);
 
-    qDebug() << Phys::getMersenneInteger(1, RAND_MAX) << Phys::getMersenneInteger(1, RAND_MAX) << Phys::getMersenneFloat(1, RAND_MAX) <<Phys::getMersenneInteger(1, RAND_MAX) ;
-    QApplication a(argc, argv);
+	qDebug() << Phys::getMersenneInteger(1, RAND_MAX) << Phys::getMersenneInteger(1, RAND_MAX) << Phys::getMersenneFloat(1, RAND_MAX) <<Phys::getMersenneInteger(1, RAND_MAX) ;
+
+
+	QApplication a(argc, argv);
     MainWindow *w = new MainWindow();
 
     Output::Inst()->setMainWindow(w);

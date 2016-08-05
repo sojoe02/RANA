@@ -45,6 +45,7 @@ unsigned long long Output::RUNTIME = 0;
 
 std::string Output::AgentPath = "";
 std::string Output::AgentFile = "";
+std::string Output::RanaDir = "";
 
 Output* Output::Inst()
 {
