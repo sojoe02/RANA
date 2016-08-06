@@ -9,7 +9,7 @@ HelpDialog::HelpDialog(QWidget *parent) :
 {
     ui->setupUi(this);
     this->setWindowTitle("Help");
-    ui->helpTextBrowser->append("<b><center>Rana 1.7 (revision 22:0.8.4:JIT)</b> </center>");
+    ui->helpTextBrowser->append("<b><center>Rana 1.7 (revision 22:0.8.5:JIT)</b> </center>");
     QString system = QSysInfo::kernelType();
 
     if(QT_VERSION >= QT_VERSION_CHECK(5,4,0))
