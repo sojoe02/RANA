@@ -91,7 +91,7 @@ function takeStep()
 
 		index = "string"
 		say("Agent:"..ID.." is submitting a string to shared ")
-		Shared.storeString(index, "Agent "..ID.."stored this string")
+		Shared.storeString(index, "Agent "..ID.." stored this string")
 		Event.emit{description="string",table="{index=\""..index.."\"}"}
 		
 	end

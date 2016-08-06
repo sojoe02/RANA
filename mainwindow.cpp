@@ -543,11 +543,12 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 		if(zmap != NULL)
 		{
            // ui->vis_mapGraphicsView->fitInView(eventMapScene->sceneRect());
-            //eventMapScene->removeItem(zmap);
-            //zmap = new ZMap(zmode);
-            //eventMapScene->addItem(zmap);
+            eventMapScene->removeItem(zmap);
+            zmap = new ZMap();
+            eventMapScene->addItem(zmap);
             zmap->setPos(0,0);
             zmap->setSize(ui->vis_mapGraphicsView->width(),ui->vis_mapGraphicsView->height());
+            zmap->changeMode(zmode);
         }
 
 
@@ -913,10 +914,12 @@ void MainWindow::setupVisualTab(QHash<QString, ZBlock *> *argZBlocks)
     zmap = new ZMap();
 
     eventMapScene->addItem(zmap);
+    ui->vis_mapGraphicsView->viewport()->update();
     //zmap->setPos(0,0);
     //zmap->setSize(ui->vis_mapGraphicsView->maximumWidth(),ui->vis_outputTextBrowser->height());
     zmap->setPos(0,0);
-    zmap->setSize(ui->vis_mapGraphicsView->maximumWidth(),ui->vis_mapGraphicsView->maximumHeight());
+    zmap->setSize(ui->vis_mapGraphicsView->width(),ui->vis_graphicsView->height());
+    //zmap->setPos(0,0);
 
 
     //Parse agent positions and load them into memory.
@@ -1200,7 +1203,8 @@ void MainWindow::on_vis_activeMapSpinBox_valueChanged(int arg1)
     //PPactiveAgents = eventScene->createItemGroup(groupItems);
     ///PPactiveAgents->setZValue(3);
     ui->vis_graphicsView->viewport()->update();
-
+    zmap->setPos(0,0);
+    zmap->setSize(ui->vis_mapGraphicsView->width(),ui->vis_mapGraphicsView->height());
 }
 
 /**
