@@ -5,11 +5,11 @@
 #include "output.h"
 
 ZMap::ZMap()
-	:sizeX(10), sizeY(0),currentZMode(ZMode::Cumulative), currentTime(0)
+    :sizeX(10), sizeY(0),currentZMode(ZMode::Cumulative), currentTime(0)
 {
 	maxLevels = ColorUtility::GetMaxZLevels();
 	minLevels = ColorUtility::GetMinZLevels();
-	Output::Inst()->ppprintf("Painting the zmapper...");
+    Output::Inst()->ppprintf("color utility max values: %f,%f");
 }
 QRectF ZMap::boundingRect() const
 {
@@ -17,43 +17,46 @@ QRectF ZMap::boundingRect() const
 }
 void ZMap::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-	//Output::Inst()->ppprintf("value is: scene %i", scene()->height());
-	for(int i = 1; i <= sizeY; i++)
+    Output::Inst()->ppprintf("value is: scene %i, sizeY %i", scene()->height(), sizeY);
+    //sizeY = 200;
+    for(int i = 1; i <= sizeY; i++)
 	{
 		QPen pen;
 		pen.setWidth(1);
-		pen.setColor(Qt::black);
+        pen.setColor(Qt::black);
 
 		double value = 0;
 
 		if(currentZMode == ZMode::Average)
 		{
-			value = (maxLevels.average - minLevels.average) *
+            value = (maxLevels.average) *
 					((double)i/(double)sizeY);
 
-			pen.setColor(ColorUtility::GetAvgColor(value));
+            pen.setColor(ColorUtility::GetAvgColor(value));
 
 		}else if(currentZMode == ZMode::Cumulative)
 		{
-			value = (maxLevels.cumulative - minLevels.cumulative) *
+            value = (maxLevels.cumulative) *
 					((double)i/(double)sizeY);
 
-			pen.setColor(ColorUtility::GetCumulativeColor(value));
+            pen.setColor(ColorUtility::GetCumulativeColor(value));
 
 		}else if(currentZMode == ZMode::Frequency)
 		{
-			value = (maxLevels.frequency - minLevels.frequency) *
+            value = (maxLevels.frequency) *
 					((double)i/(double)sizeY);
 
-			pen.setColor(ColorUtility::GetFreqColor(value));
+            pen.setColor(ColorUtility::GetFreqColor(value));
 
 		}else if(currentZMode == ZMode::Highest)
 		{
-			value = (maxLevels.highest - minLevels.highest) *
+            value = (maxLevels.highest) *
 					((double)i/(double)sizeY);
 
-			pen.setColor(ColorUtility::GetHighest(value));
-		}
+            pen.setColor(ColorUtility::GetHighest(value));
+        }
+
+        //Output::Inst()->kprintf("value is :%f, %f", value, (double)i/(double)sizeY);
 
 		painter->setPen(pen);
 		painter->drawLine(0,i,sizeX,i);

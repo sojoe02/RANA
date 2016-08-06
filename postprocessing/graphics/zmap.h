@@ -10,7 +10,7 @@ class ZMap : public QGraphicsItem
 {
 	//Q_OBJECT
 public:
-	ZMap();
+    ZMap();
 
 	QRectF boundingRect() const;
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);

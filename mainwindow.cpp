@@ -109,7 +109,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	Output::Inst()->RanaDir =
 			QCoreApplication::applicationDirPath().toUtf8().constData();
 
-	qDebug() << qVersion() << QT_VERSION_MINOR <<QT_VERSION_MAJOR;
+    //qDebug() << qVersion() << QT_VERSION_MINOR <<QT_VERSION_MAJOR;
 }
 
 MainWindow::~MainWindow()
@@ -545,9 +545,9 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 		if(zmap != NULL)
 		{
            // ui->vis_mapGraphicsView->fitInView(eventMapScene->sceneRect());
-            eventMapScene->removeItem(zmap);
-            zmap = new ZMap();
-            eventMapScene->addItem(zmap);
+            //eventMapScene->removeItem(zmap);
+            //zmap = new ZMap(zmode);
+            //eventMapScene->addItem(zmap);
             zmap->setPos(0,0);
             zmap->setSize(ui->vis_mapGraphicsView->width(),ui->vis_mapGraphicsView->height());
         }
@@ -584,8 +584,9 @@ void MainWindow::on_tabWidget_currentChanged(int index)
 	{
 		if(zmap != NULL)
 		{
-			zmap->setPos(0,0);
-			zmap->setSize(ui->vis_mapGraphicsView->width(),ui->vis_mapGraphicsView->height());
+            zmap->setPos(0,0);
+            zmap->setSize(ui->vis_mapGraphicsView->width(),ui->vis_mapGraphicsView->height());
+            //ui->vis_mapGraphicsView->fitInView(eventMapScene->sceneRect());
 		}
 
 		ui->vis_graphicsView->fitInView(eventScene->sceneRect(),
@@ -823,6 +824,7 @@ void MainWindow::on_vis_processEventsPushButton_clicked()
 {
 	zMapTimer->stop();
 
+
 	QFileInfo fi(ui->vis_eventPathLineEdit->text());
 	QFileInfo efi(ui->vis_agentPathLineEdit->text());
 	QString agentPath = ui->vis_agentPathLineEdit->text();
@@ -831,7 +833,9 @@ void MainWindow::on_vis_processEventsPushButton_clicked()
 	if( fi.isFile() && efi.isFile())
 	{
 
+        groupItems.clear();
 		eventScene->clear();
+
 		ui->tabWidget->removeTab(ui->tabWidget->indexOf(vis_mapTab));
 
 		Output::RunEventProcessing.store(true);
@@ -881,10 +885,10 @@ void MainWindow::setupVisualTab(QHash<QString, ZBlock *> *argZBlocks)
     PPactiveAgents = NULL;
 	zBlocks = argZBlocks;
 
-	groupItems.clear();
+    //groupItems.clear();
 
     //Output::Inst()->ppprintf("adding item to something fierce...");
-	eventScene->clear();
+    //eventScene->clear();
 	//eventScene->setSceneRect(0,0,10,10);
 	for(auto it = zBlocks->begin(); it != zBlocks->end(); ++it)
 	{
@@ -895,22 +899,27 @@ void MainWindow::setupVisualTab(QHash<QString, ZBlock *> *argZBlocks)
 	//add the map tab:
 	ui->tabWidget->insertTab(ui->tabWidget->count()+1,vis_mapTab,"Event Map");
 	ui->vis_activeMapSpinBox->setMaximum(ColorUtility::GetMaxTime());
+    //Output::Inst()->kprintf();
 	ui->vis_mapTypeComboBox->setCurrentIndex(0);
 	ui->vis_activeMapSpinBox->setValue(timeOffset);
+    zmode = ZMode::Cumulative;
 
 	if(zBlocks != NULL)
 	{
 		for(auto it = zBlocks->begin(); it != zBlocks->end(); ++it)
 		{
-			it.value()->changeMode(ZMode::Cumulative);
+            it.value()->changeMode(zmode);
 		}
 	}
 
-	zmap = new ZMap();
-	eventMapScene->addItem(zmap);
+    zmap = new ZMap();
 
-	zmap->setPos(0,0);
-	zmap->setSize(ui->vis_mapGraphicsView->maximumWidth(),ui->vis_outputTextBrowser->height());
+    eventMapScene->addItem(zmap);
+    //zmap->setPos(0,0);
+    //zmap->setSize(ui->vis_mapGraphicsView->maximumWidth(),ui->vis_outputTextBrowser->height());
+    zmap->setPos(0,0);
+    zmap->setSize(ui->vis_mapGraphicsView->maximumWidth(),ui->vis_mapGraphicsView->maximumHeight());
+
 
     //Parse agent positions and load them into memory.
     QString agenttmupath = ui->vis_eventPathLineEdit->text();
@@ -1103,7 +1112,7 @@ void MainWindow::on_vis_readInfoPushButton_clicked()
 void MainWindow::on_vis_mapTypeComboBox_currentIndexChanged(const QString &arg1)
 {
 	Output::Inst()->ppprintf("Current index is :%s", arg1.toStdString().c_str());
-	ZMode zmode = ZMode::Average;
+    zmode = ZMode::Average;
 
 	//set the z mode:
 	if(arg1.compare("Average") == 0)
@@ -1125,7 +1134,9 @@ void MainWindow::on_vis_mapTypeComboBox_currentIndexChanged(const QString &arg1)
 
 	if(zmap != NULL)
 	{
-		zmap->changeMode(zmode);
+        zmap->changeMode(zmode);
+        zmap->setPos(0,0);
+        zmap->setSize(ui->vis_mapGraphicsView->width(),ui->vis_mapGraphicsView->height());
 	}
 }
 

@@ -196,6 +196,7 @@ private:
 
     QTimer resizeTimer;
 	QTimer *zMapTimer;
+    ZMode zmode;
 	bool disableLiveView;
 	bool playingMap;
 

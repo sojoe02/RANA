@@ -286,10 +286,18 @@ void EventProcessing::recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *ev
     double distance = sqrt( pow((event->originX - (x+displaceX)*mapRes), 2)
                             + pow((event->originY - (y+displaceY)*mapRes), 2) );
 
-    double arrivalTime = (event->activationTime/simInfo->timeResolution/timeRes)
+    double arrivalTime = 0;
+
+    if (event->propagationSpeed == 0)
+    {
+        arrivalTime = event->activationTime/simInfo->timeResolution/timeRes;
+    } else
+    {
+         arrivalTime = (event->activationTime/simInfo->timeResolution/timeRes)
             + distance/(event->propagationSpeed)/timeRes;
+    }
     //Output::Inst()->ppprintf("arrival time: %f, x: %i, y: %i", arrivalTime,
-    //2					 x+displaceX, y+displaceY);
+      //                   x+displaceX, y+displaceY);
 
     //insert z value and take event duration into account:
     QHash<QString, ZBlock*>::iterator zitr = zBlocks->find(key);
@@ -314,7 +322,7 @@ void EventProcessing::recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *ev
         if(zitr != zBlocks->end())
         {
             zitr.value()->addZValue(z, arrivalTime);
-            //Output::Inst()->kprintf("%f", arrivalTime);
+           // Output::Inst()->kprintf("%f", arrivalTime);
         }
 
         double max = 0;

@@ -84,7 +84,7 @@ void ColorUtility::AddMaxMinValues(zvalue min, zvalue max, int maxTime){
  */
 QColor ColorUtility::ZValueToColor(double value, double min, double max)
 {
-	double thress = (value)/(max);
+    double thress = (value)/(max);
 
 	uchar r = 0;
 	uchar g = 0;
