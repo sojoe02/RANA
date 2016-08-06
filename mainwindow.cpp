@@ -108,12 +108,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	Output::Inst()->RanaDir =
 			QCoreApplication::applicationDirPath().toUtf8().constData();
-
-<<<<<<< HEAD
-    //qDebug() << qVersion() << QT_VERSION_MINOR <<QT_VERSION_MAJOR;
-=======
-//	qDebug() << qVersion() << QT_VERSION_MINOR <<QT_VERSION_MAJOR;
->>>>>>> 604f1fb05763f39d445d77b4430c08a68457dcd9
 }
 
 MainWindow::~MainWindow()
