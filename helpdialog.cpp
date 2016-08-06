@@ -8,7 +8,8 @@ HelpDialog::HelpDialog(QWidget *parent) :
     ui(new Ui::HelpDialog)
 {
     ui->setupUi(this);
-    ui->helpTextBrowser->append("<b><center>Rana 1.7 (revision 21:0.8.4:JIT)</b> </center>");
+    this->setWindowTitle("Help");
+    ui->helpTextBrowser->append("<b><center>Rana 1.7 (revision 22:0.8.4:JIT)</b> </center>");
     QString system = QSysInfo::kernelType();
 
     if(QT_VERSION >= QT_VERSION_CHECK(5,4,0))
@@ -20,7 +21,9 @@ HelpDialog::HelpDialog(QWidget *parent) :
     ui->helpTextBrowser->append(system);
     ui->helpTextBrowser->append(" ");
 
-    QString depend ="<p></p>Based on <a href=\"http://en.cppreference.com/w/cpp\"><span style=\" text-decoration: underline; color:#0000ff;\">C++ 11</span></a>, <a href=\"https://www.qt.io/\"><span style=\" text-decoration: underline; color:#0000ff;\">QT 5</span></a> and <a href=\"http://luajit.org/\"><span style=\" text-decoration: underline; color:#0000ff;\">luaJIT 2.0.4</span></a>.</p>";
+    QString depend ="<p></p>Based on <a href=\"http://en.cppreference.com/w/cpp\"><span style=\" text-decoration: underline; color:#0000ff;\">C++ 11</span></a>, <a href=\"https://www.qt.io/\"><span style=\" text-decoration: underline; color:#0000ff;\">Qt ";
+    depend.append(QT_VERSION_STR);
+    depend.append("</span></a> and <a href=\"http://luajit.org/\"><span style=\" text-decoration: underline; color:#0000ff;\">luaJIT 2.0.4</span></a>.</p>");
     QString source = "Source: <a href=\"https://github.com/sojoe02/RANA\"><span style=\" text-decoration: underline; color:#0000ff;\">https://github.com/sojoe02/RANA</span></a>";
     QString releases = "<div align=\"left\">Releases:<a href=\"https://github.com/sojoe02/RANA/releases\"><span style=\" text-decoration: underline; color:#0000ff;\">https://github.com/sojoe02/RANA/releases</span></a></div>";
     QString documentation = "<div align=\"lef\">Documentation <a href=\"https://github.com/sojoe02/RANA/wiki\"><span style=\" text-decoration: underline; color:#0000ff;\">https://github.com/sojoe02/RANA/wiki</span></a></div>";

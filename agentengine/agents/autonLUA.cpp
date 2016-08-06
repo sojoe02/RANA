@@ -912,6 +912,7 @@ int AutonLUA::l_addSharedNumber(lua_State *L)
 int AutonLUA::l_getSharedNumber(lua_State *L)
 {
     std::string key = lua_tostring(L, -1);
+    //Output::Inst()->kprintf(key.c_str());
 
     double value = Shared::getNumber(key);
 

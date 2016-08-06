@@ -21,6 +21,8 @@
 //--end_license--
 #include <climits>
 
+#include <output.h>
+
 #include <iostream>
 #include "shared.h"
 
@@ -71,6 +73,8 @@ double Shared::getNumber(std::string key)
 
 void Shared::addString(std::string key, std::string value)
 {
+
+    //Output::Inst()->kprintf(value.c_str());
 
 	if(sharedStrings.find(key) == sharedStrings.end())
 		sharedStrings.insert(std::pair<std::string, std::string>(key, value));

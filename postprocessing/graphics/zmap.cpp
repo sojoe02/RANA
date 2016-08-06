@@ -72,9 +72,9 @@ void ZMap::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 
 void ZMap::setSize(int sizeX, int sizeY)
 {
-	this->sizeX = sizeX;
-	this->sizeY = sizeY;
-	this->update();
+    this->sizeX = sizeX;
+    this->sizeY = sizeY;
+    this->update();
 }
 
 void ZMap::changeMode(ZMode zmode)

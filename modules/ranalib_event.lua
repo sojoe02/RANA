@@ -34,7 +34,11 @@ end
 _EmitEvent = function(speed, desc, table, targetID, targetGroup)
 
 	if table ~= false then
-		tableString = utility.serializeTable(table)
+		if type(table)=="table" then
+			tableString = utility.serializeTable(table)
+		elseif type(table)=="string" then
+			tableString = table
+		end
 	else
 		tableString = ""
 	end

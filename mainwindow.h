@@ -109,7 +109,8 @@ private slots:
 	void on_vis_readInfoPushButton_clicked();
 	void on_vis_agentPathPushButton_clicked();
 	void on_vis_mapTypeComboBox_currentIndexChanged(const QString &arg1);
-	void on_zMapTimerTimeout();
+    void on_zMapTimerTimeout();
+    void on_resizeTimerTimeout();
 
 	//dialogs:
 	void eventDialog(); 
@@ -145,9 +146,7 @@ signals:
 	void removeGraphicAutonSignal(int Id);
 
 	//postprocessing:
-	void writePPSignal(QString something);
-
-
+    void writePPSignal(QString something);
 
 private:
 
@@ -195,7 +194,7 @@ private:
     QMap<double, agentIDMap> agentpositionMap;
     QList<QGraphicsItem*> groupItems;
 
-
+    QTimer resizeTimer;
 	QTimer *zMapTimer;
 	bool disableLiveView;
 	bool playingMap;

@@ -7,7 +7,8 @@ EventDialog::EventDialog(Control *control, QWidget *parent) :
 	QDialog(parent),
 	ui(new Ui::EventDialog), control(control)
 {
-	ui->setupUi(this);
+    ui->setupUi(this);
+    this->setWindowTitle("Save Events");
 }
 
 EventDialog::~EventDialog()

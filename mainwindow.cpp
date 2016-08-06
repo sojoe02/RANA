@@ -55,7 +55,6 @@ MainWindow::MainWindow(QWidget *parent) :
     PPactiveAgents(NULL)
 {
 
-    this->setWindowTitle("RANA QT");
 
     ui->setupUi(this);
     ui->progressBar->setMaximum(100);
@@ -66,6 +65,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->runButton->setDisabled(true);
 //dr.	ui->adv_spinBox->hide();
 
+    this->setWindowTitle("RANA QT v.1.7");
     qRegisterMetaType<INFOLIST>("INFOLIST");
 
     QObject::connect(this,SIGNAL(map_updateSignal(INFOLIST)),
@@ -85,6 +85,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	QObject::connect(this, SIGNAL(removeGraphicAutonSignal(int)),
 					 this, SLOT(on_removeGraphicAuton(int)));
+
+    resizeTimer.setSingleShot(true);
+    QObject::connect(&resizeTimer, SIGNAL(timeout()), SLOT(on_resizeTimerTimeout()));
 
     //connect actions:
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
@@ -535,13 +538,20 @@ void MainWindow::wheelEvent(QWheelEvent* event)
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
 	//MainWindow::resizeEvent(event);
+    //resizeTimer.start( 1000 );
+
 	if(ui->tabWidget->currentIndex() == ui->tabWidget->indexOf(vis_mapTab))
 	{
 		if(zmap != NULL)
 		{
-			zmap->setPos(0,0);
-			zmap->setSize(ui->vis_mapGraphicsView->width(),ui->vis_mapGraphicsView->height());
-		}
+           // ui->vis_mapGraphicsView->fitInView(eventMapScene->sceneRect());
+            eventMapScene->removeItem(zmap);
+            zmap = new ZMap();
+            eventMapScene->addItem(zmap);
+            zmap->setPos(0,0);
+            zmap->setSize(ui->vis_mapGraphicsView->width(),ui->vis_mapGraphicsView->height());
+        }
+
 
 		ui->vis_graphicsView->fitInView(eventScene->sceneRect(),
 										Qt::KeepAspectRatio);
@@ -556,6 +566,10 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 		ui->zoomLabel->setText(QString::number(100*transform.m11()));
 
 	}
+}
+
+void MainWindow::on_resizeTimerTimeout()
+{
 }
 
 /**
@@ -951,7 +965,7 @@ void MainWindow::setupVisualTab(QHash<QString, ZBlock *> *argZBlocks)
 
 void MainWindow::setEventSceneRect(int x, int y)
 {
-	eventScene->setSceneRect(0,0,x,y);
+    eventScene->setSceneRect(0,0,x,y);
 }
 
 /**

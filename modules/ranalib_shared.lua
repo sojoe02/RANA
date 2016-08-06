@@ -54,7 +54,7 @@ function RanaLibShared.storeString(key, string, check)
 	local check = check or valueCheck
 
 	if check==true then
-		if type(string)=="string" and type(key)~="table" then
+		if type(string)=="string" and type(skey)~="table" then
 			l_addSharedString(key, string)
 		else
 			l_debug("Failure to store string, string and/or key is not of correct type")
@@ -67,8 +67,7 @@ function RanaLibShared.storeString(key, string, check)
 end
 
 -- Retrieve a shared string from the central string register.
-function RanaLibShared.getString(key)
-
+function RanaLibShared.getString(key)	
 	return l_getSharedString(key)
 end
 
