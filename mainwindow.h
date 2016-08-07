@@ -131,7 +131,6 @@ private slots:
 	void on_generateEmptyMapButton_clicked();
     void on_zoomSlider_actionTriggered(int action);
     void on_zoomSlider_sliderMoved(int position);
-	void on_checkBox_toggled(bool checked);
 	void on_macroSpinBox_valueChanged(int arg1);
 	void on_timeResSpinBox_valueChanged(int arg1);
 

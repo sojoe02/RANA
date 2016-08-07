@@ -17,7 +17,7 @@ QRectF ZMap::boundingRect() const
 }
 void ZMap::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    Output::Inst()->ppprintf("value is: scene %i, sizeY %i", scene()->height(), sizeY);
+    //Output::Inst()->ppprintf("value is: scene %i, sizeY %i", scene()->height(), sizeY);
     //sizeY = 200;
     for(int i = 1; i <= sizeY; i++)
 	{

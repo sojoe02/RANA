@@ -43,7 +43,6 @@
 
 -- data sets
 Olevels = {}
-step = 0
 iteration = 1
 
 -- Oscillator values:
@@ -52,7 +51,7 @@ e = 0.030 -- Period variance with mean of 0.
 r = 0.100 -- falltime.
 Tt = 0 -- active period targeted time. Peak is then equal to Tt-r
 Tn = 0 -- active period time
-peaked = false -- boolean helping with numeric imresolution issues.
+peaked = false -- boolean helping with numeric resolution issues.
 
 -- Import Rana lua libraries.
 Event	= require "ranalib_event"
@@ -63,16 +62,13 @@ Stat	= require "ranalib_statistic"
 function initializeAgent()
 
 	Tt = T + Stat.randomMean(e,0)
-
 	table.insert(Olevels, Core.time()..",".. 0)
-
-	l_debug("Oscillator agent #: " .. ID .. " has been initialized")
+	say("Oscillator agent #: " .. ID .. " has been initialized")
 end
 
 function takeStep()
 
 	Tn = Tn + STEP_RESOLUTION
-	step = step 
 
 	if Tn >= Tt-r and peaked == false then
 		Event.emit{description="Signal"}
@@ -85,17 +81,13 @@ function takeStep()
 		Tt = T + Stat.randomMean(e, 0)
 		Tn = 0
 		table.insert(Olevels, Core.time()..",".. 0)
-		l_print("Oscillator #"..ID.." Emitting signal at time: ".. Core.time().."[s]")
+		say("Oscillator #"..ID.." Emitting signal at time: ".. Core.time().."[s]")
 		peaked = false
 	end
-end
 
-function handleEvent(sourceX, sourceY, sourceID, eventDescription, eventTable)
-	
 end
 
 function cleanUp()
-	-- only the two first agents will write data:
 	if ID == 1 then
 	--Write the oscillation data to a csv file.
 		file = io.open("02_data"..ID..".csv", "w")

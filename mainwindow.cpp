@@ -723,14 +723,6 @@ void MainWindow::actionPrintInfo()
 
 }
 
-void MainWindow::on_checkBox_toggled(bool checked)
-{
-   if(checked)
-	   Output::LegacyMode.store(true);
-   else
-	   Output::LegacyMode.store(false);
-}
-
 void MainWindow::on_macroSpinBox_valueChanged(int arg1)
 {
 	if( arg1 > ui->timeResSpinBox->value()) ui->timeResSpinBox->setValue(arg1);

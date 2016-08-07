@@ -429,12 +429,8 @@ void EventQueue::saveEEventData(std::string path, std::string luaFileName,
         }
     }
 
-
-
-
     file.close();
 
-    Output::Inst()->kprintf("Saving position data");
 	std::string position_path = path;
 	//Output::Inst()->kprintf(path_str());
     position_path.erase(position_path.end()-3,position_path.end());
@@ -444,6 +440,7 @@ void EventQueue::saveEEventData(std::string path, std::string luaFileName,
 	posBufferPath.append("/_positionData.pos");
 	std::rename(posBufferPath.c_str(),position_path.c_str());
 
+    Output::Inst()->kprintf("Saving position data to %s", position_path.c_str());
     Output::Inst()->kprintf("Saving data done\n");
 
 }
