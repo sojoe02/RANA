@@ -569,6 +569,9 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 
 void MainWindow::on_resizeTimerTimeout()
 {
+    zmap->setPos(0,0);
+    zmap->setSize(ui->vis_mapGraphicsView->width(),ui->vis_mapGraphicsView->height());
+    zmap->changeMode(zmode);
 }
 
 /**
@@ -581,15 +584,16 @@ void MainWindow::on_tabWidget_currentChanged(int index)
 
 	if(index == ui->tabWidget->indexOf(vis_mapTab))
 	{
-		if(zmap != NULL)
+        ui->vis_graphicsView->fitInView(eventScene->sceneRect(),Qt::KeepAspectRatio);
+
+        if(zmap != NULL)
 		{
-            zmap->setPos(0,0);
-            zmap->setSize(ui->vis_mapGraphicsView->width(),ui->vis_mapGraphicsView->height());
-            //ui->vis_mapGraphicsView->fitInView(eventMapScene->sceneRect());
+            //zmap->setPos(0,0);
+            //zmap->setSize(ui->vis_mapGraphicsView->width(),ui->vis_mapGraphicsView->height());
+            //ui->vis_mapGraphicsView->fitInView(eventMapScene->sceneRect());//
+            resizeTimer.start( 500 );
 		}
 
-		ui->vis_graphicsView->fitInView(eventScene->sceneRect(),
-										Qt::KeepAspectRatio);
     }
     else if(ui->tabWidget->currentIndex() == ui->tabWidget->indexOf(sim_viewTab))
 	{
