@@ -527,8 +527,8 @@ void MainWindow::wheelEvent(QWheelEvent* event)
     }
 
     transform = ui->graphicsView->transform();
-    ui->zoomSlider->setValue(100*transform.m11());
-    ui->zoomLabel->setText(QString::number(100*transform.m11()));
+	ui->zoomSlider->setValue(std::abs(100*transform.m11()));
+	ui->zoomLabel->setText(QString::number(std::abs(100*transform.m11())));
 
 }
 
@@ -561,8 +561,8 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 									Qt::KeepAspectRatio);
 
 		QTransform transform = ui->graphicsView->transform();
-		ui->zoomSlider->setValue(100*transform.m11());
-		ui->zoomLabel->setText(QString::number(100*transform.m11()));
+		ui->zoomSlider->setValue(std::abs(100*transform.m11()));
+		ui->zoomLabel->setText(QString::number(std::abs(100*transform.m11())));
 
 	}
 }
@@ -602,8 +602,8 @@ void MainWindow::on_tabWidget_currentChanged(int index)
 		control->toggleLiveView(true);
 
 		QTransform transform = ui->graphicsView->transform();
-		ui->zoomSlider->setValue(100*transform.m11());
-		ui->zoomLabel->setText(QString::number(100*transform.m11()));
+		ui->zoomSlider->setValue(std::abs(100*transform.m11()));
+		ui->zoomLabel->setText(QString::number(std::abs(100*transform.m11())));
 
 	}
 }
@@ -694,13 +694,11 @@ void MainWindow::on_delaySpinBox_valueChanged(int arg1)
  */
 void MainWindow::on_zoomSlider_valueChanged(int value)
 {
-    double scale = (double)value/100;
+	double scale = std::abs((double)value/100);
 
 	ui->zoomLabel->setText(QString().setNum(value));
 
 	ui->graphicsView->setTransform(QTransform::fromScale(scale,scale));
-	//QTransform transform = ui->graphicsView->transform();
-	//Output::Inst()->kdebug("tranfrom of X and Y = %f,%f",transform.m11(), transform.m22());
 
 }
 
