@@ -196,3 +196,8 @@ void Output::addGraphicAuton(int Id, double posX, double posY)
 {
     mainWindow->addGraphicAuton(Id, int(posX)/Phys::getScale(), int(posY)/Phys::getScale());
 }
+
+void Output::changeGraphicAutonColor(int id, int r, int g, int b, int alpha)
+{
+	mainWindow->changeGraphicAutonColor(id, r, g, b, alpha);
+}

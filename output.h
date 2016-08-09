@@ -69,6 +69,7 @@ public:
 
 	void removeGraphicAuton(int Id);
 	void addGraphicAuton(int Id, double posX, double posY);
+	void changeGraphicAutonColor(int id, int r, int g, int b, int alpha);
 
 private:
 

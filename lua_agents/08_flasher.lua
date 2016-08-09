@@ -1,4 +1,4 @@
---begin_license--
+---begin_license--
 --
 --Copyright 	2013 - 2016 	Søren Vissing Jørgensen.
 --
@@ -41,35 +41,14 @@
 -- GridMove 		-- Is collision detection active (default = false).
 -- ------------------------------------
 
-
 -- Import valid Rana lua libraries.
-Event = require "ranalib_event"
 Stat = require "ranalib_statistic"
-Move = require "ranalib_movement"
-
--- Initialization of the agent.
-function initializeAgent()
-	say("Agent #: " .. ID .. " has been initialized")
-
-	if Moving ~= true then
-		say("I am not moving".. STEP_RESOLUTION.. ":" .. PositionX)
-	end
-	--Moving = true
-	--DestinationX = 1
-	--DestinationY = 1
-	--Speed = 3
-end
-
+Map = require "ranalib_map"
+Agent = require "ranalib_agent"
 
 function takeStep()
 
-	if Moving == false then
+	Agent.changeColor{r=Stat.randomInteger(1,255),g=Stat.randomInteger(1,255),b=Stat.randomInteger(1,255)}
 
-		local x = Stat.randomInteger(1, ENV_WIDTH)
-		local y = Stat.randomInteger(1, ENV_HEIGHT)		
-
-		Move.to{x=x, y=y, speed=10}
-		
-	end
 end
 

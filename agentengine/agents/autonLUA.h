@@ -109,6 +109,7 @@ public:
                          double x, double y,
                          double &zvalue, double &duration);
 
+	static int l_changeAgentColor(lua_State *L);
 private:
 
     std::unique_ptr<EventQueue::iEvent>

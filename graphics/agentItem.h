@@ -33,11 +33,12 @@ public:
 
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-
+	void setColor(int r, int g, int b, int alpha=255);
 
 private:
 
     QString id;
+	QColor pencolor;
 
 
 };

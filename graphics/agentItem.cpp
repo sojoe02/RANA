@@ -23,7 +23,7 @@
 
 
 agentItem::agentItem(QString id) :
-    id(id)
+	id(id), pencolor(Qt::white)
 {
 }
 
@@ -40,7 +40,7 @@ void agentItem::paint(QPainter *painter,
                       QWidget *widget)
 {
     QRectF rect = boundingRect();
-    QPen pen (Qt::white, 1);
+	QPen pen (pencolor, 1);
     painter->setPen(pen);
     painter->drawPoint(0,0);
     painter->drawPoint(1,1);
@@ -50,6 +50,12 @@ void agentItem::paint(QPainter *painter,
     //painter->drawRect(rect);
     painter->setFont(QFont("Arial", 4));
     painter->drawText(rect, Qt::AlignCenter, id);
+}
+
+void agentItem::setColor(int r, int g, int b, int alpha)
+{
+	pencolor = QColor(r,g,b,alpha);
+	this->update();
 }
 
 

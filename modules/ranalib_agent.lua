@@ -97,5 +97,19 @@ function ranaLibAgent.setStepMultiple(multiple)
 
 	return success
 end
+
+-- changes the color of an agent, returns true if the color
+-- values are valid. 
+function ranaLibAgent.changeColor(options)
+	
+	local r = options.r or 0
+	local g = options.g or 0
+	local b = options.b or 0
+	local alpha = options.alpha or 255
+	local id = options.id or ID
+
+	return l_changeAgentColor(id,r,g,b,alpha)
+
+end
  
 return ranaLibAgent

@@ -65,7 +65,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->runButton->setDisabled(true);
 //dr.	ui->adv_spinBox->hide();
 
-    this->setWindowTitle("RANA QT v.1.7");
+	this->setWindowTitle("Rana 1.7");
     qRegisterMetaType<INFOLIST>("INFOLIST");
 
     QObject::connect(this,SIGNAL(map_updateSignal(INFOLIST)),
@@ -453,6 +453,13 @@ void MainWindow::on_addGraphicAuton(int Id, int posX, int posY)
 	scene->addItem(gfxItem);
 	graphAgents.insert(Id, gfxItem);
 
+}
+
+void MainWindow::changeGraphicAutonColor(int id, int r, int g, int b, int alpha)
+{
+	auto i = graphAgents.find(id);
+	agentItem *gfxItem = i.value();
+	gfxItem->setColor(r,g,b,alpha);
 }
 
 /**

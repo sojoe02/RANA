@@ -73,6 +73,7 @@ public:
 
 	void addGraphicAuton(int Id, int posX, int posY);
 	void removeGraphicAuton(int id);
+	void changeGraphicAutonColor(int id, int r, int g, int b, int alpha);
 
 	//dialogs:
 	void dialogConstruction();
