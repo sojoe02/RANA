@@ -43,10 +43,12 @@
 
 -- Import valid Rana lua libraries.
 Stat = require "ranalib_statistic"
-Map = require "ranalib_map"
+Move = require "ranalib_movement"
 Agent = require "ranalib_agent"
 
 function takeStep()
+
+	if Moving ~= true then Move.toRandom(10) end
 
 	Agent.changeColor{r=Stat.randomInteger(1,255),g=Stat.randomInteger(1,255),b=Stat.randomInteger(1,255)}
 
