@@ -59,7 +59,7 @@ public:
 
 	void updateMap(std::list<agentInfo> infolist);
     void write_output(QString argMsg);
-    void write_status(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents);
+	void write_status(unsigned long long internalEvents, unsigned long long externalEvents);
 	void write_regularOutput(QString argMsg);
 
 
@@ -92,7 +92,7 @@ private slots:
     void on_browseLuaAgentButton_clicked();
     void on_runButton_clicked();
     void on_updateMap(INFOLIST infolist);
-    void on_udateStatus(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents);
+	void on_udateStatus(unsigned long long internalEvents, unsigned long long externalEvents);
     void on_writeOutput(QString string);
 	void on_writeRegularOutput(QString string);
     void on_delaySpinBox_valueChanged(int arg1);
@@ -128,18 +128,20 @@ private slots:
 
     void helpDialog();
     void on_action_Enable_Visualisation_triggered(bool checked);
-    void on_disableAgentsCheckBox_toggled(bool checked);
 	void on_generateEmptyMapButton_clicked();
     void on_zoomSlider_actionTriggered(int action);
     void on_zoomSlider_sliderMoved(int position);
 	void on_macroSpinBox_valueChanged(int arg1);
 	void on_timeResSpinBox_valueChanged(int arg1);
 
+	void on_vis_disableAgentsCheckBox_toggled(bool checked);
+	void on_vis_disableAgentIDs_toggled(bool checked);
+	
 signals:
 
     void map_updateSignal(INFOLIST infolist);
     void writeStringSignal(QString something);
-    void writeStatusSignal(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents);
+	void writeStatusSignal(unsigned long long internalEvents, unsigned long long externalEvents);
 	void writeRegularSignal(QString something);
 
 	void addGraphicAutonSignal(int id, int posX, int posY);

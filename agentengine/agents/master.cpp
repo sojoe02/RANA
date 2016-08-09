@@ -267,8 +267,7 @@ void Master::macroStep(unsigned long long tmu)
  */
 void Master::printStatus()
 {
-    Output::Inst()->updateStatus(Phys::getCTime(),eEventInitAmount,
-                                 eventQueue->getISize(), eventQueue->getESize());
+	Output::Inst()->updateStatus(eventQueue->getISize(), eventQueue->getESize());
     //Output::Inst()->kprintf("%d\n", eventQueue->getISize());
     //	eventQueue->printATmus();
 }

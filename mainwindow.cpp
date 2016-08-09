@@ -24,6 +24,8 @@
 #include <QtGui>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QShortcut>
+
 #include <string>
 #include <thread>
 #include <chrono>
@@ -77,8 +79,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(this,SIGNAL(writeRegularSignal(QString)),
 					 this,SLOT(on_writeRegularOutput(QString)));
 
-    QObject::connect(this,SIGNAL(writeStatusSignal(unsigned long long,unsigned long long,unsigned long long,unsigned long long)),
-                     this,SLOT(on_udateStatus(unsigned long long,unsigned long long,unsigned long long,unsigned long long)));
+	QObject::connect(this,SIGNAL(writeStatusSignal(unsigned long long,unsigned long long)),
+					 this,SLOT(on_udateStatus(unsigned long long,unsigned long long)));
 
 	QObject::connect(this,SIGNAL(addGraphicAutonSignal(int,int,int)),
 						this,SLOT(on_addGraphicAuton(int,int,int)));
@@ -141,7 +143,7 @@ void MainWindow::on_generateButton_clicked()
 		//mapItem->setPixmap(QPixmap::fromImage(*mapImage));
         //mapItem->setZValue(1);
 
-        ui->disableAgentsCheckBox->setChecked(false);
+		ui->vis_disableAgentsCheckBox->setChecked(false);
 
 		Phys::setScale(ui->scaleDoubleSpinBox->value());
         //Output::Inst()->kprintf("Setting map scale to %f", Phys::getScale());
@@ -365,10 +367,9 @@ void MainWindow::write_regularOutput(QString argMsg)
  * @see Output::updateStatus()
  * @see Master::printStatus()
  */
-void MainWindow::on_udateStatus(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents)
+void MainWindow::on_udateStatus(unsigned long long internalEvents, unsigned long long externalEvents)
 {
-    ui->label_status1->setText(QString().setNum(ms));
-    ui->label_status2->setText(QString().setNum(eventInit));
+	ui->label_status1->setText(QString().setNum(Phys::getCTime()*Phys::getTimeRes()+1/(double)Phys::getMacroFactor()));
     ui->label_status3->setText(QString().setNum(internalEvents));
     ui->label_status4->setText(QString().setNum(externalEvents));
 }
@@ -377,9 +378,9 @@ void MainWindow::on_udateStatus(unsigned long long ms, unsigned long long eventI
  * @brief Controls the status window update signal
  * @see on_updateStatus
  */
-void MainWindow::write_status(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents)
+void MainWindow::write_status(unsigned long long internalEvents, unsigned long long externalEvents)
 {
-    emit writeStatusSignal(ms, eventInit, internalEvents, externalEvents);
+	emit writeStatusSignal(internalEvents, externalEvents);
 }
 
 
@@ -468,7 +469,7 @@ void MainWindow::changeGraphicAutonColor(int id, int r, int g, int b, int alpha)
  * @param checked
  */
 
-void MainWindow::on_disableAgentsCheckBox_toggled(bool checked)
+void MainWindow::on_vis_disableAgentsCheckBox_toggled(bool checked)
 {
     if(checked)
     {
@@ -488,6 +489,16 @@ void MainWindow::on_disableAgentsCheckBox_toggled(bool checked)
 
     ui->graphicsView->viewport()->update();
 }
+
+void MainWindow::on_vis_disableAgentIDs_toggled(bool checked)
+{
+	for(auto itr = graphAgents.begin(); itr != graphAgents.end(); ++itr)
+	{
+		itr.value()->showID(!checked);
+	}
+	ui->graphicsView->viewport()->update();
+}
+
 
 /**
  * @brief MainWindow::removeGraphicAuton remove an agent marker item
@@ -640,8 +651,11 @@ void MainWindow::on_runButton_clicked()
 	if(control->isRunning()){
 		control->stopSimulation();
     }
-    else
+	else
+	{
+		ui->generateButton->setDisabled(true);
 		control->runSimulation(ui->runTimeSpinBox->value());
+	}
 }
 
 /**
@@ -656,6 +670,7 @@ void MainWindow::changeRunButton(QString text)
 
 void MainWindow::runButtonHide()
 {
+	ui->generateButton->setEnabled(true);
 	ui->runButton->setDisabled(true);
 }
 
@@ -706,7 +721,6 @@ void MainWindow::on_zoomSlider_valueChanged(int value)
 	ui->zoomLabel->setText(QString().setNum(value));
 
 	ui->graphicsView->setTransform(QTransform::fromScale(scale,scale));
-
 }
 
 /**
@@ -764,6 +778,7 @@ void MainWindow::ppConstruction()
 					 this,SLOT(on_writePPOutput(QString)));
 
 	ui->vis_processEventsPushButton->setEnabled(false);
+	ui->vis_disableAgentIDs->setChecked(false);
 
 	eventScene->setBackgroundBrush(Qt::black);
 	eventMapScene->setBackgroundBrush(Qt::black);
@@ -1344,4 +1359,3 @@ void MainWindow::on_zoomSlider_sliderMoved(int position)
 {
 
 }
-

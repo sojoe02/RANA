@@ -118,10 +118,9 @@ void Output::kdebug(const char* msg, ...)
  * @param externalEvents total number of external events
  * @see MainWindow::on_udateStatus()
  */
-void Output::updateStatus(unsigned long long ms, unsigned long long eventInit, unsigned long long internalEvents, unsigned long long externalEvents)
+void Output::updateStatus(unsigned long long internalEvents, unsigned long long externalEvents)
 {
-	mainWindow->write_status(ms, eventInit,
-							 internalEvents, externalEvents);
+	mainWindow->write_status(internalEvents, externalEvents);
 }
 
 /**

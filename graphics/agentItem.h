@@ -35,10 +35,12 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 	void setColor(int r, int g, int b, int alpha=255);
 
+	void showID(bool show);
 private:
 
     QString id;
 	QColor pencolor;
+	bool showid;
 
 
 };
