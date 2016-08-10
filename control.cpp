@@ -26,7 +26,7 @@
 
 Control::Control(MainWindow* mainwindow)
     : agentDomain(NULL), mainwindow(mainwindow),
-      running(false), generated(false), stopped(true)
+      running(false), generated(false), stopped(true),generating(false)
 {
 	runner = new Runner();
 	runner->moveToThread(&runThread);
@@ -63,8 +63,9 @@ void Control::generateEnvironment(QImage *map, double scale,
                                   double timeRes, double macroRes,
                                   int agentAmount, std::string agentPath)
 {
-    if(!running)
+    if(!running || !generating)
     {
+        generating = true;
         if(populateFuture.isRunning())
         {
             Output::Inst()->kprintf("A previous system was being populated, it will be cancelled");
@@ -90,8 +91,10 @@ void Control::generateEnvironment(QImage *map, double scale,
         populateFuture = QtConcurrent::run(agentDomain, &AgentDomain::populateSystem);
 
         //future.waitForFinished();
+        //QThread::msleep(2000);
+        generating = false;
     } else
-        Output::Inst()->kprintf("Simulation thread is running, so you need to stop it");
+        Output::Inst()->kprintf("Simulation is being generating or it is running");
     //retrieve and update the positions:
 }
 

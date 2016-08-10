@@ -41,10 +41,10 @@ bool util_toNumber(T& t,const std::string& s,
 
 struct rgba
 {
-    int red;
-    int green;
-    int blue;
-    int alpha;
+    int red = 255;
+    int green = 255;
+    int blue = 255;
+    int alpha = 255;
 };
 
 struct agentInfo

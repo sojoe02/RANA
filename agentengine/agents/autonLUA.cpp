@@ -53,6 +53,7 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
     desc = "LUA";
     //Output::Inst()->kprintf("%f,%f", posX, posY);
 
+    Output::Inst()->addGraphicAuton(ID, -1,-1);
     //Setup up the LUA stack:
     L = luaL_newstate();
     if(L == NULL)

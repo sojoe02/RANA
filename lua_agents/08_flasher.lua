@@ -46,6 +46,11 @@ Stat = require "ranalib_statistic"
 Move = require "ranalib_movement"
 Agent = require "ranalib_agent"
 
+function initializeAgent()
+	Agent.changeColor{r=255}
+end
+
+
 function takeStep()
 
 	if Moving ~= true then Move.toRandom(10) end

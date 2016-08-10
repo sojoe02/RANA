@@ -100,6 +100,7 @@ private:
     bool running;
     bool generated;
     bool stopped;
+    bool generating;
 
 
 };

@@ -101,6 +101,7 @@ private slots:
 	void actionPrintInfo();
 
 	void on_addGraphicAuton(int Id, int posX, int posY);
+    void on_changeGraphicAutonColor(int id, int r, int g, int b, int alpha);
 	void on_removeGraphicAuton(int Id);
 
 	//postprocessing:
@@ -145,6 +146,7 @@ signals:
 	void writeRegularSignal(QString something);
 
 	void addGraphicAutonSignal(int id, int posX, int posY);
+    void changeGraphicAutonColorSignal(int id, int r, int b, int g, int alpha);
 	void removeGraphicAutonSignal(int Id);
 
 	//postprocessing:

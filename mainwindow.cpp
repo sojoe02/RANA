@@ -88,6 +88,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(this, SIGNAL(removeGraphicAutonSignal(int)),
 					 this, SLOT(on_removeGraphicAuton(int)));
 
+    QObject::connect(this, SIGNAL(changeGraphicAutonColorSignal(int,int,int,int,int)),
+                     this, SLOT(on_changeGraphicAutonColor(int,int,int,int,int)));
+
     resizeTimer.setSingleShot(true);
     QObject::connect(&resizeTimer, SIGNAL(timeout()), SLOT(on_resizeTimerTimeout()));
 
@@ -130,7 +133,7 @@ void MainWindow::on_generateButton_clicked()
 	{
 		//Output::Inst()->kprintf("item #%i ", i);
 		scene->removeItem(*iter);
-		delete *iter;
+        delete *iter;
 	}
 
 	ui->graphicsView->viewport()->update();
@@ -442,6 +445,8 @@ void MainWindow::on_updateMap(INFOLIST infolist)
 
 void MainWindow::addGraphicAuton(int id, int posX, int posY)
 {
+    ui->generateButton->setEnabled(false);
+
 	emit addGraphicAutonSignal(id, posX, posY);
 }
 
@@ -458,9 +463,17 @@ void MainWindow::on_addGraphicAuton(int Id, int posX, int posY)
 	scene->addItem(gfxItem);
 	graphAgents.insert(Id, gfxItem);
 
+    ui->generateButton->setEnabled(true);
+
 }
 
 void MainWindow::changeGraphicAutonColor(int id, int r, int g, int b, int alpha)
+{
+    emit changeGraphicAutonColorSignal(id,r,g,b,alpha);
+
+}
+
+void MainWindow::on_changeGraphicAutonColor(int id, int r, int g, int b, int alpha)
 {
 	auto i = graphAgents.find(id);
 	agentItem *gfxItem = i.value();
