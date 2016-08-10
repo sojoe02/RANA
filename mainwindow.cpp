@@ -147,6 +147,7 @@ void MainWindow::on_generateButton_clicked()
         //mapItem->setZValue(1);
 
 		ui->vis_disableAgentsCheckBox->setChecked(false);
+        ui->vis_disableAgentIDs->setChecked(false);
 
 		Phys::setScale(ui->scaleDoubleSpinBox->value());
         //Output::Inst()->kprintf("Setting map scale to %f", Phys::getScale());
