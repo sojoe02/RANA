@@ -206,14 +206,14 @@ void AgentDomain::runSimulation(int time)
         if(i == cMacroStep)
         {
             masteragent->macroStep(i);
-            cMacroStep +=macroFactor;
+			cMacroStep += macroFactor;
             int delay = Output::DelayValue.load();
             if(delay != 0)
             {
                 std::this_thread::sleep_for(std::chrono::milliseconds(delay));
             }
-            if(cMacroStep % 1000 == 0)
-                retrievePopPos();
+			if(cMacroStep % (int)Phys::getMacroFactor() == 0)
+				retrievePopPos();
         }
         i = cMacroStep;
         cMicroStep = masteragent->getNextMicroTmu();

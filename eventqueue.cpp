@@ -451,7 +451,8 @@ void EventQueue::saveEEventData(std::string path, std::string luaFileName,
 void EventQueue::printLTmus(){
     Output::Inst()->kprintf("----------------\n");
 
-    for(legacyIt = legacyTmu.begin(); legacyIt!=legacyTmu.end(); ++legacyIt){
+	for(legacyIt = legacyTmu.begin(); legacyIt!=legacyTmu.end(); ++legacyIt)
+	{
         Output::Inst()->kprintf("%d\n", *legacyIt);
     }
     Output::Inst()->kprintf("----------------\n");
@@ -463,7 +464,8 @@ void EventQueue::printLTmus(){
 void EventQueue::printATmus(){
     Output::Inst()->kprintf("----------------\n");
 
-    for(activeIt = activeTmu.begin(); activeIt!=activeTmu.end(); activeIt++){
+	for(activeIt = activeTmu.begin(); activeIt!=activeTmu.end(); activeIt++)
+	{
         Output::Inst()->kprintf("%llu\n", *activeIt);
     }
     Output::Inst()->kprintf("----------------\n");

@@ -156,7 +156,10 @@ void MainWindow::on_generateButton_clicked()
 			double timeRes = 1/(double)std::pow(10,exponent);
 			//Output::Inst()->kprintf("resolution is: %.20f", timeRes);
 			double macroRes = std::pow(10,ui->macroSpinBox->value());
-			//Output::Inst()->kprintf("macro resolution is: %f", macroRes);
+			Output::Inst()->kprintf("macro resolution is: %f , timeRes %f", macroRes, timeRes);
+			macroRes = (1/timeRes)/macroRes;
+			Output::Inst()->kprintf("macro resolution is: %f", macroRes);
+
 
             int agentAmount = ui->luaSpinBox->value();
 			QString agentPath = ui->agentPathLineEdit->text();
@@ -369,7 +372,8 @@ void MainWindow::write_regularOutput(QString argMsg)
  */
 void MainWindow::on_udateStatus(unsigned long long internalEvents, unsigned long long externalEvents)
 {
-	ui->label_status1->setText(QString().setNum(Phys::getCTime()*Phys::getTimeRes()+1/(double)Phys::getMacroFactor()));
+	ui->label_status1->setText(QString().setNum(Phys::getCTime()*Phys::getTimeRes()+
+												Phys::getMacroFactor()/(1/Phys::getTimeRes())));
     ui->label_status3->setText(QString().setNum(internalEvents));
     ui->label_status4->setText(QString().setNum(externalEvents));
 }
