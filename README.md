@@ -16,17 +16,16 @@ Rana also support post processing of agent events which allows for visualization
 
 #Documentation
 
-Rana functionality is currently documented via the wiki, here: https://github.com/sojoe02/RANA/wiki
+Rana functionality is currently documented via the wiki, https://github.com/sojoe02/RANA/wiki
 
 #Releases
 
-Releases can be grapped on github, here: https://github.com/sojoe02/RANA/releases
+Releases can be grabbed on github, https://github.com/sojoe02/RANA/releases
 
 #License
 
-Rana is distributed as Open-source under. 
-
-GNU GENERAL PUBLIC LICENSE Version 3 (http://www.gnu.org/licenses/gpl.html)
+Rana is distributed as Open-source via.
+* GNU GENERAL PUBLIC LICENSE Version 3 (http://www.gnu.org/licenses/gpl.html)
 
 #Technologies
 
