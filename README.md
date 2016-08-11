@@ -1,6 +1,6 @@
 
 <p align="center">
-  <img /images/ranalogo.png>
+  <img src=https://raw.githubusercontent.com/sojoe02/RANA/master/images/ranalogo.png />
 </p>
 
 #Description
