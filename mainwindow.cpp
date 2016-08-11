@@ -53,11 +53,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	control(new Control(this)),disableSimOutput(false),
 	postControl(new PostControl(this)),zBlocks(NULL),
 	eventScene(new QGraphicsScene()), zmap(NULL), eventMapScene(new QGraphicsScene()),
-    zMapTimer(new QTimer(this)),disableLiveView(true),playingMap(false),
+    zMapTimer(new QTimer(this)),initializeTimer(new QTimer(this)),disableLiveView(true),playingMap(false),
     PPactiveAgents(NULL)
 {
-
-
     ui->setupUi(this);
     ui->progressBar->setMaximum(100);
     ui->progressBar->setMinimum(0);
@@ -94,6 +92,9 @@ MainWindow::MainWindow(QWidget *parent) :
     resizeTimer.setSingleShot(true);
     QObject::connect(&resizeTimer, SIGNAL(timeout()), SLOT(on_resizeTimerTimeout()));
 
+    initializeTimer->setSingleShot(true);
+    QObject::connect(initializeTimer, SIGNAL(timeout()), SLOT(on_initializeTimerTimeout()));
+
     //connect actions:
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
     QObject::connect(ui->action_Info, SIGNAL(triggered()),this, SLOT(actionPrintInfo()));
@@ -129,6 +130,8 @@ MainWindow::~MainWindow()
 void MainWindow::on_generateButton_clicked()
 {
     qApp->processEvents();
+    //ui->generateButton->setEnabled(false);
+    //initializeTimer->start(2000);
 	int i = 0;
 	for(auto iter=graphAgents.begin(); iter!=graphAgents.end(); ++iter, i++) 
 	{
@@ -188,6 +191,7 @@ void MainWindow::on_generateButton_clicked()
 			Output::Inst()->kprintf("Cannot generate Environment: Valid path not given");
     } else
 		Output::Inst()->kprintf("No map has been loaded, please do that...");
+
 }
 
 /**
@@ -447,12 +451,14 @@ void MainWindow::on_updateMap(INFOLIST infolist)
 
 void MainWindow::addGraphicAuton(int id, int posX, int posY)
 {
-    //ui->generateButton->setEnabled(false);
+    ui->generateButton->setEnabled(false);
+    //initializeTimer->start(100);
 	emit addGraphicAutonSignal(id, posX, posY);
 }
 
 void MainWindow::on_addGraphicAuton(int Id, int posX, int posY)
 {
+    initializeTimer->start(100);
 	agentItem *gfxItem = new agentItem(QString::number(Id));
 	gfxItem->setZValue(2);
 	gfxItem->setX(posX);
@@ -478,7 +484,7 @@ void MainWindow::on_changeGraphicAutonColor(int id, int r, int g, int b, int alp
 {
 	auto i = graphAgents.find(id);
 	agentItem *gfxItem = i.value();
-	gfxItem->setColor(r,g,b,alpha);
+    gfxItem->setColor(r,g,b,alpha);
 }
 
 /**
@@ -537,7 +543,13 @@ void MainWindow::on_removeGraphicAuton(int id)
 		scene->removeItem(*iter);
 		delete *iter;
 		graphAgents.remove(id);
-	}
+    }
+}
+
+void MainWindow::on_initializeTimerTimeout()
+{
+    ui->generateButton->setEnabled(true);
+
 }
 
 void MainWindow::wheelEvent(QWheelEvent* event)

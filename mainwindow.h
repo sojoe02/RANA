@@ -102,7 +102,9 @@ private slots:
 
 	void on_addGraphicAuton(int Id, int posX, int posY);
     void on_changeGraphicAutonColor(int id, int r, int g, int b, int alpha);
-	void on_removeGraphicAuton(int Id);
+    void on_removeGraphicAuton(int Id);
+
+    void on_initializeTimerTimeout();
 
 	//postprocessing:
 	void ppIsChecked();
@@ -138,8 +140,6 @@ private slots:
 	void on_vis_disableAgentsCheckBox_toggled(bool checked);
 	void on_vis_disableAgentIDs_toggled(bool checked);
 	
-    void on_restart_clicked();
-
 signals:
 
     void map_updateSignal(INFOLIST infolist);
@@ -202,6 +202,8 @@ private:
 
     QTimer resizeTimer;
 	QTimer *zMapTimer;
+    QTimer *initializeTimer;
+
     ZMode zmode;
 	bool disableLiveView;
 	bool playingMap;
