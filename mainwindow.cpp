@@ -696,6 +696,7 @@ void MainWindow::on_runButton_clicked()
  */
 void MainWindow::changeRunButton(QString text)
 {
+    ui->runButton->setEnabled(true);
 	ui->runButton->setText(text);
 }
 
