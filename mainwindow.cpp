@@ -452,6 +452,7 @@ void MainWindow::on_updateMap(INFOLIST infolist)
 void MainWindow::addGraphicAuton(int id, int posX, int posY)
 {
     ui->generateButton->setEnabled(false);
+    ui->runButton->setEnabled(false);
 	emit addGraphicAutonSignal(id, posX, posY);
 }
 
@@ -548,6 +549,7 @@ void MainWindow::on_removeGraphicAuton(int id)
 void MainWindow::on_initializeTimerTimeout()
 {
     ui->generateButton->setEnabled(true);
+    ui->runButton->setEnabled(true);
 
 }
 
