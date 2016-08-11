@@ -138,6 +138,8 @@ private slots:
 	void on_vis_disableAgentsCheckBox_toggled(bool checked);
 	void on_vis_disableAgentIDs_toggled(bool checked);
 	
+    void on_restart_clicked();
+
 signals:
 
     void map_updateSignal(INFOLIST infolist);

@@ -128,6 +128,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_generateButton_clicked()
 {
+    qApp->processEvents();
 	int i = 0;
 	for(auto iter=graphAgents.begin(); iter!=graphAgents.end(); ++iter, i++) 
 	{
@@ -241,6 +242,7 @@ void MainWindow::on_browseMapButton_clicked()
  */
 void MainWindow::on_generateMap_clicked()
 {
+    qApp->processEvents();
 	if(mapImage != NULL)
 		delete mapImage;
 
@@ -278,7 +280,6 @@ void MainWindow::on_generateMap_clicked()
 
    defineMap();
 }
-
 
 void MainWindow::on_generateEmptyMapButton_clicked()
 {
@@ -446,8 +447,7 @@ void MainWindow::on_updateMap(INFOLIST infolist)
 
 void MainWindow::addGraphicAuton(int id, int posX, int posY)
 {
-    ui->generateButton->setEnabled(false);
-
+    //ui->generateButton->setEnabled(false);
 	emit addGraphicAutonSignal(id, posX, posY);
 }
 
@@ -464,7 +464,7 @@ void MainWindow::on_addGraphicAuton(int Id, int posX, int posY)
 	scene->addItem(gfxItem);
 	graphAgents.insert(Id, gfxItem);
 
-    ui->generateButton->setEnabled(true);
+    //ui->generateButton->setEnabled(true);
 
 }
 
