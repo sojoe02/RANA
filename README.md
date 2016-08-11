@@ -1,4 +1,8 @@
 
+<p align="center">
+  <img /images/ranalogo.png>
+</p>
+
 #Description
 
 RANA is a multi agent system simulator. It is designed and implemented to support the high precision needed to perform agent communication simulations. However it can also be used to perform simpler 'action-based' simulations.
