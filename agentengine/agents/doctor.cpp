@@ -17,7 +17,7 @@ int Doctor::addLuaAuton(double x, double y, double z, std::string path, std::str
 {
 
 	int id = master->addAuton(x, y, z, path, filename, "Lua");
-	Output::Inst()->addGraphicAuton(id,x,y);
+	//Output::Inst()->addGraphicAuton(id,x,y);
 
 	return id;
 }

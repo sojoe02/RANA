@@ -4,6 +4,7 @@ local RanaLibUtility = {}
 -- This is usually used to deserialize event tables.
 function RanaLibUtility.deserializeTable(string)
 
+	--say(string)
 	if string.len(string) < 3 then 
 		return nil
 	end

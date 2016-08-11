@@ -48,16 +48,12 @@ Agent = require "ranalib_agent"
 Shared = require "ranalib_shared"
 
 function initializeAgent()
-	local ctable = Shared.getTable("ctable")
-	Agent.changeColor(ctable)
+
+	for i=1,100 do
+		local ctable = {r=Stat.randomInteger(0,255),g=Stat.randomInteger(0,255),b=Stat.randomInteger(0,255)}
+		Shared.storeTable("ctable", ctable)
+		Agent.addAgent("08_flasher.lua")
+	end
 end
 
-
-function takeStep()
-
-	if Moving ~= true then Move.toRandom(10) end
-
-	Agent.changeColor{r=Stat.randomInteger(1,255),g=Stat.randomInteger(1,255),b=Stat.randomInteger(1,255)}
-
-end
 

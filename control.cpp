@@ -91,7 +91,7 @@ void Control::generateEnvironment(QImage *map, double scale,
         populateFuture = QtConcurrent::run(agentDomain, &AgentDomain::populateSystem);
 
         //future.waitForFinished();
-        //QThread::msleep(2000);
+		QThread::msleep(1000);
         generating = false;
     } else
         Output::Inst()->kprintf("Simulation is being generating or it is running");
