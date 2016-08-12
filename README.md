@@ -5,7 +5,7 @@
 
 #Description
 
-Rana is a multi agent system simulator that is designed and implemented to support the high precision needed to perform real-time multi agent communication simulations. This entails support for real-time propagation of agent actions and events.
+Rana is a multi agent system simulator that is designed and implemented to support the high precision needed to perform real-time multi agent communication simulations. This entails support for real-time agent actions and event propagation.
 
 It has been designed for ease of agent modelling using a module and API approach. The modelling paradigm allows for flexible agent design and powerful data collection as well as flexible observation of emergence. Rana is currently developed as part of my Ph.D. program that seeks to offer a generalized modelling approach to simulations of animal chorusing
 
@@ -13,7 +13,7 @@ Rana has proven capable of performing traffic simulations as it was used as a si
 
 Rana can also be used to perform 'action-based' simulations and is used as courseware for a multi agent computer science course at the University of Southern Denmark (2014-2016). During the course students are tasked to design and implement mining robot- and prey/predator simulations.
 
-Rana also features a post processing tool for agent events that allows for visualization of event propagation and intensity, this allows users to observe how events affect agent behaviour.
+An event processing tool is also featured. It allows for post processing visualization of event propagation and intensity, this allows users to observe event emergence and determine events affect agent behaviour.
 
 #Documentation
 
@@ -32,14 +32,14 @@ Rana is distributed as Open-source via.
 
 * Simulation core, event handler and agent interface is pure C++11
 * User interface and graphic representation written in Qt (https://www.qt.io/)
-* Agent design is based on Lua (https://www.lua.org/) and LuaJIT (https://www.lua.org/)
+* Agent design is based on Lua (https://www.lua.org/) and LuaJIT (http://luajit.org/).
 
 
 #Devteam
 
  Development of the Simulation core, agent interface and UI: 
  
- * Søren V Jørgensen (sojoe02@gmail.com)
+ * Søren V. Jørgensen (sojoe02@gmail.com)
 
 #Input and Support
 
