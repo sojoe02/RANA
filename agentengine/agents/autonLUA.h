@@ -84,8 +84,9 @@ public:
     static int l_gridMove(lua_State *L);
     static int l_getGridScale(lua_State *L);
     static int l_initializeGrid(lua_State *L);
+	static int l_radialCollisionScan(lua_State *L);
 
-    //Shared values.
+	//Shared values.
     static int l_getSharedNumber(lua_State *L);
     static int l_addSharedNumber(lua_State *L);
     static int l_addSharedString(lua_State *L);
@@ -110,6 +111,7 @@ public:
                          double &zvalue, double &duration);
 
 	static int l_changeAgentColor(lua_State *L);
+
 private:
 
     std::unique_ptr<EventQueue::iEvent>

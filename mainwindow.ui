@@ -28,22 +28,6 @@
     <item row="2" column="0">
      <widget class="QWidget" name="simGeneralWidget" native="true">
       <layout class="QGridLayout" name="gridLayout_12">
-       <item row="1" column="6">
-        <widget class="QPushButton" name="generateButton">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="toolTip">
-          <string>Initialize the simulation and the agents</string>
-         </property>
-         <property name="text">
-          <string>Initialize</string>
-         </property>
-        </widget>
-       </item>
        <item row="1" column="4">
         <widget class="QPushButton" name="runButton">
          <property name="sizePolicy">
@@ -141,6 +125,22 @@
          </property>
         </widget>
        </item>
+       <item row="1" column="0">
+        <widget class="QPushButton" name="generateButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>Initialize the simulation and the agents</string>
+         </property>
+         <property name="text">
+          <string>Initialize</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </item>
@@ -183,7 +183,7 @@
              <x>0</x>
              <y>0</y>
              <width>448</width>
-             <height>531</height>
+             <height>528</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -1623,7 +1623,7 @@
      <x>0</x>
      <y>0</y>
      <width>737</width>
-     <height>19</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
