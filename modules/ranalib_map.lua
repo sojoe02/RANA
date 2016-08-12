@@ -38,4 +38,19 @@ function RanaLibMap.modifyColor(x, y, r, g, b)
 
 end
 
+--retrieves a radial matrice with legal coordinates.
+function RanaLibMap.getRadialMask(radius)
+
+	local table
+		
+		if type(radius) == "number" and radius > 0 then
+
+			table = l_getMaskRadial(radius, PositionX, PositionY)
+
+		end
+
+	return table
+
+end
+
 return RanaLibMap

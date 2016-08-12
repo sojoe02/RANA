@@ -567,7 +567,9 @@ void AutonLUA::getSyncData()
  */
 int AutonLUA::l_debug(lua_State *L)
 {
-    Output::Inst()->kdebug(lua_tostring(L,-1));
+    std::string string = lua_tostring(L, -1);
+    string.resize(4096);
+    Output::Inst()->kdebug(string.c_str());
     return 0;
 }
 
@@ -579,7 +581,9 @@ int AutonLUA::l_debug(lua_State *L)
 
 int AutonLUA::l_print(lua_State *L)
 {
-    Output::Inst()->kprintf(lua_tostring(L,-1));
+    std::string string = lua_tostring(L, -1);
+    string.resize(4096);
+    Output::Inst()->kprintf(string.c_str());
     return 0;
 }
 
@@ -851,30 +855,34 @@ int AutonLUA::l_getMaskRadial(lua_State *L)
     int radius = lua_tonumber(L, -3);
     int posX = lua_tonumber(L, -2) - radius;
     int posY = lua_tonumber(L, -1) - radius;
-
     //Output::Inst()->kprintf("radius %d, posX %d, posY %d", radius, posX, posY);
-
-
     MatriceInt result = Scanning::radialMask(radius);
 
     lua_newtable(L);
-
-    int index = 1;
+    int index = 0;
 
     for (int i = 1; i < radius*2; i++)
     {
-        for(int j = 1; j < radius*2; j++,index++)
+        for(int j = 1; j < radius*2; j++)
         {
-            // ii( result[i][j] == 1)//(posX + i != posX+radius || posY + j != posY+radius ))
-            //{
-            lua_pushnumber(L, index);
-            //lua_pushnumber(L, posX + i);
-            //lua_pushnumber(L, posY + j);
-            lua_pushnumber(L, result[i][j]);
-            lua_settable(L, -3);
-
-            if(result[i][j] == 1 && (posX +i != posX+radius || posY + j != posY+radius))
+            if( result[i][j] == 1)
+                //(posX + i != posX+radius || posY + j != posY+radius ))
             {
+                index++;
+
+                lua_pushnumber(L, index);
+                lua_newtable(L);
+                lua_pushstring(L,"posX");
+                lua_pushnumber(L, posX + i);
+                lua_settable(L, -3);
+                lua_pushstring(L,"posY");
+                lua_pushnumber(L, posY + j);
+                lua_settable(L, -3);
+                lua_settable(L, -3);
+
+
+            /*if(result[i][j] == 1 && (posX +i != posX+radius || posY + j != posY+radius))
+            /{
                 rgba color;
                 color.blue = 255;
                 color.green = 0;
@@ -888,8 +896,8 @@ int AutonLUA::l_getMaskRadial(lua_State *L)
                 color2.green = 0;
                 color2.red = 255;
                 MapHandler::setPixelInfo(posX+i, posY+j, color2);
+            }*/
             }
-
         }
     }
     return 1;

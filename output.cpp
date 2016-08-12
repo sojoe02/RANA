@@ -74,7 +74,7 @@ void Output::kprintf(const char* msg, ...)
     va_list args;
     va_start(args, msg);
 
-	char buffer[2048] = {};
+    char buffer[4096] = {};
     vsprintf(buffer, msg, args);
 
     QString string(buffer);
@@ -98,7 +98,7 @@ void Output::kdebug(const char* msg, ...)
     va_list args;
     va_start(args, msg);
 
-	char buffer[2048] = {};
+    char buffer[4096] = {};
     vsprintf(buffer, msg, args);
 
     QString string(buffer);

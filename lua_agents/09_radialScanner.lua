@@ -44,11 +44,19 @@
 
 -- Import valid Rana lua libraries.
 Collision = require "ranalib_collision"
+Map = require "ranalib_map"
 Utility = require "ranalib_utility"
 
 -- Initialization of the agent.
 function initializeAgent()
-	GridMove = true	
+	GridMove = true
+
+	if ID == 1 then
+		local table = Map.getRadialMask(5)
+		local tableString = Utility.serializeTable(table)
+		say(tableString)
+	end
+
 end
 
 function takeStep()
