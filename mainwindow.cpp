@@ -144,6 +144,8 @@ void MainWindow::on_generateButton_clicked()
 
     graphAgents.clear();
     GridMovement::clearGrid();
+    if(mapItem == NULL)
+        on_generateEmptyMapButton_clicked();
 
 	if(mapItem != NULL){
 

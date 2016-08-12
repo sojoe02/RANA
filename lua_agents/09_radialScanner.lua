@@ -43,45 +43,29 @@
 
 
 -- Import valid Rana lua libraries.
-Stat = require "ranalib_statistic"
-Move = require "ranalib_movement"
 Collision = require "ranalib_collision"
 Utility = require "ranalib_utility"
 
-Speed = 40
-staticScan = false
 -- Initialization of the agent.
 function initializeAgent()
-	say("Agent #: " .. ID .. " has been initialized")
-	GridMove = true
-
+	GridMove = true	
 end
-
 
 function takeStep()
 
-	if staticScan == false then
-		local table = l_getMaskRadial(4, PositionX, PositionY)
-		--for i= 1, #positionTable do
-		  
-			tablestring = Utility.serializeTable(table)
-			say(tablestring)
-			--say(positionTable[i] .. ":"..positionTable[i])
-		--end
-	end
-
-end
-
-function cleanUp()
+	local table = Collision.radialCollisionScan(10)
 	
-	if ID == 1 then
-		positionTable = {}
-		positionTable = Collision.checkPosition(PositionX, PositionY)
-
-		say("agent #"..ID.." has these collisions...")
-	 	for i = 1, #positionTable do
-			say(positionTable[i])
+	if table then
+		
+		say("Agent: ".. ID.. " has these collisions")
+		
+		for i = 1, #table do
+			say("\tAgent: "..table[i].id .. " at X:".. table[i].posX .. " Y:" .. table[i].posY) 
 		end
+		--local tableString = Utility.serializeTable(table)
+		--say(tableString)
+
 	end
+
 end
 

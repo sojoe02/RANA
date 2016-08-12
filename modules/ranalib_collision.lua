@@ -68,4 +68,29 @@ function ranaLibCollisionGrid.updatePosition(oldY,oldY,newX,oldY,id)
 
 end
 
+-- Performs a radial scan with a given radius. It utilizes Ranas api for 
+-- generating masks that are saved on each different radius so the calculations only
+-- has to be done once.
+-- This function only returns agents other than the scanning agents
+-- @Param radius of the scan.
+-- @Return nil if there are no collisions within the radius or a nested table 
+-- with collision information.
+--
+-- E.g. {[1]={posX=161,posY=146,id=52 },[2]={posX=174,posY=147,id=21 }}
+function ranaLibCollisionGrid.radialCollisionScan(radius)
+
+	local table
+	
+	if type(radius) == "number" and radius > 0 then
+		
+		table = l_radialCollisionScan(ID, radius, PositionX, PositionY)
+
+	end
+	
+	if table[1] == nil then return nil end
+
+	return table	
+
+end
+
 return ranaLibCollisionGrid
