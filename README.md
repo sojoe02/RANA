@@ -5,9 +5,9 @@
 
 #Description
 
-Rana is a multi agent system simulator that is designed and implemented to support the high precision needed to perform real-time multi agent communication simulations. This entails support for real-time propagation of agent actions.
+Rana is a multi agent system simulator that is designed and implemented to support the high precision needed to perform real-time multi agent communication simulations. This entails support for real-time propagation of agent actions and events.
 
-It has been designed for ease of agent moduling using a module and API approach. The modelling paradigm allows for flexible agent design and powerful data collection as well as flexible observation of emergence. Rana is currently developed as part of my Ph.D. program that seeks to offer a generalized modelling approach to simulations of animal chorusing
+It has been designed for ease of agent modelling using a module and API approach. The modelling paradigm allows for flexible agent design and powerful data collection as well as flexible observation of emergence. Rana is currently developed as part of my Ph.D. program that seeks to offer a generalized modelling approach to simulations of animal chorusing
 
 Rana has proven capable of performing traffic simulations as it was used as a simulation framework in a master thesis that enabled testing of traffic-light tactics in real city sections at varying traffic loads. 
 
