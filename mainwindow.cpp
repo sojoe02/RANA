@@ -730,7 +730,13 @@ void MainWindow::defineMap()
 	Output::Inst()->kprintf("Map information generated");
 	MapHandler::setImage(mapImage);
 	Phys::setEnvironment(mapImage->width(),mapImage->height());
-	//GridMovement::initGrid(mapImage->width(), mapImage->height());
+    //GridMovement::initGrid(mapImage->width(), mapImage->height());
+    ui->graphicsView->fitInView(scene->sceneRect(),Qt::KeepAspectRatio);
+//control->toggleLiveView(true);
+
+    QTransform transform = ui->graphicsView->transform();
+    ui->zoomSlider->setValue(std::abs(100*transform.m11()));
+    ui->zoomLabel->setText(QString::number(std::abs(100*transform.m11())));
 }
 
 /**
