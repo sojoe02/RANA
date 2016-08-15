@@ -70,6 +70,7 @@ public:
 	void setupVisualTab(QHash<QString, ZBlock *> *argZBlocks);
 	void writeZValue(QString string);
 	void setEventSceneRect(int x, int y);
+	bool eventFilter(QObject *watched, QEvent *event);
 
 	void addGraphicAuton(int Id, int posX, int posY);
 	void removeGraphicAuton(int id);
@@ -100,7 +101,7 @@ private slots:
     void on_pushButton_clicked();
 	void actionPrintInfo();
 
-	void on_addGraphicAuton(int Id, int posX, int posY);
+	void on_addGraphicAuton(int id, int posX, int posY);
     void on_changeGraphicAutonColor(int id, int r, int g, int b, int alpha);
     void on_removeGraphicAuton(int Id);
 
@@ -163,7 +164,8 @@ private:
     QImage *mapImage;
     QGraphicsPixmapItem *mapItem;
     QGraphicsScene *scene;
-    QMap<int, agentItem* > graphAgents;   
+	QMap<int, agentItem* > graphAgents;
+	QGraphicsItemGroup *agentGroup;
 
     QMutex lock;
     Control *control;

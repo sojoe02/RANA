@@ -63,7 +63,7 @@ end
 
 function takeStep()
 
-	if Moving == false then
+	if not Moving then
 
 		local x = Stat.randomInteger(1, ENV_WIDTH)
 		local y = Stat.randomInteger(1, ENV_HEIGHT)		

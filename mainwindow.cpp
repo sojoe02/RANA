@@ -112,6 +112,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	ppConstruction();
     dialogConstruction();
 
+	ui->graphicsView->viewport()->installEventFilter(this);
+
 	Output::Inst()->RanaDir =
 			QCoreApplication::applicationDirPath().toUtf8().constData();
 }
@@ -130,8 +132,8 @@ MainWindow::~MainWindow()
 void MainWindow::on_generateButton_clicked()
 {
     qApp->processEvents();
-    //ui->generateButton->setEnabled(false);
-    //initializeTimer->start(2000);
+	ui->generateButton->setEnabled(false);
+	//initializeTimer->start(2000);
 	int i = 0;
 	for(auto iter=graphAgents.begin(); iter!=graphAgents.end(); ++iter, i++) 
 	{
@@ -156,11 +158,11 @@ void MainWindow::on_generateButton_clicked()
         ui->vis_disableAgentIDs->setChecked(false);
 
 		Phys::setScale(ui->scaleDoubleSpinBox->value());
-        //Output::Inst()->kprintf("Setting map scale to %f", Phys::getScale());
+		//Output::Inst()->kprintf("Setting map scale to %f", Phys::getScale());
 
-        ui->progressBar->setValue(0);
-        QFile path(ui->agentPathLineEdit->text());
-        if(path.exists())
+		ui->progressBar->setValue(0);
+		QFile path(ui->agentPathLineEdit->text());
+		if(path.exists())
 		{
 			double exponent = (double)ui->timeResSpinBox->value();
 			double timeRes = 1/(double)std::pow(10,exponent);
@@ -458,10 +460,11 @@ void MainWindow::addGraphicAuton(int id, int posX, int posY)
 	emit addGraphicAutonSignal(id, posX, posY);
 }
 
-void MainWindow::on_addGraphicAuton(int Id, int posX, int posY)
+void MainWindow::on_addGraphicAuton(int id, int posX, int posY)
 {
-    initializeTimer->start(100);
-	agentItem *gfxItem = new agentItem(QString::number(Id));
+
+	initializeTimer->start(500);
+	agentItem *gfxItem = new agentItem(QString::number(id));
 	gfxItem->setZValue(2);
 	gfxItem->setX(posX);
 	gfxItem->setY(posY);
@@ -469,8 +472,16 @@ void MainWindow::on_addGraphicAuton(int Id, int posX, int posY)
     //Output::Inst()->kprintf("ID is %i", Id);
     //Output::Inst()->kprintf("Size of the agent array %i", graphAgents.size());
 
+	auto itr = graphAgents.find(id);
+	if(itr != graphAgents.end())
+	{
+		scene->removeItem(*itr);
+		delete *itr;
+		graphAgents.remove(id);
+	}
+
 	scene->addItem(gfxItem);
-	graphAgents.insert(Id, gfxItem);
+	graphAgents.insert(id, gfxItem);
 
     //ui->generateButton->setEnabled(true);
 
@@ -581,6 +592,15 @@ void MainWindow::wheelEvent(QWheelEvent* event)
 	ui->zoomSlider->setValue(std::abs(100*transform.m11()));
 	ui->zoomLabel->setText(QString::number(std::abs(100*transform.m11())));
 
+}
+
+bool MainWindow::eventFilter(QObject *object, QEvent *event)
+{
+	if(object == ui->graphicsView->viewport() && event->type() == QEvent::Wheel)
+	{
+		return true;
+	}
+	return false;
 }
 
 
