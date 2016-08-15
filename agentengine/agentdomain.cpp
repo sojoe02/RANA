@@ -111,6 +111,7 @@ void AgentDomain::populateSystem()
     masteragent->populateSystem(0, 0, LuaAgentAmount, luaFilename);
     retrievePopPos();
     mapGenerated = true;
+    Output::Inst()->enableRunBotton(true);
 }
 
 

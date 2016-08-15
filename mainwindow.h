@@ -75,6 +75,7 @@ public:
 	void addGraphicAuton(int Id, int posX, int posY);
 	void removeGraphicAuton(int id);
 	void changeGraphicAutonColor(int id, int r, int g, int b, int alpha);
+    void enableRunButton(bool enabled);
 
 	//dialogs:
 	void dialogConstruction();
@@ -99,13 +100,16 @@ private slots:
     void on_delaySpinBox_valueChanged(int arg1);
     void on_zoomSlider_valueChanged(int value);
     void on_pushButton_clicked();
-	void actionPrintInfo();
+    void actionPrintInfo();
+
+    void on_enableRunButton(bool enabled);
 
 	void on_addGraphicAuton(int id, int posX, int posY);
     void on_changeGraphicAutonColor(int id, int r, int g, int b, int alpha);
     void on_removeGraphicAuton(int Id);
 
     void on_initializeTimerTimeout();
+    void on_runTimerTimeout();
 
 	//postprocessing:
 	void ppIsChecked();
@@ -146,7 +150,8 @@ signals:
     void map_updateSignal(INFOLIST infolist);
     void writeStringSignal(QString something);
 	void writeStatusSignal(unsigned long long internalEvents, unsigned long long externalEvents);
-	void writeRegularSignal(QString something);
+    void writeRegularSignal(QString something);
+    void enableRunButtonSignal(bool);
 
 	void addGraphicAutonSignal(int id, int posX, int posY);
     void changeGraphicAutonColorSignal(int id, int r, int b, int g, int alpha);
@@ -205,6 +210,7 @@ private:
     QTimer resizeTimer;
 	QTimer *zMapTimer;
     QTimer *initializeTimer;
+    QTimer *runTimer;
 
     ZMode zmode;
 	bool disableLiveView;

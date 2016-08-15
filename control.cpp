@@ -33,7 +33,7 @@ Control::Control(MainWindow* mainwindow)
 
 	connect(this, &Control::startDoWork, runner, &Runner::doWork);
 	connect(&runThread, &QThread::finished, runner, &QObject::deleteLater);
-	connect(runner, &Runner::simulationDone, this, &Control::on_simDone);
+	connect(runner, &Runner::simulationDone, this, &Control::on_simDone);  
     runThread.setStackSize(1024*1024*512);
 	runThread.start();
 }
@@ -89,9 +89,12 @@ void Control::generateEnvironment(QImage *map, double scale,
         agentDomain->generateEnvironment(map->width(),map->height(),4,0,0,
                                          agentAmount,timeRes,macroRes,agentPath);
         //agentDomain->populateSystem();
+
         populateFuture = QtConcurrent::run(agentDomain, &AgentDomain::populateSystem);
 
-        //future.waitForFinished();
+        //populateFuture.waitForFinished();
+
+        //ture.waitForFinished();
         //QThread::msleep(1000);
         generating = false;
     } else

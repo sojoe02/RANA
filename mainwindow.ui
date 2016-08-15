@@ -139,6 +139,9 @@
          <property name="text">
           <string>Initialize</string>
          </property>
+         <property name="shortcut">
+          <string>I</string>
+         </property>
         </widget>
        </item>
       </layout>

@@ -53,7 +53,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	control(new Control(this)),disableSimOutput(false),
 	postControl(new PostControl(this)),zBlocks(NULL),
 	eventScene(new QGraphicsScene()), zmap(NULL), eventMapScene(new QGraphicsScene()),
-    zMapTimer(new QTimer(this)),initializeTimer(new QTimer(this)),disableLiveView(true),playingMap(false),
+    zMapTimer(new QTimer(this)),initializeTimer(new QTimer(this)),
+    runTimer(new QTimer(this)),disableLiveView(true),playingMap(false),
     PPactiveAgents(NULL)
 {
     ui->setupUi(this);
@@ -89,11 +90,18 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(this, SIGNAL(changeGraphicAutonColorSignal(int,int,int,int,int)),
                      this, SLOT(on_changeGraphicAutonColor(int,int,int,int,int)));
 
+    QObject::connect(this,SIGNAL(enableRunButtonSignal(bool)),
+                     this, SLOT(on_enableRunButton(bool)));
+
     resizeTimer.setSingleShot(true);
     QObject::connect(&resizeTimer, SIGNAL(timeout()), SLOT(on_resizeTimerTimeout()));
 
     initializeTimer->setSingleShot(true);
     QObject::connect(initializeTimer, SIGNAL(timeout()), SLOT(on_initializeTimerTimeout()));
+
+    runTimer->setSingleShot(true);
+    QObject::connect(runTimer, SIGNAL(timeout()), SLOT(on_runTimerTimeout()));
+
 
     //connect actions:
     QObject::connect(ui->action_Exit, SIGNAL(triggered()),this, SLOT(actionExit()));
@@ -147,7 +155,9 @@ void MainWindow::on_generateButton_clicked()
     graphAgents.clear();
     GridMovement::clearGrid();
     if(mapItem == NULL)
+    {
         on_generateEmptyMapButton_clicked();
+    }
 
 	if(mapItem != NULL){
 
@@ -189,7 +199,7 @@ void MainWindow::on_generateButton_clicked()
 
             //Output::Inst()->kprintf("generating environment, %d, %s",
                           //          agentAmount, stringPath.c_str());
-			ui->runButton->setEnabled(true);
+            //ui->runButton->setEnabled(true);
 
         } else
 			Output::Inst()->kprintf("Cannot generate Environment: Valid path not given");
@@ -463,7 +473,7 @@ void MainWindow::addGraphicAuton(int id, int posX, int posY)
 void MainWindow::on_addGraphicAuton(int id, int posX, int posY)
 {
 
-	initializeTimer->start(500);
+    initializeTimer->start(500);
 	agentItem *gfxItem = new agentItem(QString::number(id));
 	gfxItem->setZValue(2);
 	gfxItem->setX(posX);
@@ -500,6 +510,17 @@ void MainWindow::on_changeGraphicAutonColor(int id, int r, int g, int b, int alp
     gfxItem->setColor(r,g,b,alpha);
 }
 
+void MainWindow::enableRunButton(bool enabled)
+{
+    emit enableRunButtonSignal(enabled);
+}
+
+void MainWindow::on_enableRunButton(bool enabled)
+{
+    //QThread::sleep(100);
+    runTimer->start(1000);
+    //ui->runButton->setEnabled(enabled);
+}
 /**
  * @brief MainWindow::on_disableAgentsCheckBox_toggled Disable agent markers
  * on the live-map.
@@ -562,8 +583,13 @@ void MainWindow::on_removeGraphicAuton(int id)
 void MainWindow::on_initializeTimerTimeout()
 {
     ui->generateButton->setEnabled(true);
-    ui->runButton->setEnabled(true);
+    //ui->runButton->setEnabled(true);
 
+}
+
+void MainWindow::on_runTimerTimeout()
+{
+    ui->runButton->setEnabled(true);
 }
 
 void MainWindow::wheelEvent(QWheelEvent* event)
@@ -701,8 +727,10 @@ void MainWindow::on_browseLuaAgentButton_clicked()
 void MainWindow::on_runButton_clicked()
 {
 
-	if(control->isRunning()){
-		control->stopSimulation();
+    if(control->isRunning()){
+        ui->runButton->setEnabled(false);
+        control->stopSimulation();
+
     }
 	else
 	{
@@ -724,8 +752,10 @@ void MainWindow::changeRunButton(QString text)
 
 void MainWindow::runButtonHide()
 {
-	ui->generateButton->setEnabled(true);
-	ui->runButton->setDisabled(true);
+    initializeTimer->start(1000);
+
+    //ui->generateButton->setEnabled(true);
+    //ui->runButton->setDisabled(true);
 }
 
 /**

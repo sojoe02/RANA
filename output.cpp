@@ -198,5 +198,11 @@ void Output::addGraphicAuton(int Id, double posX, double posY)
 
 void Output::changeGraphicAutonColor(int id, int r, int g, int b, int alpha)
 {
-	mainWindow->changeGraphicAutonColor(id, r, g, b, alpha);
+    mainWindow->changeGraphicAutonColor(id, r, g, b, alpha);
+}
+
+void Output::enableRunBotton(bool enabled)
+{
+    mainWindow->enableRunButton(enabled);
+
 }
