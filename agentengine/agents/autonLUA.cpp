@@ -755,11 +755,11 @@ int AutonLUA::l_checkMap(lua_State *L)
 
 int AutonLUA::l_updatePosition(lua_State *L)
 {
-    int oldX = lua_tonumber(L, -5);
-    int oldY = lua_tonumber(L, -4);
-    int newX = lua_tonumber(L, -3);
-    int newY = lua_tonumber(L, -2);
-    int id = lua_tonumber(L, -1);
+    int oldX = lua_tonumber(L, -5)*GridMovement::getScale()+.5;
+    int oldY = lua_tonumber(L, -4)*GridMovement::getScale()+.5;
+    int newX = lua_tonumber(L, -3)*GridMovement::getScale()+.5;
+    int newY = lua_tonumber(L, -2)*GridMovement::getScale()+.5;
+    int id = lua_tointeger(L, -1);
 
     if(oldX != newX || oldY != newY)
         GridMovement::updatePos(oldX, oldY, newX, newY, id);
@@ -796,8 +796,8 @@ int AutonLUA::l_checkPosition(lua_State *L)
     int posX = 0;
     int posY = 0;
 
-    posX = lua_tonumber(L, -2) * GridMovement::getScale();
-    posY = lua_tonumber(L, -1) * GridMovement::getScale();
+    posX = lua_tonumber(L, -2) *GridMovement::getScale()+.5;
+    posY = lua_tonumber(L, -1) *GridMovement::getScale()+.5;
 
     pList agentList = GridMovement::checkPosition(posX, posY);
 

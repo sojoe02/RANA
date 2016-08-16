@@ -118,6 +118,8 @@ void GridMovement::updatePos(int oldX, int oldY, int newX, int newY, int id)
     sprintf(buffer,"%i,%i",oldX,oldY);
     std::string index = buffer;
 
+    //Output::Inst()->kprintf("%s", index.c_str());
+
     auto posItr = posMap->find(index);
 
     pList *tmp = &posItr->second;
@@ -132,7 +134,7 @@ void GridMovement::updatePos(int oldX, int oldY, int newX, int newY, int id)
             }
         }
         if(tmp->empty()){
-            posMap->erase(posItr);
+            //posMap->erase(posItr);
         }
     }
 

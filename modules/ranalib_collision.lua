@@ -58,19 +58,7 @@ function ranaLibCollisionGrid.addPosition(x,y,id)
 end
 
 -- Updates a position with ID in the collision grid... if it exists.
---fuinction ranaLibCollisionGrid.updatePosition(oldY,oldY,newX,newY,id)
-	
---	if type(newX) == "number" and type(newY) == "number" and type(oldX) == "number" and type(oldY) == "number" and type(id) == "number" then
---
---		l_updatePosition(oldX,oldY,newX,newY,iid)
-
---	end
-
---end
-
---
 function ranaLibCollisionGrid.updatePosition(newX, newY)
-
 	l_updatePosition(PositionX, PositionY, newX, newY, ID)
 
 end

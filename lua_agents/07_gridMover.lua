@@ -46,32 +46,42 @@
 Stat = require "ranalib_statistic"
 Move = require "ranalib_movement"
 Collision = require "ranalib_collision"
-
+Utility = require "ranalib_utility"
 -- Initialization of the agent.
 function initializeAgent()
 	say("Agent #: " .. ID .. " has been initialized")
 
-	Moving = true
-	DestinationX = 1
-	DestinationY = 1
-	Speed = 40
-	GridMove = true
+	--Moving = true
+	--DestinationX = 1
+	--DestinationY = 1
+	--Speed = 40
+	--GridMove = true
 	--Moving = true
 	--
+	Collision.updatePosition(20,20)
 end
 
 
 function takeStep()
 
-	if Moving == false then
+	--if Moving == false then
 		
-		local x = Stat.randomInteger(1, ENV_WIDTH)
-		local y = Stat.randomInteger(1, ENV_HEIGHT)		
+	--	local x = Stat.randomInteger(1, ENV_WIDTH)
+	--	local y = Stat.randomInteger(1, ENV_HEIGHT)		
 
 		--Move.to{x=x, y=y}
+		--
+	
 		
+	--end
+	PositionX = 20
+	PositionY = 20
+	Collision.updatePosition(20,20)
+	if ID == 1 then
+		positionTable = {}
+		positionTable = Collision.checkPosition(PositionX, PositionY)
+		say(Utility.serializeTable(positionTable))
 	end
-
 end
 
 function cleanUp()
@@ -81,9 +91,11 @@ function cleanUp()
 		positionTable = Collision.checkPosition(PositionX, PositionY)
 
 		say("agent #"..ID.." has these collisions...")
-	 	for i = 1, #positionTable do
-			say(positionTable[i])
-		end
+		say(Utility.serializeTable(positionTable))
+	 	
+		--for i = 1, #positionTable do
+		--	say(positionTable[i])
+		--end
 	end
 end
 
