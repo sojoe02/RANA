@@ -58,7 +58,7 @@ function initializeAgent()
 	--GridMove = true
 	--Moving = true
 	--
-	Collision.updatePosition(20,20)
+	--Collision.updatePosition(20,20)
 end
 
 
@@ -74,8 +74,8 @@ function takeStep()
 	
 		
 	--end
-	PositionX = 20
-	PositionY = 20
+
+	--move to 20,20 with  collision detection.
 	Collision.updatePosition(20,20)
 	if ID == 1 then
 		positionTable = {}

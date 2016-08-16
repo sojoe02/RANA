@@ -60,6 +60,8 @@ end
 -- Updates a position with ID in the collision grid... if it exists.
 function ranaLibCollisionGrid.updatePosition(newX, newY)
 	l_updatePosition(PositionX, PositionY, newX, newY, ID)
+	PositionX = newX
+	PositionY = newY
 
 end
 
