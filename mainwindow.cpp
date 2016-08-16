@@ -202,7 +202,10 @@ void MainWindow::on_generateButton_clicked()
             //ui->runButton->setEnabled(true);
 
         } else
-			Output::Inst()->kprintf("Cannot generate Environment: Valid path not given");
+        {
+            Output::Inst()->kprintf("Cannot generate Environment: No valid path to agent");
+            ui->generateButton->setEnabled(true);
+        }
     } else
 		Output::Inst()->kprintf("No map has been loaded, please do that...");
 

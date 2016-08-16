@@ -103,7 +103,9 @@ void Output::kdebug(const char* msg, ...)
 
     QString string(buffer);
 
-	mainWindow->write_output(string);
+    qDebug() << buffer;
+
+    mainWindow->write_output(string);
 
     va_end(args);
     //lock.unlock();

@@ -48,7 +48,7 @@ Shared = require "ranalib_shared"
 -- Init of the lua frog, function called upon initilization of the LUA auton.
 function initializeAgent()
 
-	l_debug("Agent #: " .. ID .. " has been initialized")
+	say("Agent #: " .. ID .. " has been initialized")
 
 end
 

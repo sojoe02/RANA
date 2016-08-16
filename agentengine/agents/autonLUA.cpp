@@ -174,14 +174,14 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
 
         if(luaL_loadfile(L, auxLib.c_str()) || lua_pcall(L,0,0,0))
         {
-            Output::Inst()->kprintf("<font color=\"orange\">error : %s <\font>", lua_tostring(L, -1));
+            Output::Inst()->kprintf("<font color=\"red\">error : %s <\font>", lua_tostring(L, -1));
             nofile = true;
             Output::Inst()->kprintf("Lua Auton disabled\n");
         }
 
         if(luaL_loadfile(L, filename.c_str() ) || lua_pcall(L,0,0,0))
         {
-            Output::Inst()->kprintf("<font color=\"orange\">error : %s <\font>", lua_tostring(L, -1));
+            Output::Inst()->kprintf("<font color=\"red\">error : %s <\font>", lua_tostring(L, -1));
             nofile = true;
             Output::Inst()->kprintf("Lua Auton disabled\n");
         }
