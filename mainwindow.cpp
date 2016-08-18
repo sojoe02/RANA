@@ -54,7 +54,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	postControl(new PostControl(this)),zBlocks(NULL),
 	eventScene(new QGraphicsScene()), zmap(NULL), eventMapScene(new QGraphicsScene()),
     zMapTimer(new QTimer(this)),initializeTimer(new QTimer(this)),
-    runTimer(new QTimer(this)),disableLiveView(true),playingMap(false),
+    runTimer(new QTimer(this)),disableLiveView(true),playingMap(false), running(false),
     PPactiveAgents(NULL)
 {
     ui->setupUi(this);
@@ -139,8 +139,14 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_generateButton_clicked()
 {
+
     qApp->processEvents();
-	ui->generateButton->setEnabled(false);
+    if (Output::Inst()->SimRunning.load())
+    {
+        return;
+    }
+
+    ui->generateButton->setEnabled(false);
     ui->runButton->setEnabled(false);
 	//initializeTimer->start(2000);
 	int i = 0;
@@ -210,8 +216,8 @@ void MainWindow::on_generateButton_clicked()
     } else
         Output::Inst()->kprintf("No map has been loaded, please do that...");
 
-    ui->generateButton->setEnabled(true);
-    runTimer->start(500);
+    initializeTimer->start(400);
+    //ui->generateButton->setEnabled(true);
 
 }
 

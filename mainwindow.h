@@ -214,7 +214,8 @@ private:
 
     ZMode zmode;
 	bool disableLiveView;
-	bool playingMap;
+    bool playingMap;
+    bool running;
 
 
 };
