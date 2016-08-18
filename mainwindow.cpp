@@ -207,7 +207,9 @@ void MainWindow::on_generateButton_clicked()
             ui->generateButton->setEnabled(true);
         }
     } else
-		Output::Inst()->kprintf("No map has been loaded, please do that...");
+        Output::Inst()->kprintf("No map has been loaded, please do that...");
+
+    ui->generateButton->setEnabled(true);
 
 }
 
@@ -468,15 +470,15 @@ void MainWindow::on_updateMap(INFOLIST infolist)
 
 void MainWindow::addGraphicAuton(int id, int posX, int posY)
 {
-    ui->generateButton->setEnabled(false);
-    ui->runButton->setEnabled(false);
+    //ui->generateButton->setEnabled(false);
+    //ui->runButton->setEnabled(false);
 	emit addGraphicAutonSignal(id, posX, posY);
 }
 
 void MainWindow::on_addGraphicAuton(int id, int posX, int posY)
 {
 
-    initializeTimer->start(500);
+    //itializeTimer->start(500);
 	agentItem *gfxItem = new agentItem(QString::number(id));
 	gfxItem->setZValue(2);
 	gfxItem->setX(posX);
@@ -496,8 +498,11 @@ void MainWindow::on_addGraphicAuton(int id, int posX, int posY)
 	scene->addItem(gfxItem);
 	graphAgents.insert(id, gfxItem);
 
-    //ui->generateButton->setEnabled(true);
+    //ui->runButton->setEnabled(true);
+    //if (ui->generateButton->isEnabled())
+      //  ui->generateButton->setEnabled(true);
 
+    //ui->generateButton->setEnabled(true);
 }
 
 void MainWindow::changeGraphicAutonColor(int id, int r, int g, int b, int alpha)
@@ -521,7 +526,7 @@ void MainWindow::enableRunButton(bool enabled)
 void MainWindow::on_enableRunButton(bool enabled)
 {
     //QThread::sleep(100);
-    runTimer->start(1000);
+    runTimer->start(250);
     //ui->runButton->setEnabled(enabled);
 }
 /**
