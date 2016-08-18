@@ -193,7 +193,7 @@ int Nestene::addAuton(double x, double y, double z,
 
 		luaAutons.insert(std::make_pair(luaPtr->getID(),luaPtr));
 		Doctor::addLuaAutonPtr(luaPtr);
-				luaPtr->InitializeAgent();
+		luaPtr->InitializeAgent();
 	}
 
 	return id;

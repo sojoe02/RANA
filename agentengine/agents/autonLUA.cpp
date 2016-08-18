@@ -1135,8 +1135,16 @@ int AutonLUA::l_addGroup(lua_State *L)
 	int id = lua_tonumber(L, -1);
 	int group = lua_tonumber(L, -2);
 
+	bool success = false;
+
 	auto autonPtr = Doctor::getAutonPtr(id);
-	autonPtr->addGroup(group);
+	if (autonPtr != NULL)
+	{
+		autonPtr->addGroup(group);
+		success = true;
+	}
+
+	lua_pushboolean(L,success);
 
 	return 0;
 }
@@ -1145,11 +1153,15 @@ int AutonLUA::l_removeGroup(lua_State *L)
 {
 	int id = lua_tonumber(L, -2);
 	int group = lua_tonumber(L, -1);
+	bool removed = false;
 
 	auto autonPtr = Doctor::getAutonPtr(id);
-	bool removed = autonPtr->removeGroup(group);
-	lua_pushboolean(L, removed);
+	if (autonPtr != NULL)
+	{
+		removed = autonPtr->removeGroup(group);
+	}
 
+	lua_pushboolean(L, removed);
 	return 1;
 }
 
@@ -1159,8 +1171,12 @@ int AutonLUA::l_setMacroFactorMultipler(lua_State *L)
 	int macroFactorMultiple = lua_tonumber(L, -1);
 
 	auto autonPtr = Doctor::getAutonPtr(id);
-	autonPtr->setMacroFactorMultipler(macroFactorMultiple);
+
+	if(autonPtr != NULL)
+		autonPtr->setMacroFactorMultipler(macroFactorMultiple);
+
 	return 0;
+
 }
 
 
