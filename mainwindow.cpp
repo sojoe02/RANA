@@ -141,6 +141,7 @@ void MainWindow::on_generateButton_clicked()
 {
     qApp->processEvents();
 	ui->generateButton->setEnabled(false);
+    ui->runButton->setEnabled(false);
 	//initializeTimer->start(2000);
 	int i = 0;
 	for(auto iter=graphAgents.begin(); iter!=graphAgents.end(); ++iter, i++) 
@@ -210,6 +211,7 @@ void MainWindow::on_generateButton_clicked()
         Output::Inst()->kprintf("No map has been loaded, please do that...");
 
     ui->generateButton->setEnabled(true);
+    runTimer->start(500);
 
 }
 
