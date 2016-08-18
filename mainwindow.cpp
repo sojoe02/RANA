@@ -143,6 +143,7 @@ void MainWindow::on_generateButton_clicked()
     qApp->processEvents();
     if (Output::Inst()->SimRunning.load())
     {
+        Output::Inst()->kprintf("Error Initializing, simulation is running");
         return;
     }
 
@@ -750,7 +751,7 @@ void MainWindow::on_runButton_clicked()
     }
 	else
 	{
-		ui->generateButton->setDisabled(true);
+        //ui->generateButton->setDisabled(true);
 		control->runSimulation(ui->runTimeSpinBox->value());
 	}
 }
