@@ -236,6 +236,7 @@ void AutonLUA::InitializeAgent()
 	}
 
 
+	getSyncData();
 }
 
 /********************************************************
