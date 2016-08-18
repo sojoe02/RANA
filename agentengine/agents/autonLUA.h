@@ -112,6 +112,7 @@ public:
 
 	static int l_changeAgentColor(lua_State *L);
 
+	void InitializeAgent();
 private:
 
     std::unique_ptr<EventQueue::iEvent>

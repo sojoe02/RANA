@@ -50,7 +50,7 @@ end
 function ranaLibAgent.joinGroup(groupID)
 	
 	if type(group) == "number" then
-		l_addGroup(ID, groupID)
+		l_addGroup(groupID,ID)
 	end
 end
 

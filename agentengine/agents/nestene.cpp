@@ -68,6 +68,7 @@ void Nestene::populate(int LUASize ,std::string filename)
 		luaAutons.insert(std::make_pair(luaPtr->getID(), luaPtr));
 		Doctor::addLuaAutonPtr(luaPtr);
 
+		luaPtr->InitializeAgent();
 	}
 }
 
