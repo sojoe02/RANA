@@ -82,7 +82,7 @@ function takeStep()
 	--	joined = true
 	--end
 
-	if l_getMersenneInteger(1,1000) <= 1 and ID==1 then
+	if Stat.randomInteger(1,1000) <= 1 and ID==1 then
 		l_debug("Agent:"..ID.." is emiting ping")
 	 	Event.emit{speed=343, description="ping",table={msg="I am agent "..ID}, targetGroup=group}
 	end

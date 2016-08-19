@@ -217,6 +217,8 @@ AutonLUA::~AutonLUA()
 
 void AutonLUA::InitializeAgent()
 {
+	if(removed) return;
+
 	lua_settop(L,0);
 	try
 	{
@@ -225,7 +227,7 @@ void AutonLUA::InitializeAgent()
 		//Call the initAuton function (3 arguments, 0 results):
 		if(lua_pcall(L,0,0,0)!=LUA_OK)
 		{
-			Output::Inst()->kprintf("<b><font color=\"brown\">error on agent initialization, %s</font></b></>",	lua_tostring(L,-1));
+			Output::Inst()->kprintf("<b><font color=\"brown\">Error on agent initialization, %s</font></b></>",	lua_tostring(L,-1));
 			nofile = true;
 			Output::Inst()->kprintf("Lua Auton disabled\n");
 		}
@@ -302,7 +304,7 @@ std::unique_ptr<EventQueue::eEvent> AutonLUA::takeStep()
 		lua_getglobal(L, "_TakeStep");
 		if(lua_pcall(L,0,0,0) !=LUA_OK)
 		{
-			Output::Inst()->kprintf("<b><font color=\"brown\">error on takeStep\t %s</font></b></>",lua_tostring(L,-1));
+			Output::Inst()->kprintf("<b><font color=\"brown\">Error on takeStep\t %s</font></b></>",lua_tostring(L,-1));
 			Output::RunSimulation.store(false);
 			return NULL;
 		}
@@ -352,7 +354,7 @@ std::unique_ptr<EventQueue::eEvent> AutonLUA::handleEvent(std::unique_ptr<EventQ
 
 		if(lua_pcall(L,5,0,0)!=LUA_OK)
 		{
-			Output::Inst()->kprintf("<b><font color=\"brown\">error on event handling:\t %s</font></b></>",lua_tostring(L,-1));
+			Output::Inst()->kprintf("<b><font color=\"brown\">Error on event handling:\t %s</font></b></>",lua_tostring(L,-1));
 			Output::RunSimulation.store(false);
 			return NULL;
 		}
@@ -361,7 +363,7 @@ std::unique_ptr<EventQueue::eEvent> AutonLUA::handleEvent(std::unique_ptr<EventQ
 
 	}catch(std::exception &e)
 	{
-		Output::Inst()->kprintf("<b><font color=\"red\">exception on event handling:\t%s</font></b></>", e.what());
+		Output::Inst()->kprintf("<b><font color=\"red\">Exception on event handling:\t%s</font></b></>", e.what());
 		Output::RunSimulation = false;
 	}
 
@@ -474,7 +476,7 @@ void AutonLUA::processFunction(EventQueue::dataEvent *devent, double time, doubl
 		lua_pushstring(L, devent->table);
 
 		if(lua_pcall(L,6,2,0)!=LUA_OK){
-			Output::Inst()->ppprintf("error on calling _ProcessEventFunction : %s\n,",
+			Output::Inst()->kprintf("Error on calling _ProcessEventFunction : %s\n,",
 									 lua_tostring(L,-1));
 			Output::RunEventProcessing.store(false);
 			return;
@@ -486,7 +488,7 @@ void AutonLUA::processFunction(EventQueue::dataEvent *devent, double time, doubl
 
 	}catch(std::exception &e)
 	{
-		Output::Inst()->ppprintf("<b><font color=\"red\">Error on processEvent..%s</font></b></>", e.what());
+		Output::Inst()->kprintf("<b><font color=\"red\">Error on processEvent..%s</font></b></>", e.what());
 		Output::RunEventProcessing.store(false);
 	}
 }
@@ -513,7 +515,7 @@ void AutonLUA::simDone()
 
 		if(lua_pcall(L,0,0,0)!=LUA_OK)
 		{
-			Output::Inst()->kprintf("<b><font color=\"brown\">error on 'simDone':\t %s</font></b></>",lua_tostring(L,-1));
+			Output::Inst()->kprintf("<b><font color=\"brown\">Error on 'simDone':\t %s</font></b></>",lua_tostring(L,-1));
 		}
 	}
 	catch(std::exception& e)
