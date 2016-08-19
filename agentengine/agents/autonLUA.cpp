@@ -76,7 +76,10 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
 		module_path.append("/modules/?.lua");
 		//Output::Inst()->kdebug(module_path.c_str());
 		cur_path.append(";");
-		cur_path.append(module_path);
+        cur_path.append(module_path);
+        cur_path.append(";");
+        cur_path.append(Output::Inst()->AgentPath);
+        cur_path.append("?.lua");
 		lua_pop(L,1);
 		lua_pushstring(L, cur_path.c_str());
 		lua_setfield(L,-2,"path");

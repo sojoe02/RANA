@@ -13,7 +13,7 @@ Rana has proven capable of performing traffic simulations as it was used as a si
 
 Rana can also be used to perform 'action-based' simulations and is used as courseware for a multi agent computer science course at the University of Southern Denmark (2014-2016). During the course students are tasked to design and implement mining robot- and prey/predator simulations.
 
-An event processing tool is also featured. It allows for post processing visualization of event propagation and intensity, this allows users to observe event emergence and determine events affect agent behaviour.
+An event processing tool is also featured. It allows for post processed visualization of event propagation and intensity, this allows users to observe event based emergence and determine how events has affected agent behaviour.
 
 #Documentation
 
