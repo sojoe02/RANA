@@ -236,7 +236,7 @@ void AutonLUA::InitializeAgent()
 		}
 
 	}catch(std::exception& e){
-		Output::Inst()->kprintf("<b><font color=\"red\">Error on Agent Initiation..%s, %s</font></b></>" , e.what());
+		Output::Inst()->kprintf("<b><font color=\"red\">Error on Agent initialization. %s, %s</font></b></>" , filename.c_str() ,e.what());
 		Output::RunSimulation = false;
 	}
 
@@ -307,7 +307,7 @@ std::unique_ptr<EventQueue::eEvent> AutonLUA::takeStep()
 		lua_getglobal(L, "_TakeStep");
 		if(lua_pcall(L,0,0,0) !=LUA_OK)
 		{
-			Output::Inst()->kprintf("<b><font color=\"brown\">Error on takeStep\t %s</font></b></>",lua_tostring(L,-1));
+            Output::Inst()->kprintf("<b><font color=\"brown\">Lua error on takeStep. %s, %s</font></b></>", filename.c_str() ,lua_tostring(L,-1));
 			Output::RunSimulation.store(false);
 			return NULL;
 		}
@@ -322,7 +322,7 @@ std::unique_ptr<EventQueue::eEvent> AutonLUA::takeStep()
 
 	}catch(std::exception &e)
 	{
-		Output::Inst()->kprintf("<b><font color=\"red\">Error on Initiate Event..%s</font></b></>", e.what());
+        Output::Inst()->kprintf("<b><font color=\"red\">Exception on takeStep. %s, %s</font></b></>", filename.c_str()  ,e.what());
 		Output::RunSimulation.store(false);
 	}
 
@@ -357,7 +357,7 @@ std::unique_ptr<EventQueue::eEvent> AutonLUA::handleEvent(std::unique_ptr<EventQ
 
 		if(lua_pcall(L,5,0,0)!=LUA_OK)
 		{
-			Output::Inst()->kprintf("<b><font color=\"brown\">Error on event handling:\t %s</font></b></>",lua_tostring(L,-1));
+			Output::Inst()->kprintf("<b><font color=\"brown\">Error on event handling.%s, %s</font></b></>",filename.c_str(),lua_tostring(L,-1));
 			Output::RunSimulation.store(false);
 			return NULL;
 		}
@@ -366,7 +366,7 @@ std::unique_ptr<EventQueue::eEvent> AutonLUA::handleEvent(std::unique_ptr<EventQ
 
 	}catch(std::exception &e)
 	{
-		Output::Inst()->kprintf("<b><font color=\"red\">Exception on event handling:\t%s</font></b></>", e.what());
+		Output::Inst()->kprintf("<b><font color=\"red\">Exception on event handling.%s, %s</font></b></>",filename.c_str(), e.what());
 		Output::RunSimulation = false;
 	}
 
@@ -518,12 +518,12 @@ void AutonLUA::simDone()
 
 		if(lua_pcall(L,0,0,0)!=LUA_OK)
 		{
-			Output::Inst()->kprintf("<b><font color=\"brown\">Error on 'simDone':\t %s</font></b></>",lua_tostring(L,-1));
+			Output::Inst()->kprintf("<b><font color=\"brown\">Error on cleanUp. %s</font></b></>",lua_tostring(L,-1));
 		}
 	}
 	catch(std::exception& e)
 	{
-		Output::Inst()->kprintf("<b><font color=\"red\">Error on simulationDone..%s</font></b></>", e.what());
+		Output::Inst()->kprintf("<b><font color=\"red\">Exception on cleanUp. %s</font></b></>", e.what());
 	}
 }
 
@@ -559,7 +559,7 @@ void AutonLUA::getSyncData()
 	}
 	catch(std::exception &e)
 	{
-		Output::Inst()->kprintf("<b><font color=\"red\">Error on retrieving X and Y\t%s</font></b></>", e.what());
+		Output::Inst()->kprintf("<b><font color=\"red\">Exception on retrieving sync data, %s</font></b></>", e.what());
 		Output::RunSimulation.store(false);
 		return;
 	}
