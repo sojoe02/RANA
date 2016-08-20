@@ -103,7 +103,7 @@ void Nestene::retrievePopPos(std::list<agentInfo> &infolist){
  * an event is initated it will be added the masters eventqueue.
  * @param macroResolution the resolution of the macrostep (microStepRes * macroFactor)
  */
-void Nestene::initPhase(double macroResolution, unsigned long long tmu)
+void Nestene::takeStepPhase(unsigned long long tmu)
 {
 
 	for(auto itr = luaAutons.begin(); itr !=luaAutons.end(); itr++)

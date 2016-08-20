@@ -27,6 +27,8 @@
 #include <list>
 #include <string>
 #include <set>
+#include <thread>
+#include <condition_variable>
 
 #include "eventqueue.h"
 #include "nestene.h"
@@ -75,8 +77,10 @@ public:
 
 private:
 
-	std::vector<Nestene> nestenes;
-	std::vector<Nestene>::iterator itNest;
+    std::vector<Nestene*> nestenes;
+    std::vector<std::thread*> threads;
+
+    std::vector<Nestene*>::iterator itNest;
 	//nestene index to keep track of which nestene the next auton should be added at:
 	int nesteneIndex;
 
@@ -95,7 +99,7 @@ private:
 	double macroResolution;
 
 	int autonAmount;
-    int threads;
+    int nesteneAmount;
 	std::string luaFilename;
 	double areaX;
 	double areaY;
@@ -107,5 +111,11 @@ private:
 	unsigned long long externalDistroAmount;
 	unsigned long long tmu;
 
+    static void runStepPhase(Nestene *nestene);
+    static std::condition_variable CvStepStart;
+    static std::condition_variable CvStepDone;
+    static std::atomic_int nestCounter;
+    static std::mutex mutexStep;
+    static std::mutex mutexStepDone;
 };
 #endif // MASTER_H

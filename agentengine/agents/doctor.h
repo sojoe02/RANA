@@ -3,6 +3,7 @@
 
 #include <string>
 #include <map>
+#include <mutex>
 
 #include "auton.h"
 #include "master.h"
@@ -26,6 +27,7 @@ private:
 	static Master *master;
 	static std::map<int, std::string> agentFilenames;
 	static std::map<int, std::shared_ptr<AutonLUA>> agents;
+    static std::mutex eventMutex;
 };
 
 #endif // DOCTOR_H

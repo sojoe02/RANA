@@ -50,7 +50,7 @@ class Nestene
 
 		void generateAuton();
 		void populate(int LUASize, std::string filename);
-		void initPhase(double macroResolution, unsigned long long tmu);
+        void takeStepPhase(unsigned long long tmu);
 		//function to receive events the master, and distribute them on all local nestene
 		void distroPhase(const EventQueue::eEvent *event);
 		std::list<EventQueue::iEvent> responsePhase();

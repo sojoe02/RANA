@@ -1,9 +1,12 @@
+#include <mutex>
+
 #include "doctor.h"
 #include "output.h"
 
 Master* Doctor::master = NULL;
 std::map<int, std::string> Doctor::agentFilenames;
 std::map<int, std::shared_ptr<AutonLUA>> Doctor::agents;
+std::mutex Doctor::eventMutex;
 
 void Doctor::InitDoctor(Master *arg_master)
 {
@@ -43,6 +46,7 @@ void Doctor::addLuaAutonPtr(std::shared_ptr<AutonLUA> luaPtr)
 
 void Doctor::submitEEvent(std::unique_ptr<EventQueue::eEvent> eEvent)
 {
+    std::lock_guard<std::mutex> guard(eventMutex);
     master->receiveEEventPtr(std::move(eEvent));
 }
 

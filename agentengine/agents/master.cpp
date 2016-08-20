@@ -36,8 +36,14 @@
 
 #include "output.h"
 
+std::condition_variable Master::CvStepStart;
+std::condition_variable Master::CvStepDone;
+std::mutex Master::mutexStep;
+std::mutex Master::mutexStepDone;
+std::atomic_int Master::nestCounter;
+
 Master::Master()
-        :nesteneIndex(0), threads(0) ,eEventInitAmount(0), responseAmount(0),
+        :nesteneIndex(0), nesteneAmount(0) ,eEventInitAmount(0), responseAmount(0),
           externalDistroAmount(0), tmu(0)
 {
     //Output::Inst()->kprintf("Initiating master\n");
@@ -65,30 +71,37 @@ Master::~Master()
  * @param macroResolution factor to multiply with the time resolution for the macrostep intervals.
  */
 
-void Master::generateMap(double width, double height, int threads, double timeResolution, double macroResolution)
+void Master::generateMap(double width, double height, int nesteneAmount, double timeResolution, double macroResolution)
 {
     this->timeResolution = timeResolution;
     this->macroResolution = macroResolution;
-    this->threads = threads;
+    this->nesteneAmount = nesteneAmount;
 
     areaX = width;
     areaY = height;
+
+    nestCounter.store(0);
 
     if(!nestenes.empty())
     {
         nestenes.clear();
     }
 
-    for(int i=0; i<threads; i++)
+    for(int i=0; i<nesteneAmount; i++)
     {
         std::string id;
         std::stringstream ss;
         ss << i;
         id.append(ss.str());
 
-        Nestene nest = Nestene(0,0,width,height,this,i);
+        Nestene *nest = new Nestene(0,0,width,height,this,i);
+
+        std::thread *t = new std::thread(Master::runStepPhase, nest);
+        threads.push_back(t);
 
         nestenes.push_back(nest);
+        //std::thread t;
+        //nestThreads.push_back(t);
     }
 }
 
@@ -110,7 +123,7 @@ std::list<agentInfo> Master::retrievePopPos()
 	//Output::Inst()->kprintf("testing retrieve of master");
 	for(auto itNest = nestenes.begin(); itNest !=nestenes.end(); itNest++)
 	{
-        itNest->retrievePopPos(agentinfo);
+        (*itNest)->retrievePopPos(agentinfo);
     }
 
     return agentinfo;
@@ -150,7 +163,7 @@ void Master::populateSystem(int listenerSize,
     j = 0;
     for(auto itr = LUAVector.begin(); itr != LUAVector.end(); ++itr, j++)
     {
-        Nestene *nestene = &nestenes.at(j);
+        Nestene *nestene = nestenes.at(j);
         //Output::Inst()->kdebug("Working not here %i", *itr);
 		nestene->populate(*itr, filename);
     }
@@ -200,7 +213,7 @@ void Master::microStep(unsigned long long tmu)
             for(itNest = nestenes.begin(); itNest != nestenes.end(); itNest++)
             {
                 externalDistroAmount++;
-                itNest->distroPhase(eEventPtr);
+                (*itNest)->distroPhase(eEventPtr);
 
             }
         }
@@ -253,10 +266,49 @@ unsigned long long Master::getNextMicroTmu()
 void Master::macroStep(unsigned long long tmu)
 {
     //Handle the initiation of events:
-    for(itNest=nestenes.begin() ; itNest !=nestenes.end(); ++itNest)
+    //for(itNest=nestenes.begin() ; itNest !=nestenes.end(); ++itNest)
+    //{
+      //  Nestene nest = *itNest;
+       // std::thread t(Master::runStepPhase, nest);
+       //vv nvestThreads.push_back(t);
+    //}
+
+    CvStepStart.notify_all();
+
+    std::unique_lock<std::mutex> lk(mutexStepDone);
+
+    while(nestCounter.load() < nesteneAmount)
     {
-        itNest->initPhase(macroResolution, tmu+1);
+        CvStepDone.wait(lk);
+        nestCounter.fetch_add(1);
+        Output::Inst()->kprintf("%i,\t %i", nestCounter.load(),nesteneAmount);
     }
+
+    nestCounter.store(0);
+}
+
+/**
+ * @brief Master::runStepPhase is static method designed to run the takeStep phase of each
+ * preconfigured thread.
+ * @param nestene
+ * @param macroResolution
+ * @param time
+ */
+void Master::runStepPhase(Nestene *nestene)
+{
+
+    Output::Inst()->kprintf("Starting a new thread");
+    std::unique_lock<std::mutex> lk(mutexStep);
+
+    while(Output::Inst()->RunSimulation)
+    {
+
+        CvStepStart.wait(lk);
+        Output::Inst()->kprintf("Taking a step");
+       //nestene->takeStepPhase(Phys::getCTime()+1);
+        CvStepDone.notify_all();
+    }
+
 }
 
 
@@ -285,14 +337,14 @@ void Master::simDone()
 {
     for(itNest=nestenes.begin() ; itNest !=nestenes.end(); ++itNest)
     {
-        itNest->simDone();
+        (*itNest)->simDone();
     }
 }
 
 int Master::addAuton(double x, double y, double z, std::string path, 
 					 std::string filename, std::string type = "Lua")
 {
-    std::vector<Nestene>::iterator nestItr = nestenes.begin();
+    auto nestItr = nestenes.begin();
 
     nesteneIndex++;
 
@@ -301,7 +353,7 @@ int Master::addAuton(double x, double y, double z, std::string path,
 
     nestItr += nesteneIndex;
 
-    int id = nestItr->addAuton(x, y, z, path+filename, type);
+    int id = (*nestItr)->addAuton(x, y, z, path+filename, type);
 
     eventQueue->addAutonInfo(id, filename);
 
@@ -316,7 +368,7 @@ bool Master::removeAuton(int arg_id)
     for(auto nestitr=nestenes.begin() ; nestitr !=nestenes.end(); ++nestitr)
     {
         //int i = itNest->containsAuton(arg_id);
-        bool removed = nestitr->removeAuton(arg_id);
+        bool removed = (*nestitr)->removeAuton(arg_id);
 
         if(removed)
         {
