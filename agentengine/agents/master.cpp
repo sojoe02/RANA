@@ -273,15 +273,14 @@ void Master::macroStep(unsigned long long tmu)
        //vv nvestThreads.push_back(t);
     //}
 
-    CvStepStart.notify_all();
+    std::this_thread::sleep_for(std::chrono::seconds(1));
 
-    std::unique_lock<std::mutex> lk(mutexStepDone);
+    CvStepStart.notify_all();
 
     while(nestCounter.load() < nesteneAmount)
     {
-        CvStepDone.wait(lk);
-        nestCounter.fetch_add(1);
-        Output::Inst()->kprintf("%i,\t %i", nestCounter.load(),nesteneAmount);
+        std::unique_lock<std::mutex> lk(mutexStepDone);
+        //CvStepDone.wait_for(lk,std::chrono::milliseconds(100));
     }
 
     nestCounter.store(0);
@@ -298,13 +297,17 @@ void Master::runStepPhase(Nestene *nestene)
 {
 
     Output::Inst()->kprintf("Starting a new thread");
-    std::unique_lock<std::mutex> lk(mutexStep);
 
-    while(Output::Inst()->RunSimulation)
+    while(true)
     {
+        Output::Inst()->kprintf("Stuck here");
 
+        std::unique_lock<std::mutex> lk(mutexStep);
         CvStepStart.wait(lk);
         Output::Inst()->kprintf("Taking a step");
+        Master::nestCounter.fetch_add(1);
+        Output::Inst()->kprintf("NestCountre %i", Master::nestCounter.load());
+        //std::this_thread::sleep_for(std::chrono::seconds(1));
        //nestene->takeStepPhase(Phys::getCTime()+1);
         CvStepDone.notify_all();
     }
