@@ -209,7 +209,7 @@ AutonLUA::~AutonLUA()
 {
 	if(L != NULL)
 	{
-		//Output::Inst()->kprintf("Deleting agent %d", ID);
+        Output::Inst()->kprintf("Deleting agent %d", ID);
 		lua_settop(L,0);
 		//lua_gc(L,LUA_GCCOLLECT,0);
 		lua_close(L);

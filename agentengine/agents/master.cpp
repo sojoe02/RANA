@@ -65,6 +65,11 @@ Master::~Master()
     {
         t->join();
     }
+
+    for(auto n : nestenes)
+    {
+        delete n;
+    }
 }
 /********************************************************
  * Simulation initialization functions.
@@ -134,9 +139,9 @@ std::list<agentInfo> Master::retrievePopPos()
 
     std::list<agentInfo> agentinfo;
 	//Output::Inst()->kprintf("testing retrieve of master");
-	for(auto itNest = nestenes.begin(); itNest !=nestenes.end(); itNest++)
+    for(auto n : nestenes)
 	{
-        (*itNest)->retrievePopPos(agentinfo);
+        n->retrievePopPos(agentinfo);
     }
 
     return agentinfo;

@@ -48,6 +48,8 @@ Nestene::Nestene(double posX, double posY, double width, double height, Master* 
 Nestene::~Nestene()
 {
 
+    Output::Inst()->kprintf("DELETING NESTENE");
+
 }
 
 void Nestene::populate(int LUASize ,std::string filename)
