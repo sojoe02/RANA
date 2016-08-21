@@ -38,6 +38,8 @@
 
 #include "utility.h"
 
+#include "condition_variable"
+
 class Master;
 class AutonListener;
 class AutonScreamer;
@@ -63,6 +65,7 @@ class Nestene
 
 		bool removeAuton(int arg_id);
 		int containsAuton(int arg_id);
+        std::condition_variable cv;
 
 private:
 		//generates an event and puts it into the event map.

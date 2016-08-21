@@ -273,17 +273,25 @@ void Master::macroStep(unsigned long long tmu)
        //vv nvestThreads.push_back(t);
     //}
 
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    nestCounter.store(0);
+    //std::this_thread::sleep_for(std::chrono::seconds(1));
+    Output::Inst()->kprintf("TAKING NEW STEP");
+    for(auto n = nestenes.begin(); n != nestenes.end(); ++n)
+    {
+        (*n)->cv.notify_one();
+        //Output::Inst()->kprintf("Notifying thread");
 
-    CvStepStart.notify_all();
+    }
+
 
     while(nestCounter.load() < nesteneAmount)
     {
+        //std::lock_guard<std::mutex> lock(mutexStepDone);
         std::unique_lock<std::mutex> lk(mutexStepDone);
-        //CvStepDone.wait_for(lk,std::chrono::milliseconds(100));
+        CvStepDone.wait_for(lk, std::chrono::milliseconds(100));
+        //Output::Inst()->kprintf("nest counter in main thread: %i", nestCounter.load());
     }
 
-    nestCounter.store(0);
 }
 
 /**
@@ -297,19 +305,23 @@ void Master::runStepPhase(Nestene *nestene)
 {
 
     Output::Inst()->kprintf("Starting a new thread");
+    std::mutex m;
+
 
     while(true)
     {
-        Output::Inst()->kprintf("Stuck here");
-
-        std::unique_lock<std::mutex> lk(mutexStep);
-        CvStepStart.wait(lk);
+        //Output::Inst()->kprintf("Stuck here");
+        std::unique_lock<std::mutex> lk(m, std::defer_lock);
+        //Output::Inst()->kprintf("Wait for lock");
+        nestene->cv.wait(lk);
         Output::Inst()->kprintf("Taking a step");
+        Output::Inst()->kprintf("Nestene going to work, %i, %d", Master::nestCounter.load(), std::this_thread::get_id());
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        //nestene->takeStepPhase(Phys::getCTime()+1);
+        Output::Inst()->kprintf("Work done %d", std::this_thread::get_id());
+
         Master::nestCounter.fetch_add(1);
-        Output::Inst()->kprintf("NestCountre %i", Master::nestCounter.load());
-        //std::this_thread::sleep_for(std::chrono::seconds(1));
-       //nestene->takeStepPhase(Phys::getCTime()+1);
-        CvStepDone.notify_all();
+        CvStepDone.notify_one();
     }
 
 }
