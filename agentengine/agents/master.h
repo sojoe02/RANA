@@ -117,5 +117,6 @@ private:
     static std::atomic_int nestCounter;
     static std::mutex mutexStep;
     static std::mutex mutexStepDone;
+    static std::atomic_bool stopThreads;
 };
 #endif // MASTER_H
