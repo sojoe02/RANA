@@ -289,27 +289,24 @@ void Master::macroStep(unsigned long long tmu)
       //  Nestene nest = *itNest;
        // std::thread t(Master::runStepPhase, nest);
        //vv nvestThreads.push_back(t);
-    //}
-
+    //
     nestCounter.store(0);
-    //std::this_thread::sleep_for(std::chrono::seconds(1));
+    //std::this_thread::sleep_for(std::chrono::milliseconds(10));
     //Output::Inst()->kprintf("TAKING NEW STEP");
-    for(auto n = nestenes.begin(); n != nestenes.end(); ++n)
+    for(auto n : nestenes)
     {
-        (*n)->cv.notify_one();
-        Output::Inst()->kprintf("Notifying thread");
-
+        while(!n->takingStep.load())
+            n->cv.notify_one();
+        //Output::Inst()->kprintf("Notifying thread");
     }
-
 
     while(nestCounter.load() < nesteneAmount)
     {
         //std::lock_guard<std::mutex> lock(mutexStepDone);
         std::unique_lock<std::mutex> lk(mutexStepDone);
-        CvStepDone.wait_for(lk, std::chrono::milliseconds(100));
+        CvStepDone.wait_for(lk, std::chrono::milliseconds(10));
         //Output::Inst()->kprintf("nest counter in main thread: %i", nestCounter.load());
     }
-
 }
 
 /**
@@ -324,25 +321,26 @@ void Master::runStepPhase(Nestene *nestene)
 
     Output::Inst()->kprintf("Starting a new thread");
     std::mutex m;
-
+    std::unique_lock<std::mutex> lk(m, std::defer_lock);
 
     while(true)
     {
-        Output::Inst()->kprintf("Stuck here");
-        std::unique_lock<std::mutex> lk(m, std::defer_lock);
-        Output::Inst()->kprintf("Wait for lock");
+        //Output::Inst()->kprintf("Stuck here");
+        //Output::Inst()->kprintf("Wait for lock");
+        CvStepDone.notify_one();
         nestene->cv.wait(lk);// []{return Master::stopThreads.load()==true;});
+        nestene->takingStep.store(true);
 
         if(Master::stopThreads.load()==true) break;
 
         //Output::Inst()->kprintf("Taking a step");
-        Output::Inst()->kprintf("Nestene going to work, %i, %d", Master::nestCounter.load(), std::this_thread::get_id());
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-        //nestene->takeStepPhase(Phys::getCTime()+1);
-        Output::Inst()->kprintf("Work done %d", std::this_thread::get_id());
+        //Output::Inst()->kprintf("Nestene going to work, %i, %d", Master::nestCounter.load(), std::this_thread::get_id());
+        //std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        nestene->takeStepPhase(Phys::getCTime()+1);
+        nestene->takingStep.store(false);
+        //Output::Inst()->kprintf("Work done %d", std::this_thread::get_id());
 
         Master::nestCounter.fetch_add(1);
-        CvStepDone.notify_one();
     }
 
     Output::Inst()->kprintf("Exiting thread");

@@ -118,5 +118,6 @@ private:
     static std::mutex mutexStep;
     static std::mutex mutexStepDone;
     static std::atomic_bool stopThreads;
+    static std::atomic_bool stepReady;
 };
 #endif // MASTER_H

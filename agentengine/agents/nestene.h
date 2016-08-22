@@ -29,6 +29,7 @@
 #include <string>
 #include <memory>
 #include <utility>
+#include <atomic>
 
 #include "master.h"
 #include "eventqueue.h"
@@ -66,6 +67,7 @@ class Nestene
 		bool removeAuton(int arg_id);
 		int containsAuton(int arg_id);
         std::condition_variable cv;
+        std::atomic_bool takingStep;
 
 private:
 		//generates an event and puts it into the event map.
