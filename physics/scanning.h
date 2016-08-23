@@ -2,6 +2,7 @@
 #define SCANNING_H
 
 #include <unordered_map>
+#include <mutex>
 
 #include "utility.h"
 
@@ -16,6 +17,7 @@ public:
 private:
 
     static std::unordered_map<int, MatriceInt> radialMasks;
+    static std::mutex mutex;
 };
 
 #endif // SCANNING_H

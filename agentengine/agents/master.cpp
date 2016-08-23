@@ -296,15 +296,16 @@ void Master::macroStep(unsigned long long tmu)
     for(auto n : nestenes)
     {
         while(!n->takingStep.load())
+        {
             n->cv.notify_one();
+        }
         //Output::Inst()->kprintf("Notifying thread");
     }
-
     while(nestCounter.load() < nesteneAmount)
     {
         //std::lock_guard<std::mutex> lock(mutexStepDone);
         std::unique_lock<std::mutex> lk(mutexStepDone);
-        CvStepDone.wait_for(lk, std::chrono::milliseconds(10));
+        CvStepDone.wait_for(lk, std::chrono::nanoseconds(500));
         //Output::Inst()->kprintf("nest counter in main thread: %i", nestCounter.load());
     }
 }
@@ -319,7 +320,7 @@ void Master::macroStep(unsigned long long tmu)
 void Master::runStepPhase(Nestene *nestene)
 {
 
-    Output::Inst()->kprintf("Starting a new thread");
+    //Output::Inst()->kprintf("Starting a new thread");
     std::mutex m;
     std::unique_lock<std::mutex> lk(m, std::defer_lock);
 
@@ -342,9 +343,7 @@ void Master::runStepPhase(Nestene *nestene)
 
         Master::nestCounter.fetch_add(1);
     }
-
-    Output::Inst()->kprintf("Exiting thread");
-
+    //Output::Inst()->kprintf("Exiting thread");
 }
 
 /**

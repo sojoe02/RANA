@@ -26,6 +26,7 @@
 
 std::unordered_map< std::string, pList > *GridMovement::posMap = NULL;
 std::unordered_map< std::string, pList >::iterator GridMovement::positr;
+std::shared_timed_mutex GridMovement::gridMutex;
 
 int GridMovement::width;
 int GridMovement::height;
@@ -33,6 +34,8 @@ int GridMovement::scale = 1;
 
 void GridMovement::initGrid(int scale)
 {
+    std::lock_guard<std::shared_timed_mutex> writerLock(gridMutex);
+
     if(posMap != NULL)
     {
         delete posMap;
@@ -47,12 +50,6 @@ void GridMovement::clearGrid()
     posMap->clear();
 }
 
-void GridMovement::setScale(int scale)
-{
-    if (scale > 0)
-        scale = GridMovement::scale;
-}
-
 int GridMovement::getScale()
 {
     return scale;
@@ -60,6 +57,8 @@ int GridMovement::getScale()
 
 void GridMovement::addPos(int x, int y, int id)
 {
+
+    std::lock_guard<std::shared_timed_mutex> writerLock(gridMutex);
     //Output::Inst()->kprintf("ID..X:%i,Y:%i", x, y);
 
     //add id to position map:
@@ -83,6 +82,7 @@ void GridMovement::addPos(int x, int y, int id)
 
 void GridMovement::removePos(int id)
 {
+    std::lock_guard<std::shared_timed_mutex> writerLock(gridMutex);
 
     for(auto posItr=posMap->begin(); posItr!=posMap->end(); ++posItr)
     {
@@ -113,6 +113,7 @@ void GridMovement::removePos(int id)
 
 void GridMovement::updatePos(int oldX, int oldY, int newX, int newY, int id)
 {          
+    std::lock_guard<std::shared_timed_mutex> writerLock(gridMutex);
     //update the position map:
     char buffer[64];
     sprintf(buffer,"%i,%i",oldX,oldY);
@@ -156,6 +157,8 @@ void GridMovement::updatePos(int oldX, int oldY, int newX, int newY, int id)
 
 bool GridMovement::checkCollision(int x, int y)
 {
+    std::shared_lock<std::shared_timed_mutex> readerLock(gridMutex);
+
     char buffer[64];
     sprintf(buffer, "%i,%i",x,y);
     std::string index = buffer;
@@ -171,6 +174,7 @@ bool GridMovement::checkCollision(int x, int y)
 
 pList GridMovement::checkPosition(int x, int y)
 {
+    std::shared_lock<std::shared_timed_mutex> readerLock(gridMutex);
     char buffer[64];
     sprintf(buffer,"%i,%i",x,y);
     std::string index = buffer;

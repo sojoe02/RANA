@@ -29,6 +29,7 @@
 
 #include <unordered_map>
 #include <vector>
+#include <shared_mutex>
 
 typedef std::vector< std::vector<int> > MatriceInt;
 
@@ -51,6 +52,7 @@ private:
     static QImage *image;
     static MainWindow *parent;
     static std::unordered_map<int, MatriceInt> radialMasks;
+    static std::shared_timed_mutex mapMutex;
 };
 
 #endif // MAPHANDLER_H

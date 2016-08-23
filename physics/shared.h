@@ -24,7 +24,7 @@
 
 #include <string>
 #include <unordered_map>
-//#include <shared_mutex>
+#include <shared_mutex>
 
 class Shared
 {
@@ -41,8 +41,8 @@ public:
 
 private:
 
-    //static std::mutex sharedNumberMutex;
-    //static std::mutex sharedStringMutex;
+    static std::shared_timed_mutex numberMutex;
+    static std::shared_timed_mutex stringMutex;
 
 	static std::unordered_map<std::string, double> sharedNumbers;
 	static std::unordered_map<std::string, std::string> sharedStrings;

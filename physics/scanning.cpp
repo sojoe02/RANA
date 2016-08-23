@@ -4,11 +4,12 @@
 #include "output.h"
 
 std::unordered_map<int, MatriceInt> Scanning::radialMasks;
+std::mutex Scanning::mutex;
 
-Scanning::Scanning()
-{
+//Scanning::Scanning()
+//{
 
-}
+//}
 
 void Scanning::reset()
 {
@@ -26,6 +27,7 @@ MatriceInt Scanning::radialMask(int radius)
 
     if(Scanning::radialMasks.find(radius) == Scanning::radialMasks.end())
     {
+        std::lock_guard<std::mutex> guard(mutex);
         //calculate new mask:
         for(int x = 0; x < radius; x++)
         {

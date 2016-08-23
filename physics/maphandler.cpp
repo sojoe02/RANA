@@ -29,7 +29,7 @@
 QImage *MapHandler::image = NULL;
 MainWindow *MapHandler::parent = NULL;
 std::unordered_map<int, MatriceInt > MapHandler::radialMasks;
-
+std::shared_timed_mutex MapHandler::mapMutex;
 
 MapHandler::MapHandler(MainWindow *parent)
 {
@@ -43,6 +43,8 @@ void MapHandler::setImage(QImage *argImage)
 
 rgba MapHandler::getPixelInfo(int argX, int argY)
 {
+    std::shared_lock<std::shared_timed_mutex> readerLock(mapMutex);
+
     rgba values;
 
     if(image != NULL && image->width() > argX && image->height() > argY
@@ -69,9 +71,14 @@ rgba MapHandler::getPixelInfo(int argX, int argY)
 
 bool MapHandler::setPixelInfo(int argX, int argY, rgba argValue)
 {
+
     if (image != NULL && image->width() > argX && image->height() > argY
                     && argX >= 0 && argY >= 0)
     {
+
+        std::lock_guard<std::shared_timed_mutex>
+                writerLock(mapMutex);
+
         QRgb value;
         //Output::Inst()->kprintf("%i, %i, %i",argValue.red, argValue.green, argValue.blue);
         int red = argValue.red;
@@ -86,7 +93,7 @@ bool MapHandler::setPixelInfo(int argX, int argY, rgba argValue)
         return false;
 }
 
-MatriceInt MapHandler::drawCircle( int radius, char channel, int posX, int posY)
+/*MatriceInt MapHandler::drawCircle( int radius, char channel, int posX, int posY)
 {
     int range = radius*2+1;
     std::vector< std::vector<int> > tmpvec(radius, std::vector<int>(radius) );
@@ -162,5 +169,5 @@ MatriceInt MapHandler::drawCircle( int radius, char channel, int posX, int posY)
     return mask;
 }
 
-
+*/
 

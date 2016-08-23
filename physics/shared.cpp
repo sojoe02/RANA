@@ -28,10 +28,12 @@
 
 std::unordered_map<std::string, double> Shared::sharedNumbers;
 std::unordered_map<std::string, std::string> Shared::sharedStrings;
+std::shared_timed_mutex Shared::numberMutex;
+std::shared_timed_mutex Shared::stringMutex;
 
-Shared::Shared()
-{
-}
+//Shared::Shared()
+//{
+//}
 
 void Shared::initShared()
 {
@@ -45,48 +47,63 @@ void Shared::initShared()
 	//{
 	//	sharedNumbers = new std::unordered_map<std::string, double>();
 	//	sharedStrings = new std::unordered_map<std::string, std::string()>;
-
 	//}
 }
 
 void Shared::addNumber(std::string key, double value)
 {
-	if(sharedNumbers.find(key) == sharedNumbers.end())
+    std::lock_guard<std::shared_timed_mutex>
+            writerLock(numberMutex);
+
+    sharedNumbers[key] = value;
+    /*if(sharedNumbers.find(key) == sharedNumbers.end())
 		sharedNumbers.insert(std::pair<std::string, double>(key, value));
 	else
 	{
 		sharedNumbers.erase(key);
 		sharedNumbers.insert(std::pair<std::string, double>(key, value));
-	}
+    }*/
 
 }
 
 double Shared::getNumber(std::string key)
 {
+    std::shared_lock<std::shared_timed_mutex>
+            readerLock(numberMutex);
+
 	auto sharedItr = sharedNumbers.find(key);
 
 	if(sharedItr != sharedNumbers.end())
 	{
-		return sharedItr->second;
+        return sharedItr->second;
+
 	} else return LLONG_MIN;
 }
 
 void Shared::addString(std::string key, std::string value)
 {
 
+
+    std::lock_guard<std::shared_timed_mutex>
+            writerLock(stringMutex);
+
+    sharedStrings[key] = value;
     //Output::Inst()->kprintf(value.c_str());
 
-	if(sharedStrings.find(key) == sharedStrings.end())
+    /*if(sharedStrings.find(key) == sharedStrings.end())
 		sharedStrings.insert(std::pair<std::string, std::string>(key, value));
 	else
 	{
 		sharedStrings.erase(key);
 		sharedStrings.insert(std::pair<std::string, std::string>(key, value));
-	}
+    }*/
 }
 
 std::string Shared::getString(std::string key)
 {
+    std::shared_lock<std::shared_timed_mutex>
+            writerLock(stringMutex);
+
 	auto sharedItr = sharedStrings.find(key);
 
 	if(sharedItr != sharedStrings.end())

@@ -90,7 +90,7 @@ unix: export(copydata.commands)
 unix: QMAKE_EXTRA_TARGETS += first copydata
 #
 QMAKE_CXXFLAGS += -Wno-unused-variable -Wno-unused-parameter
-CONFIG += c++11
+CONFIG += c++14
 #QMAKE_CXXFLAGS += -std=c++1y -Wno-unused-variable -Wno-unused-parameter
 #CONFIG += stdlib=libc++ lc++abi o3
 
@@ -101,7 +101,7 @@ unix: PKGCONFIG += luajit
 
 
 
-macx: QMAKE_CXXFLAGS += -std=c++11 -mmacosx-version-min=10.7
+macx: QMAKE_CXXFLAGS += -std=c++14 -mmacosx-version-min=10.7
 
 macx: LIBS += -stdlib=libc++ -mmacosx-version-min=10.7
 macx: LIBS += -L$$PWD/../lua-5.2_MacOS107_lib/ -llua52
