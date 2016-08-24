@@ -29,6 +29,7 @@ private:
 	static std::map<int, std::shared_ptr<AutonLUA>> agents;
     static std::mutex eventMutex;
     static std::mutex autonMutex;
+    static std::mutex autonPtrMutex;
 };
 
 #endif // DOCTOR_H

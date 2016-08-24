@@ -56,4 +56,10 @@ function initializeAgent()
 	end
 end
 
+function takeStep()
+
+	local id = Agent.addAgent("08_flasher.lua")
+
+end
+
 

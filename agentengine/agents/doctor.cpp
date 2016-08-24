@@ -8,6 +8,7 @@ std::map<int, std::string> Doctor::agentFilenames;
 std::map<int, std::shared_ptr<AutonLUA>> Doctor::agents;
 std::mutex Doctor::eventMutex;
 std::mutex Doctor::autonMutex;
+std::mutex Doctor::autonPtrMutex;
 
 void Doctor::InitDoctor(Master *arg_master)
 {
@@ -45,6 +46,7 @@ bool Doctor::removeAuton(int Id)
 
 void Doctor::addLuaAutonPtr(std::shared_ptr<AutonLUA> luaPtr)
 {
+    std::lock_guard<std::mutex> guard(autonPtrMutex);
     agents.insert(make_pair(luaPtr->getID(), luaPtr));
 }
 
@@ -57,6 +59,8 @@ void Doctor::submitEEvent(std::unique_ptr<EventQueue::eEvent> eEvent)
 
 std::shared_ptr<AutonLUA> Doctor::getAutonPtr(int id)
 {
+    std::lock_guard<std::mutex> guard(autonPtrMutex);
+
 	auto itr = agents.find(id);
 
 	if(itr != agents.end())

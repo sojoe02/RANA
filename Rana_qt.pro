@@ -97,7 +97,7 @@ CONFIG += c++14
 unix: CONFIG += link_pkgconfig
 unix: PKGCONFIG += luajit
 #unix: PKGCONFIG += lua
-#unix: PKGCONFIG += lua5.2
+#unix: PKGCONFIG += lua5.3
 
 
 

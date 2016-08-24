@@ -113,7 +113,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	sim_controlTab = ui->simControlTab;
 	sim_viewTab = ui->simLiveView;
-	sim_advancedTab = ui->simAdvancedTab;
+    //sim_advancedTab = ui->simAdvancedTab;
 	sim_general = ui->simGeneralWidget;
 
 	ppConstruction();
