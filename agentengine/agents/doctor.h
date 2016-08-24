@@ -28,6 +28,7 @@ private:
 	static std::map<int, std::string> agentFilenames;
 	static std::map<int, std::shared_ptr<AutonLUA>> agents;
     static std::mutex eventMutex;
+    static std::mutex autonMutex;
 };
 
 #endif // DOCTOR_H

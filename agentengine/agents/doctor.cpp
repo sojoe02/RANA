@@ -7,6 +7,7 @@ Master* Doctor::master = NULL;
 std::map<int, std::string> Doctor::agentFilenames;
 std::map<int, std::shared_ptr<AutonLUA>> Doctor::agents;
 std::mutex Doctor::eventMutex;
+std::mutex Doctor::autonMutex;
 
 void Doctor::InitDoctor(Master *arg_master)
 {
@@ -18,6 +19,7 @@ void Doctor::InitDoctor(Master *arg_master)
 
 int Doctor::addLuaAuton(double x, double y, double z, std::string path, std::string filename)
 {
+    std::lock_guard<std::mutex> guard(autonMutex);
 
 	int id = master->addAuton(x, y, z, path, filename, "Lua");
 	//Output::Inst()->addGraphicAuton(id,x,y);
@@ -32,6 +34,8 @@ std::map<int, std::string> Doctor::getAutonInfo()
 
 bool Doctor::removeAuton(int Id)
 {
+    std::lock_guard<std::mutex> guard(autonMutex);
+
 	if(master->removeAuton(Id))
 	{
 		Output::Inst()->removeGraphicAuton(Id);
@@ -47,6 +51,7 @@ void Doctor::addLuaAutonPtr(std::shared_ptr<AutonLUA> luaPtr)
 void Doctor::submitEEvent(std::unique_ptr<EventQueue::eEvent> eEvent)
 {
     std::lock_guard<std::mutex> guard(eventMutex);
+
     master->receiveEEventPtr(std::move(eEvent));
 }
 

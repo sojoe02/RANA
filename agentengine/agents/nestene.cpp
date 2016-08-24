@@ -40,7 +40,7 @@
 #include "../../physics/phys.h"
 
 Nestene::Nestene(double posX, double posY, double width, double height, Master* master, int id)
-    :initAmount(0),master(master), posX(posX), posY(posY),width(width),height(height),id(id),takingStep(false)
+    :initAmount(0),takingStep(false),master(master), posX(posX), posY(posY),width(width),height(height),id(id)
 {
 
 }

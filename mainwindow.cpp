@@ -53,9 +53,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	control(new Control(this)),disableSimOutput(false),
 	postControl(new PostControl(this)),zBlocks(NULL),
 	eventScene(new QGraphicsScene()), zmap(NULL), eventMapScene(new QGraphicsScene()),
-    zMapTimer(new QTimer(this)),initializeTimer(new QTimer(this)),
-    runTimer(new QTimer(this)),disableLiveView(true),playingMap(false), running(false),
-    PPactiveAgents(NULL)
+    PPactiveAgents(NULL), zMapTimer(new QTimer(this)),initializeTimer(new QTimer(this)),
+    runTimer(new QTimer(this)),disableLiveView(true),playingMap(false), running(false)
 {
     ui->setupUi(this);
     ui->progressBar->setMaximum(100);
@@ -66,7 +65,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->runButton->setDisabled(true);
 //dr.	ui->adv_spinBox->hide();
 
-	this->setWindowTitle("Rana 1.7");
+    this->setWindowTitle("Rana 1.8");
     qRegisterMetaType<INFOLIST>("INFOLIST");
 
     QObject::connect(this,SIGNAL(map_updateSignal(INFOLIST)),
