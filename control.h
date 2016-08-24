@@ -66,7 +66,7 @@ public:
      * @param agentAmount number of Lua agents
      * @param agentPath path to the agent
      */
-    void generateEnvironment(QImage *map, double scale,
+    void generateEnvironment(QImage *map, int threads,
                              double timeRes, double macroRes,
                              int agentAmount, std::string agentPath);
 

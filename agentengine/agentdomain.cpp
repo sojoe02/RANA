@@ -69,7 +69,7 @@ bool AgentDomain::checkEnvPresence()
  * Upon environment generation the nestenes will be placed, autons will be
  * assigned to a nestene and placed within it's parameters.
  */
-void AgentDomain::generateEnvironment(double width, double height, int resolution,
+void AgentDomain::generateEnvironment(double width, double height, int threads,
                                       int listenerSize, int screamerSize, int LUASize,
                                       double timeResolution, int macroFactor, std::string filename)
 {
@@ -91,7 +91,7 @@ void AgentDomain::generateEnvironment(double width, double height, int resolutio
     Shared::initShared();
     Doctor::InitDoctor(masteragent);
 
-    masteragent->generateMap(width,height,resolution,timeResolution, macroResolution);
+    masteragent->generateMap(width,height,threads,timeResolution, macroResolution);
 
     mapWidth = width;
     mapHeight = height;

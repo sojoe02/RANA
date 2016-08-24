@@ -90,7 +90,7 @@ private slots:
     void on_generateButton_clicked();
     void actionExit();
     void on_browseMapButton_clicked();
-    void on_generateMap_clicked();
+    //void on_generateMap_clicked();
     void on_browseLuaAgentButton_clicked();
     void on_runButton_clicked();
     void on_updateMap(INFOLIST infolist);

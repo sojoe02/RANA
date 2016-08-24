@@ -60,7 +60,7 @@ void Control::stopSimulation()
     agentDomain->stopSimulation();
 }
 
-void Control::generateEnvironment(QImage *map, double scale,
+void Control::generateEnvironment(QImage *map, int threads,
                                   double timeRes, double macroRes,
                                   int agentAmount, std::string agentPath)
 {
@@ -86,7 +86,7 @@ void Control::generateEnvironment(QImage *map, double scale,
 
         agentDomain = new AgentDomain(this);
 
-        agentDomain->generateEnvironment(map->width(),map->height(),4,0,0,
+        agentDomain->generateEnvironment(map->width(),map->height(),threads,0,0,
                                          agentAmount,timeRes,macroRes,agentPath);
         //agentDomain->populateSystem();
 

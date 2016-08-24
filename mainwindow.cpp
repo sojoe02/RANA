@@ -200,8 +200,9 @@ void MainWindow::on_generateButton_clicked()
 
             std::string stringPath = agentPath.toUtf8().constData();
 
-			//generate the simulation and initialize agents
-			control->generateEnvironment(mapImage, 1,timeRes, macroRes,
+            //generate the simulation and initialize agents
+            int threads = ui->advThreadSpinBox->value();
+            control->generateEnvironment(mapImage, threads, timeRes, macroRes,
                                          agentAmount,stringPath);
 
             //Output::Inst()->kprintf("generating environment, %d, %s",
@@ -263,53 +264,6 @@ void MainWindow::on_browseMapButton_clicked()
         }
         defineMap();
     }
-}
-
-/**
- * @brief Enables the user to generate a map.
- * The user can define a random percentage of red, green and blue pixels,
- * each channel is handeled seperately.
- *
- */
-void MainWindow::on_generateMap_clicked()
-{
-    qApp->processEvents();
-	if(mapImage != NULL)
-		delete mapImage;
-
-    mapImage = new QImage(ui->pxSpinBox->value(), ui->pySpinBox->value(),
-                       QImage::Format_RGB32);
-
-	mapImage->fill(Qt::GlobalColor::white);
-
-    QRgb value = qRgb(0,0,0);
-
-    for(int x = 0; x < mapImage->width(); x++)
-    {
-        for(int y = 0; y < mapImage->height(); y++)
-        {
-            int Bvalue = 0;
-            int Gvalue = 0;
-            int Rvalue = 0;
-
-            if(Phys::getMersenneFloat(0,1) < ui->RdoubleSpinBox->value())
-            {
-                Rvalue = 255;
-            }
-            if(Phys::getMersenneFloat(0,1) < ui->GDoubleSpinBox->value())
-            {
-                Gvalue = 255;
-            }
-            if(Phys::getMersenneFloat(0,1) < ui->BDoubleSpinBox->value())
-            {
-                Bvalue = 255;
-            }
-            value = qRgb(Rvalue,Gvalue,Bvalue);
-            mapImage->setPixel(x,y, value);
-        }
-    }
-
-   defineMap();
 }
 
 void MainWindow::on_generateEmptyMapButton_clicked()
