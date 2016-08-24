@@ -142,6 +142,15 @@ void Nestene::takeStepPhase(unsigned long long tmu)
 		removalIDs.clear();
 	}
 
+    for(auto auton : newAutons)
+    {
+        luaAutons.insert(std::make_pair(auton->getID(),auton));
+        auton->InitializeAgent();
+        //newAutons.pop_back();
+
+    }
+    newAutons.clear();
+
 }
 
 /**
@@ -194,9 +203,10 @@ int Nestene::addAuton(double x, double y, double z,
 		std::shared_ptr<AutonLUA> luaPtr =
 				std::make_shared<AutonLUA>(id, x, y, 1, this, filename);
 
-		luaAutons.insert(std::make_pair(luaPtr->getID(),luaPtr));
-		Doctor::addLuaAutonPtr(luaPtr);
-		luaPtr->InitializeAgent();
+        //luaAutons.insert(std::make_pair(luaPtr->getID(),luaPtr));
+        //Doctor::addLuaAutonPtr(luaPtr);
+        newAutons.push_back(luaPtr);
+        //luaPtr->InitializeAgent();
 	}
 
 	return id;

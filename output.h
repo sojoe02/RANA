@@ -76,7 +76,7 @@ private:
     Output();
     static Output* output;
     static MainWindow* mainWindow;
-    static std::mutex lock;
+    static std::mutex autonMutex;
 };
 
 #endif // OUTPUT_H

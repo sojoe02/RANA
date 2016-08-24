@@ -55,8 +55,7 @@ end
 
 function takeStep()
 
-	if Moving ~= true then Move.toRandom(10) end
-
+	if Moving ~= true then Move.toRandom(10) end	
 	Agent.changeColor{r=Stat.randomInteger(1,255),g=Stat.randomInteger(1,255),b=Stat.randomInteger(1,255)}
 
 end

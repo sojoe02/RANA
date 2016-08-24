@@ -33,13 +33,14 @@
 Output* Output::output;
 MainWindow* Output::mainWindow;
 
-std::mutex Output::lock;
+std::mutex Output::autonMutex;
 std::atomic<int> Output::DelayValue;
 std::atomic<bool> Output::RunSimulation;
 std::atomic<bool> Output::KillSimulation;
 std::atomic<bool> Output::RunEventProcessing;
 std::atomic<bool> Output::SimRunning;
 std::atomic<bool> Output::LegacyMode;
+
 
 unsigned long long Output::RUNTIME = 0;
 
@@ -195,6 +196,7 @@ void Output::removeGraphicAuton(int Id)
 
 void Output::addGraphicAuton(int Id, double posX, double posY)
 {
+    std::lock_guard<std::mutex> guard(autonMutex);
     mainWindow->addGraphicAuton(Id, int(posX)/Phys::getScale(), int(posY)/Phys::getScale());
 }
 

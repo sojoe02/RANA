@@ -81,7 +81,8 @@ private:
 		void performEvent(std::unique_ptr<EventQueue::eEvent> event);
 		Master *master;
 
-		std::map<int,std::shared_ptr<AutonLUA>> luaAutons;
+        std::map<int,std::shared_ptr<AutonLUA>> luaAutons;
+        std::list<std::shared_ptr<AutonLUA>> newAutons;
 
 		std::list<int> removalIDs;
 
