@@ -77,11 +77,15 @@ function takeStep()
 
 	end
 
+	for i = 1, 10000 do
+		local s = math.sqrt(i*i)
+	end
+
 	if Tn >= Tt then 
 		Tt = T + Stat.randomMean(e, 0)
 		Tn = 0
 		table.insert(Olevels, Core.time()..",".. 0)
-		say("Oscillator #"..ID.." Emitting signal at time: ".. Core.time().."[s]")
+--		say("Oscillator #"..ID.." Emitting signal at time: ".. Core.time().."[s]")
 		peaked = false
 	end
 

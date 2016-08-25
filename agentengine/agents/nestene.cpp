@@ -48,7 +48,7 @@ Nestene::Nestene(double posX, double posY, double width, double height, Master* 
 Nestene::~Nestene()
 {
 
-    Output::Inst()->kprintf("DELETING NESTENE");
+    //Output::Inst()->kprintf("DELETING NESTENE");
 
 }
 

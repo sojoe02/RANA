@@ -45,9 +45,9 @@ void Phys::seedMersenne()
     // rng.seed(std::random_device()());
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::random_device rd;
-    std::seed_seq seed2{seed, rd(), rd()};
+    //std::seed_seq seed2{seed, rd(), rd()};
     //rng.seed(seed);
-    rng.seed(seed2);
+    rng.seed(seed);
     //srand(time(0));
 }
 

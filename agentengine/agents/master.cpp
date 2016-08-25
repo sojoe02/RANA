@@ -295,19 +295,23 @@ void Master::macroStep(unsigned long long tmu)
     //Output::Inst()->kprintf("TAKING NEW STEP");
     for(auto n : nestenes)
     {
-        while(!n->takingStep.load())
-        {
+        //while(!n->takingStep.load())
+        //{
             n->cv.notify_one();
-        }
+        //}
         //Output::Inst()->kprintf("Notifying thread");
     }
-    while(nestCounter.load() < nesteneAmount)
+    while(nestCounter.load() != nesteneAmount)
     {
-        //std::lock_guard<std::mutex> lock(mutexStepDone);
-        std::unique_lock<std::mutex> lk(mutexStepDone);
-        CvStepDone.wait_for(lk, std::chrono::nanoseconds(500));
+        //s/td::lock_guard<std::mutex> lk(mutexStepDone);
+        //std::unique_lock<std::mutex> lk(mutexStepDone);
+        //CvStepDone.wait(lk,[]{nestCounter.fetch_add(1);return nestCounter.load()==4;});
+        //
+        std::this_thread::sleep_for(std::chrono::nanoseconds(50));
         //Output::Inst()->kprintf("nest counter in main thread: %i", nestCounter.load());
     }
+   // Output::Inst()->kprintf("Taking step is done, %ull", Phys::getCTime());
+    //Output::Inst()->kprintf("%i",nestCounter.load());
 }
 
 /**
@@ -328,7 +332,7 @@ void Master::runStepPhase(Nestene *nestene)
     {
         //Output::Inst()->kprintf("Stuck here");
         //Output::Inst()->kprintf("Wait for lock");
-        CvStepDone.notify_one();
+        //CvStepDone.notify_one();
         nestene->cv.wait(lk);// []{return Master::stopThreads.load()==true;});
         nestene->takingStep.store(true);
 
@@ -337,11 +341,16 @@ void Master::runStepPhase(Nestene *nestene)
         //Output::Inst()->kprintf("Taking a step");
         //Output::Inst()->kprintf("Nestene going to work, %i, %d", Master::nestCounter.load(), std::this_thread::get_id());
         //std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        nestene->takeStepPhase(Phys::getCTime()+1);
+        nestene->takeStepPhase(Phys::getCTime());
         nestene->takingStep.store(false);
         //Output::Inst()->kprintf("Work done %d", std::this_thread::get_id());
 
-        Master::nestCounter.fetch_add(1);
+        Master::nestCounter++;
+        //if(nestCounter.load() == 4)
+        //CvStepDone.notify_one();
+        //{
+        //    Output::Inst()->kprintf("Taking step done by thread %ull", Phys::getCTime());
+        //}
     }
     //Output::Inst()->kprintf("Exiting thread");
 }

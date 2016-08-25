@@ -44,6 +44,7 @@
 -- Import valid Rana lua libraries.
 Event = require "ranalib_event"
 Shared = require "ranalib_shared"	
+Stat = require "ranalib_statistic"
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
 function initializeAgent()
@@ -53,24 +54,32 @@ function initializeAgent()
 end
 
 function handleEvent(sourceX, sourceY, sourceID, eventDescription, eventTable)
-	
+ 
+	--say("handling event")
+	--
+	for i=1, Stat.randomInteger(1,10000) do
+		local s = i*i
+	end
+
 	if eventDescription == "ping" and ID ~= 1 then
-	
-		l_print("Agent: "..ID .." received a ping from: "..sourceID ..", saying: "..eventTable.msg)
-		Event.emit{targetID=sourceID, speed=343, description="pong"}
+			--l_print("Agent: "..ID .." received a ping from: "..sourceID ..", saying: "..eventTable.msg)
+			Event.emit{targetID=sourceID, description="pong"}
 
 	elseif eventDescription == "pong" then
-		
-		l_print("Agent: "..ID.." received a pong from agent: ".. sourceID)
+		--	l_print("Agent: "..ID.." received a pong from agent: ".. sourceID)
 	end
 
 end
 
 function takeStep()
 
-	if l_getMersenneInteger(1,1000) <= 1 and ID==1 then
-		l_debug("Agent:"..ID.." is emiting ping")
-	 	Event.emit{speed=343, description="ping",table={msg="I am agent "..ID}}
+	if Stat.randomInteger(1,1000) <= 1 and ID==1 then
+		--l_debug("Agent:"..ID.." is emiting ping")
+	 	Event.emit{description="ping",table={msg="I am agent "..ID}}
+	end
+
+	for i=1, Stat.randomInteger(1,1000000) do 
+		local s = i*i
 	end
 
 end

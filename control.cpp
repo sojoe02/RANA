@@ -34,7 +34,7 @@ Control::Control(MainWindow* mainwindow)
 	connect(this, &Control::startDoWork, runner, &Runner::doWork);
 	connect(&runThread, &QThread::finished, runner, &QObject::deleteLater);
 	connect(runner, &Runner::simulationDone, this, &Control::on_simDone);  
-    runThread.setStackSize(1024*1024*512);
+    //runThread.setStackSize(1024*1024*512);
 	runThread.start();
 }
 

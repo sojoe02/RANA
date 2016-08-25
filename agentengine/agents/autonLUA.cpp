@@ -268,14 +268,14 @@ std::unique_ptr<EventQueue::iEvent> AutonLUA::processEvent(const EventQueue::eEv
 
         if (event->propagationSpeed == 0)
         {
-            ievent->activationTime = Phys::getCTime() + 1;
+            ievent->activationTime = Phys::getCTime()+1;
 
         } else
         {
             ievent->activationTime =
                     Phys::speedOfEvent(event->posX,
                                        event->posY,
-                                       posX, posY, event->propagationSpeed) + 1;
+                                       posX, posY, event->propagationSpeed)+1;
         }
 
         ievent->id = ID::generateEventID();
@@ -340,6 +340,7 @@ std::unique_ptr<EventQueue::eEvent> AutonLUA::handleEvent(std::unique_ptr<EventQ
     if(nofile) return NULL;
     //If the event isn't broadcast and the targetID is not mine
     lua_settop(L,0);
+    //Output::Inst()->kprintf("handles event");
     try
     {
 
