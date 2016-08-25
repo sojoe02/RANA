@@ -37,10 +37,6 @@
 
 #include "output.h"
 
-#define TASK_I_EVENTS 100
-#define TASK_E_EVENTS 200
-#define TASK_TAKE_STEP 300
-
 std::condition_variable Master::CvStepStart;
 std::condition_variable Master::CvStepDone;
 std::mutex Master::mutexStep;
@@ -124,8 +120,6 @@ void Master::generateMap(double width, double height, int nesteneAmount, double 
         threads.push_back(t);
 
         nestenes.push_back(nest);
-        //std::thread t;
-        //nestThreads.push_back(t);
     }
 }
 
@@ -233,22 +227,11 @@ void Master::microStep(unsigned long long tmu)
         {
             const EventQueue::eEvent* eEventPtr =
                     eventQueue->addUsedEEvent(std::move(*eListItr));
-            //task = TASK_E_EVENTS;
-            //nestCounter.store(0);
 
             for(auto n : nestenes)
-            {  //externalDistroAmount++;
+            {
                 n->distroPhase(eEventPtr);
-                //n->eEventPromise = std::promise<const EventQueue::eEvent*>();
-              //  n->eEventPromise.set_value(eEventPtr);
-                //n->cv.notify_one();
             }
-            //while(nestCounter.load() != nesteneAmount)
-            //{
-              //  std::this_thread::sleep_for(std::chrono::nanoseconds(50));
-            //}
-            //std::this_thread::sleep_for(std::chrono::nanoseconds(500));
-
         }
     }
 
@@ -258,7 +241,6 @@ void Master::microStep(unsigned long long tmu)
 
         for(auto iListItr = ilist.begin(); iListItr != ilist.end(); ++iListItr)
         {
-            //EventQueue::iEvent* event = *itlist;
             //Output::Inst()->kprintf("origin id is %i", event->originID);
             if (removedIDs.find((*iListItr)->originID) == removedIDs.end())
             {
@@ -299,36 +281,16 @@ unsigned long long Master::getNextMicroTmu()
 void Master::macroStep(unsigned long long tmu)
 {
     //Handle the initiation of events:
-    //for(itNest=nestenes.begin() ; itNest !=nestenes.end(); ++itNest)
-    //{
-    //  Nestene nest = *itNest;
-    // std::thread t(Master::runStepPhase, nest);
-    //vv nvestThreads.push_back(t);
-    //
     nestCounter.store(0);
-    task = TASK_TAKE_STEP;
 
-    //std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    //Output::Inst()->kprintf("TAKING NEW STEP");
     for(auto n : nestenes)
     {
-        //while(!n->takingStep.load())
-        //{
         n->cv.notify_one();
-        //}
-        //Output::Inst()->kprintf("Notifying thread");
     }
     while(nestCounter.load() != nesteneAmount)
     {
-        //s/td::lock_guard<std::mutex> lk(mutexStepDone);
-        //std::unique_lock<std::mutex> lk(mutexStepDone);
-        //CvStepDone.wait(lk,[]{nestCounter.fetch_add(1);return nestCounter.load()==4;});
-        //
         std::this_thread::sleep_for(std::chrono::nanoseconds(50));
-        //Output::Inst()->kprintf("nest counter in main thread: %i", nestCounter.load());
     }
-    // Output::Inst()->kprintf("Taking step is done, %ull", Phys::getCTime());
-    //Output::Inst()->kprintf("%i",nestCounter.load());
 }
 
 /**
@@ -341,50 +303,19 @@ void Master::macroStep(unsigned long long tmu)
 void Master::runStepPhase(Nestene *nestene)
 {
 
-    //Output::Inst()->kprintf("Starting a new thread");
     std::mutex m;
     std::unique_lock<std::mutex> lk(m, std::defer_lock);
 
     while(true)
     {
-        //Output::Inst()->kprintf("Stuck here");
-        //Output::Inst()->kprintf("Wait for lock");
-        //CvStepDone.notify_one();
-        nestene->cv.wait(lk);// []{return Master::stopThreads.load()==true;});
-        //nestene->takingStep.store(true);
+        nestene->cv.wait(lk);
 
         if(Master::stopThreads.load()==true) break;
 
-        if(task == TASK_TAKE_STEP)
-        {
-            nestene->takeStepPhase(Phys::getCTime());
-        }
-        else if(task == TASK_E_EVENTS)
-        {
-            std::future<const EventQueue::eEvent*> eventFuture = nestene->eEventPromise.get_future();
-            eventFuture.wait();
-            nestene->distroPhase(eventFuture.get());
-
-        }
-        //else if(task == TASK_I_EVENTS)
-        //{
-
-        //}
-
-        //Output::Inst()->kprintf("Taking a step");
-        //Output::Inst()->kprintf("Nestene going to work, %i, %d", Master::nestCounter.load(), std::this_thread::get_id());
-        //std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        //nestene->takingStep.store(false);
-        //Output::Inst()->kprintf("Work done %d", std::this_thread::get_id());
+        nestene->takeStepPhase(Phys::getCTime());
 
         Master::nestCounter++;
-        //if(nestCounter.load() == 4)
-        //CvStepDone.notify_one();
-        //{
-        //    Output::Inst()->kprintf("Taking step done by thread %ull", Phys::getCTime());
-        //}
     }
-    //Output::Inst()->kprintf("Exiting thread");
 }
 
 /**
@@ -395,8 +326,6 @@ void Master::runStepPhase(Nestene *nestene)
 void Master::printStatus()
 {
     Output::Inst()->updateStatus(eventQueue->getISize(), eventQueue->getESize());
-    //Output::Inst()->kprintf("%d\n", eventQueue->getISize());
-    //	eventQueue->printATmus();
 }
 
 /**

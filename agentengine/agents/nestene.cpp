@@ -47,9 +47,6 @@ Nestene::Nestene(double posX, double posY, double width, double height, Master* 
 
 Nestene::~Nestene()
 {
-
-    //Output::Inst()->kprintf("DELETING NESTENE");
-
 }
 
 void Nestene::populate(int LUASize ,std::string filename)
@@ -60,8 +57,6 @@ void Nestene::populate(int LUASize ,std::string filename)
 		if(Output::KillSimulation.load()) return;
         double xtmp = Phys::getMersenneFloat(0,width);
         double ytmp = Phys::getMersenneFloat(0,height);
-        //double xtmp = (double)rand()/ RAND_MAX * width + posX;
-        //double ytmp = (double)rand()/ RAND_MAX * height + posY;
 
 		std::shared_ptr<AutonLUA> luaPtr =
 				std::make_shared<AutonLUA>(ID::generateAutonID(), xtmp, ytmp,
@@ -87,8 +82,6 @@ void Nestene::retrievePopPos(std::list<agentInfo> &infolist){
 		if(master->removedIDs.find(it->second->getID()) ==
 				master->removedIDs.end())
 		{
-			//Output::Inst()->kprintf("id:%i, y:%i, x:%i", it->second->getID(),it->second->getPosY(), it->second->getPosX());
-
 			agentInfo info;
 			info.id = it->second->getID();
 			info.y = it->second->getPosY();
@@ -107,7 +100,6 @@ void Nestene::retrievePopPos(std::list<agentInfo> &infolist){
  */
 void Nestene::takeStepPhase(unsigned long long tmu)
 {
-    //takingStep.store(true);
 
 	for(auto itr = luaAutons.begin(); itr !=luaAutons.end(); itr++)
 	{
@@ -146,7 +138,6 @@ void Nestene::takeStepPhase(unsigned long long tmu)
     {
         luaAutons.insert(std::make_pair(auton->getID(),auton));
         auton->InitializeAgent();
-        //newAutons.pop_back();
 
     }
     newAutons.clear();
@@ -203,10 +194,7 @@ int Nestene::addAuton(double x, double y, double z,
 		std::shared_ptr<AutonLUA> luaPtr =
 				std::make_shared<AutonLUA>(id, x, y, 1, this, filename);
 
-        //luaAutons.insert(std::make_pair(luaPtr->getID(),luaPtr));
-        //Doctor::addLuaAutonPtr(luaPtr);
         newAutons.push_back(luaPtr);
-        //luaPtr->InitializeAgent();
 	}
 
 	return id;

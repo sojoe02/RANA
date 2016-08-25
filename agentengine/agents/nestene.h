@@ -68,8 +68,6 @@ class Nestene
 		bool removeAuton(int arg_id);
 		int containsAuton(int arg_id);
         std::condition_variable cv;
-        //std::atomic_bool takingStep;
-        std::promise<const EventQueue::eEvent*> eEventPromise;
 
 private:
 		//generates an event and puts it into the event map.
