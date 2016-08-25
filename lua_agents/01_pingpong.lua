@@ -73,7 +73,7 @@ end
 
 function takeStep()
 
-	if Stat.randomInteger(1,1000) <= 1 and ID==1 then
+	if Stat.randomInteger(1,10) <= 1 and ID==1 then
 		--l_debug("Agent:"..ID.." is emiting ping")
 	 	Event.emit{description="ping",table={msg="I am agent "..ID}}
 	end

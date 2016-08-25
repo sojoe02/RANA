@@ -29,6 +29,7 @@
 #include <set>
 #include <thread>
 #include <condition_variable>
+#include <future>
 
 #include "eventqueue.h"
 #include "nestene.h"
@@ -119,5 +120,6 @@ private:
     static std::mutex mutexStepDone;
     static std::atomic_bool stopThreads;
     static std::atomic_bool stepReady;
+    static int task;
 };
 #endif // MASTER_H

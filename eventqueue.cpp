@@ -28,6 +28,7 @@
 #include<stdio.h>
 #include<chrono>
 #include<utility>
+#include<mutex>
 
 #include"output.h"
 
@@ -194,6 +195,7 @@ void EventQueue::incrementEeventCounter(unsigned long long id)
 void EventQueue::insertIEvent(std::unique_ptr<iEvent> ieventPtr)
 {
     //put event in hashmap.
+    //std::lock_guard<std::mutex> lk(iEventMutex);
     iSize++;
     unsigned long long tmu = ieventPtr->activationTime;
 

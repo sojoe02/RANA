@@ -32,6 +32,7 @@
 #include <memory>
 #include <atomic>
 #include <tuple>
+#include <mutex>
 
 class Auton;
 class EventQueue
@@ -163,7 +164,9 @@ class EventQueue
 
 		//size of the eventqueue:
 		unsigned long long eSize;
-		unsigned long long iSize;
+        unsigned long long iSize;
+
+        std::mutex iEventMutex;
 
 };
 

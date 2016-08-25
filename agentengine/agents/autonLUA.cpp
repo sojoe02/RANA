@@ -192,7 +192,7 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
         //if(nestene != NULL)
         //Output::Inst()->kdebug("I belong to Nestene %i", nestene->getID());
 
-
+        getSyncData();
         //Call the Initialization function for the agent
         lua_settop(L,0);
     }
