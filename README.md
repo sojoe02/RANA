@@ -32,7 +32,7 @@ Rana is distributed as Open-source via.
 
 * Simulation core, event handler and agent interface is pure C++11
 * User interface and graphic representation written in Qt (https://www.qt.io/)
-* Agent design is based on Lua (https://www.lua.org/) and LuaJIT (http://luajit.org/).
+* Agent design is enabled by Lua (https://www.lua.org/) with support for JIT compilation via LuaJIT (http://luajit.org/).
 
 
 #Devteam
