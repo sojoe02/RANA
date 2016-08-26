@@ -45,6 +45,7 @@ public:
     static void removePos(int id);
 
     static int getScale();
+    static bool updateIfFree(int oldX, int oldY, int newX, int newY, int id);
 private:
 
     //maps that contain the amount of agents at a givin x,y position

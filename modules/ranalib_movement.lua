@@ -20,9 +20,9 @@ end
 --Moves to a valid random position on the map, movementspeed is optional.
 function ranaLibMovement.toRandom(speed)
 
-	local speed = speed or nil
+	local speed = speed or Speed
 
-	ranaLibMovement.to{x=l_getRandomInteger(0,ENV_WIDTH), y=l_getRandomInteger(1,ENV_HEIGHT), speed=speed}
+	ranaLibMovement.to{x=l_getRandomInteger(0,ENV_WIDTH), y=l_getRandomInteger(0,ENV_HEIGHT), speed=speed}
 
 end
 

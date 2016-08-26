@@ -61,7 +61,8 @@ Master::~Master()
     Master::stopThreads.store(true);
     for(auto n : nestenes)
     {
-        n->cv.notify_one();
+        //n->cv.notify_one();
+        n->stepPromise.set_value(true);
     }
     for(auto t : threads)
     {
@@ -285,7 +286,16 @@ void Master::macroStep(unsigned long long tmu)
 
     for(auto n : nestenes)
     {
-        n->cv.notify_one();
+
+        //while(!n->stepLock.owns_lock())
+        //{
+        //Output::Inst()->kprintf("Waiting for lock!");
+        //    std::this_thread::sleep_for(std::chrono::nanoseconds(50));
+        //}
+        n->stepPromise.set_value(true);
+       // n->cv.notify_one();
+
+
     }
     while(nestCounter.load() != nesteneAmount)
     {
@@ -303,12 +313,15 @@ void Master::macroStep(unsigned long long tmu)
 void Master::runStepPhase(Nestene *nestene)
 {
 
-    std::mutex m;
-    std::unique_lock<std::mutex> lk(m, std::defer_lock);
+    nestene->stepLock = std::unique_lock<std::mutex>(nestene->stepMutex);
+    //nestene->cv.wait(nestene->stepLock);
 
     while(true)
     {
-        nestene->cv.wait(lk);
+        //nestene->cv.wait(nestene->stepLock);
+        std::future<bool> stepFuture = nestene->stepPromise.get_future();
+        stepFuture.wait();
+        nestene->stepPromise = std::promise<bool>();
 
         if(Master::stopThreads.load()==true) break;
 

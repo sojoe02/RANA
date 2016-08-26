@@ -68,6 +68,10 @@ class Nestene
 		bool removeAuton(int arg_id);
 		int containsAuton(int arg_id);
         std::condition_variable cv;
+        std::promise<bool> readyPromise;
+        std::mutex stepMutex;
+        std::unique_lock<std::mutex> stepLock;
+        std::promise<bool> stepPromise;
 
 private:
 		//generates an event and puts it into the event map.

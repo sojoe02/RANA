@@ -41,9 +41,7 @@ std::atomic<bool> Output::RunEventProcessing;
 std::atomic<bool> Output::SimRunning;
 std::atomic<bool> Output::LegacyMode;
 
-
 unsigned long long Output::RUNTIME = 0;
-
 std::string Output::AgentPath = "";
 std::string Output::AgentFile = "";
 std::string Output::RanaDir = "";

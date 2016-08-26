@@ -51,12 +51,11 @@ Utility = require "ranalib_utility"
 function initializeAgent()
 	say("Agent #: " .. ID .. " has been initialized")
 
-	--Moving = true
-	--DestinationX = 1
-	--DestinationY = 1
-	--Speed = 40
-	--GridMove = true
-	--Moving = true
+	DestinationX = 1
+	DestinationY = 1
+	Speed = 10
+	GridMove = true
+	Moving = true
 	--
 	--Collision.updatePosition(20,20)
 end
@@ -64,7 +63,8 @@ end
 
 function takeStep()
 
-	--if Moving == false then
+	if not Moving then Move.toRandom() end
+		--if Moving == false then
 		
 	--	local x = Stat.randomInteger(1, ENV_WIDTH)
 	--	local y = Stat.randomInteger(1, ENV_HEIGHT)		
@@ -76,12 +76,12 @@ function takeStep()
 	--end
 
 	--move to 20,20 with  collision detection.
-	Collision.updatePosition(20,20)
-	if ID == 1 then
-		positionTable = {}
-		positionTable = Collision.checkPosition(PositionX, PositionY)
-		say(Utility.serializeTable(positionTable))
-	end
+	--Collision.updatePosition(20,20)
+	--if ID == 1 then
+	--	positionTable = {}
+	--	positionTable = Collision.checkPosition(PositionX, PositionY)
+	--	say(Utility.serializeTable(positionTable))
+	--en--d
 end
 
 function cleanUp()

@@ -47,6 +47,7 @@ void GridMovement::initGrid(int scale)
 
 void GridMovement::clearGrid()
 {
+    std::lock_guard<std::shared_timed_mutex> writerLock(gridMutex);
     posMap->clear();
 }
 
@@ -102,10 +103,10 @@ void GridMovement::removePos(int id)
                     }
                 }
             }
-            //if(tmp->empty())
-            //{
-              //  posMap->erase(posItr);
-            //}
+            if(tmp->empty())
+            {
+               posMap->erase(posItr);
+            }
         }
     }
 
@@ -119,13 +120,11 @@ void GridMovement::updatePos(int oldX, int oldY, int newX, int newY, int id)
     sprintf(buffer,"%i,%i",oldX,oldY);
     std::string index = buffer;
 
-    //Output::Inst()->kprintf("%s", index.c_str());
-
     auto posItr = posMap->find(index);
-
     pList *tmp = &posItr->second;
 
-    if(posItr != posMap->end()){
+    if(posItr != posMap->end())
+    {
         for(auto it=tmp->begin(); it != tmp->end(); it++ )
         {
             if (*it == id)
@@ -134,8 +133,9 @@ void GridMovement::updatePos(int oldX, int oldY, int newX, int newY, int id)
                 break;
             }
         }
-        if(tmp->empty()){
-            //posMap->erase(posItr);
+        if(tmp->empty())
+        {
+          posMap->erase(posItr);
         }
     }
 
@@ -147,13 +147,59 @@ void GridMovement::updatePos(int oldX, int oldY, int newX, int newY, int id)
         pList tmp;
         tmp.push_back(id);
         posMap->insert(std::pair<std::string, pList >(index,tmp));
-        //Output::Inst()->kprintf("inserting %i,%i, into new List", newX, newY);
-    } else
+    }
+    else
     {
         pList *tmp = &posMap->find(index)->second;
         tmp->push_back(id);
     }
 }
+
+
+bool GridMovement::updateIfFree(int oldX, int oldY, int newX, int newY, int id)
+{
+    std::lock_guard<std::shared_timed_mutex> writerLock(gridMutex);
+
+    char buffer[64];
+    sprintf(buffer,"%i,%i", oldX, oldY);
+    std::string index = buffer;
+
+    auto posItr = posMap->find(index);
+    pList *tmp = &posItr->second;
+
+    if(posItr != posMap->end())
+    {
+
+        for(auto it=tmp->begin(); it != tmp->end(); it++ )
+        {
+            if (*it == id)
+            {
+                tmp->remove(id);
+                break;
+            }
+        }
+        if(tmp->empty())
+        {
+            posMap->erase(posItr);
+        }
+    }
+
+    sprintf(buffer,"%i,%i",newX,newY);
+    index = buffer;
+
+    if(posMap->find(index) == posMap->end() )
+    {
+        pList tmp;
+        tmp.push_back(id);
+        posMap->insert(std::pair<std::string, pList >(index,tmp));
+    }
+    else
+    {
+        return true;
+    }
+    return false;
+}
+
 
 bool GridMovement::checkCollision(int x, int y)
 {

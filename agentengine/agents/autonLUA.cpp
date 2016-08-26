@@ -373,11 +373,7 @@ void AutonLUA::movement()
 {
     lua_getglobal(L, "GridMove");
     gridmove = lua_toboolean(L,-1);
-
-    int sohe = GridMovement::getScale();
-
-    double oldX = posX * GridMovement::getScale();
-    double oldY = posY * GridMovement::getScale();
+    bool collision = false;
 
     if(posX != destinationX || posY != destinationY)
     {
@@ -388,60 +384,57 @@ void AutonLUA::movement()
         double newPosX = posX + Phys::getMacroFactor()*Phys::getTimeRes() * vX;
         double newPosY = posY + Phys::getMacroFactor()*Phys::getTimeRes() * vY;
 
+
         //Check if the agent overshoots it's target destinations.
-        if(		(posX >= destinationX && newPosX <= destinationX && posY >= destinationY && newPosY <= destinationY) ||
-                (posX <= destinationX && newPosX >= destinationX && posY >= destinationY && newPosY <= destinationY) ||
-                (posX >= destinationX && newPosX <= destinationX && posY <= destinationY && newPosY >= destinationY) ||
-                (posX <= destinationX && newPosX >= destinationX && posY <= destinationY && newPosY >= destinationY)
+        if(		(posX >= destinationX && newPosX <= destinationX &&
+                 posY >= destinationY && newPosY <= destinationY) ||
+                (posX <= destinationX && newPosX >= destinationX &&
+                 posY >= destinationY && newPosY <= destinationY) ||
+                (posX >= destinationX && newPosX <= destinationX &&
+                 posY <= destinationY && newPosY >= destinationY) ||
+                (posX <= destinationX && newPosX >= destinationX &&
+                 posY <= destinationY && newPosY >= destinationY)
                 )
         {
             moving = false;
             lua_pushboolean(L, moving);
             lua_setglobal(L, "Moving");
-            posX = destinationX;
-            posY = destinationY;
-        } else
+            newPosX = destinationX;
+            newPosY = destinationY;
+        }
+
+        if(gridmove)
+        {
+            if(int(posX*GridMovement::getScale())	!=	int(newPosX*GridMovement::getScale()) ||
+                    int(posY*GridMovement::getScale())!=int(newPosY*GridMovement::getScale()) )
+            {
+                collision = GridMovement::updateIfFree(int(posX*GridMovement::getScale()),
+                                                       int(posY*GridMovement::getScale()),
+                                                       int(newPosX*GridMovement::getScale()),
+                                                       int(newPosY*GridMovement::getScale()),
+                                                       ID);
+            }
+        }
+
+        if(collision)
+        {
+            moving = false;
+            lua_pushboolean(L,moving);
+            lua_setglobal(L,"Moving");
+
+        }
+        else
         {
             posX = newPosX;
             posY = newPosY;
+            lua_pushnumber(L, posX);
+            lua_setglobal(L, "PositionX");
+            lua_pushnumber(L, posY);
+            lua_setglobal(L, "PositionY");
         }
 
-        lua_pushnumber(L, posX);
-        lua_setglobal(L, "PositionX");
-        lua_pushnumber(L, posY);
-        lua_setglobal(L, "PositionY");
-
-        if(gridmove)
-        {
-            GridMovement::updatePos(oldX, oldY,
-                                    (int)(posX*GridMovement::getScale()),
-                                    (int)(posY*GridMovement::getScale()),
-                                    ID);
-        }
-        //Output::Inst()->kprintf("angular speed %f, new position %f", vX*Phys::getMacroFactor()*Phys::getTimeRes(), posX);
-    } else
-    {
-        moving = false;
-        lua_pushboolean(L, moving);
-        lua_setglobal(L, "Moving");
-        posX = destinationX;
-        posY = destinationY;
-
-        lua_pushnumber(L, posX);
-        lua_setglobal(L, "PositionX");
-        lua_pushnumber(L, posY);
-        lua_setglobal(L, "PositionY");
-
-        if(gridmove)
-        {
-            GridMovement::updatePos(oldX, oldY,
-                                    (int)(posX*GridMovement::getScale()),
-                                    (int)(posY*GridMovement::getScale()),
-                                    ID);
-        }
     }
 }
-
 /********************************************************
  * post processing.
  *
