@@ -172,7 +172,7 @@ void MainWindow::on_generateButton_clicked()
         //mapItem->setZValue(1);
 
 		ui->vis_disableAgentsCheckBox->setChecked(false);
-        ui->vis_disableAgentIDs->setChecked(false);
+        //ui->vis_disableAgentIDs->setChecked(false);
 
 		Phys::setScale(ui->scaleDoubleSpinBox->value());
 		//Output::Inst()->kprintf("Setting map scale to %f", Phys::getScale());
@@ -444,7 +444,8 @@ void MainWindow::on_addGraphicAuton(int id, int posX, int posY)
 	agentItem *gfxItem = new agentItem(QString::number(id));
 	gfxItem->setZValue(2);
 	gfxItem->setX(posX);
-	gfxItem->setY(posY);
+    gfxItem->setY(posY);
+    gfxItem->showID(!ui->vis_disableAgentIDs->isChecked());
 
     //Output::Inst()->kprintf("ID is %i", Id);
     //Output::Inst()->kprintf("Size of the agent array %i", graphAgents.size());
@@ -838,7 +839,6 @@ void MainWindow::ppConstruction()
 					 this,SLOT(on_writePPOutput(QString)));
 
 	ui->vis_processEventsPushButton->setEnabled(false);
-	ui->vis_disableAgentIDs->setChecked(false);
 
 	eventScene->setBackgroundBrush(Qt::black);
 	eventMapScene->setBackgroundBrush(Qt::black);

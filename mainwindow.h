@@ -39,7 +39,9 @@ typedef std::list<agentInfo> INFOLIST;
 
 class PostControl;
 class Control;
-namespace Ui {
+
+namespace Ui
+{
 class MainWindow;
 }
 

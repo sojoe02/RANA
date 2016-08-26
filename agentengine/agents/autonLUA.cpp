@@ -236,8 +236,8 @@ void AutonLUA::InitializeAgent()
     if (gridmove == true)
     {
         GridMovement::addPos(
-                    (int)(posX*GridMovement::getScale()),
-                    (int)(posY*GridMovement::getScale()),ID);
+                    int(posX*GridMovement::getScale()),
+                    int(posY*GridMovement::getScale()),ID);
     }
     getSyncData();
 }

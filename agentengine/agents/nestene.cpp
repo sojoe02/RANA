@@ -192,9 +192,18 @@ int Nestene::addAuton(double x, double y, double z,
 	if(type.compare("Lua") == 0)
 	{
 		std::shared_ptr<AutonLUA> luaPtr =
-				std::make_shared<AutonLUA>(id, x, y, 1, this, filename);
+                std::make_shared<AutonLUA>(id, x, y, 1, this, filename);
 
-        newAutons.push_back(luaPtr);
+        if(Output::SimRunning)
+        {
+            newAutons.push_back(luaPtr);
+        }
+        else
+        {
+            luaAutons.insert(std::make_pair(luaPtr->getID(),luaPtr));
+            luaPtr->InitializeAgent();
+        }
+
 	}
 
 	return id;

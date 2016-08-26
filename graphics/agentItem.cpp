@@ -23,7 +23,7 @@
 
 
 agentItem::agentItem(QString id) :
-	id(id), pencolor(Qt::white), showid(true)
+    id(id), pencolor(Qt::white), showid(true)
 {
 }
 
@@ -47,11 +47,11 @@ void agentItem::paint(QPainter *painter,
     painter->drawPoint(-1,-1);
     painter->drawPoint(1,-1);
     painter->drawPoint(-1,1);
-	//painter->drawRect(rect);
-	if(showid)
+    //painter->drawRect(rect);
+    if(showid)
 	{
 		painter->setFont(QFont("Arial", 4));
-		painter->drawText(rect, Qt::AlignCenter, id);
+        painter->drawText(rect, Qt::AlignCenter, id);
 	}
 }
 
