@@ -149,6 +149,7 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
         lua_register(L, "l_radialCollisionScan", l_radialCollisionScan);
         lua_register(L, "l_initializeGrid", l_initializeGrid);
         lua_register(L, "l_getGridScale", l_getGridScale);
+        lua_register(L, "l_updatePositionIfFree", l_updatePositionIfFree);
 
         //Shared values.
         lua_register(L, "l_getSharedNumber", l_getSharedNumber);
@@ -808,6 +809,26 @@ int AutonLUA::l_checkPosition(lua_State *L)
         lua_pushnumber(L, *it);
         lua_settable(L, -3);
     }
+
+    return 1;
+}
+
+int AutonLUA::l_updatePositionIfFree(lua_State *L)
+{
+    int oldX = int(lua_tonumber(L, -5)*GridMovement::getScale());
+    int oldY = int(lua_tonumber(L, -4)*GridMovement::getScale());
+    int newX = int(lua_tonumber(L, -3)*GridMovement::getScale());
+    int newY = int(lua_tonumber(L, -2)*GridMovement::getScale());
+    int id = lua_tointeger(L, -1);
+
+    bool moved = false;
+
+    if(oldX != newX || oldY != newY)
+    {
+        moved = GridMovement::updateIfFree(oldX, oldY, newX, newY, id);
+    }
+
+    lua_pushboolean(L, moved);
 
     return 1;
 }

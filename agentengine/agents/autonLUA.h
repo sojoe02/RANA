@@ -85,8 +85,9 @@ public:
     static int l_getGridScale(lua_State *L);
     static int l_initializeGrid(lua_State *L);
 	static int l_radialCollisionScan(lua_State *L);
+    static int l_updatePositionIfFree(lua_State *L);
 
-	//Shared values.
+    //Shared values.
     static int l_getSharedNumber(lua_State *L);
     static int l_addSharedNumber(lua_State *L);
     static int l_addSharedString(lua_State *L);

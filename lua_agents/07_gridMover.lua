@@ -68,34 +68,28 @@ function takeStep()
 		
 	--	local x = Stat.randomInteger(1, ENV_WIDTH)
 	--	local y = Stat.randomInteger(1, ENV_HEIGHT)		
-
-		--Move.to{x=x, y=y}
-		--
 	
-		
-	--end
-
 	--move to 20,20 with  collision detection.
 	--Collision.updatePosition(20,20)
 	--if ID == 1 then
 	--	positionTable = {}
 	--	positionTable = Collision.checkPosition(PositionX, PositionY)
 	--	say(Utility.serializeTable(positionTable))
-	--en--d
+	--end
 end
 
 function cleanUp()
 	
-	if ID == 1 then
-		positionTable = {}
-		positionTable = Collision.checkPosition(PositionX, PositionY)
+	--if ID == 1 then
+		--positionTable = {}
+		--positionTable = Collision.checkPosition(PositionX, PositionY)
 
-		say("agent #"..ID.." has these collisions...")
-		say(Utility.serializeTable(positionTable))
+	--	say("agent #"..ID.." has these collisions...")
+	--	say(Utility.serializeTable(positionTable))
 	 	
 		--for i = 1, #positionTable do
 		--	say(positionTable[i])
 		--end
-	end
+	--end
 end
 

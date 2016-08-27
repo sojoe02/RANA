@@ -30,7 +30,7 @@ std::shared_timed_mutex GridMovement::gridMutex;
 
 int GridMovement::width;
 int GridMovement::height;
-int GridMovement::scale = 1;
+double GridMovement::scale = 1;
 
 void GridMovement::initGrid(int scale)
 {
@@ -51,7 +51,7 @@ void GridMovement::clearGrid()
     posMap->clear();
 }
 
-int GridMovement::getScale()
+double GridMovement::getScale()
 {
     return scale;
 }

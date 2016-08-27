@@ -46,7 +46,7 @@ function ranaLibCollisionGrid.checkCollision(x, y)
 end
 
 -- Add another position to the grid 
--- If the agent wants this to change it has to use 
+-- If the agent wants this to change it has to use
 -- ranaLibCollsionGrid.updatePosition.
 function ranaLibCollisionGrid.addPosition(x,y,id)
 
@@ -57,12 +57,34 @@ function ranaLibCollisionGrid.addPosition(x,y,id)
 	end
 end
 
+
+
 -- Updates a position with ID in the collision grid... if it exists.
 function ranaLibCollisionGrid.updatePosition(newX, newY)
+
 	l_updatePosition(PositionX, PositionY, newX, newY, ID)
+
 	PositionX = newX
 	PositionY = newY
 
+end
+
+-- Updates the agents position in the collision grid if the position is free
+-- this is syncronized grid position change, which means that 
+-- it is atomic accross execution threads.
+-- This function will set PositionX and PositionY equal to 
+-- newX and newY if the position is free.
+-- @Return true if position was available, false if it wasn't.
+function ranaLibCollisionGrid.updatePositionIfFree(newX, newY)
+
+	moved = l_updatePositionIfFree(PositionX, PositionY, newX, newY, ID)
+
+	if moved then
+		PositionX = newX
+		PositionY = newY
+	end
+
+	return moved
 end
 
 -- Performs a radial scan with a given radius. It utilizes Ranas api for 

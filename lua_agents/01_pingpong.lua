@@ -55,12 +55,6 @@ end
 
 function handleEvent(sourceX, sourceY, sourceID, eventDescription, eventTable)
  
-	--say("handling event")
-	--
-	for i=1, Stat.randomInteger(1,10000) do
-		local s = i*i
-	end
-
 	if eventDescription == "ping" and ID ~= 1 then
 			--l_print("Agent: "..ID .." received a ping from: "..sourceID ..", saying: "..eventTable.msg)
 			Event.emit{targetID=sourceID, description="pong"}
@@ -76,10 +70,6 @@ function takeStep()
 	if Stat.randomInteger(1,10) <= 1 and ID==1 then
 		--l_debug("Agent:"..ID.." is emiting ping")
 	 	Event.emit{description="ping",table={msg="I am agent "..ID}}
-	end
-
-	for i=1, Stat.randomInteger(1,1000000) do 
-		local s = i*i
 	end
 
 end

@@ -44,10 +44,10 @@ public:
 	static void clearGrid();
     static void removePos(int id);
 
-    static int getScale();
+    static double getScale();
     static bool updateIfFree(int oldX, int oldY, int newX, int newY, int id);
-private:
 
+private:
     //maps that contain the amount of agents at a givin x,y position
 	static std::unordered_map<std::string, pList> *posMap;
     static std::unordered_map<std::string, pList>::iterator positr;
@@ -55,7 +55,7 @@ private:
 
     static int width;
     static int height;
-    static int scale;
+    static double scale;
 
 
 };
