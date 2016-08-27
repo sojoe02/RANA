@@ -45,10 +45,6 @@ function handleEvent(sourceX, sourceY, sourceID, eventDescription, eventTable)
 
 end
 
-function takeStep()
-
-end
-
 function cleanUp()
 	l_debug("Agent #: " .. ID .. " is done\n")
 end

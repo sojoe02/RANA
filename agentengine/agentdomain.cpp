@@ -165,16 +165,18 @@ void AgentDomain::toggleLiveView(bool enable)
  */
 void AgentDomain::runSimulation(int time)
 {
-    if(remove(positionFilename.c_str()) != 0)
-    {
-        Output::Inst()->kprintf("Position file does not exist");
-    }
+
 
     std::string positionFilePath = Output::Inst()->RanaDir;
     positionFilePath.append("/");
     positionFilePath.append(positionFilename.c_str());
 
-    file.open(positionFilePath.c_str(),std::ofstream::out | std::ofstream::app | std::ofstream::binary);
+	if(remove(positionFilePath.c_str()) != 0)
+	{
+		Output::Inst()->kprintf("Position file does not exist");
+	}
+
+	file.open(positionFilePath.c_str(),std::ofstream::out | std::ofstream::app | std::ofstream::binary);
 
     stop = false;
     Output::Inst()->kprintf("Running Simulation of: %i[s], with resolution of %f \n",
