@@ -620,12 +620,13 @@ void MainWindow::resizeEvent(QResizeEvent *event)
         }
 
 
-		ui->vis_graphicsView->fitInView(eventScene->sceneRect(),
-										Qt::KeepAspectRatio);
+        ui->vis_graphicsView->fitInView(eventScene->sceneRect(),Qt::KeepAspectRatio);//eventScene->sceneRect(),
+                                        //Qt::KeepAspectRatio);
     }
     else if(ui->tabWidget->currentIndex() == ui->tabWidget->indexOf(sim_viewTab))
-	{
-		ui->graphicsView->fitInView(scene->sceneRect(),
+    {
+        if(mapItem != NULL)
+            ui->graphicsView->fitInView(mapItem->boundingRect(),
 									Qt::KeepAspectRatio);
 
 		QTransform transform = ui->graphicsView->transform();
@@ -652,7 +653,7 @@ void MainWindow::on_tabWidget_currentChanged(int index)
 
 	if(index == ui->tabWidget->indexOf(vis_mapTab))
 	{
-        ui->vis_graphicsView->fitInView(eventScene->sceneRect(),Qt::KeepAspectRatio);
+        ui->vis_graphicsView->fitInView(eventMapScene->sceneRect(),Qt::KeepAspectRatio);
 
         if(zmap != NULL)
 		{
@@ -664,9 +665,11 @@ void MainWindow::on_tabWidget_currentChanged(int index)
 
     }
     else if(ui->tabWidget->currentIndex() == ui->tabWidget->indexOf(sim_viewTab))
-	{
-		ui->graphicsView->fitInView(scene->sceneRect(),
-									Qt::KeepAspectRatio);
+    {
+        if(mapItem != NULL)
+            ui->graphicsView->fitInView(mapItem->boundingRect(),
+                                    Qt::KeepAspectRatio);
+
 		control->toggleLiveView(true);
 
 		QTransform transform = ui->graphicsView->transform();
@@ -752,7 +755,7 @@ void MainWindow::defineMap()
 	MapHandler::setImage(mapImage);
 	Phys::setEnvironment(mapImage->width(),mapImage->height());
     //GridMovement::initGrid(mapImage->width(), mapImage->height());
-    ui->graphicsView->fitInView(scene->sceneRect(),Qt::KeepAspectRatio);
+    ui->graphicsView->fitInView(mapItem->sceneBoundingRect(),Qt::KeepAspectRatio);
 //control->toggleLiveView(true);
 
     QTransform transform = ui->graphicsView->transform();
