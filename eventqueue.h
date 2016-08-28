@@ -165,6 +165,9 @@ class EventQueue
 		//size of the eventqueue:
 		unsigned long long eSize;
         unsigned long long iSize;
+
+        std::mutex eEventMutex;
+        std::mutex iEventMutex;
 };
 
 #endif // EVENTQUEUE_H

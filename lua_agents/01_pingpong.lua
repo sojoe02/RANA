@@ -45,6 +45,7 @@
 Event = require "ranalib_event"
 Shared = require "ranalib_shared"	
 Stat = require "ranalib_statistic"
+Move = require "ranalib_movement"
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
 function initializeAgent()
@@ -54,7 +55,7 @@ function initializeAgent()
 end
 
 function handleEvent(sourceX, sourceY, sourceID, eventDescription, eventTable)
- 
+
 	if eventDescription == "ping" and ID ~= 1 then
 			--l_print("Agent: "..ID .." received a ping from: "..sourceID ..", saying: "..eventTable.msg)
 			Event.emit{targetID=sourceID, description="pong"}
@@ -69,9 +70,8 @@ function takeStep()
 
 	if Stat.randomInteger(1,10) <= 1 and ID==1 then
 		--l_debug("Agent:"..ID.." is emiting ping")
-	 	Event.emit{description="ping",table={msg="I am agent "..ID}}
+	 	Event.emit{speed=343,description="ping",table={msg="I am agent "..ID}}
 	end
-
 end
 
 function cleanUp()

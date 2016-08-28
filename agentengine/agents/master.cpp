@@ -37,6 +37,9 @@
 
 #include "output.h"
 
+#define TASK_STEP 	300
+#define TASK_STOP	400
+
 std::condition_variable Master::CvStepStart;
 std::condition_variable Master::CvStepDone;
 std::mutex Master::mutexStep;
@@ -58,11 +61,9 @@ Master::~Master()
 {
     delete eventQueue;
 
-    Master::stopThreads.store(true);
     for(auto n : nestenes)
     {
-        //n->cv.notify_one();
-        n->stepPromise.set_value(true);
+        n->taskPromise.set_value(TASK_STOP);
     }
     for(auto t : threads)
     {
@@ -231,7 +232,7 @@ void Master::microStep(unsigned long long tmu)
 
             for(auto n : nestenes)
             {
-                n->distroPhase(eEventPtr);
+               n->distroPhase(eEventPtr);
             }
         }
     }
@@ -281,25 +282,18 @@ unsigned long long Master::getNextMicroTmu()
  */
 void Master::macroStep(unsigned long long tmu)
 {
-    //Handle the initiation of events:
-    nestCounter.store(0);
 
     for(auto n : nestenes)
     {
-
-        //while(!n->stepLock.owns_lock())
-        //{
-        //Output::Inst()->kprintf("Waiting for lock!");
-        //    std::this_thread::sleep_for(std::chrono::nanoseconds(50));
-        //}
-        n->stepPromise.set_value(true);
-       // n->cv.notify_one();
-
-
+        n->taskPromise.set_value(TASK_STEP);
     }
-    while(nestCounter.load() != nesteneAmount)
+
+    for(auto n : nestenes)
     {
-        std::this_thread::sleep_for(std::chrono::nanoseconds(50));
+        std::future<bool> stepDoneFuture = n->taskDonePromise.get_future();
+        stepDoneFuture.wait();
+        n->taskDonePromise = std::promise<bool>();
+
     }
 }
 
@@ -312,22 +306,23 @@ void Master::macroStep(unsigned long long tmu)
  */
 void Master::runStepPhase(Nestene *nestene)
 {
-
-    nestene->stepLock = std::unique_lock<std::mutex>(nestene->stepMutex);
-    //nestene->cv.wait(nestene->stepLock);
-
     while(true)
     {
-        //nestene->cv.wait(nestene->stepLock);
-        std::future<bool> stepFuture = nestene->stepPromise.get_future();
+        std::future<int> stepFuture = nestene->taskPromise.get_future();
         stepFuture.wait();
-        nestene->stepPromise = std::promise<bool>();
+        int task = stepFuture.get();
+        nestene->taskPromise = std::promise<int>();
 
-        if(Master::stopThreads.load()==true) break;
+        if(task == TASK_STOP)
+        {
+            break;
+        }
+        else if(task == TASK_STEP)
+        {
+            nestene->takeStepPhase(Phys::getCTime());
+        }
 
-        nestene->takeStepPhase(Phys::getCTime());
-
-        Master::nestCounter++;
+        nestene->taskDonePromise.set_value(true);
     }
 }
 

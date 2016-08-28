@@ -422,7 +422,6 @@ void AutonLUA::movement()
             moving = false;
             lua_pushboolean(L,moving);
             lua_setglobal(L,"Moving");
-
         }
         else
         {
@@ -520,7 +519,8 @@ void AutonLUA::simDone()
 void AutonLUA::getSyncData()
 {
     if(removed) return;
-    try{
+    try
+    {
         lua_getglobal(L, "GridMove");
         lua_getglobal(L, "StepMultiple");
         lua_getglobal(L, "PositionX");

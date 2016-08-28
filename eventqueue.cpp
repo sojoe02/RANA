@@ -66,6 +66,7 @@ EventQueue::~EventQueue()
  */
 void EventQueue::insertEEvent(std::unique_ptr<eEvent> eeventPtr)
 {
+    //std::lock_guard<std::mutex> lk(eEventMutex);
     eSize++;
 
     unsigned long long tmu = eeventPtr->activationTime;
@@ -194,6 +195,7 @@ void EventQueue::incrementEeventCounter(unsigned long long id)
  */
 void EventQueue::insertIEvent(std::unique_ptr<iEvent> ieventPtr)
 {
+    //std::lock_guard<std::mutex> lk(iEventMutex);
     //put event in hashmap.
     iSize++;
     unsigned long long tmu = ieventPtr->activationTime;
