@@ -50,6 +50,7 @@ Utility = require "ranalib_utility"
 Agent = require "ranalib_agent"
 
 counter = 1
+repulsionRange = 10
 
 -- Initialization of the agent.
 function initializeAgent()
@@ -72,7 +73,7 @@ function takeStep()
 		Agent.changeColor{r=255}
 
 		if counter % 1000 then 
-			table = Collision.radialCollisionScan(10)
+			table = Collision.radialCollisionScan(repulsionRange)
 
 			if table ~= nil then
 

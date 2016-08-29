@@ -376,7 +376,7 @@ void AutonLUA::movement()
 {
     lua_getglobal(L, "GridMove");
     gridmove = lua_toboolean(L,-1);
-    bool collision = false;
+    //bool collision = false;
 
     if(posX != destinationX || posY != destinationY)
     {
@@ -412,29 +412,29 @@ void AutonLUA::movement()
             if(int(posX*GridMovement::getScale())	!=	int(newPosX*GridMovement::getScale()) ||
                     int(posY*GridMovement::getScale())!=int(newPosY*GridMovement::getScale()) )
             {
-                collision = GridMovement::updateIfFree(int(posX*GridMovement::getScale()),
-                                                       int(posY*GridMovement::getScale()),
-                                                       int(newPosX*GridMovement::getScale()),
-                                                       int(newPosY*GridMovement::getScale()),
-                                                       ID);
+                GridMovement::updatePos(int(posX*GridMovement::getScale()),
+                                        int(posY*GridMovement::getScale()),
+                                        int(newPosX*GridMovement::getScale()),
+                                        int(newPosY*GridMovement::getScale()),
+                                        ID);
             }
         }
 
-        if(collision)
-        {
-            moving = false;
-            lua_pushboolean(L,moving);
-            lua_setglobal(L,"Moving");
-        }
-        else
-        {
-            posX = newPosX;
-            posY = newPosY;
-            lua_pushnumber(L, posX);
-            lua_setglobal(L, "PositionX");
-            lua_pushnumber(L, posY);
-            lua_setglobal(L, "PositionY");
-        }
+        //if(collisioni)
+        //{
+        //v//  moving = false;
+        //  lua_pushboolean(L,moving);
+        //  lua_setglobal(L,"Moving");
+        // }
+        //else
+        //{
+        posX = newPosX;
+        posY = newPosY;
+        lua_pushnumber(L, posX);
+        lua_setglobal(L, "PositionX");
+        lua_pushnumber(L, posY);
+        lua_setglobal(L, "PositionY");
+        //}
 
     }
     else
