@@ -59,7 +59,7 @@ function initializeAgent()
 
 	Move.to{x= ENV_WIDTH/2, y= ENV_HEIGHT/2}
 	
-	Speed = 40
+	Speed = 10
 	GridMove = true
 	Moving = true
 
@@ -72,7 +72,7 @@ function takeStep()
 		
 		Agent.changeColor{r=255}
 
-		if counter % 1000 then 
+		if counter % 100 == 0 then 
 			table = Collision.radialCollisionScan(repulsionRange)
 
 			if table ~= nil then
@@ -98,8 +98,9 @@ function takeStep()
 				-- set the new destination and move there
 				Move.to{x=PositionX+destX, y=PositionY+destY} 	
 			end
+			--counter == 0
 		end
-		counter = 0
+		
 	else
 		Agent.changeColor{b=255}
 	end
