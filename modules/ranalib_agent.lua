@@ -1,5 +1,7 @@
 local ranaLibAgent = {}
 
+local currentColor = {r=255,g=255,b=255,alpha=255}
+
 -- Add an agent to the simulation. This agent will only receive 
 -- events emitted after it has been added.
 -- For simulation consistency it is recommended to use this mostly during takeStep, 
@@ -108,7 +110,17 @@ function ranaLibAgent.changeColor(options)
 	local alpha = options.alpha or 255
 	local id = options.id or ID
 
-	return l_changeAgentColor(id,r,g,b,alpha)
+	if r ~= currentColor.r or g ~= currentColor.g or b ~= currentColor.b or alpha ~= currentColor.alpha then
+		currentColor.r = r
+		currentColor.g = g
+		currentColor.b = b
+		currentColor.alpha = alpha
+		
+		return l_changeAgentColor(id,r,g,b,alpha)
+		
+	else 
+		return true
+	end
 
 end
  

@@ -302,12 +302,6 @@ std::unique_ptr<EventQueue::eEvent> AutonLUA::takeStep()
     if(nofile) return NULL;
     lua_settop(L,0);
 
-    if(moving)
-    {
-        movement();
-    }
-
-
     try
     {
         lua_getglobal(L, "_TakeStep");
@@ -316,6 +310,11 @@ std::unique_ptr<EventQueue::eEvent> AutonLUA::takeStep()
             Output::Inst()->kprintf("<b><font color=\"brown\">Lua error on takeStep. %s, %s</font></b></>", filename.c_str() ,lua_tostring(L,-1));
             Output::RunSimulation.store(false);
             return NULL;
+        }
+
+        if(moving)
+        {
+        movement();
         }
 
         getSyncData();
@@ -703,12 +702,13 @@ int AutonLUA::l_getMersenneInteger(lua_State *L)
 {
     int64_t low = lua_tonumber(L,-2);
     int64_t high = lua_tonumber(L, -1);
-    int64_t number = 0;
+    int64_t number = low;
 
     if(low > high)
     {
         number = Phys::getMersenneInteger(high, low);
-    } else if(high > low)
+    }
+    else if(high > low)
     {
         number = Phys::getMersenneInteger(low, high);
     }

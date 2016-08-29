@@ -47,59 +47,64 @@ Stat = require "ranalib_statistic"
 Move = require "ranalib_movement"
 Collision = require "ranalib_collision"
 Utility = require "ranalib_utility"
+Agent = require "ranalib_agent"
+
+counter = 1
+
 -- Initialization of the agent.
 function initializeAgent()
+	
 	say("Agent #: " .. ID .. " has been initialized")
 
-	DestinationX = ENV_WIDTH/2
-	DestinationY = ENV_HEIGHT/2
-	Speed = 10
+	Move.to{x= ENV_WIDTH/2, y= ENV_HEIGHT/2}
+	
+	Speed = 40
 	GridMove = true
 	Moving = true
-	--
-	--Collision.updatePosition(20,20)
+
 end
 
 
 function takeStep()
 	
 	if not Moving then
-
-		table =Collision.radialCollisionScan(10)
-
-		if table ~= nil then
-
-			 Move.to{x=PositionX+Stat.randomInteger(-10,10), y=PositionY+Stat.randomInteger(-10,10),speed=20} 
 		
+		Agent.changeColor{r=255}
+
+		if counter % 1000 then 
+			table = Collision.radialCollisionScan(10)
+
+			if table ~= nil then
+
+				--set a random destination modifier
+				local destX = Stat.randomInteger(0,10)
+				local destY = Stat.randomInteger(0,10)
+				
+				--get a valid random entry in the table
+				local entry = Stat.randomInteger(1,#table)
+
+				
+				-- retrieve the colliding agent positon in the table,
+				-- and adjust destination modifire accordingly
+				if table[entry].posX > PositionX then 
+					destX = -destX
+				end
+
+				if table[entry].posY > PositionY then
+					destY = -destY
+				end
+				
+				-- set the new destination and move there
+				Move.to{x=PositionX+destX, y=PositionY+destY} 	
+			end
 		end
+		counter = 0
+	else
+		Agent.changeColor{b=255}
 	end
-		--if Moving == false then
-		
-	--	local x = Stat.randomInteger(1, ENV_WIDTH)
-	--	local y = Stat.randomInteger(1, ENV_HEIGHT)		
-	
-	--move to 20,20 with  collision detection.
-	--Collision.updatePosition(20,20)
-	--if ID == 1 then
-	--	positionTable = {}
-	--	positionTable = Collision.checkPosition(PositionX, PositionY)
-	--	say(Utility.serializeTable(positionTable))
-	--end
+
+
+	counter = counter +1
 end
 
-function cleanUp()
-
-	if Moving then say(ID..": "..DestinationX..": "..DestinationY..": "..PositionX..": "..PositionY ) end
-	--if ID == 1 then
-		--positionTable = {}
-		--positionTable = Collision.checkPosition(PositionX, PositionY)
-
-	--	say("agent #"..ID.." has these collisions...")
-	--	say(Utility.serializeTable(positionTable))
-	 	
-		--for i = 1, #positionTable do
-		--	say(positionTable[i])
-		--end
-	--end
-end
 

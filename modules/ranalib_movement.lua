@@ -7,9 +7,9 @@ function ranaLibMovement.to(options)
 
 	local xx = options.x or posX
 	local yy = options.y or posY
-	local sspeed = options.speed or 1
+	local sspeed = options.speed or Speed
 
-	ranaLibMovement.setSpeed(sspeed)
+	--ranaLibMovement.setSpeed(sspeed)
 
 
 	if xx > ENV_WIDTH then xx = ENV_WIDTH end
