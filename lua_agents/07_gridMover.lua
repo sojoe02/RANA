@@ -51,8 +51,8 @@ Utility = require "ranalib_utility"
 function initializeAgent()
 	say("Agent #: " .. ID .. " has been initialized")
 
-	DestinationX = 1
-	DestinationY = 1
+	DestinationX = ENV_WIDTH/2
+	DestinationY = ENV_HEIGHT/2
 	Speed = 10
 	GridMove = true
 	Moving = true
@@ -62,8 +62,17 @@ end
 
 
 function takeStep()
+	
+	if not Moving then
 
-	if not Moving then Move.toRandom() end
+		table =Collision.radialCollisionScan(10)
+
+		if table ~= nil then
+
+			 Move.to{x=PositionX+Stat.randomInteger(-10,10), y=PositionY+Stat.randomInteger(-10,10),speed=20} 
+		
+		end
+	end
 		--if Moving == false then
 		
 	--	local x = Stat.randomInteger(1, ENV_WIDTH)
@@ -79,7 +88,8 @@ function takeStep()
 end
 
 function cleanUp()
-	
+
+	if Moving then say(ID..": "..DestinationX..": "..DestinationY..": "..PositionX..": "..PositionY ) end
 	--if ID == 1 then
 		--positionTable = {}
 		--positionTable = Collision.checkPosition(PositionX, PositionY)

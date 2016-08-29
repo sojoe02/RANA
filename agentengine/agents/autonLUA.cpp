@@ -301,6 +301,13 @@ std::unique_ptr<EventQueue::eEvent> AutonLUA::takeStep()
     if(removed) return NULL;
     if(nofile) return NULL;
     lua_settop(L,0);
+
+    if(moving)
+    {
+        movement();
+    }
+
+
     try
     {
         lua_getglobal(L, "_TakeStep");
@@ -310,12 +317,8 @@ std::unique_ptr<EventQueue::eEvent> AutonLUA::takeStep()
             Output::RunSimulation.store(false);
             return NULL;
         }
-        getSyncData();
 
-        if(moving)
-        {
-            movement();
-        }
+        getSyncData();
 
         return NULL;
 
@@ -396,6 +399,7 @@ void AutonLUA::movement()
                 (posX <= destinationX && newPosX >= destinationX &&
                  posY <= destinationY && newPosY >= destinationY)
                 )
+        //if(std::abs(newPosX-DestinationX)std::abs(posX-destinationX))
         {
             moving = false;
             lua_pushboolean(L, moving);
@@ -432,6 +436,13 @@ void AutonLUA::movement()
             lua_pushnumber(L, posY);
             lua_setglobal(L, "PositionY");
         }
+
+    }
+    else
+    {
+        moving = false;
+        lua_pushboolean(L,moving);
+        lua_setglobal(L,"Moving");
 
     }
 }

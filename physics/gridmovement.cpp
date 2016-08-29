@@ -25,7 +25,6 @@
 #include "output.h"
 
 std::unordered_map< std::string, pList > *GridMovement::posMap = NULL;
-std::unordered_map< std::string, pList >::iterator GridMovement::positr;
 std::shared_timed_mutex GridMovement::gridMutex;
 
 int GridMovement::width;
@@ -209,7 +208,7 @@ bool GridMovement::checkCollision(int x, int y)
     sprintf(buffer, "%i,%i",x,y);
     std::string index = buffer;
 
-    positr = posMap->find(index);
+    auto positr = posMap->find(index);
 
     if(positr == posMap->end())
     {
@@ -227,7 +226,7 @@ pList GridMovement::checkPosition(int x, int y)
 
     pList tmp;
 
-    positr = posMap->find(index);
+    auto positr = posMap->find(index);
 
     if (positr != posMap->end())
     {

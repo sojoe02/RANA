@@ -50,7 +50,6 @@ public:
 private:
     //maps that contain the amount of agents at a givin x,y position
 	static std::unordered_map<std::string, pList> *posMap;
-    static std::unordered_map<std::string, pList>::iterator positr;
     static std::shared_timed_mutex gridMutex;
 
     static int width;

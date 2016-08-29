@@ -11,7 +11,14 @@ function ranaLibMovement.to(options)
 
 	ranaLibMovement.setSpeed(sspeed)
 
+
+	if xx > ENV_WIDTH then xx = ENV_WIDTH end
+	if xx < 0 then xx = 0 end
+	if yy > ENV_HEIGHT then yy = ENV_HEIGHT end
+	if yy < 0 then yy = 0 end
+
 	Moving = true
+
 	DestinationX = xx
 	DestinationY = yy
 
