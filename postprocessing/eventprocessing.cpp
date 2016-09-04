@@ -93,11 +93,11 @@ void EventProcessing::binEvents(QRegExp regex, std::string path, int to, int fro
         {
             file.read(reinterpret_cast<char*>(&devent), sizeof(EventQueue::dataEvent));
             //calculate the activation in seconds:
-            int activation = devent.activationTime/simInfo->timeResolution;
+            double activation = devent.activationTime/simInfo->timeResolution;
             //Output::Inst()->kdebug("devent activation time %i" , devent.activationTime);
             //Output::Inst()->kprintf("Event description %s", devent.desc);
 
-            if(activation > from && activation < to)
+            if(activation >= from && activation <= to)
             {
                 QString desc = devent.desc;
                 //Output::Inst()->kprintf("%s,you never know",devent.desc);

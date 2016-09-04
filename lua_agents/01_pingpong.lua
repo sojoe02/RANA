@@ -52,26 +52,32 @@ function initializeAgent()
 
 	say("Agent #: " .. ID .. " has been initialized")
 
+	if ID == 1 then
+		PositionX = ENV_WIDTH/2
+		PositionY = ENV_HEIGHT/2
+	end
+
 end
 
 function handleEvent(sourceX, sourceY, sourceID, eventDescription, eventTable)
 
 	if eventDescription == "ping" and ID ~= 1 then
-			--l_print("Agent: "..ID .." received a ping from: "..sourceID ..", saying: "..eventTable.msg)
-			Event.emit{targetID=sourceID, description="pong"}
+			l_print("Agent: "..ID .." received a ping from: "..sourceID ..", saying: "..eventTable.msg)
+			Event.emit{speed=343,targetID=sourceID, description="pong"}
 
 	elseif eventDescription == "pong" then
-		--	l_print("Agent: "..ID.." received a pong from agent: ".. sourceID)
+			l_print("Agent: "..ID.." received a pong from agent: ".. sourceID)
 	end
 
 end
 
 function takeStep()
 
-	if Stat.randomInteger(1,10) <= 1 and ID==1 then
-		--l_debug("Agent:"..ID.." is emiting ping")
+	if Stat.randomInteger(1,1000) <= 1 and ID==1 then
+		l_debug("Agent:"..ID.." is emiting ping")
 	 	Event.emit{speed=343,description="ping",table={msg="I am agent "..ID}}
 	end
+
 end
 
 function cleanUp()
