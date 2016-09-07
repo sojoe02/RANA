@@ -24,32 +24,32 @@
 
 #include <iostream>
 #include <memory>
-#include "auton.h"
-#include "nestene.h"
+#include "agent.h"
+#include "../sector.h"
 
-	Auton::Auton(int ID, double posX, double posY, double posZ, Nestene* nestene)
-:ID(ID), macroFactorMultiple(1), posX(posX), posY(posY), posZ(posZ), nestene(nestene)
+    Agent::Agent(int ID, double posX, double posY, double posZ, Sector *sector)
+:ID(ID), macroFactorMultiple(1), posX(posX), posY(posY), posZ(posZ), sector(sector)
 {
 
 }
 
-int Auton::getID(){
+int Agent::getID(){
 	return ID;
 }
 
-std::string Auton::getDesc(){
+std::string Agent::getDesc(){
 	return desc;
 }
 
-double Auton::getPosX(){
+double Agent::getPosX(){
 	return posX;
 }
 
-double Auton::getPosY(){
+double Agent::getPosY(){
 	return posY;
 }
 
-bool Auton::removeGroup(int group)
+bool Agent::removeGroup(int group)
 {
 	auto itr = groups.find(group);
 
@@ -61,12 +61,12 @@ bool Auton::removeGroup(int group)
 	return false;
 }
 
-void Auton::addGroup(int group)
+void Agent::addGroup(int group)
 {
 	groups.insert(group);
 }
 
-bool Auton::checkGroup(int group)
+bool Agent::checkGroup(int group)
 {
 	auto itr = groups.find(group);
 
@@ -75,38 +75,38 @@ bool Auton::checkGroup(int group)
 	else return false;
 }
 
-int Auton::getMacroFactorMultipler()
+int Agent::getMacroFactorMultipler()
 {
     return macroFactorMultiple;
 }
 
-void Auton::setMacroFactorMultipler(int multipler)
+void Agent::setMacroFactorMultipler(int multipler)
 {
     macroFactorMultiple = multipler;
 }
 
-void Auton::distroEEvent(std::unique_ptr<EventQueue::eEvent> event)
+void Agent::distroEEvent(std::unique_ptr<EventQueue::eEvent> event)
 {
-    //nestene->eEventsOutbox.push_back(std::move(event));
+    //sector->eEventsOutbox.push_back(std::move(event));
 }
 
 
-std::unique_ptr<EventQueue::iEvent> Auton::processEvent(EventQueue::eEvent* event)
+std::unique_ptr<EventQueue::iEvent> Agent::processEvent(EventQueue::eEvent* event)
 {
 	return NULL;
 }
 
-std::unique_ptr<EventQueue::eEvent> Auton::handleEvent(std::unique_ptr<EventQueue::iEvent> eventPtr)
+std::unique_ptr<EventQueue::eEvent> Agent::handleEvent(std::unique_ptr<EventQueue::iEvent> eventPtr)
 {
     return NULL;
 }
 
-bool Auton::operator==(Auton &other) const
+bool Agent::operator==(Agent &other) const
 {
 	return (this->ID == other.getID());
 }
 
-bool Auton::operator!=(Auton &other) const
+bool Agent::operator!=(Agent &other) const
 {
 	return !(*this == other);
 }

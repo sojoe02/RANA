@@ -20,8 +20,8 @@
 //
 //--end_license--
 
-#ifndef AUTONLUA_H
-#define AUTONLUA_H
+#ifndef AGENTLUAINTERFACE_H
+#define AGENTLUAINTERFACE_H
 
 #include <random>
 #include <vector>
@@ -31,8 +31,8 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
-#include "nestene.h"
-#include "auton.h"
+#include "../sector.h"
+#include "agent.h"
 
 #define LUA_OK          0
 #define LUA_YIELD       1
@@ -41,15 +41,15 @@
 #define LUA_ERRMEM      4
 #define LUA_ERRGCMM     5
 
-class Nestene;
-class AutonLUA : public Auton
+class Sector;
+class AgentLuaInterface : public Agent
 {
 public:
-    AutonLUA(int ID, double posX, double posY, double posZ,	Nestene *nestene, std::string filename);
-    ~AutonLUA();
+    AgentLuaInterface(int ID, double posX, double posY, double posZ,	Sector *sector, std::string filename);
+    ~AgentLuaInterface();
 
-    bool operator==(AutonLUA &other) const;
-    bool operator!=(AutonLUA &other) const;
+    bool operator==(AgentLuaInterface &other) const;
+    bool operator!=(AgentLuaInterface &other) const;
 
     /*******************************************
     * Lua wrapper functions
@@ -96,8 +96,8 @@ public:
     //Simulation core.
     static int l_stopSimulation(lua_State *L);
     static int l_getAgentPath(lua_State *L);
-    static int l_addAuton(lua_State *L);
-    static int l_removeAuton(lua_State *L);
+    static int l_addAgent(lua_State *L);
+    static int l_removeAgent(lua_State *L);
 
     //Agents.
     static int l_emitEvent(lua_State *L);
@@ -137,8 +137,8 @@ private:
 
     std::string filename;
     //The LUA state:
-    friend class Nestene;
-    friend class Master;
+    friend class Sector;
+    friend class Supervisor;
     bool nofile;
     bool removed;
     lua_State* L;
@@ -146,4 +146,4 @@ private:
     void getSyncData();
 };
 
-#endif // AUTONLUA_H
+#endif // AUTONLUAINTERFACE_H

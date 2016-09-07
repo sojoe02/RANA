@@ -84,13 +84,13 @@ void Control::generateEnvironment(QImage *map, int threads,
             agentDomain = NULL;
         }
 
-        agentDomain = new AgentDomain(this);
+        agentDomain = new FlowControl(this);
 
         agentDomain->generateEnvironment(map->width(),map->height(),threads,0,0,
                                          agentAmount,timeRes,macroRes,agentPath);
         //agentDomain->populateSystem();
 
-        populateFuture = QtConcurrent::run(agentDomain, &AgentDomain::populateSystem);
+        populateFuture = QtConcurrent::run(agentDomain, &FlowControl::populateSystem);
 
         //populateFuture.waitForFinished();
 

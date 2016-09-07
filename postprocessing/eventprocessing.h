@@ -11,10 +11,10 @@
 #include <QMapIterator>
 
 
-#include "agentengine/agents/autonLUA.h"
+#include "simulationcore/agents/agentluainterface.h"
 #include "mainwindow.h"
 #include "graphics/zblock.h"
-#include "eventqueue.h"
+#include "simulationcore/eventqueue.h"
 
 class EventProcessing
 {
@@ -46,7 +46,7 @@ private:
 
 	int test_number;
 
-	void recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *event,
+	void recursiveZlevel(AgentLuaInterface *auton, EventQueue::dataEvent *event,
 						 QSet<QString> *visited, int x, int y, int displaceX,
 						 int displaceY, int width, int height, double mapRes,
 						 double timeRes, double thressholdZ);

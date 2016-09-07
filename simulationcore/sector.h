@@ -20,8 +20,8 @@
 //
 //--end_license--
 
-#ifndef NESTENE_H
-#define NESTENE_H
+#ifndef SECTOR_H
+#define SECTOR_H
 
 
 #include <map>
@@ -32,62 +32,57 @@
 #include <atomic>
 #include <future>
 
-#include "master.h"
+#include "supervisor.h"
 #include "eventqueue.h"
-#include "autonlistener.h"
-#include "autonscreamer.h"
-#include "autonLUA.h"
+#include "agents/agentluainterface.h"
 
 #include "utility.h"
 
-class Master;
-class AutonListener;
-class AutonScreamer;
-class AutonLUA;
-class Nestene
+class Supervisor;
+class AgentListener;
+class AgentScreamer;
+class AgentLuaInterface;
+class Sector
 {
 	public:
-		Nestene(double posX,double posY, double width, double height, Master* master, int id);
-		~Nestene();
+        Sector(double posX,double posY, double width, double height, Supervisor* master, int id);
+        ~Sector();
 
-		void generateAuton();
+		void generateAgent();
 		void populate(int LUASize, std::string filename);
         void takeStepPhase(unsigned long long tmu);
-		//function to receive events the master, and distribute them on all local nestene
+		//function to receive events the master, and distribute them on all local sector
 		void distroPhase(const EventQueue::eEvent *event);
 		std::list<EventQueue::iEvent> responsePhase();
 		void retrievePopPos(std::list<agentInfo> &infolist);
 		int initAmount;
 		void simDone();
 		int getID(){ return id; }
-		int addAuton(double x, double y, double z,
+		int addAgent(double x, double y, double z,
 					  std::string filename, std::string type);
 
-		bool removeAuton(int arg_id);
-		int containsAuton(int arg_id);
+		bool removeAgent(int arg_id);
+		int containsAgent(int arg_id);
 
         std::promise<int> taskPromise;
         std::promise<bool> taskDonePromise;
 
 private:
-		//generates an event and puts it into the event map.
-		EventQueue::eEvent* generateListenerEvent();
-		EventQueue::eEvent* generateScreamerEvent();
 
 		//purge events before current tmu.
 		void purgeEvents();
 		//Functions to perform during a microStep.
 		//check whether or not there is to be initiated an event on one of its residents.
 		void performEvent(std::unique_ptr<EventQueue::eEvent> event);
-		Master *master;
+        Supervisor *master;
 
-        std::map<int,std::shared_ptr<AutonLUA>> luaAutons;
-        std::list<std::shared_ptr<AutonLUA>> newAutons;
+        std::map<int,std::shared_ptr<AgentLuaInterface>> luaAgents;
+        std::list<std::shared_ptr<AgentLuaInterface>> newAgents;
 
 		std::list<int> removalIDs;
 
-		friend class Auton;
-		friend class AutonLUA;
+		friend class Agent;
+		friend class AgentLuaInterface;
 		double posX;
 		double posY;
 		double width;
@@ -96,4 +91,4 @@ private:
 
 };
 
-#endif // NESTENE_H
+#endif // SECTOR_H

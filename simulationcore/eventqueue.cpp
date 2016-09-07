@@ -20,21 +20,20 @@
 //
 //--end_license--
 
-#include<eventqueue.h>
-#include<iostream>
-#include<fstream>
-#include<climits>
-#include<string.h>
-#include<stdio.h>
-#include<chrono>
-#include<utility>
-#include<mutex>
+#include <iostream>
+#include <fstream>
+#include <climits>
+#include <string.h>
+#include <stdio.h>
+#include <chrono>
+#include <utility>
+#include <mutex>
 
-#include"output.h"
-
-#include"agentengine/agents/auton.h"
-#include"ID.h"
-#include"physics/phys.h"
+#include "eventqueue.h"
+#include "output.h"
+#include "agents/agent.h"
+#include "ID.h"
+#include "api/phys.h"
 
 EventQueue::EventQueue()
     :eSize(0), iSize(0)
@@ -351,7 +350,7 @@ void EventQueue::saveEEventData(std::string path, std::string luaFileName,
     //Output::Inst()->kprintf("path saved is: %s", dataInfo.luaFileName);
 
     dataInfo.eventAmount = eSize;
-    dataInfo.numberOfAutons = autonAmount;
+    dataInfo.numberOfAgents = autonAmount;
     dataInfo.timeResolution = 1/Phys::getTimeRes();
     dataInfo.macroFactor = Phys::getMacroFactor();
     dataInfo.tmuAmount = Phys::getCTime();
@@ -474,7 +473,7 @@ void EventQueue::printATmus(){
     Output::Inst()->kprintf("----------------\n");
 }
 
-void EventQueue::addAutonInfo(int id, std::string filename)
+void EventQueue::addAgentInfo(int id, std::string filename)
 {
     agentFilenames.insert(std::pair<int, std::string>(id, filename) );
 }

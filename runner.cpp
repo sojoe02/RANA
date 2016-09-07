@@ -25,7 +25,7 @@
 
 Runner::Runner(){}
 
-void Runner::doWork(AgentDomain *agentDomain, unsigned long long runTime)
+void Runner::doWork(FlowControl *agentDomain, unsigned long long runTime)
 {
 
     if(agentDomain != NULL && runTime != 0)

@@ -25,7 +25,7 @@
 #include <stdio.h>
 #include <thread>
 #include <chrono>
-#include "physics/phys.h"
+#include "api/phys.h"
 
 #include "output.h"
 
@@ -187,20 +187,20 @@ void Output::updateZvalue(QString string)
 	Output::mainWindow->writeZValue(string);
 }
 
-void Output::removeGraphicAuton(int Id)
+void Output::removeGraphicAgent(int Id)
 {
-	mainWindow->removeGraphicAuton(Id);
+	mainWindow->removeGraphicAgent(Id);
 }
 
-void Output::addGraphicAuton(int Id, double posX, double posY)
+void Output::addGraphicAgent(int Id, double posX, double posY)
 {
     std::lock_guard<std::mutex> guard(autonMutex);
-    mainWindow->addGraphicAuton(Id, int(posX)/Phys::getScale(), int(posY)/Phys::getScale());
+    mainWindow->addGraphicAgent(Id, int(posX)/Phys::getScale(), int(posY)/Phys::getScale());
 }
 
-void Output::changeGraphicAutonColor(int id, int r, int g, int b, int alpha)
+void Output::changeGraphicAgentColor(int id, int r, int g, int b, int alpha)
 {
-    mainWindow->changeGraphicAutonColor(id, r, g, b, alpha);
+    mainWindow->changeGraphicAgentColor(id, r, g, b, alpha);
 }
 
 void Output::enableRunBotton(bool enabled)

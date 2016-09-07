@@ -25,9 +25,9 @@
 
 #include "mainwindow.h"
 #include "ID.h"
-#include "physics/phys.h"
+#include "api/phys.h"
 #include "output.h"
-#include "physics/gridmovement.h"
+#include "api/gridmovement.h"
 
 
 int ID::aID = 0;

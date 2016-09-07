@@ -37,23 +37,23 @@
 #include "output.h"
 
 #include "ID.h"
-#include "autonLUA.h"
-#include "doctor.h"
-#include "../../physics/phys.h"
-#include "../../physics/gridmovement.h"
-#include "../../physics/maphandler.h"
-#include "../../physics/shared.h"
-#include "../../physics/scanning.h"
+#include "agentluainterface.h"
+#include "../interfacer.h"
+#include "../../api/phys.h"
+#include "../../api/gridmovement.h"
+#include "../../api/maphandler.h"
+#include "../../api/shared.h"
+#include "../../api/scanning.h"
 
-AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *nestene, std::string filename)
-    : Auton(ID, posX, posY, posZ, nestene), destinationX(posX), destinationY(posY),speed(1), moving(false),gridmove(false),filename(filename),
+AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double posZ, Sector *sector, std::string filename)
+    : Agent(ID, posX, posY, posZ, sector), destinationX(posX), destinationY(posY),speed(1), moving(false),gridmove(false),filename(filename),
       nofile(false),removed(false),L(NULL)
 {
 
     desc = "LUA";
     //Output::Inst()->kprintf("%f,%f", posX, posY);
 
-    Output::Inst()->addGraphicAuton(ID, -1,-1);
+    Output::Inst()->addGraphicAgent(ID, -1,-1);
     //Setup up the LUA stack:
     L = luaL_newstate();
     if(L == NULL)
@@ -159,12 +159,12 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
 
         //Simulation core.
         lua_register(L, "l_getAgentPath", l_getAgentPath);
-        lua_register(L, "l_getAutonPath", l_getAgentPath);
+        lua_register(L, "l_getAgentPath", l_getAgentPath);
         lua_register(L, "l_stopSimulation", l_stopSimulation);
-        lua_register(L, "l_addAuton", l_addAuton);
-        lua_register(L, "l_removeAuton", l_removeAuton);
-        lua_register(L, "l_removeAgent", l_removeAuton);
-        lua_register(L, "l_addAgent", l_addAuton);
+        lua_register(L, "l_addAgent", l_addAgent);
+        lua_register(L, "l_removeAgent", l_removeAgent);
+        lua_register(L, "l_removeAgent", l_removeAgent);
+        lua_register(L, "l_addAgent", l_addAgent);
 
         //Agent.
         lua_register(L, "l_emitEvent", l_emitEvent);
@@ -180,18 +180,18 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
         {
             Output::Inst()->kprintf("<font color=\"red\">error : %s <\font>", lua_tostring(L, -1));
             nofile = true;
-            Output::Inst()->kprintf("Lua Auton disabled\n");
+            Output::Inst()->kprintf("Lua Agent disabled\n");
         }
 
         if(luaL_loadfile(L, filename.c_str() ) || lua_pcall(L,0,0,0))
         {
             Output::Inst()->kprintf("<font color=\"red\">error : %s <\font>", lua_tostring(L, -1));
             nofile = true;
-            Output::Inst()->kprintf("Lua Auton disabled\n");
+            Output::Inst()->kprintf("Lua Agent disabled\n");
         }
 
-        //if(nestene != NULL)
-        //Output::Inst()->kdebug("I belong to Nestene %i", nestene->getID());
+        //if(sector != NULL)
+        //Output::Inst()->kdebug("I belong to sector %i", sector->getID());
 
         getSyncData();
         //Call the Initialization function for the agent
@@ -199,7 +199,7 @@ AutonLUA::AutonLUA(int ID, double posX, double posY, double posZ, Nestene *neste
     }
 }
 
-AutonLUA::~AutonLUA()
+AgentLuaInterface::~AgentLuaInterface()
 {
     if(L != NULL)
     {
@@ -212,7 +212,7 @@ AutonLUA::~AutonLUA()
     }
 }
 
-void AutonLUA::InitializeAgent()
+void AgentLuaInterface::InitializeAgent()
 {
     if(removed) return;
 
@@ -221,12 +221,12 @@ void AutonLUA::InitializeAgent()
     {
         //init the LUA frog:
         lua_getglobal(L, "_InitializeAgent");
-        //Call the initAuton function (3 arguments, 0 results):
+        //Call the initAgent function (3 arguments, 0 results):
         if(lua_pcall(L,0,0,0)!=LUA_OK)
         {
             Output::Inst()->kprintf("<b><font color=\"brown\">Error on agent initialization, %s</font></b></>",	lua_tostring(L,-1));
             nofile = true;
-            Output::Inst()->kprintf("Lua Auton disabled\n");
+            Output::Inst()->kprintf("Lua Agent disabled\n");
         }
 
     }catch(std::exception& e){
@@ -256,7 +256,7 @@ void AutonLUA::InitializeAgent()
  * @param event pointer to the external event.
  * @return internal event.
  */
-std::unique_ptr<EventQueue::iEvent> AutonLUA::processEvent(const EventQueue::eEvent *event)
+std::unique_ptr<EventQueue::iEvent> AgentLuaInterface::processEvent(const EventQueue::eEvent *event)
 {
     if (removed) return NULL;
 
@@ -296,7 +296,7 @@ std::unique_ptr<EventQueue::iEvent> AutonLUA::processEvent(const EventQueue::eEv
  * @return EventQueue::eEvent pointer to an external event or
  * a null pointer in which case nothing happens.
  */
-std::unique_ptr<EventQueue::eEvent> AutonLUA::takeStep()
+std::unique_ptr<EventQueue::eEvent> AgentLuaInterface::takeStep()
 {
     if(removed) return NULL;
     if(nofile) return NULL;
@@ -337,7 +337,7 @@ std::unique_ptr<EventQueue::eEvent> AutonLUA::takeStep()
  * @param event pointer to the internal event.
  * @return external event.
  */
-std::unique_ptr<EventQueue::eEvent> AutonLUA::handleEvent(std::unique_ptr<EventQueue::iEvent> eventPtr)
+std::unique_ptr<EventQueue::eEvent> AgentLuaInterface::handleEvent(std::unique_ptr<EventQueue::iEvent> eventPtr)
 {
     if(removed) return NULL;
     if(nofile) return NULL;
@@ -372,7 +372,7 @@ std::unique_ptr<EventQueue::eEvent> AutonLUA::handleEvent(std::unique_ptr<EventQ
     return NULL;
 }
 
-void AutonLUA::movement()
+void AgentLuaInterface::movement()
 {
     lua_getglobal(L, "GridMove");
     gridmove = lua_toboolean(L,-1);
@@ -460,7 +460,7 @@ void AutonLUA::movement()
  * @param zvalue, the address of the zvalue is to be written at.
  * @param duration, the address the events duration is to be written at.
  */
-void AutonLUA::processFunction(EventQueue::dataEvent *devent, double time, double x, double y, double &zvalue, double &duration)
+void AgentLuaInterface::processFunction(EventQueue::dataEvent *devent, double time, double x, double y, double &zvalue, double &duration)
 {
     if(removed) return;
 
@@ -500,14 +500,14 @@ void AutonLUA::processFunction(EventQueue::dataEvent *devent, double time, doubl
  *
  ********************************************************/
 
-void AutonLUA::setRemoved()
+void AgentLuaInterface::setRemoved()
 {
     Output::Inst()->kprintf("removing agent.#.%i",ID);
     removed = true;
     GridMovement::removePos(ID);
 }
 
-void AutonLUA::simDone()
+void AgentLuaInterface::simDone()
 {
     if(nofile)
         return;
@@ -526,7 +526,7 @@ void AutonLUA::simDone()
     }
 }
 
-void AutonLUA::getSyncData()
+void AgentLuaInterface::getSyncData()
 {
     if(removed) return;
     try
@@ -574,7 +574,7 @@ void AutonLUA::getSyncData()
  * Can be disabled.
  * @return 0.
  */
-int AutonLUA::l_debug(lua_State *L)
+int AgentLuaInterface::l_debug(lua_State *L)
 {
     std::string string = lua_tostring(L, -1);
     string.resize(4096);
@@ -583,12 +583,12 @@ int AutonLUA::l_debug(lua_State *L)
 }
 
 /**
- * @brief AutonLUA::l_print writes html string to output.
+ * @brief AgentLUA::l_print writes html string to output.
  * Cannot be disabled.
  * @return
  */
 
-int AutonLUA::l_print(lua_State *L)
+int AgentLuaInterface::l_print(lua_State *L)
 {
     std::string string = lua_tostring(L, -1);
     string.resize(4096);
@@ -601,7 +601,7 @@ int AutonLUA::l_print(lua_State *L)
  * @param L LUA state pointer
  * @return 1, the ID
  */
-int AutonLUA::l_generateEventID(lua_State *L)
+int AgentLuaInterface::l_generateEventID(lua_State *L)
 {
     unsigned long long id = ID::generateEventID();
     lua_pushnumber(L,id);
@@ -617,7 +617,7 @@ int AutonLUA::l_generateEventID(lua_State *L)
  * @param L Lua state pointer on which the timestep should be pushed.
  * @return number of items pushed to the stack, ie number of results.
  */
-int AutonLUA::l_speedOfSound(lua_State *L)
+int AgentLuaInterface::l_speedOfSound(lua_State *L)
 {
     //push the arguments:
     double posX = lua_tonumber(L,-1);
@@ -640,7 +640,7 @@ int AutonLUA::l_speedOfSound(lua_State *L)
  * distance between two points.
  * @see l_speedOfSound
  */
-int AutonLUA::l_distance(lua_State *L)
+int AgentLuaInterface::l_distance(lua_State *L)
 {
     //push the arguments:
     double posX = lua_tonumber(L,-1);
@@ -658,35 +658,35 @@ int AutonLUA::l_distance(lua_State *L)
  * Get the current timestep.
  * @see l_speedOfSound
  */
-int AutonLUA::l_currentTime(lua_State *L)
+int AgentLuaInterface::l_currentTime(lua_State *L)
 {
     unsigned long long t = Phys::getCTime();
     lua_pushnumber(L,t);
     return 1;
 }
 
-int AutonLUA::l_currentTimeS(lua_State *L)
+int AgentLuaInterface::l_currentTimeS(lua_State *L)
 {
     double time = (double)Phys::getCTime()*Phys::getTimeRes();
     lua_pushnumber(L,time);
     return 1;
 }
 
-int AutonLUA::l_getMacroFactor(lua_State *L)
+int AgentLuaInterface::l_getMacroFactor(lua_State *L)
 {
     int mf = Phys::getMacroFactor();
     lua_pushnumber(L,mf);
     return 1;
 }
 
-int AutonLUA::l_getTimeResolution(lua_State *L)
+int AgentLuaInterface::l_getTimeResolution(lua_State *L)
 {
     double tr = Phys::getTimeRes();
     lua_pushnumber(L,tr);
     return 1;
 }
 
-int AutonLUA::l_getMersenneFloat(lua_State *L)
+int AgentLuaInterface::l_getMersenneFloat(lua_State *L)
 {
     double low = lua_tonumber(L,-2);
     double high = lua_tonumber(L, -1);
@@ -698,7 +698,7 @@ int AutonLUA::l_getMersenneFloat(lua_State *L)
     return 1;
 }
 
-int AutonLUA::l_getMersenneInteger(lua_State *L)
+int AgentLuaInterface::l_getMersenneInteger(lua_State *L)
 {
     int64_t low = lua_tonumber(L,-2);
     int64_t high = lua_tonumber(L, -1);
@@ -718,7 +718,7 @@ int AutonLUA::l_getMersenneInteger(lua_State *L)
 }
 
 //Map and position.
-int AutonLUA::l_getEnvironmentSize(lua_State *L)
+int AgentLuaInterface::l_getEnvironmentSize(lua_State *L)
 {
     lua_pushnumber(L,Phys::getEnvX());
     lua_pushnumber(L,Phys::getEnvY());
@@ -727,7 +727,7 @@ int AutonLUA::l_getEnvironmentSize(lua_State *L)
 }
 
 
-int AutonLUA::l_modifyMap(lua_State *L)
+int AgentLuaInterface::l_modifyMap(lua_State *L)
 {
     double x = lua_tonumber(L, -5);
     double y = lua_tonumber(L, -4);
@@ -747,7 +747,7 @@ int AutonLUA::l_modifyMap(lua_State *L)
     return 1;
 }
 
-int AutonLUA::l_checkMap(lua_State *L)
+int AgentLuaInterface::l_checkMap(lua_State *L)
 {
     double x = lua_tonumber(L, -2);
     double y = lua_tonumber(L, -1);
@@ -763,7 +763,7 @@ int AutonLUA::l_checkMap(lua_State *L)
     return 3;
 }
 
-int AutonLUA::l_updatePosition(lua_State *L)
+int AgentLuaInterface::l_updatePosition(lua_State *L)
 {
     int oldX = lua_tonumber(L, -5)*GridMovement::getScale()+.5;
     int oldY = lua_tonumber(L, -4)*GridMovement::getScale()+.5;
@@ -777,7 +777,7 @@ int AutonLUA::l_updatePosition(lua_State *L)
     return 0;
 }
 
-int AutonLUA::l_addPosition(lua_State *L)
+int AgentLuaInterface::l_addPosition(lua_State *L)
 {
 
     int x = lua_tonumber(L, -3);
@@ -788,7 +788,7 @@ int AutonLUA::l_addPosition(lua_State *L)
     return 0;
 }
 
-int AutonLUA::l_checkCollision(lua_State *L)
+int AgentLuaInterface::l_checkCollision(lua_State *L)
 {
     int posX = lua_tonumber(L, -2);
     int posY = lua_tonumber(L, -1);
@@ -801,7 +801,7 @@ int AutonLUA::l_checkCollision(lua_State *L)
 }
 
 
-int AutonLUA::l_checkPosition(lua_State *L)
+int AgentLuaInterface::l_checkPosition(lua_State *L)
 {
     int posX = 0;
     int posY = 0;
@@ -824,7 +824,7 @@ int AutonLUA::l_checkPosition(lua_State *L)
     return 1;
 }
 
-int AutonLUA::l_updatePositionIfFree(lua_State *L)
+int AgentLuaInterface::l_updatePositionIfFree(lua_State *L)
 {
     int oldX = int(lua_tonumber(L, -5)*GridMovement::getScale());
     int oldY = int(lua_tonumber(L, -4)*GridMovement::getScale());
@@ -845,7 +845,7 @@ int AutonLUA::l_updatePositionIfFree(lua_State *L)
 }
 
 
-int AutonLUA::l_checkCollisionRadial(lua_State *L)
+int AgentLuaInterface::l_checkCollisionRadial(lua_State *L)
 {
     int radius = lua_tonumber(L, -1);
     int posX = lua_tonumber(L, -3) - radius;
@@ -880,7 +880,7 @@ int AutonLUA::l_checkCollisionRadial(lua_State *L)
     return 1;
 }
 
-int AutonLUA::l_getMaskRadial(lua_State *L)
+int AgentLuaInterface::l_getMaskRadial(lua_State *L)
 {
     int radius = lua_tonumber(L, -3);
     int posX = lua_tonumber(L, -2) - radius;
@@ -931,7 +931,7 @@ int AutonLUA::l_getMaskRadial(lua_State *L)
     return 1;
 }
 
-int AutonLUA::l_radialCollisionScan(lua_State *L)
+int AgentLuaInterface::l_radialCollisionScan(lua_State *L)
 {
     int radius = lua_tonumber(L, -3);
     int posX = lua_tonumber(L, -2) - radius;
@@ -993,7 +993,7 @@ int AutonLUA::l_radialCollisionScan(lua_State *L)
     return 1;
 }
 
-int AutonLUA::l_gridMove(lua_State *L)
+int AgentLuaInterface::l_gridMove(lua_State *L)
 {
     int oldX = lua_tonumber(L, -4);
     int oldY = lua_tonumber(L, -3);
@@ -1002,13 +1002,13 @@ int AutonLUA::l_gridMove(lua_State *L)
     return 0;
 }
 
-int AutonLUA::l_getGridScale(lua_State *L)
+int AgentLuaInterface::l_getGridScale(lua_State *L)
 {
     lua_pushnumber(L, GridMovement::getScale());
     return 1;
 }
 
-int AutonLUA::l_initializeGrid(lua_State *L)
+int AgentLuaInterface::l_initializeGrid(lua_State *L)
 {
     GridMovement::initGrid(lua_tonumber(L, -1));
 
@@ -1017,7 +1017,7 @@ int AutonLUA::l_initializeGrid(lua_State *L)
 
 //Shared values.
 
-int AutonLUA::l_addSharedNumber(lua_State *L)
+int AgentLuaInterface::l_addSharedNumber(lua_State *L)
 {
     std::string key = lua_tostring(L, -2);
     double value = lua_tonumber(L, -1);
@@ -1027,7 +1027,7 @@ int AutonLUA::l_addSharedNumber(lua_State *L)
     return 0;
 }
 
-int AutonLUA::l_getSharedNumber(lua_State *L)
+int AgentLuaInterface::l_getSharedNumber(lua_State *L)
 {
     std::string key = lua_tostring(L, -1);
     //Output::Inst()->kprintf(key.c_str());
@@ -1045,7 +1045,7 @@ int AutonLUA::l_getSharedNumber(lua_State *L)
 
 }
 
-int AutonLUA::l_addSharedString(lua_State *L)
+int AgentLuaInterface::l_addSharedString(lua_State *L)
 {
     std::string key = lua_tostring(L, -2);
     std::string value = lua_tostring(L, -1);
@@ -1055,7 +1055,7 @@ int AutonLUA::l_addSharedString(lua_State *L)
     return 0;
 }
 
-int AutonLUA::l_getSharedString(lua_State *L)
+int AgentLuaInterface::l_getSharedString(lua_State *L)
 {
     std::string key = lua_tostring(L, -1);
     std::string value = Shared::getString(key);
@@ -1069,7 +1069,7 @@ int AutonLUA::l_getSharedString(lua_State *L)
 
 //Simulation core.
 
-int AutonLUA::l_getAgentPath(lua_State *L)
+int AgentLuaInterface::l_getAgentPath(lua_State *L)
 {
     lua_pushstring(L,Output::AgentPath.c_str());
     lua_pushstring(L,Output::AgentFile.c_str());
@@ -1077,7 +1077,7 @@ int AutonLUA::l_getAgentPath(lua_State *L)
     return 2;
 }
 
-int AutonLUA::l_addAuton(lua_State *L)
+int AgentLuaInterface::l_addAgent(lua_State *L)
 {
     double posX = lua_tonumber(L, -5);
     double posY = lua_tonumber(L, -4);
@@ -1085,24 +1085,24 @@ int AutonLUA::l_addAuton(lua_State *L)
     std::string path = lua_tostring(L, -2);
     std::string filename = lua_tostring(L, -1);
 
-    int id = Doctor::addLuaAuton(posX, posY, posZ, path, filename);
+    int id = Interfacer::addLuaAgent(posX, posY, posZ, path, filename);
 
     lua_pushinteger(L, id);
 
     return 1;
 }
 
-int AutonLUA::l_removeAuton(lua_State *L)
+int AgentLuaInterface::l_removeAgent(lua_State *L)
 {
 
     int id = lua_tonumber(L, -1);
-    bool removed = Doctor::removeAuton(id);
+    bool removed = Interfacer::removeAgent(id);
     lua_pushboolean(L, removed);
 
     return 1;
 }
 
-int AutonLUA::l_changeAgentColor(lua_State *L)
+int AgentLuaInterface::l_changeAgentColor(lua_State *L)
 {
     int id = lua_tointeger(L, -5);
     int r = lua_tointeger(L, -4);
@@ -1117,7 +1117,7 @@ int AutonLUA::l_changeAgentColor(lua_State *L)
         success = false;
     } else
     {
-        Output::Inst()->changeGraphicAutonColor(id, r, g, b, alpha);
+        Output::Inst()->changeGraphicAgentColor(id, r, g, b, alpha);
     }
 
     lua_pushboolean(L, success);
@@ -1126,7 +1126,7 @@ int AutonLUA::l_changeAgentColor(lua_State *L)
     return 1;
 }
 
-int AutonLUA::l_emitEvent(lua_State *L)
+int AgentLuaInterface::l_emitEvent(lua_State *L)
 {
     std::unique_ptr<EventQueue::eEvent>
             sendEvent(new EventQueue::eEvent());
@@ -1142,24 +1142,24 @@ int AutonLUA::l_emitEvent(lua_State *L)
     sendEvent->targetGroup = lua_tonumber(L, -2);
     sendEvent->luatable = lua_tostring(L, -1);
 
-    Doctor::submitEEvent(std::move(sendEvent));
+    Interfacer::submitEEvent(std::move(sendEvent));
     return 0;
 }
 
-int AutonLUA::l_stopSimulation(lua_State *L)
+int AgentLuaInterface::l_stopSimulation(lua_State *L)
 {
     Output::RunSimulation.store(false);
     return 0;
 }
 
-int AutonLUA::l_addGroup(lua_State *L)
+int AgentLuaInterface::l_addGroup(lua_State *L)
 {
     int id = lua_tonumber(L, -1);
     int group = lua_tonumber(L, -2);
 
     bool success = false;
 
-    auto autonPtr = Doctor::getAutonPtr(id);
+    auto autonPtr = Interfacer::getAgentPtr(id);
     if (autonPtr != NULL)
     {
         autonPtr->addGroup(group);
@@ -1171,13 +1171,13 @@ int AutonLUA::l_addGroup(lua_State *L)
     return 0;
 }
 
-int AutonLUA::l_removeGroup(lua_State *L)
+int AgentLuaInterface::l_removeGroup(lua_State *L)
 {
     int id = lua_tonumber(L, -2);
     int group = lua_tonumber(L, -1);
     bool removed = false;
 
-    auto autonPtr = Doctor::getAutonPtr(id);
+    auto autonPtr = Interfacer::getAgentPtr(id);
     if (autonPtr != NULL)
     {
         removed = autonPtr->removeGroup(group);
@@ -1187,12 +1187,12 @@ int AutonLUA::l_removeGroup(lua_State *L)
     return 1;
 }
 
-int AutonLUA::l_setMacroFactorMultipler(lua_State *L)
+int AgentLuaInterface::l_setMacroFactorMultipler(lua_State *L)
 {
     int id = lua_tonumber(L, -2);
     int macroFactorMultiple = lua_tonumber(L, -1);
 
-    auto autonPtr = Doctor::getAutonPtr(id);
+    auto autonPtr = Interfacer::getAgentPtr(id);
 
     if(autonPtr != NULL)
         autonPtr->setMacroFactorMultipler(macroFactorMultiple);
@@ -1203,7 +1203,7 @@ int AutonLUA::l_setMacroFactorMultipler(lua_State *L)
 
 
 //Emergency brake -- do not pull --!
-int AutonLUA::luapanic(lua_State *L)
+int AgentLuaInterface::luapanic(lua_State *L)
 {
     std::string str = lua_tostring(L, 1);
     Output::Inst()->kprintf("<b>PANIC,%s</b></>", str.c_str());

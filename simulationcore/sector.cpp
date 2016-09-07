@@ -25,31 +25,31 @@
 #include <stdlib.h>
 #include <time.h>
 #include <utility>
-#include <physics/phys.h>
+#include <api/phys.h>
 
 #include "lua.hpp"
 #include "lauxlib.h"
 #include "lualib.h"
 
-#include "nestene.h"
-#include "doctor.h"
+#include "sector.h"
+#include "interfacer.h"
 
 #include "ID.h"
-#include "master.h"
+#include "supervisor.h"
 #include "output.h"
-#include "../../physics/phys.h"
+#include "../api/phys.h"
 
-Nestene::Nestene(double posX, double posY, double width, double height, Master* master, int id)
+Sector::Sector(double posX, double posY, double width, double height, Supervisor* master, int id)
     :initAmount(0),master(master), posX(posX), posY(posY),width(width),height(height),id(id)
 {
 
 }
 
-Nestene::~Nestene()
+Sector::~Sector()
 {
 }
 
-void Nestene::populate(int LUASize ,std::string filename)
+void Sector::populate(int LUASize ,std::string filename)
 {
 	for(int i=0; i<LUASize; i++)
 	{
@@ -58,12 +58,12 @@ void Nestene::populate(int LUASize ,std::string filename)
         double xtmp = Phys::getMersenneFloat(0,width);
         double ytmp = Phys::getMersenneFloat(0,height);
 
-		std::shared_ptr<AutonLUA> luaPtr =
-				std::make_shared<AutonLUA>(ID::generateAutonID(), xtmp, ytmp,
+        std::shared_ptr<AgentLuaInterface> luaPtr =
+                std::make_shared<AgentLuaInterface>(ID::generateAgentID(), xtmp, ytmp,
 										   1, this, filename);
 
-		luaAutons.insert(std::make_pair(luaPtr->getID(), luaPtr));
-		Doctor::addLuaAutonPtr(luaPtr);
+        luaAgents.insert(std::make_pair(luaPtr->getID(), luaPtr));
+        Interfacer::addLuaAgentPtr(luaPtr);
 
 		luaPtr->InitializeAgent();
 	}
@@ -74,9 +74,9 @@ void Nestene::populate(int LUASize ,std::string filename)
  * Retrieves the information from all actors, writes the information to the lists given.
  * @param agentinfo address of array that holds the info needed for graphic rendering.
  */
-void Nestene::retrievePopPos(std::list<agentInfo> &infolist){
+void Sector::retrievePopPos(std::list<agentInfo> &infolist){
 
-	for(auto it = luaAutons.begin(); it !=luaAutons.end(); it++)
+    for(auto it = luaAgents.begin(); it !=luaAgents.end(); it++)
 	{
 
 		if(master->removedIDs.find(it->second->getID()) ==
@@ -98,10 +98,10 @@ void Nestene::retrievePopPos(std::list<agentInfo> &infolist){
  * an event is initated it will be added the masters eventqueue.
  * @param macroResolution the resolution of the macrostep (microStepRes * macroFactor)
  */
-void Nestene::takeStepPhase(unsigned long long tmu)
+void Sector::takeStepPhase(unsigned long long tmu)
 {
 
-	for(auto itr = luaAutons.begin(); itr !=luaAutons.end(); itr++)
+    for(auto itr = luaAgents.begin(); itr !=luaAgents.end(); itr++)
 	{
 		int macroFactorMultipler = itr->second->getMacroFactorMultipler();
 
@@ -125,22 +125,22 @@ void Nestene::takeStepPhase(unsigned long long tmu)
 		for(auto itRemove= removalIDs.begin(); itRemove!=
 			removalIDs.end(); ++itRemove)
 		{
-			auto itrLua = luaAutons.find(*itRemove);
-			if(itrLua != luaAutons.end())
+            auto itrLua = luaAgents.find(*itRemove);
+            if(itrLua != luaAgents.end())
 			{
-				luaAutons.erase(itrLua);
+                luaAgents.erase(itrLua);
 			}
 		}
 		removalIDs.clear();
 	}
 
-    for(auto auton : newAutons)
+    for(auto auton : newAgents)
     {
-        luaAutons.insert(std::make_pair(auton->getID(),auton));
+        luaAgents.insert(std::make_pair(auton->getID(),auton));
         auton->InitializeAgent();
 
     }
-    newAutons.clear();
+    newAgents.clear();
 
 }
 
@@ -149,9 +149,9 @@ void Nestene::takeStepPhase(unsigned long long tmu)
  * Recieves an eventlist from the Master to distribute among local autons
  * @param event EventQueue ptr holding external events.
  */
-void Nestene::distroPhase(const EventQueue::eEvent* event)
+void Sector::distroPhase(const EventQueue::eEvent* event)
 {
-	for(auto itLUAs = luaAutons.begin(); itLUAs != luaAutons.end(); ++itLUAs)
+    for(auto itLUAs = luaAgents.begin(); itLUAs != luaAgents.end(); ++itLUAs)
 	{
 		if(event->originID != itLUAs->second->getID() &&
 				(event->targetGroup == 0 ||
@@ -169,38 +169,38 @@ void Nestene::distroPhase(const EventQueue::eEvent* event)
 	}
 }
 
-void Nestene::simDone()
+void Sector::simDone()
 {
-	for(auto itlua = luaAutons.begin(); itlua !=luaAutons.end(); itlua++)
+    for(auto itlua = luaAgents.begin(); itlua !=luaAgents.end(); itlua++)
 	{
 		itlua->second->simDone();
 	}
 }
 
 //perform an event for an auton in question:
-void Nestene::performEvent(std::unique_ptr<EventQueue::eEvent> event)
+void Sector::performEvent(std::unique_ptr<EventQueue::eEvent> event)
 {
 	master->receiveEEventPtr(std::move(event));
 }
 
 
-int Nestene::addAuton(double x, double y, double z,
+int Sector::addAgent(double x, double y, double z,
 					  std::string filename, std::string type="Lua")
 {
-	int id = ID::generateAutonID();
+    int id = ID::generateAgentID();
 
 	if(type.compare("Lua") == 0)
 	{
-		std::shared_ptr<AutonLUA> luaPtr =
-                std::make_shared<AutonLUA>(id, x, y, 1, this, filename);
+        std::shared_ptr<AgentLuaInterface> luaPtr =
+                std::make_shared<AgentLuaInterface>(id, x, y, 1, this, filename);
 
         if(Output::SimRunning)
         {
-            newAutons.push_back(luaPtr);
+            newAgents.push_back(luaPtr);
         }
         else
         {
-            luaAutons.insert(std::make_pair(luaPtr->getID(),luaPtr));
+            luaAgents.insert(std::make_pair(luaPtr->getID(),luaPtr));
             luaPtr->InitializeAgent();
         }
 
@@ -209,10 +209,10 @@ int Nestene::addAuton(double x, double y, double z,
 	return id;
 }
 
-bool Nestene::removeAuton(int arg_id)
+bool Sector::removeAgent(int arg_id)
 {
-	auto luaItr = luaAutons.find(arg_id);
-	if(luaItr != luaAutons.end())
+    auto luaItr = luaAgents.find(arg_id);
+    if(luaItr != luaAgents.end())
 	{
 		luaItr->second->setRemoved();
 		removalIDs.push_back(arg_id);

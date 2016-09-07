@@ -23,9 +23,9 @@
 #define RUNNER_H
 
 #include <QObject>
-#include "agentengine/agentdomain.h"
+#include "simulationcore/flowcontrol.h"
 
-class AgentDomain;
+class FlowControl;
 class Runner : public QObject
 {
     Q_OBJECT
@@ -38,7 +38,7 @@ signals:
 
 public slots:
 
-	void doWork(AgentDomain *agentDomain, unsigned long long runTime);
+	void doWork(FlowControl *agentDomain, unsigned long long runTime);
 
 private:
 

@@ -34,7 +34,7 @@
 #include <tuple>
 #include <mutex>
 
-class Auton;
+class Agent;
 class EventQueue
 {
 	public:
@@ -44,7 +44,7 @@ class EventQueue
 		struct simInfo{
 			char luaFileName[1024]; /*!< Filename of the lua auton thats active in this simulation*/
 			unsigned long long eventAmount; /*!< Number of external events active in the simulation*/
-			int numberOfAutons; /*!< Total number of autons*/
+			int numberOfAgents; /*!< Total number of autons*/
 			double timeResolution; /*!< Resolution of the simulation number of microsteps possible pr second*/
 			int macroFactor; /*!< Macro Factor */
 			unsigned long long tmuAmount; /*!< number of total timeunist of  Timeresolution performed  */
@@ -75,7 +75,7 @@ class EventQueue
 		//define the internal Event:
 		struct iEvent
 		{
-            Auton *origin;
+            Agent *origin;
 			const eEvent *event;
 			unsigned long long activationTime;
 			unsigned long long id;
@@ -136,7 +136,7 @@ class EventQueue
 		unsigned long long getESize();
 		unsigned long long getISize();
 
-		void addAutonInfo(int id, std::string filename);
+		void addAgentInfo(int id, std::string filename);
 
 	private:
 

@@ -27,12 +27,12 @@ class ID
 {
 	public :
 
-		static int generateAutonID(){
+		static int generateAgentID(){
 			ID::aID++;
 			return ID::aID;
 		}
 
-		static int generateNesteneID(){
+		static int generatesectorID(){
 			ID::nID++;
 			return ID::nID;
 		}

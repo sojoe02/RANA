@@ -20,23 +20,23 @@
 //
 //--end_license--
 
-#ifndef AUTON_H
-#define AUTON_H
+#ifndef AGENT_H
+#define AGENT_H
 
 #include <vector>
 #include <memory>
 #include <unordered_set>
 
-#include "eventqueue.h"
+#include "../eventqueue.h"
 
 class EventQueue;
-class Nestene;
-class Auton
+class Sector;
+class Agent
 {
 public:
-    Auton(int ID, double posX, double posY, double posZ, Nestene *nestene);
+    Agent(int ID, double posX, double posY, double posZ, Sector *sector);
 
-    virtual ~Auton(){}
+    virtual ~Agent(){}
 
     virtual std::unique_ptr<EventQueue::iEvent> processEvent(EventQueue::eEvent* event);
     virtual std::unique_ptr<EventQueue::eEvent> handleEvent(std::unique_ptr<EventQueue::iEvent> event);
@@ -55,8 +55,8 @@ public:
 
     void simDone(){}
 
-    bool operator==(Auton &other) const;
-    bool operator!=(Auton &other) const;
+    bool operator==(Agent &other) const;
+    bool operator!=(Agent &other) const;
 	bool checkGroup(int group);
 
 	int getMacroFactorMultipler();
@@ -72,9 +72,9 @@ protected:
     std::string desc;
     double posX, posY, posZ;
     std::vector<double> statusVector;
-    Nestene* nestene;
+    Sector* sector;
 
-    friend class Nestene;
+    friend class Sector;
 };
 
-#endif // AUTON_H
+#endif // AGENT_H

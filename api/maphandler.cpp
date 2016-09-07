@@ -22,7 +22,7 @@
 #include <math.h>
 #include <climits>
 #include <output.h>
-#include <physics/phys.h>
+#include <api/phys.h>
 
 #include "maphandler.h"
 

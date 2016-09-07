@@ -74,9 +74,9 @@ public:
 	void setEventSceneRect(int x, int y);
 	bool eventFilter(QObject *watched, QEvent *event);
 
-	void addGraphicAuton(int Id, int posX, int posY);
-	void removeGraphicAuton(int id);
-	void changeGraphicAutonColor(int id, int r, int g, int b, int alpha);
+	void addGraphicAgent(int Id, int posX, int posY);
+	void removeGraphicAgent(int id);
+	void changeGraphicAgentColor(int id, int r, int g, int b, int alpha);
     void enableRunButton(bool enabled);
 
 	//dialogs:
@@ -105,9 +105,9 @@ private slots:
 
     void on_enableRunButton(bool enabled);
 
-	void on_addGraphicAuton(int id, int posX, int posY);
-    void on_changeGraphicAutonColor(int id, int r, int g, int b, int alpha);
-    void on_removeGraphicAuton(int Id);
+	void on_addGraphicAgent(int id, int posX, int posY);
+    void on_changeGraphicAgentColor(int id, int r, int g, int b, int alpha);
+    void on_removeGraphicAgent(int Id);
 
     void on_initializeTimerTimeout();
     void on_runTimerTimeout();
@@ -154,9 +154,9 @@ signals:
     void writeRegularSignal(QString something);
     void enableRunButtonSignal(bool);
 
-	void addGraphicAutonSignal(int id, int posX, int posY);
-    void changeGraphicAutonColorSignal(int id, int r, int b, int g, int alpha);
-	void removeGraphicAutonSignal(int Id);
+	void addGraphicAgentSignal(int id, int posX, int posY);
+    void changeGraphicAgentColorSignal(int id, int r, int b, int g, int alpha);
+	void removeGraphicAgentSignal(int Id);
 
 	//postprocessing:
     void writePPSignal(QString something);

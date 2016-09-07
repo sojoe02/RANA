@@ -66,9 +66,9 @@ public:
 
 	void updateZvalue(QString string);
 
-	void removeGraphicAuton(int Id);
-	void addGraphicAuton(int Id, double posX, double posY);
-	void changeGraphicAutonColor(int id, int r, int g, int b, int alpha);
+	void removeGraphicAgent(int Id);
+	void addGraphicAgent(int Id, double posX, double posY);
+	void changeGraphicAgentColor(int id, int r, int g, int b, int alpha);
     void enableRunBotton(bool enabled);
 
 private:

@@ -30,26 +30,26 @@
 #include <algorithm>
 #include <future>
 
-#include "master.h"
+#include "supervisor.h"
 
 #include "utility.h"
-#include "../../physics/phys.h"
+#include "../api/phys.h"
 
 #include "output.h"
 
 #define TASK_STEP 	300
 #define TASK_STOP	400
 
-std::condition_variable Master::CvStepStart;
-std::condition_variable Master::CvStepDone;
-std::mutex Master::mutexStep;
-std::mutex Master::mutexStepDone;
-std::atomic_int Master::nestCounter;
-std::atomic_bool Master::stopThreads;
-int Master::task;
+std::condition_variable Supervisor::CvStepStart;
+std::condition_variable Supervisor::CvStepDone;
+std::mutex Supervisor::mutexStep;
+std::mutex Supervisor::mutexStepDone;
+std::atomic_int Supervisor::nestCounter;
+std::atomic_bool Supervisor::stopThreads;
+int Supervisor::task;
 
-Master::Master()
-    :nesteneIndex(0), nesteneAmount(0) ,eEventInitAmount(0), responseAmount(0),
+Supervisor::Supervisor()
+    :sectorIndex(0), sectorAmount(0) ,eEventInitAmount(0), responseAmount(0),
       externalDistroAmount(0), tmu(0)
 {
     //Output::Inst()->kprintf("Initiating master\n");
@@ -57,11 +57,11 @@ Master::Master()
     srand(time(NULL));
 }
 
-Master::~Master()
+Supervisor::~Supervisor()
 {
     delete eventQueue;
 
-    for(auto n : nestenes)
+    for(auto n : sectors)
     {
         n->taskPromise.set_value(TASK_STOP);
     }
@@ -70,7 +70,7 @@ Master::~Master()
         t->join();
     }
 
-    for(auto n : nestenes)
+    for(auto n : sectors)
     {
         delete n;
     }
@@ -82,46 +82,46 @@ Master::~Master()
 
 /**
  * Generates the map
- * Places all Nestenes at positions to fit the width and height of the map,
+ * Places all sectors at positions to fit the width and height of the map,
  * set the time resolution and macroFactor of the map
  * @param width maps max X coordinate
  * @param height maps max Y coordinate
- * @param threads number of nestene, i.e threads.
+ * @param threads number of sector, i.e threads.
  * @param time resolution seconds between microsteps.
  * @param macroResolution factor to multiply with the time resolution for the macrostep intervals.
  */
 
-void Master::generateMap(double width, double height, int nesteneAmount, double timeResolution, double macroResolution)
+void Supervisor::generateMap(double width, double height, int sectorAmount, double timeResolution, double macroResolution)
 {
     this->timeResolution = timeResolution;
     this->macroResolution = macroResolution;
-    this->nesteneAmount = nesteneAmount;
+    this->sectorAmount = sectorAmount;
 
     areaX = width;
     areaY = height;
 
     nestCounter.store(0);
 
-    if(!nestenes.empty())
+    if(!sectors.empty())
     {
-        nestenes.clear();
+        sectors.clear();
     }
 
     stopThreads.store(false);
 
-    for(int i=0; i<nesteneAmount; i++)
+    for(int i=0; i<sectorAmount; i++)
     {
         std::string id;
         std::stringstream ss;
         ss << i;
         id.append(ss.str());
 
-        Nestene *nest = new Nestene(0,0,width,height,this,i);
+        Sector *nest = new Sector(0,0,width,height,this,i);
 
-        std::thread *t = new std::thread(Master::runStepPhase, nest);
+        std::thread *t = new std::thread(Supervisor::runStepPhase, nest);
         threads.push_back(t);
 
-        nestenes.push_back(nest);
+        sectors.push_back(nest);
     }
 }
 
@@ -136,12 +136,12 @@ void Master::generateMap(double width, double height, int nesteneAmount, double 
  * @param axlist x positions of all Lua autons
  */
 
-std::list<agentInfo> Master::retrievePopPos()
+std::list<agentInfo> Supervisor::retrievePopPos()
 {
 
     std::list<agentInfo> agentinfo;
     //Output::Inst()->kprintf("testing retrieve of master");
-    for(auto n : nestenes)
+    for(auto n : sectors)
     {
         n->retrievePopPos(agentinfo);
     }
@@ -151,21 +151,21 @@ std::list<agentInfo> Master::retrievePopPos()
 
 /**
  * Populate the system.
- * Determines the number of Autons pr Nestene, assigns them to their respective Nestene and
- * orders the Nestene to populate itself with dem, give them positions within themselves.
+ * Determines the number of Agents pr sector, assigns them to their respective sector and
+ * orders the sector to populate itself with dem, give them positions within themselves.
  * @param listenerSize number of listeners total.
  * @param screamerSize number of screamers total.
  * @param LUASize number of LUAs total.
  * @param filename the lua file of the LUA autons definition.
  */
 
-void Master::populateSystem(int listenerSize,
+void Supervisor::populateSystem(int listenerSize,
                             int screamerSize, int LUASize, std::string filename)
 {
 
     std::vector<int> LUAVector;
 
-    for(uint i = 0; i < nestenes.size(); i++)
+    for(uint i = 0; i < sectors.size(); i++)
     {
         LUAVector.push_back(0);
     }
@@ -176,16 +176,16 @@ void Master::populateSystem(int listenerSize,
     uint j = 0;
     for(int i = 0; i<LUASize; i++, j++)
     {
-        if(i % nestenes.size() == 0) j = 0;
+        if(i % sectors.size() == 0) j = 0;
         LUAVector.at(j)++;
     }
     //Output::Inst()->kdebug("working here! %i, %i", LUAVector.size(), LUAVector.at(0));
     j = 0;
     for(auto itr = LUAVector.begin(); itr != LUAVector.end(); ++itr, j++)
     {
-        Nestene *nestene = nestenes.at(j);
+        Sector *sector = sectors.at(j);
         //Output::Inst()->kdebug("Working not here %i", *itr);
-        nestene->populate(*itr, filename);
+        sector->populate(*itr, filename);
     }
 
 }
@@ -195,7 +195,7 @@ void Master::populateSystem(int listenerSize,
  * 														*
  ********************************************************/
 
-void Master::receiveEEventPtr(std::unique_ptr<EventQueue::eEvent> eEvent)
+void Supervisor::receiveEEventPtr(std::unique_ptr<EventQueue::eEvent> eEvent)
 {
     //increase the initiated events counter:
     //eEventInitAmount++;
@@ -203,7 +203,7 @@ void Master::receiveEEventPtr(std::unique_ptr<EventQueue::eEvent> eEvent)
     eventQueue->insertEEvent(std::move(eEvent));
 }
 
-void Master::receiveIEventPtr(std::unique_ptr<EventQueue::iEvent> ievent)
+void Supervisor::receiveIEventPtr(std::unique_ptr<EventQueue::iEvent> ievent)
 {
     eventQueue->insertIEvent(std::move(ievent));
 }
@@ -213,11 +213,11 @@ void Master::receiveIEventPtr(std::unique_ptr<EventQueue::iEvent> ievent)
  * Takes a microstep.
  * During a microstep the autons can take act on internal events
  * they will also receive external events.
- * @see Nestene::distroPhase()
- * @see Auton::actOnEvent()
- * @see Nestene::endPhase()
+ * @see sector::distroPhase()
+ * @see Agent::actOnEvent()
+ * @see sector::endPhase()
  */
-void Master::microStep(unsigned long long tmu)
+void Supervisor::microStep(unsigned long long tmu)
 {
 
     //Output::Inst()->kprintf("Taking microstep at %d \n", tmu);
@@ -230,7 +230,7 @@ void Master::microStep(unsigned long long tmu)
             const EventQueue::eEvent* eEventPtr =
                     eventQueue->addUsedEEvent(std::move(*eListItr));
 
-            for(auto n : nestenes)
+            for(auto n : sectors)
             {
                n->distroPhase(eEventPtr);
             }
@@ -248,7 +248,7 @@ void Master::microStep(unsigned long long tmu)
             {
                 std::unique_ptr<EventQueue::iEvent> iEventPtr(std::move(*iListItr));
 
-                AutonLUA *luaAgent = (AutonLUA*)iEventPtr->origin;
+                AgentLuaInterface *luaAgent = (AgentLuaInterface*)iEventPtr->origin;
                 eventQueue->decrementEeventCounter(iEventPtr->event->id);
 
                 std::unique_ptr<EventQueue::eEvent> eEventPtr =
@@ -269,7 +269,7 @@ void Master::microStep(unsigned long long tmu)
  * Returns next viable tmu
  * @see EventQueue::getNextTmu()
  */
-unsigned long long Master::getNextMicroTmu()
+unsigned long long Supervisor::getNextMicroTmu()
 {
     //eventQueue->printATmus();
     return eventQueue->getNextTmu();
@@ -278,17 +278,17 @@ unsigned long long Master::getNextMicroTmu()
 /**
  * Performs a macrostep
  * The macrostep, queries all autons on whether or not they will initiate and event.
- * @see Nestene::initPhase();
+ * @see sector::initPhase();
  */
-void Master::macroStep(unsigned long long tmu)
+void Supervisor::macroStep(unsigned long long tmu)
 {
 
-    for(auto n : nestenes)
+    for(auto n : sectors)
     {
         n->taskPromise.set_value(TASK_STEP);
     }
 
-    for(auto n : nestenes)
+    for(auto n : sectors)
     {
         std::future<bool> stepDoneFuture = n->taskDonePromise.get_future();
         stepDoneFuture.wait();
@@ -300,18 +300,18 @@ void Master::macroStep(unsigned long long tmu)
 /**
  * @brief Master::runStepPhase is static method designed to run the takeStep phase of each
  * preconfigured thread.
- * @param nestene
+ * @param sector
  * @param macroResolution
  * @param time
  */
-void Master::runStepPhase(Nestene *nestene)
+void Supervisor::runStepPhase(Sector *sector)
 {
     while(true)
     {
-        std::future<int> stepFuture = nestene->taskPromise.get_future();
+        std::future<int> stepFuture = sector->taskPromise.get_future();
         stepFuture.wait();
         int task = stepFuture.get();
-        nestene->taskPromise = std::promise<int>();
+        sector->taskPromise = std::promise<int>();
 
         if(task == TASK_STOP)
         {
@@ -319,10 +319,10 @@ void Master::runStepPhase(Nestene *nestene)
         }
         else if(task == TASK_STEP)
         {
-            nestene->takeStepPhase(Phys::getCTime());
+            sector->takeStepPhase(Phys::getCTime());
         }
 
-        nestene->taskDonePromise.set_value(true);
+        sector->taskDonePromise.set_value(true);
     }
 }
 
@@ -331,7 +331,7 @@ void Master::runStepPhase(Nestene *nestene)
  * Updates the status output field, on the running mode panel
  * @see Output::updateStatus()
  */
-void Master::printStatus()
+void Supervisor::printStatus()
 {
     Output::Inst()->updateStatus(eventQueue->getISize(), eventQueue->getESize());
 }
@@ -340,47 +340,47 @@ void Master::printStatus()
  * Save eEvent data to disk
  * @see EventQueue::saveEEventData
  */
-void Master::saveExternalEvents(std::string filename)
+void Supervisor::saveExternalEvents(std::string filename)
 {
     eventQueue->saveEEventData(filename, luaFilename,autonAmount,areaY,areaX);
 }
 
-void Master::simDone()
+void Supervisor::simDone()
 {
-    for(itNest=nestenes.begin() ; itNest !=nestenes.end(); ++itNest)
+    for(itNest=sectors.begin() ; itNest !=sectors.end(); ++itNest)
     {
         (*itNest)->simDone();
     }
 }
 
-int Master::addAuton(double x, double y, double z, std::string path, 
+int Supervisor::addAgent(double x, double y, double z, std::string path,
                      std::string filename, std::string type = "Lua")
 {
-    auto nestItr = nestenes.begin();
+    auto nestItr = sectors.begin();
 
-    nesteneIndex++;
+    sectorIndex++;
 
-    if(nesteneIndex == (int)nestenes.size())
-        nesteneIndex = 0 ;
+    if(sectorIndex == (int)sectors.size())
+        sectorIndex = 0 ;
 
-    nestItr += nesteneIndex;
+    nestItr += sectorIndex;
 
-    int id = (*nestItr)->addAuton(x, y, z, path+filename, type);
+    int id = (*nestItr)->addAgent(x, y, z, path+filename, type);
 
-    eventQueue->addAutonInfo(id, filename);
+    eventQueue->addAgentInfo(id, filename);
 
     return id;
 
 }
 
 //The agent will be removed at the next macrostep:
-bool Master::removeAuton(int arg_id)
+bool Supervisor::removeAgent(int arg_id)
 {
 
-    for(auto nestitr=nestenes.begin() ; nestitr !=nestenes.end(); ++nestitr)
+    for(auto nestitr=sectors.begin() ; nestitr !=sectors.end(); ++nestitr)
     {
-        //int i = itNest->containsAuton(arg_id);
-        bool removed = (*nestitr)->removeAuton(arg_id);
+        //int i = itNest->containsAgent(arg_id);
+        bool removed = (*nestitr)->removeAgent(arg_id);
 
         if(removed)
         {

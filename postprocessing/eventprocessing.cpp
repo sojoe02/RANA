@@ -7,12 +7,12 @@
 #include <chrono>
 #include <math.h>
 
-#include "physics/phys.h"
+#include "api/phys.h"
 #include "eventprocessing.h"
 #include "output.h"
-#include "agentengine/agents/autonLUA.h"
-#include "physics/shared.h"
-#include "physics/gridmovement.h"
+#include "simulationcore/agents/agentluainterface.h"
+#include "api/shared.h"
+#include "api/gridmovement.h"
 
 using std::chrono::duration_cast;
 using std::chrono::milliseconds;
@@ -51,7 +51,7 @@ EventQueue::simInfo* EventProcessing::readEventInfo(std::string path)
         Output::Inst()->ppprintf(simInfo->luaFileName);
         Output::Inst()->ppprintf("\nHeight [m]\t:\t%f\n", simInfo->areaY);
         Output::Inst()->ppprintf( "Width [m]\t:\t%f\n", simInfo->areaX);
-        Output::Inst()->ppprintf("Auton Amount\t:\t%d\n", simInfo->numberOfAutons);
+        Output::Inst()->ppprintf("Agent Amount\t:\t%d\n", simInfo->numberOfAgents);
         Output::Inst()->ppprintf("Event Amount\t:\t%llu\n", simInfo->eventAmount);
         Output::Inst()->ppprintf("Time Resolution\t:\t%f\n", simInfo->timeResolution);
         Output::Inst()->ppprintf("MacroFactor\t:\t%d\n", simInfo->macroFactor);
@@ -229,8 +229,8 @@ void EventProcessing::processEvent(EventQueue::dataEvent *event,
     }
 
     //Output::Inst()->kdebug("path is: %s, %s", path.c_str(), filename.c_str());
-    AutonLUA *auton =
-            new AutonLUA(event->originID,event->originX,event->originY, 0, NULL, path);
+    AgentLuaInterface *auton =
+            new AgentLuaInterface(event->originID,event->originX,event->originY, 0, NULL, path);
 
     QSet<QString> *visited = new QSet<QString>();
 
@@ -257,7 +257,7 @@ void EventProcessing::processEvent(EventQueue::dataEvent *event,
     delete auton;
 }
 
-void EventProcessing::recursiveZlevel(AutonLUA *auton, EventQueue::dataEvent *event,
+void EventProcessing::recursiveZlevel(AgentLuaInterface *auton, EventQueue::dataEvent *event,
                                       QSet<QString> *visited,
                                       int x, int y, int displaceX, int displaceY,
                                       int width, int height,

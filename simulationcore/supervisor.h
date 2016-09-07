@@ -20,8 +20,8 @@
 //
 //--end_license--
 
-#ifndef MASTER_H
-#define MASTER_H
+#ifndef SUPERVISOR_H
+#define SUPERVISOR_H
 
 #include <vector>
 #include <list>
@@ -32,16 +32,16 @@
 #include <future>
 
 #include "eventqueue.h"
-#include "nestene.h"
+#include "sector.h"
 #include "utility.h"
 
 
-class Nestene;
-class Master
+class Sector;
+class Supervisor
 {
 public:
-	Master();
-	~Master();
+    Supervisor();
+    ~Supervisor();
 
 	void generateMap(double width, double height, int resolution,
 					 double timeResolution, double macroResolution);
@@ -69,8 +69,8 @@ public:
 
 	void saveExternalEvents(std::string filename);
 
-	int addAuton(double x, double y, double z, std::string path, std::string filename, std::string type);
-	bool removeAuton(int ID);
+	int addAgent(double x, double y, double z, std::string path, std::string filename, std::string type);
+	bool removeAgent(int ID);
 
 	void simDone();
 
@@ -78,12 +78,12 @@ public:
 
 private:
 
-    std::vector<Nestene*> nestenes;
+    std::vector<Sector*> sectors;
     std::vector<std::thread*> threads;
 
-    std::vector<Nestene*>::iterator itNest;
-	//nestene index to keep track of which nestene the next auton should be added at:
-	int nesteneIndex;
+    std::vector<Sector*>::iterator itNest;
+	//sector index to keep track of which sector the next auton should be added at:
+	int sectorIndex;
 
 	//functions for the different phases in a microstep:
 	//list to hold events generated each step.
@@ -93,14 +93,14 @@ private:
 	//events will be excecuted here.
 	void excecuteEvents();
 
-	//then Nestenes will be queuried to check if an Auton will
+	//then sectors will be queuried to check if an Agent will
 	//initiate an event.
-	void queryNestenes();
+	void querysectors();
 	double timeResolution;
 	double macroResolution;
 
 	int autonAmount;
-    int nesteneAmount;
+    int sectorAmount;
 	std::string luaFilename;
 	double areaX;
 	double areaY;
@@ -112,7 +112,7 @@ private:
 	unsigned long long externalDistroAmount;
 	unsigned long long tmu;
 
-    static void runStepPhase(Nestene *nestene);
+    static void runStepPhase(Sector *sector);
     static std::condition_variable CvStepStart;
     static std::condition_variable CvStepDone;
     static std::atomic_int nestCounter;
@@ -122,4 +122,4 @@ private:
     static std::atomic_bool stepReady;
     static int task;
 };
-#endif // MASTER_H
+#endif // SUPERVISOR_H

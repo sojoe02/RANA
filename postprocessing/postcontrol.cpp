@@ -21,7 +21,7 @@
 //--end_license--
 
 #include "postcontrol.h"
-#include "eventqueue.h"
+#include "simulationcore/eventqueue.h"
 #include "output.h"
 
 PostControl::PostControl(MainWindow *mainWindow)

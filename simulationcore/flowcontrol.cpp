@@ -25,21 +25,21 @@
 #include <thread>
 #include <time.h>
 
-#include "agentdomain.h"
-#include "../physics/phys.h"
-#include "../physics/gridmovement.h"
-#include "../physics/shared.h"
+#include "flowcontrol.h"
+#include "../api/phys.h"
+#include "../api/gridmovement.h"
+#include "../api/shared.h"
 #include "output.h"
 #include "ID.h"
-#include "agents/doctor.h"
+#include "interfacer.h"
 
 using std::chrono::duration_cast;
 using std::chrono::milliseconds;
 using std::chrono::seconds;
 using std::chrono::steady_clock;
 
-AgentDomain::AgentDomain(Control *control)
-    :control(control), mapGenerated(false),masteragent(new Master()), stop(false), fetchPositions(false),
+FlowControl::FlowControl(Control *control)
+    :control(control), mapGenerated(false),masteragent(new Supervisor()), stop(false), fetchPositions(false),
       LuaAgentAmount(0),luaFilename(""),storePositions(true),
       positionFilename("_positionData.pos")
 {
@@ -50,7 +50,7 @@ AgentDomain::AgentDomain(Control *control)
 
 }
 
-AgentDomain::~AgentDomain(){
+FlowControl::~FlowControl(){
     //ID::resetSystem();
     Phys::setCTime(0);
     delete masteragent;
@@ -59,17 +59,17 @@ AgentDomain::~AgentDomain(){
  * Checks if an environment has been generated.
  * @return bool false if there is not environment, true if there is.
  * */
-bool AgentDomain::checkEnvPresence()
+bool FlowControl::checkEnvPresence()
 {
     return mapGenerated;
 }
 
 /**
  * Generates the environment.
- * Upon environment generation the nestenes will be placed, autons will be
- * assigned to a nestene and placed within it's parameters.
+ * Upon environment generation the sectors will be placed, autons will be
+ * assigned to a sector and placed within it's parameters.
  */
-void AgentDomain::generateEnvironment(double width, double height, int threads,
+void FlowControl::generateEnvironment(double width, double height, int threads,
                                       int listenerSize, int screamerSize, int LUASize,
                                       double timeResolution, int macroFactor, std::string filename)
 {
@@ -89,7 +89,7 @@ void AgentDomain::generateEnvironment(double width, double height, int threads,
     Phys::setMacroFactor(macroFactor);
     Phys::setEnvironment(width, height);
     Shared::initShared();
-    Doctor::InitDoctor(masteragent);
+    Interfacer::initInterfacer(masteragent);
 
     masteragent->generateMap(width,height,threads,timeResolution, macroResolution);
 
@@ -104,7 +104,7 @@ void AgentDomain::generateEnvironment(double width, double height, int threads,
     //mapGenerated = true;
 }
 
-void AgentDomain::populateSystem()
+void FlowControl::populateSystem()
 {
     //srand(time(0));
     //Phys::seedMersenne();
@@ -121,7 +121,7 @@ void AgentDomain::populateSystem()
  * @see Master::retrievePopPos()
  * @see Control::refreshPopPos()
  */
-void AgentDomain::retrievePopPos()
+void FlowControl::retrievePopPos()
 {
 
     std::list<agentInfo> agentPositions = masteragent->retrievePopPos();
@@ -151,7 +151,7 @@ void AgentDomain::retrievePopPos()
     }
 }
 
-void AgentDomain::toggleLiveView(bool enable)
+void FlowControl::toggleLiveView(bool enable)
 {
     fetchPositions.store(enable);
 }
@@ -163,7 +163,7 @@ void AgentDomain::toggleLiveView(bool enable)
  * update the progress bar and status window in the running panel.
  * @param time the amount of seconds the simulation will simulate.
  */
-void AgentDomain::runSimulation(int time)
+void FlowControl::runSimulation(int time)
 {
 
 
@@ -271,7 +271,7 @@ void AgentDomain::runSimulation(int time)
  * Stop currently running simulation
  * Stops the active simulation run via setting an atomic boolean.
  */
-void AgentDomain::stopSimulation()
+void FlowControl::stopSimulation()
 {
     stop.store(true);
 }
@@ -280,7 +280,7 @@ void AgentDomain::stopSimulation()
  * Save eEvent data to disk
  * @see EventQueue::saveEEventData
  */
-void AgentDomain::saveExternalEvents(std::string filename)
+void FlowControl::saveExternalEvents(std::string filename)
 {
     masteragent->saveExternalEvents(filename);
 }

@@ -33,12 +33,12 @@
 #include <QObject>
 
 #include "mainwindow.h"
-#include "agentengine/agentdomain.h"
+#include "simulationcore/flowcontrol.h"
 #include "utility.h"
 #include "runner.h"
 
 class Runner;
-class AgentDomain;
+class FlowControl;
 class MainWindow;
 class Control : public QObject
 {
@@ -87,11 +87,11 @@ public slots:
 	void on_simDone();
 
 signals:
-	void startDoWork(AgentDomain *agentDomain, unsigned long long runtime);
+	void startDoWork(FlowControl *agentDomain, unsigned long long runtime);
 
 private:
 
-    AgentDomain *agentDomain;
+    FlowControl *agentDomain;
     MainWindow *mainwindow;
     Runner *runner;
     QThread runThread;

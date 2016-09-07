@@ -20,8 +20,8 @@
 //
 //--end_license--
 
-#ifndef AGENTDOMAIN_H
-#define AGENTDOMAIN_H
+#ifndef FLOWCONTROL_H
+#define FLOWCONTROL_H
 
 #include<iostream>
 #include<mutex>
@@ -30,19 +30,19 @@
 #include<stdio.h>
 #include<fstream>
 
-#include "agents/master.h"
-#include "../agentengine/agents/doctor.h"
+#include "supervisor.h"
+#include "../simulationcore/interfacer.h"
 #include "mainwindow.h"
 #include "utility.h"
 #include "control.h"
 
 class Control;
-class Master;
-class AgentDomain
+class Supervisor;
+class FlowControl
 {
 	public:
-        AgentDomain(Control *control);
-		~AgentDomain();
+        FlowControl(Control *control);
+        ~FlowControl();
 
 		void generateEnvironment(double width, double height, int resolution,
 				int listenerSize, int screamerSize, int LUASize,
@@ -63,8 +63,8 @@ private:
 
         Control *control;
 		bool mapGenerated;
-        Doctor doctor;
-        Master *masteragent;
+        Interfacer doctor;
+        Supervisor *masteragent;
 
 		double timeResolution;
 		double macroResolution;
@@ -93,4 +93,4 @@ private:
         std::ofstream file;
 };
 
-#endif // AGENTDOMAIN_H
+#endif // FLOWCONTROL_H

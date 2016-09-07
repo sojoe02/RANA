@@ -17,66 +17,60 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    eventqueue.cpp \
-    physics/phys.cpp \
-    agentengine/agents/nestene.cpp \
-    agentengine/agents/auton.cpp \
-    agentengine/agents/autonlistener.cpp \
-    agentengine/agents/autonLUA.cpp \
-    agentengine/agents/autonscreamer.cpp \
-    agentengine/agents/doctor.cpp \
-    agentengine/agents/master.cpp \
-    agentengine/agentdomain.cpp \
     output.cpp \
-    physics/maphandler.cpp \
     control.cpp \
     graphics/agentItem.cpp \
-    physics/gridmovement.cpp \
     runner.cpp \
-    physics/shared.cpp \
     postprocessing/eventprocessing.cpp \
     postprocessing/eventmap.cpp \
-    graphics/zcolormap.cpp \
     postprocessing/colorutility.cpp \
     eventdialog.cpp \
     postprocessing/graphics/zblock.cpp \
     postprocessing/postcontrol.cpp \
     postprocessing/eventrunner.cpp \
     postprocessing/graphics/zmap.cpp \
-    physics/scanning.cpp \
-    helpdialog.cpp
+    helpdialog.cpp \
+    api/gridmovement.cpp \
+    api/maphandler.cpp \
+    api/phys.cpp \
+    api/scanning.cpp \
+    api/shared.cpp \
+    simulationcore/flowcontrol.cpp \
+    simulationcore/interfacer.cpp \
+    simulationcore/sector.cpp \
+    simulationcore/supervisor.cpp \
+    simulationcore/agents/agent.cpp \
+    simulationcore/agents/agentluainterface.cpp \
+    simulationcore/eventqueue.cpp
 
 HEADERS  += mainwindow.h \
-    physics/phys.h \
-    agentengine/agents/nestene.h \
-    agentengine/agents/auton.h \
-    agentengine/agents/autonlistener.h \
-    agentengine/agents/autonLUA.h \
-    agentengine/agents/autonscreamer.h \
-    agentengine/agents/doctor.h \
-    agentengine/agents/master.h \
-    agentengine/agentdomain.h \
-    eventqueue.h \
     ID.h \
     utility.h \
     output.h \
-    physics/maphandler.h \
     control.h \
     graphics/agentItem.h \
-    physics/gridmovement.h \
     runner.h \
-    physics/shared.h \
     postprocessing/eventprocessing.h \
     postprocessing/eventmap.h \
-    graphics/zcolormap.h \
     postprocessing/colorutility.h \
     eventdialog.h \
     postprocessing/graphics/zblock.h \
     postprocessing/postcontrol.h \
     postprocessing/eventrunner.h \
     postprocessing/graphics/zmap.h \
-    physics/scanning.h \
-    helpdialog.h
+    helpdialog.h \
+    api/gridmovement.h \
+    api/maphandler.h \
+    api/phys.h \
+    api/scanning.h \
+    api/shared.h \
+    simulationcore/flowcontrol.h \
+    simulationcore/interfacer.h \
+    simulationcore/sector.h \
+    simulationcore/supervisor.h \
+    simulationcore/agents/agent.h \
+    simulationcore/agents/agentluainterface.h \
+    simulationcore/eventqueue.h
 
 FORMS    += mainwindow.ui \
 	eventdialog.ui \

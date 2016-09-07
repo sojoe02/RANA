@@ -33,11 +33,11 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "physics/maphandler.h"
-#include "physics/phys.h"
-#include "physics/gridmovement.h"
+#include "api/maphandler.h"
+#include "api/phys.h"
+#include "api/gridmovement.h"
 #include "output.h"
-#include "eventqueue.h"
+#include "simulationcore/eventqueue.h"
 #include "postprocessing/colorutility.h"
 
 
@@ -80,14 +80,14 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(this,SIGNAL(writeStatusSignal(unsigned long long,unsigned long long)),
 					 this,SLOT(on_udateStatus(unsigned long long,unsigned long long)));
 
-	QObject::connect(this,SIGNAL(addGraphicAutonSignal(int,int,int)),
-						this,SLOT(on_addGraphicAuton(int,int,int)));
+	QObject::connect(this,SIGNAL(addGraphicAgentSignal(int,int,int)),
+						this,SLOT(on_addGraphicAgent(int,int,int)));
 
-	QObject::connect(this, SIGNAL(removeGraphicAutonSignal(int)),
-					 this, SLOT(on_removeGraphicAuton(int)));
+	QObject::connect(this, SIGNAL(removeGraphicAgentSignal(int)),
+					 this, SLOT(on_removeGraphicAgent(int)));
 
-    QObject::connect(this, SIGNAL(changeGraphicAutonColorSignal(int,int,int,int,int)),
-                     this, SLOT(on_changeGraphicAutonColor(int,int,int,int,int)));
+    QObject::connect(this, SIGNAL(changeGraphicAgentColorSignal(int,int,int,int,int)),
+                     this, SLOT(on_changeGraphicAgentColor(int,int,int,int,int)));
 
     QObject::connect(this,SIGNAL(enableRunButtonSignal(bool)),
                      this, SLOT(on_enableRunButton(bool)));
@@ -407,7 +407,7 @@ void MainWindow::on_updateMap(INFOLIST infolist)
 
         if(!graphAgents.contains(Id))
         {
-			addGraphicAuton(Id, x, y);
+			addGraphicAgent(Id, x, y);
 
         } else
         {
@@ -423,21 +423,21 @@ void MainWindow::on_updateMap(INFOLIST infolist)
 }
 
 /**
- * @brief MainWindow::addGraphicAuton Sends a qt signal to add a new Agent.
+ * @brief MainWindow::addGraphicAgent Sends a qt signal to add a new Agent.
  * @param id the id of the agent.
  * @param posX X position of the agent.
  * @param posY Y position of the agent.
- * @see MainWindow::on_addGraphicAuton()
+ * @see MainWindow::on_addGraphicAgent()
  */
 
-void MainWindow::addGraphicAuton(int id, int posX, int posY)
+void MainWindow::addGraphicAgent(int id, int posX, int posY)
 {
     //ui->generateButton->setEnabled(false);
     //ui->runButton->setEnabled(false);
-	emit addGraphicAutonSignal(id, posX, posY);
+	emit addGraphicAgentSignal(id, posX, posY);
 }
 
-void MainWindow::on_addGraphicAuton(int id, int posX, int posY)
+void MainWindow::on_addGraphicAgent(int id, int posX, int posY)
 {
 
     //itializeTimer->start(500);
@@ -468,13 +468,13 @@ void MainWindow::on_addGraphicAuton(int id, int posX, int posY)
     //ui->generateButton->setEnabled(true);
 }
 
-void MainWindow::changeGraphicAutonColor(int id, int r, int g, int b, int alpha)
+void MainWindow::changeGraphicAgentColor(int id, int r, int g, int b, int alpha)
 {
-    emit changeGraphicAutonColorSignal(id,r,g,b,alpha);
+    emit changeGraphicAgentColorSignal(id,r,g,b,alpha);
 
 }
 
-void MainWindow::on_changeGraphicAutonColor(int id, int r, int g, int b, int alpha)
+void MainWindow::on_changeGraphicAgentColor(int id, int r, int g, int b, int alpha)
 {
 	auto i = graphAgents.find(id);
 	agentItem *gfxItem = i.value();
@@ -530,17 +530,17 @@ void MainWindow::on_vis_disableAgentIDs_toggled(bool checked)
 
 
 /**
- * @brief MainWindow::removeGraphicAuton remove an agent marker item
+ * @brief MainWindow::removeGraphicAgent remove an agent marker item
  * on the live map for good.
  * @param id the id of agent to be removed.
  */
 
-void MainWindow::removeGraphicAuton(int id)
+void MainWindow::removeGraphicAgent(int id)
 {
-	emit removeGraphicAutonSignal(id);
+	emit removeGraphicAgentSignal(id);
 }
 
-void MainWindow::on_removeGraphicAuton(int id)
+void MainWindow::on_removeGraphicAgent(int id)
 {
 	auto iter = graphAgents.find(id);
 	if(iter != graphAgents.end())
@@ -767,7 +767,7 @@ void MainWindow::defineMap()
  * @brief Sets a delay on the simulation
  * this can make it easier to observe agent behaviour, the delay set on every
  * macrostep, the value is translated to milliseconds
- * @see AgentDomain::runSimulation()
+ * @see FlowControl::runSimulation()
  */
 void MainWindow::on_delaySpinBox_valueChanged(int arg1)
 {
