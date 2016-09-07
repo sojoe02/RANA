@@ -161,8 +161,6 @@ AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double po
         lua_register(L, "l_getAgentPath", l_getAgentPath);
         lua_register(L, "l_getAgentPath", l_getAgentPath);
         lua_register(L, "l_stopSimulation", l_stopSimulation);
-        lua_register(L, "l_addAgent", l_addAgent);
-        lua_register(L, "l_removeAgent", l_removeAgent);
         lua_register(L, "l_removeAgent", l_removeAgent);
         lua_register(L, "l_addAgent", l_addAgent);
 
@@ -229,7 +227,9 @@ void AgentLuaInterface::InitializeAgent()
             Output::Inst()->kprintf("Lua Agent disabled\n");
         }
 
-    }catch(std::exception& e){
+    }
+    catch(std::exception& e)
+    {
         Output::Inst()->kprintf("<b><font color=\"red\">Error on Agent initialization. %s, %s</font></b></>" , filename.c_str() ,e.what());
         Output::RunSimulation = false;
     }
@@ -321,7 +321,8 @@ std::unique_ptr<EventQueue::eEvent> AgentLuaInterface::takeStep()
 
         return NULL;
 
-    }catch(std::exception &e)
+    }
+    catch(std::exception &e)
     {
         Output::Inst()->kprintf("<b><font color=\"red\">Exception on takeStep. %s, %s</font></b></>", filename.c_str()  ,e.what());
         Output::RunSimulation.store(false);
@@ -363,7 +364,8 @@ std::unique_ptr<EventQueue::eEvent> AgentLuaInterface::handleEvent(std::unique_p
         getSyncData();
         return NULL;
 
-    }catch(std::exception &e)
+    }
+    catch(std::exception &e)
     {
         Output::Inst()->kprintf("<b><font color=\"red\">Exception on event handling.%s, %s</font></b></>",filename.c_str(), e.what());
         Output::RunSimulation = false;
@@ -488,7 +490,8 @@ void AgentLuaInterface::processFunction(EventQueue::dataEvent *devent, double ti
             duration = lua_tonumber(L,-1);
         }
 
-    }catch(std::exception &e)
+    }
+    catch(std::exception &e)
     {
         Output::Inst()->kprintf("<b><font color=\"red\">Error on processEvent..%s</font></b></>", e.what());
         Output::RunEventProcessing.store(false);

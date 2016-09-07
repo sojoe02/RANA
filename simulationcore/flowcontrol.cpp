@@ -40,17 +40,16 @@ using std::chrono::steady_clock;
 
 FlowControl::FlowControl(Control *control)
     :control(control), mapGenerated(false),masteragent(new Supervisor()), stop(false), fetchPositions(false),
-      LuaAgentAmount(0),luaFilename(""),storePositions(true),
+      agentAmount(0),luaFilename(""),storePositions(true),
       positionFilename("_positionData.pos")
 {
     //Phys::seedMersenne();
     //file = std::ofstream(positionFilename.c_str(),std::ofstream::out| std::ofstream::trunc);
     //file.open(positionFilename.c_str(),std::ofstream::out | std::ofstream::binary | std::ofstream::trunc);
-
-
 }
 
-FlowControl::~FlowControl(){
+FlowControl::~FlowControl()
+{
     //ID::resetSystem();
     Phys::setCTime(0);
     delete masteragent;
@@ -70,8 +69,7 @@ bool FlowControl::checkEnvPresence()
  * assigned to a sector and placed within it's parameters.
  */
 void FlowControl::generateEnvironment(double width, double height, int threads,
-                                      int listenerSize, int screamerSize, int LUASize,
-                                      double timeResolution, int macroFactor, std::string filename)
+                                      int agentAmount, double timeResolution, int macroFactor, std::string filename)
 {
 
     //srand(time(0));
@@ -96,7 +94,7 @@ void FlowControl::generateEnvironment(double width, double height, int threads,
     mapWidth = width;
     mapHeight = height;
 
-    LuaAgentAmount = LUASize;
+    agentAmount = agentAmount;
     luaFilename = filename;
 
     //    masteragent->populateSystem(listenerSize, screamerSize, LUASize, filename);
@@ -108,7 +106,7 @@ void FlowControl::populateSystem()
 {
     //srand(time(0));
     //Phys::seedMersenne();
-    masteragent->populateSystem(0, 0, LuaAgentAmount, luaFilename);
+    masteragent->populateSystem(0, 0, agentAmount, luaFilename);
     retrievePopPos();
     mapGenerated = true;
     Output::Inst()->enableRunBotton(true);
@@ -134,13 +132,13 @@ void FlowControl::retrievePopPos()
         {
 
             //std::ofstream file(positionFilename.c_str(),std::ofstream::out | std::ofstream::app);
-            for(auto itr = agentPositions.begin(); itr != agentPositions.end(); ++itr)
+            for(const auto &apos : agentPositions)
             {
 
                 agentTmu agenttmu;
-                agenttmu.x = (*itr).x;
-                agenttmu.y = (*itr).y;
-                agenttmu.id = (*itr).id;
+                agenttmu.x = apos.x;
+                agenttmu.y = apos.y;
+                agenttmu.id = apos.id;
                 agenttmu.tmu = cMacroStep;
                 //Output::Inst()->kprintf("id %d, posx %d, posY %d",agenttmu.info.id, agenttmu.info.x, agenttmu.info.y);
 
@@ -201,11 +199,13 @@ void FlowControl::runSimulation(int time)
 
 
         Phys::setCTime(i);
+
         if(i == cMicroStep && cMicroStep != ULLONG_MAX)
         {
             masteragent->microStep(i);
             //Output::Inst()->kprintf("i is now %lld", i);
         }
+
         if(i == cMacroStep)
         {
             masteragent->macroStep(i);
@@ -220,6 +220,7 @@ void FlowControl::runSimulation(int time)
                 retrievePopPos();
             }
         }
+
         i = cMacroStep;
         cMicroStep = masteragent->getNextMicroTmu();
 

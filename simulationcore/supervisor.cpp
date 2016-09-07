@@ -44,8 +44,6 @@ std::condition_variable Supervisor::CvStepStart;
 std::condition_variable Supervisor::CvStepDone;
 std::mutex Supervisor::mutexStep;
 std::mutex Supervisor::mutexStepDone;
-std::atomic_int Supervisor::nestCounter;
-std::atomic_bool Supervisor::stopThreads;
 int Supervisor::task;
 
 Supervisor::Supervisor()
@@ -61,18 +59,18 @@ Supervisor::~Supervisor()
 {
     delete eventQueue;
 
-    for(auto n : sectors)
+    for(const auto &s : sectors)
     {
-        n->taskPromise.set_value(TASK_STOP);
+        s->taskPromise.set_value(TASK_STOP);
     }
-    for(auto t : threads)
+    for(const auto &t : threads)
     {
         t->join();
     }
 
-    for(auto n : sectors)
+    for(const auto &s : sectors)
     {
-        delete n;
+        delete s;
     }
 }
 /********************************************************
@@ -100,14 +98,10 @@ void Supervisor::generateMap(double width, double height, int sectorAmount, doub
     areaX = width;
     areaY = height;
 
-    nestCounter.store(0);
-
     if(!sectors.empty())
     {
         sectors.clear();
     }
-
-    stopThreads.store(false);
 
     for(int i=0; i<sectorAmount; i++)
     {
@@ -141,9 +135,9 @@ std::list<agentInfo> Supervisor::retrievePopPos()
 
     std::list<agentInfo> agentinfo;
     //Output::Inst()->kprintf("testing retrieve of master");
-    for(auto n : sectors)
+    for(const auto &s : sectors)
     {
-        n->retrievePopPos(agentinfo);
+        s->retrievePopPos(agentinfo);
     }
 
     return agentinfo;
@@ -225,14 +219,14 @@ void Supervisor::microStep(unsigned long long tmu)
     {
         auto elist = eventQueue->getEEventList(tmu);
 
-        for(auto eListItr = elist.begin(); eListItr != elist.end(); ++eListItr)
+        for(auto &e : elist) //; eListItr != elist.end(); ++eListItr)
         {
             const EventQueue::eEvent* eEventPtr =
-                    eventQueue->addUsedEEvent(std::move(*eListItr));
+                    eventQueue->addUsedEEvent(std::move(e));
 
-            for(auto n : sectors)
+            for(const auto &s : sectors)
             {
-               n->distroPhase(eEventPtr);
+               s->distroPhase(eEventPtr);
             }
         }
     }
@@ -241,12 +235,12 @@ void Supervisor::microStep(unsigned long long tmu)
     {
         auto ilist = eventQueue->getIEventList(tmu);
 
-        for(auto iListItr = ilist.begin(); iListItr != ilist.end(); ++iListItr)
+        for(auto &e : ilist)
         {
             //Output::Inst()->kprintf("origin id is %i", event->originID);
-            if (removedIDs.find((*iListItr)->originID) == removedIDs.end())
+            if (removedIDs.find(e->originID) == removedIDs.end())
             {
-                std::unique_ptr<EventQueue::iEvent> iEventPtr(std::move(*iListItr));
+                std::unique_ptr<EventQueue::iEvent> iEventPtr(std::move(e));
 
                 AgentLuaInterface *luaAgent = (AgentLuaInterface*)iEventPtr->origin;
                 eventQueue->decrementEeventCounter(iEventPtr->event->id);
@@ -283,16 +277,16 @@ unsigned long long Supervisor::getNextMicroTmu()
 void Supervisor::macroStep(unsigned long long tmu)
 {
 
-    for(auto n : sectors)
+    for(const auto &s : sectors)
     {
-        n->taskPromise.set_value(TASK_STEP);
+        s->taskPromise.set_value(TASK_STEP);
     }
 
-    for(auto n : sectors)
+    for(const auto &s : sectors)
     {
-        std::future<bool> stepDoneFuture = n->taskDonePromise.get_future();
+        std::future<bool> stepDoneFuture = s->taskDonePromise.get_future();
         stepDoneFuture.wait();
-        n->taskDonePromise = std::promise<bool>();
+        s->taskDonePromise = std::promise<bool>();
 
     }
 }
@@ -347,9 +341,9 @@ void Supervisor::saveExternalEvents(std::string filename)
 
 void Supervisor::simDone()
 {
-    for(itNest=sectors.begin() ; itNest !=sectors.end(); ++itNest)
+    for(const auto &s : sectors)
     {
-        (*itNest)->simDone();
+        s->simDone();
     }
 }
 
@@ -376,11 +370,9 @@ int Supervisor::addAgent(double x, double y, double z, std::string path,
 //The agent will be removed at the next macrostep:
 bool Supervisor::removeAgent(int arg_id)
 {
-
-    for(auto nestitr=sectors.begin() ; nestitr !=sectors.end(); ++nestitr)
+    for(const auto &s : sectors)
     {
-        //int i = itNest->containsAgent(arg_id);
-        bool removed = (*nestitr)->removeAgent(arg_id);
+        bool removed = s->removeAgent(arg_id);
 
         if(removed)
         {

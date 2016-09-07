@@ -89,12 +89,7 @@ private:
 	//list to hold events generated each step.
 	std::list<EventQueue::eEvent*> stepEvents;
 
-	//first the master will be queuering the eventQueue if
-	//events will be excecuted here.
 	void excecuteEvents();
-
-	//then sectors will be queuried to check if an Agent will
-	//initiate an event.
 	void querysectors();
 	double timeResolution;
 	double macroResolution;
@@ -115,11 +110,8 @@ private:
     static void runStepPhase(Sector *sector);
     static std::condition_variable CvStepStart;
     static std::condition_variable CvStepDone;
-    static std::atomic_int nestCounter;
     static std::mutex mutexStep;
     static std::mutex mutexStepDone;
-    static std::atomic_bool stopThreads;
-    static std::atomic_bool stepReady;
     static int task;
 };
 #endif // SUPERVISOR_H

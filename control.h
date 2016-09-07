@@ -83,11 +83,14 @@ public:
     void toggleLiveView(bool enable);
 
     void threadTest(std::string something);
+
 public slots:
-	void on_simDone();
+
+    void on_simDone();
 
 signals:
-	void startDoWork(FlowControl *agentDomain, unsigned long long runtime);
+
+    void startDoWork(FlowControl *agentDomain, unsigned long long runtime);
 
 private:
 

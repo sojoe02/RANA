@@ -27,27 +27,32 @@ class ID
 {
 	public :
 
-		static int generateAgentID(){
+        static int generateAgentID()
+        {
 			ID::aID++;
 			return ID::aID;
 		}
 
-		static int generatesectorID(){
+        static int generatesectorID()
+        {
 			ID::nID++;
 			return ID::nID;
 		}
 
-		static unsigned long long generateEventID(){
+        static unsigned long long generateEventID()
+        {
 			ID::eID++;
 			return ID::eID;
 		}
 
-		static unsigned long long incrementTime(){
+        static unsigned long long incrementTime()
+        {
 			ID::tmu++;
 			return ID::tmu;
 		}
 
-		static void resetSystem(){
+        static void resetSystem()
+        {
 			ID::aID = 0;
 			ID::nID = 0;
 			ID::eID = 0;

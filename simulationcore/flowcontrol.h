@@ -44,8 +44,7 @@ class FlowControl
         FlowControl(Control *control);
         ~FlowControl();
 
-		void generateEnvironment(double width, double height, int resolution,
-				int listenerSize, int screamerSize, int LUASize,
+        void generateEnvironment(double width, double height, int resolution, int agentAmount,
 				double timeResolution, int macroFactor, std::string filename);
 
         void retrievePopPos();
@@ -82,7 +81,7 @@ private:
 		std::mutex stopMutex;
         std::atomic_bool fetchPositions;
 
-        int LuaAgentAmount;
+        int agentAmount;
         std::string luaFilename;
 
 		typedef std::list<agentInfo> onlineAgents;

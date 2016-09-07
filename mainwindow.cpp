@@ -202,6 +202,7 @@ void MainWindow::on_generateButton_clicked()
 
             //generate the simulation and initialize agents
             int threads = ui->advThreadSpinBox->value();
+
             control->generateEnvironment(mapImage, threads, timeRes, macroRes,
                                          agentAmount,stringPath);
 
@@ -254,7 +255,8 @@ void MainWindow::on_browseMapButton_clicked()
 
     ui->mapPathLineEdit->setText(fileName);
 
-    if(!fileName.isEmpty()){
+    if(!fileName.isEmpty())
+    {
         delete mapImage;
         mapImage = new QImage(ui->mapPathLineEdit->text());
         if(mapImage->isNull()){

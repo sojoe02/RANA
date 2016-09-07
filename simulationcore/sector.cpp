@@ -76,16 +76,16 @@ void Sector::populate(int LUASize ,std::string filename)
  */
 void Sector::retrievePopPos(std::list<agentInfo> &infolist){
 
-    for(auto it = luaAgents.begin(); it !=luaAgents.end(); it++)
+    for(const auto &lua : luaAgents)
 	{
 
-		if(master->removedIDs.find(it->second->getID()) ==
+        if(master->removedIDs.find(lua.second->getID()) ==
 				master->removedIDs.end())
 		{
 			agentInfo info;
-			info.id = it->second->getID();
-			info.y = it->second->getPosY();
-			info.x = it->second->getPosX();
+            info.id = lua.second->getID();
+            info.y = lua.second->getPosY();
+            info.x = lua.second->getPosX();
 			infolist.push_back(info);
 		}
 	}
@@ -100,16 +100,15 @@ void Sector::retrievePopPos(std::list<agentInfo> &infolist){
  */
 void Sector::takeStepPhase(unsigned long long tmu)
 {
-
-    for(auto itr = luaAgents.begin(); itr !=luaAgents.end(); itr++)
+    for(const auto &lua : luaAgents)
 	{
-		int macroFactorMultipler = itr->second->getMacroFactorMultipler();
+        int macroFactorMultipler = lua.second->getMacroFactorMultipler();
 
 		if(macroFactorMultipler > 0 &&
-				(tmu-1)%macroFactorMultipler*Phys::getMacroFactor() == 0 )
+                tmu%(macroFactorMultipler*Phys::getMacroFactor()) == 0 )
 		{
 			std::unique_ptr<EventQueue::eEvent> eevent =
-                    itr->second->takeStep();
+                    lua.second->takeStep();
 
 
 			if(eevent != NULL)
@@ -122,22 +121,21 @@ void Sector::takeStepPhase(unsigned long long tmu)
 	if(!removalIDs.empty())
 	{
 		//remove all autons set for removal
-		for(auto itRemove= removalIDs.begin(); itRemove!=
-			removalIDs.end(); ++itRemove)
+        for(const auto &r : removalIDs)
 		{
-            auto itrLua = luaAgents.find(*itRemove);
+            auto itrLua = luaAgents.find(r);
             if(itrLua != luaAgents.end())
 			{
-                luaAgents.erase(itrLua);
+                luaAgents.erase(r);
 			}
 		}
 		removalIDs.clear();
 	}
 
-    for(auto auton : newAgents)
+    for(const auto &agent : newAgents)
     {
-        luaAgents.insert(std::make_pair(auton->getID(),auton));
-        auton->InitializeAgent();
+        luaAgents.insert(std::make_pair(agent->getID(),agent));
+        agent->InitializeAgent();
 
     }
     newAgents.clear();
@@ -151,14 +149,14 @@ void Sector::takeStepPhase(unsigned long long tmu)
  */
 void Sector::distroPhase(const EventQueue::eEvent* event)
 {
-    for(auto itLUAs = luaAgents.begin(); itLUAs != luaAgents.end(); ++itLUAs)
+    for(const auto &lua : luaAgents)
 	{
-		if(event->originID != itLUAs->second->getID() &&
+        if(event->originID != lua.second->getID() &&
 				(event->targetGroup == 0 ||
-				 itLUAs->second->checkGroup(event->targetGroup) == true))
+                 lua.second->checkGroup(event->targetGroup) == true))
 		{
 			std::unique_ptr<EventQueue::iEvent> ieventPtr =
-                    itLUAs->second->processEvent(event);
+                    lua.second->processEvent(event);
 
 			if(ieventPtr != NULL)
 			{

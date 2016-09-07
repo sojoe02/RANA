@@ -86,7 +86,7 @@ void Control::generateEnvironment(QImage *map, int threads,
 
         agentDomain = new FlowControl(this);
 
-        agentDomain->generateEnvironment(map->width(),map->height(),threads,0,0,
+        agentDomain->generateEnvironment(map->width(),map->height(),threads,
                                          agentAmount,timeRes,macroRes,agentPath);
         //agentDomain->populateSystem();
 
