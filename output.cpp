@@ -159,7 +159,7 @@ void Output::setMainWindow(MainWindow *mainwindow)
 }
 
 /**
- * @brief Deprecated use Output::kprintf() or Output::ppprintf()
+ * @brief Deprecated use Output::kprintf()
  * @param msg
  */
 void Output::ppprintf(const char *msg,...)
