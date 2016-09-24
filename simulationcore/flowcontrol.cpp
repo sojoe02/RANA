@@ -97,9 +97,10 @@ void FlowControl::generateEnvironment(double width, double height, int threads,
     agentAmount = agentAmount;
     luaFilename = filename;
 
-    //    masteragent->populateSystem(listenerSize, screamerSize, LUASize, filename);
-    //retrievePopPos();
-    //mapGenerated = true;
+    masteragent->populateSystem(0, 0, agentAmount, filename);
+
+    retrievePopPos();
+    mapGenerated = true;
 }
 
 void FlowControl::populateSystem()

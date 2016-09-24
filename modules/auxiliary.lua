@@ -6,8 +6,11 @@ function _HandleEvent(sourceX, sourceY, originID, description, serialTable)
 	else 
 		_eventTable = {}
 	end
+
+	if HandleEvent ~= nil then 
+		HandleEvent{X=sourceX, Y=sourceY, ID=originID, description=description, table=_eventTable}
 	
-	if handleEvent ~= nil then
+	elseif handleEvent ~= nil then
 		handleEvent(sourceX, sourceY, originID, description, _eventTable)
 	end
 
@@ -15,7 +18,9 @@ end
 
 function _TakeStep()
 
-        if takeStep ~= nil then
+	if TakeStep ~= nil then
+		TakeStep()
+	elseif takeStep ~= nil then
 	        takeStep()
 	else
 	        StepMultiple = 0
@@ -24,19 +29,23 @@ end
 
 function _InitializeAgent()
 
-        if initializeAgent ~= nil then
-	        initializeAgent()
+	if InitializeAgent ~= nil then
+		InitializeAgent()
+	elseif initializeAgent ~= nil then
+		initializeAgent()
 	else
-	        say("Agent #: "..ID.. " has been initialized")
+		say("Agent #: "..ID.. " has been initialized")
 	end
 end
 
 function _CleanUp()
 
-        if cleanUp ~= nil then
-	        cleanUp()
+	if CleanUp ~=nil then
+		CleanUp()
+	elseif cleanUp ~= nil then
+		cleanUp()
 	else
-	        say("Agent #: "..ID.." is done")
+		say("Agent #: "..ID.." is done")
 	end
 
 end
@@ -50,7 +59,7 @@ function _ProcessEventFunction(sourceX, sourceY, posX, posY, time, serialTable)
 		_eventTable = {}
 	end
 
-	if processEventFunction == nil then
+	if ProcessEventFunction == nil then
 
 		if posX == sourceX and posY == sourceY then
 			return 1,0
@@ -58,7 +67,7 @@ function _ProcessEventFunction(sourceX, sourceY, posX, posY, time, serialTable)
 			return .5,0
 		end
 	else 
-		return processEventFunction(sourceX, sourceY, posX, posY, time, _eventTable)
+		return ProcessEventFunction{sX=sourceX, sY=sourceY, pX=posX, pY=posY, time=time, table=_eventTable}
 	end
 
 end
