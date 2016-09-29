@@ -1,4 +1,4 @@
---begin_license--
+----begin_license--
 --
 --Copyright 	2013 - 2016 	Søren Vissing Jørgensen.
 --
@@ -41,85 +41,39 @@
 -- GridMove 		-- Is collision detection active (default = false).
 -- ------------------------------------
 
+-- Import Rana lua libraries.
+Event	= require "ranalib_event"
+Core	= require "ranalib_core"
+Stat	= require "ranalib_statistic"
+Shared 	= require "ranalib_shared"
 
--- Import valid Rana lua libraries.
-Stat = require "ranalib_statistic"
-Move = require "ranalib_movement"
-Collision = require "ranalib_collision"
-Utility = require "ranalib_utility"
-Agent = require "ranalib_agent"
-
-scanMultiple = 10
-repulsionRange = 15
-counter = 1
-
--- Initialization of the agent.
 function InitializeAgent()
 	
-	say("Agent #: " .. ID .. " has been initialized")
+	say("Data Collector initialized")
 
-	Move.to{x= ENV_WIDTH/2, y= ENV_HEIGHT/2}
-
-	Speed = 40
-	GridMove = true
-	Moving = true
+	ids = Shared.getTable("ids")
+	agent_table = Shared.getTable("agents")
 
 end
 
+-- Init of the lua frog, function called upon initilization of the LUA auton.
+function HandleEvent(event)
+	agent_table[event.ID] = agent_table[event.ID] + 1
+end
 
-function TakeStep()
-	
-	if not Moving then
-		
-		Agent.changeColor{r=255}
 
-		if counter % scanMultiple == 0 then 
-			table = Collision.radialCollisionScan(repulsionRange)
+function CleanUp()
 
-			if table ~= nil then
+	--Write the oscillation data to a csv file.
+	file = io.open("02_overall_stats.csv", "w")
 
-				--set a random destination modifier
-				local destX = Stat.randomInteger(1,10)
-				local destY = Stat.randomInteger(1,10)
-				
-				--get a valid random entry in the table
-				local entry = Stat.randomInteger(1,#table)
-
-				-- retrieve any random colliding agent positon in the table.
-				-- and set a new destination accordingly.
-				local rand = Stat.randomInteger(0,1)
-				
-				if rand == 1 then
-					if table[entry].posX >= PositionX then 
-						destX = -destX
-					end
-					if table[entry].posY > PositionY then
-						destY = -destY
-					end
-				else 
-					if table[entry].posX > PositionX then 
-						destX = -destX
-					end
-					if table[entry].posY >= PositionY then
-						destY = -destY
-					end
-
-				end
-
-				-- set the new destination and move there
-				Move.to{x=PositionX+destX, y=PositionY+destY} 	
-				scanMultiple = 10
-
-			else 
-				scanMultiple = scanMultiple * 1,1
-			end
-		end
-	else
-
-		Agent.changeColor{b=255}
-
+	for key,value in pairs(ids) do
+			file:write(value ..",".. agent_table[value] .."\n")
 	end
-	counter = counter +1
-end
 
+	file:close()
+
+	l_debug("Data Collector is done\n")
+
+end
 

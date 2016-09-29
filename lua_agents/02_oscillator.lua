@@ -59,14 +59,24 @@ Core	= require "ranalib_core"
 Stat	= require "ranalib_statistic"
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
-function initializeAgent()
+function InitializeAgent()
 
 	Tt = T + Stat.randomMean(e,0)
 	table.insert(Olevels, Core.time()..",".. 0)
 	say("Oscillator agent #: " .. ID .. " has been initialized")
 end
 
-function takeStep()
+function HandleEvent(event)
+
+	if Tn < Tt-r then
+		Tn = 0
+		table.insert(Olevels, Core.time()..",".. 0.5)
+		table.insert(Olevels, Core.time()..","..0)
+	end
+
+end
+
+function TakeStep()
 
 	Tn = Tn + STEP_RESOLUTION
 
@@ -74,32 +84,28 @@ function takeStep()
 		Event.emit{description="Signal"}
 		table.insert(Olevels, Core.time()..",".. 1)
 		peaked = true
-
-	end
-
-	for i = 1, 10000 do
-		local s = math.sqrt(i*i)
 	end
 
 	if Tn >= Tt then 
 		Tt = T + Stat.randomMean(e, 0)
 		Tn = 0
 		table.insert(Olevels, Core.time()..",".. 0)
---		say("Oscillator #"..ID.." Emitting signal at time: ".. Core.time().."[s]")
+		--	say("Oscillator #"..ID.." Emitting signal at time: ".. Core.time().."[s]")
 		peaked = false
 	end
 
 end
 
-function cleanUp()
-	if ID == 1 then
+function CleanUp()
 	--Write the oscillation data to a csv file.
-		file = io.open("02_data"..ID..".csv", "w")
-		for i,v in pairs(Olevels) do
-			file:write(i..","..v.."\n")
-		end
-		file:close()
+	file = io.open("02_data"..ID..".csv", "w")
+	
+	for i,v in pairs(Olevels) do
+		file:write(i..","..v.."\n")
 	end
+	file:close()
+	
 	l_debug("Agent #: " .. ID .. " is done\n")
+
 end
 
