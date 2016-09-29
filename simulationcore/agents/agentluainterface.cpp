@@ -505,7 +505,7 @@ void AgentLuaInterface::processFunction(EventQueue::dataEvent *devent, double ti
 
 void AgentLuaInterface::setRemoved()
 {
-    Output::Inst()->kprintf("removing agent.#.%i",ID);
+    //Output::Inst()->kprintf("removing agent.#.%i",ID);
     removed = true;
     GridMovement::removePos(ID);
 }
