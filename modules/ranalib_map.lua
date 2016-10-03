@@ -53,4 +53,11 @@ function RanaLibMap.getRadialMask(radius)
 
 end
 
+function RanaLibMap.checkAndChange(x, y, check_color, change_color) 
+
+	return l_checkMapAndChange(x,y, check_color.r, check_color.g, check_color.b, 
+	change_color.r, change_color.g, change_color.b )
+
+end
+
 return RanaLibMap

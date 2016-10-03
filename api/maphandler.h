@@ -43,6 +43,7 @@ public:
     static rgba getPixelInfo(int argX, int argY);
     static bool setPixelInfo(int argX, int argY, rgba argValue);
     static MatriceInt drawCircle(int radius, char channel, int posX, int posY);
+    static bool checkAndChange(int argX, int argY, rgba check_color, rgba change_color);
 
 signals:
 

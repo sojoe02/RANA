@@ -69,6 +69,31 @@ rgba MapHandler::getPixelInfo(int argX, int argY)
     return values;
 }
 
+bool MapHandler::checkAndChange(int argX, int argY, rgba check_color, rgba change_color)
+{
+
+    if(image != NULL && image->width() > argX && image->height() > argY
+                    && argX >= 0 && argY >= 0)
+    {
+        std::lock_guard<std::shared_timed_mutex>
+                writerlock(mapMutex);
+
+        QRgb info = image->pixel(argX, argY);
+
+        if(check_color.red == qRed(info) && check_color.green == qGreen(info)
+                && check_color.blue == qBlue(info) )
+        {
+            QRgb value = qRgb(change_color.red, change_color.green,
+                              change_color.blue);
+            image->setPixel(argX, argY, value);
+            return true;
+        }
+
+    }
+
+    return false;
+}
+
 bool MapHandler::setPixelInfo(int argX, int argY, rgba argValue)
 {
 

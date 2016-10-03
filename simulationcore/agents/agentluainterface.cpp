@@ -1,4 +1,4 @@
-//--begin_license--
+
 //
 //Copyright 	2013 	Søren Vissing Jørgensen.
 //			2014	Søren Vissing Jørgensen, Center for Bio-Robotics, SDU, MMMI.  
@@ -29,6 +29,7 @@
 #include <exception>
 #include <climits>
 #include <cmath>
+#include <mutex>
 
 #include "lua.hpp"
 //#include "lauxlib.h"
@@ -139,6 +140,8 @@ AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double po
         lua_register(L, "l_getEnvironmentSize", l_getEnvironmentSize);
         lua_register(L, "l_modifyMap", l_modifyMap);
         lua_register(L, "l_checkMap", l_checkMap);
+        lua_register(L, "l_checkMapAndChange", l_checkMapAndChange);
+
         lua_register(L, "l_checkPosition", l_checkPosition);
         lua_register(L, "l_updatePosition", l_updatePosition);
         lua_register(L, "l_addPosition", l_addPosition);
@@ -314,7 +317,7 @@ std::unique_ptr<EventQueue::eEvent> AgentLuaInterface::takeStep()
 
         if(moving)
         {
-        movement();
+            movement();
         }
 
         getSyncData();
@@ -400,7 +403,7 @@ void AgentLuaInterface::movement()
                 (posX <= destinationX && newPosX >= destinationX &&
                  posY <= destinationY && newPosY >= destinationY)
                 )
-        //if(std::abs(newPosX-DestinationX)std::abs(posX-destinationX))
+            //if(std::abs(newPosX-DestinationX)std::abs(posX-destinationX))
         {
             moving = false;
             lua_pushboolean(L, moving);
@@ -764,6 +767,37 @@ int AgentLuaInterface::l_checkMap(lua_State *L)
     lua_pushnumber(L, color.green);
     lua_pushnumber(L, color.blue);
     return 3;
+}
+
+int AgentLuaInterface::l_checkMapAndChange(lua_State *L)
+{
+    double x = lua_tonumber(L, -8);
+    double y = lua_tonumber(L, -7);
+
+    int modX = x * Phys::getScale();
+    int modY = y * Phys::getScale();
+
+    rgba check_color;
+
+    check_color.red = lua_tonumber(L, -6);
+    check_color.green = lua_tonumber(L, -5);
+    check_color.blue = lua_tonumber(L, -4);
+    check_color.alpha = 0;
+
+    rgba change_color;
+
+    change_color.red = lua_tonumber(L, -3);
+    change_color.green = lua_tonumber(L, -2);
+    change_color.blue = lua_tonumber(L, -1);
+    change_color.alpha = 0;
+
+    bool changed = false;
+
+    changed = MapHandler::checkAndChange(modX, modY, check_color, change_color);
+
+    lua_pushboolean(L, changed);
+
+    return 0;
 }
 
 int AgentLuaInterface::l_updatePosition(lua_State *L)
