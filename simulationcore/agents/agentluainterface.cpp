@@ -826,17 +826,23 @@ int AgentLuaInterface::l_radialMapScan(lua_State *L)
 
                 lua_pushnumber(L, index);
                 lua_newtable(L);
-                lua_pushstring(L,"r");
+                lua_pushstring(L,"posX");
+                lua_pushnumber(L, posX+i);
+                lua_settable(L, -3);
+                lua_pushstring(L, "posY");
+                lua_pushnumber(L, posY+j);
+                lua_settable(L, -3);
+                lua_pushstring(L,"R");
                 lua_pushnumber(L, color.red);
                 lua_settable(L, -3);
-                lua_pushstring(L,"g");
+                lua_pushstring(L,"G");
                 lua_pushnumber(L, color.green);
                 lua_settable(L, -3);
-                lua_pushstring(L, "b");
+                lua_pushstring(L,"B");
                 lua_pushnumber(L, color.blue);
                 lua_settable(L, -3);
-
                 lua_settable(L, -3);
+
             }
         }
     }
