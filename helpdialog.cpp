@@ -23,7 +23,7 @@ HelpDialog::HelpDialog(QWidget *parent) :
 	ui->helpTextBrowser->append(system);
 	ui->helpTextBrowser->append(" ");
 
-	QString depend ="<p></p>Based on <a href=\"http://en.cppreference.com/w/cpp\"><span style=\" text-decoration: underline; color:#0000ff;\">C++ 11</span></a>, <a href=\"https://www.qt.io/\"><span style=\" text-decoration: underline; color:#0000ff;\">Qt ";
+    QString depend ="<p></p>Based on <a href=\"http://en.cppreference.com/w/cpp\"><span style=\" text-decoration: underline; color:#0000ff;\">C++ 14</span></a>, <a href=\"https://www.qt.io/\"><span style=\" text-decoration: underline; color:#0000ff;\">Qt ";
 	depend.append(QT_VERSION_STR);
 	depend.append("</span></a> and <a href=\"http://luajit.org/\"><span style=\" text-decoration: underline; color:#0000ff;\">luaJIT 2.0.4</span></a></p>");
 	QString source = "Source: <a href=\"https://github.com/sojoe02/RANA\"><span style=\" text-decoration: underline; color:#0000ff;\">https://github.com/sojoe02/RANA</span></a>";

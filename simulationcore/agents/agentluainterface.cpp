@@ -141,6 +141,7 @@ AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double po
         lua_register(L, "l_modifyMap", l_modifyMap);
         lua_register(L, "l_checkMap", l_checkMap);
         lua_register(L, "l_checkMapAndChange", l_checkMapAndChange);
+        lua_register(L, "l_radialMapScan", l_radialMapScan);
 
         lua_register(L, "l_checkPosition", l_checkPosition);
         lua_register(L, "l_updatePosition", l_updatePosition);
@@ -800,6 +801,49 @@ int AgentLuaInterface::l_checkMapAndChange(lua_State *L)
     return 0;
 }
 
+
+int AgentLuaInterface::l_radialMapScan(lua_State *L)
+{
+    int radius = lua_tonumber(L, -3);
+    int posX = lua_tonumber(L, -2) - radius;
+    int posY = lua_tonumber(L, -1) - radius;
+    //Output::Inst()->kprintf("radius %d, posX %d, posY %d", radius, posX, posY);
+    MatriceInt result = Scanning::radialMask(radius);
+
+    lua_newtable(L);
+    int index = 0;
+
+    for (int i = 1; i < radius*2; i++)
+    {
+        for(int j = 1; j < radius*2; j++)
+        {
+            if( result[i][j] == 1)
+                //(posX + i != posX+radius || posY + j != posY+radius ))
+            {
+                index++;
+
+                rgba color = MapHandler::getPixelInfo(posX+i, posY+j);
+
+                lua_pushnumber(L, index);
+                lua_newtable(L);
+                lua_pushstring(L,"r");
+                lua_pushnumber(L, color.red);
+                lua_settable(L, -3);
+                lua_pushstring(L,"g");
+                lua_pushnumber(L, color.green);
+                lua_settable(L, -3);
+                lua_pushstring(L, "b");
+                lua_pushnumber(L, color.blue);
+                lua_settable(L, -3);
+
+                lua_settable(L, -3);
+            }
+        }
+    }
+    return 1;
+}
+
+
 int AgentLuaInterface::l_updatePosition(lua_State *L)
 {
     int oldX = lua_tonumber(L, -5)*GridMovement::getScale()+.5;
@@ -967,6 +1011,9 @@ int AgentLuaInterface::l_getMaskRadial(lua_State *L)
     }
     return 1;
 }
+
+
+
 
 int AgentLuaInterface::l_radialCollisionScan(lua_State *L)
 {
