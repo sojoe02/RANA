@@ -798,7 +798,7 @@ int AgentLuaInterface::l_checkMapAndChange(lua_State *L)
 
     lua_pushboolean(L, changed);
 
-    return 0;
+    return 1;
 }
 
 

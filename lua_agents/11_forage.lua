@@ -1,5 +1,5 @@
-
-local 10_forage = {}
+--requires ranalib_map module.
+local forager = {}
 
 local search_radius = 0
 local move_radius = 0
@@ -12,34 +12,33 @@ local state_search	= "searching"
 local state_eat 	= "eating"
 local state = state_search
 
-local _Configure
-
 --state functions
 local _Search
 local _Eat
 
-function 10_forage.forage()
+function forager.forage()
 
 	if not Moving then
 		
 		if state == state_search then
 			_Search()
-		if state == state_eat then
+		elseif state == state_eat then
 			_Eat()
 		end
 	end
 end
 
-function configure(configuration)
+function forager.configure(configuration)
 
 	search_radius = configuration.search_radius
 	move_radius = configuration.search_move_radius
+	move_speed = configuration.speed
 
 end
 
 _Search = function()
 
-	local table = Map.radialScanMap(forage_scan_radius)
+	local table = Map.radialMapScan(search_radius)
 
 	local start_index = l_getRandomInteger(1, #table)
 
@@ -51,12 +50,10 @@ _Search = function()
 		local g = table[index].G
 		local b = table[index].B
 
-		if _CompareColor({r,g,b}, grass) then
+		if _CompareColor({R=r,G=g,B=b}, grass) then
 
-			DestinationX = table[index].posX
-			DestinationY = table[index].posY
-			Moving = true
-			
+			Move.to{x=table[index].posX, y=table[index].posY}
+		
 			--set a new state and return
 			state = state_eat
 			return
@@ -64,15 +61,13 @@ _Search = function()
 
 	end
 	--if no grass is found search a new area
-	DestinationX = l_getRandomInteger(-move_radius, move_radius)
-	DestinationY = l_getRandomInteger(-move_radius, move_radius)
-	Moving = true
-
+	Move.to{x=PositionX+l_getRandomInteger(-move_radius, move_radius), y=PositionY+l_getRandomInteger(-move_radius, move_radius)}
+	
 end
 
 _Eat = function()
 
-	if Map.quantumModify(PositionX, PositionY, grass, background ) then
+	if Map.quantumModify(PositionX, PositionY, grass, background) then
 
 		Energy = Energy + 1
 	end
@@ -96,4 +91,4 @@ _CompareColor = function(color1, color2)
 end
 
 
-return 10_forage
+return forager
