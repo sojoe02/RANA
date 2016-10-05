@@ -69,8 +69,8 @@ end
 -- to a given color. This ensures that agent don't try and modify a pixel color twice.
 function RanaLibMap.quantumModify(x, y, check_color, change_color) 
 
-	return l_checkMapAndChange(x,y, check_color.r, check_color.g, check_color.b, 
-	change_color.r, change_color.g, change_color.b )
+	return l_checkMapAndChange(x,y, check_color.R, check_color.G, check_color.B, 
+	change_color.R, change_color.G, change_color.B )
 
 end
 
