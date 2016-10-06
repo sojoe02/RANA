@@ -178,6 +178,11 @@ AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double po
         std::string auxLib = Output::Inst()->RanaDir;
         auxLib.append("/modules/auxiliary.lua");
 
+        std::string settingsPath = filename;
+        settingsPath.erase(settingsPath.end()-4,settingsPath.end());
+        settingsPath.append("_settings.lua");
+
+
         if(luaL_loadfile(L, auxLib.c_str()) || lua_pcall(L,0,0,0))
         {
             Output::Inst()->kprintf("<font color=\"red\">error : %s <\font>", lua_tostring(L, -1));

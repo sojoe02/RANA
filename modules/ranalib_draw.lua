@@ -207,5 +207,15 @@ recursive_flodfill = function(node, target_color, replacement_color)
 
 end
 
+function Draw.compareColor(color1, color2)
+
+ if color1[1] == color2[1] and color1[2] == color2[2] and color1[3] == color2[3] then
+	 return true
+ end
+
+ return false
+
+end
+
 
 return Draw

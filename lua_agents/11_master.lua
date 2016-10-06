@@ -46,13 +46,31 @@
 Agent = require "ranalib_agent"
 Stat = require "ranalib_statistic"
 Map = require "ranalib_map"
+Shared = require "ranalib_shared"
+Draw = require "ranalib_draw" 
 
-prey_amount = 20
+background_color = {0,0,0}
+food_color = {0,255,0}
+
+food_percentage = 100
+prey_amount = 200
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
 function initializeAgent()
 
-	l_debug("Master Agent#: " .. ID .. " has been initialized")
+	say("Master Agent#: " .. ID .. " has been initialized")
+
+	Shared.storeTable("background_color", background_color)
+	Shared.storeTable("food_color", food_color)
+
+	for i = 0, ENV_WIDTH do
+
+		for j = 0, ENV_HEIGHT do
+
+			Map.modifyColor(i,j, background_color)
+		end
+
+	end
 	
 	for i=1, prey_amount do
 		Agent.addAgent("11_prey.lua")	
@@ -61,23 +79,34 @@ function initializeAgent()
 	PositionX = -1
 	PositionY = -1
 
-	for i = 1, ENV_WIDTH do
+	food_total = ENV_WIDTH * ENV_HEIGHT * food_percentage
 
-		for j = 1, ENV_HEIGHT do
+	g = 0
 
-			if Stat.randomInteger(1,100) == 1 then
+	for j = 1, food_total do
+
+		local x = Stat.randomInteger(0,ENV_WIDTH)
+		local y = Stat.randomInteger(0,ENV_HEIGHT)
 			
-				Map.modifyColor(i,j, 0, 255,0)
+		if Draw.compareColor(Map.checkColor(x,y),background_color) then
+			--say("succes")
 
-			else
-				Map.modifyColor(i,j,0,0,0)
-			end
+			Map.modifyColor(x,y,food_color)
 
-			
+		else 
+			j = j - 1
+
+		end
+		g = g + 1
+
+		if g >= ENV_WIDTH * ENV_HEIGHT* 3 then
+			--break
 		end
 	end
 
 end
+
+
 
 
 function takeStep()

@@ -44,16 +44,25 @@
 -- Import valid Rana lua libraries.
 Move = require "ranalib_movement"
 Map = require "ranalib_map"
+Shared = require "ranalib_shared"
 
 --load the foragin module
 Forage = require "11_forage"
 
 Energy = 0
+Food = 0
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
 function InitializeAgent()
 
-	Forage.configure{search_radius=10, search_move_radius=30, move_speed=10}
+	background_color = Shared.getTable("background_color")
+	food_color 	= Shared.getTable("food_color")
+	
+	Forage.configure{search_radius=10, 
+					search_move_radius=30, 
+					move_speed=5, 
+					background_color=background_color, 
+					food_color=food_color}
 end
 
 function takeStep()
@@ -62,6 +71,6 @@ function takeStep()
 end
 
 function cleanUp()
-	l_debug("Prey #: " .. ID .. " has " ..Energy .. "\n")
+	l_debug("Prey #: " .. ID .. " has " ..Energy .. " Energy and " .. Food .. " Food" )
 end
 

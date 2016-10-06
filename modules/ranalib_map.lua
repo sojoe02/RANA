@@ -28,13 +28,15 @@ function RanaLibMap.checkColor(x, y)
 
 	local r,g,b = l_checkMap(x,y)
 
-	return {R=r,G=g,B=b}
+	return {r,g,b}
 end
 
 --modifies a positions color on the map. with a new RGB value
-function RanaLibMap.modifyColor(x, y, r, g, b)
+function RanaLibMap.modifyColor(x, y, color)
 
-	l_modifyMap(x,y, r,g,b)
+	l_modifyMap(x,y, color[1],color[2],color[3])
+
+	--say(color[2])
 
 end
 
@@ -69,8 +71,8 @@ end
 -- to a given color. This ensures that agent don't try and modify a pixel color twice.
 function RanaLibMap.quantumModify(x, y, check_color, change_color) 
 
-	return l_checkMapAndChange(x,y, check_color.R, check_color.G, check_color.B, 
-	change_color.R, change_color.G, change_color.B )
+	return l_checkMapAndChange(x,y, check_color[1], check_color[2], check_color[3], 
+	change_color[1], change_color[2], change_color[3] )
 
 end
 

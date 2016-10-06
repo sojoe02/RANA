@@ -1,16 +1,18 @@
 --requires ranalib_map module.
-
 local forager = {}
 
 local search_radius = 0
 local move_radius = 0
+local spot_spacing = 0
 
-local food_color 		= {0,255,0}
-local background_color 	= {0,0,0}
+local resting_spot 	= {R=230,G=130,B=130}
+local background 	= {R=0,G=0,B=0}
+
+local restingSpots = {}
 
 --state descriptors
 local state_search	= "searching"
-local state_eat 	= "eating"
+local state_rest 	= "resting"
 local state = state_search
 
 --state functions
@@ -23,29 +25,24 @@ function forager.forage()
 		
 		if state == state_search then
 			_Search()
-		elseif state == state_eat then
-			_Eat()
+		elseif state == state_rest then
+			_Rest()
 		end
 	end
 end
 
-function forager.configure(configuration)
+function resting.configure(configuration)
 
-	search_radius = configuration.search_radius
-	move_radius = configuration.search_move_radius
 	move_speed = configuration.speed
-	food_color = configuration.food_color
-	background_color = configuration.background_color
+	spot_spacing = configuration.spot_spacing
 
 end
 
-function forager.reset()
+function resting.reset()
 
 	state = state_search
 
-end
-
-_Search = function()
+end_Search = function()
 
 	local table = Map.radialMapScan(search_radius)
 
@@ -53,18 +50,17 @@ _Search = function()
 
 	for i = 0, #table-1 do
 		
-		--local index = i
 		local index = (start_index+i) % #table + 1
 		  
 		local r = table[index].R
 		local g = table[index].G
 		local b = table[index].B
 
-		if _CompareColor({r,g,b}, food_color) then
+		if _CompareColor({R=r,G=g,B=b}, resting_spot) then
 
 			Move.to{x=table[index].posX, y=table[index].posY}
 		
-		---set a new state and return
+			--set a new state and return
 			state = state_eat
 			return
 		end		
@@ -75,23 +71,20 @@ _Search = function()
 	
 end
 
-_Eat = function()
+_ = function()
 
-	--Map.modifyColor(PositionX, PositionY, background_color)
-	if Map.quantumModify(PositionX, PositionY, food_color, background_color) then
+	if Map.quantumModify(PositionX, PositionY, grass, background) then
 
-		Food = Food + 1
+		Energy = Energy + 1
 	end
 
 	state = state_search
 
 end
 
-
-
 _CompareColor = function(color1, color2)
 	
-	if color1[1] == color2[1] and color1[2] == color2[2] and color1[3] == color2[3] then
+	if color1.R == color2.R and color1.G == color2.G and color1.B == color2.B then
 
 		return true
 
