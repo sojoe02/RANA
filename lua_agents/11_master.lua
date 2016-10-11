@@ -52,11 +52,15 @@ Draw = require "ranalib_draw"
 background_color = {0,0,0}
 food_color = {0,255,0}
 
-food_percentage = 100
-prey_amount = 200
+food_percentage = 0.01
+
+population = {{speed=1},{speed=2},{speed=3}} -- various populations each with a different movement speed.
+frog_amount = 20 -- number of frog agents pr. population
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
 function initializeAgent()
+
+	StepMultiple = 1000
 
 	say("Master Agent#: " .. ID .. " has been initialized")
 
@@ -64,21 +68,37 @@ function initializeAgent()
 	Shared.storeTable("food_color", food_color)
 
 	for i = 0, ENV_WIDTH do
-
 		for j = 0, ENV_HEIGHT do
-
 			Map.modifyColor(i,j, background_color)
 		end
-
 	end
 	
-	for i=1, prey_amount do
-		Agent.addAgent("11_prey.lua")	
+	-- Add the active agnets and setup the data collector
+	local data_table = {}
+	local ids = {}
+	
+	for key,value in pairs(population) do
+		for i =0, frog_amount do
+			Shared.storeNumber("food_move_speed", value.speed)
+			local ID = Agent.addAgent("11_frog.lua")
+			table.insert(ids, ID)
+			data_table[ID] = {call_amount = 0, movement_speed = value.speed}
+		end
 	end
 
+	Shared.storeTable("agents", data_table)
+	Shared.storeTable("ids", ids)
+
+	Agent.addAgent("11_data_collector.lua",-1,-1)
+
+	--
+	--
 	PositionX = -1
 	PositionY = -1
+	--
+	--
 
+	-- insert food
 	food_total = ENV_WIDTH * ENV_HEIGHT * food_percentage
 
 	g = 0
@@ -111,6 +131,35 @@ end
 
 function takeStep()
 
+	--count number of food items
+	local food_amount = 0
+
+	for i = 0, ENV_WIDTH do
+		for j = 0, ENV_HEIGHT do
+			
+			local current_color = Map.checkColor(i,j)
+
+			if Draw.compareColor(Map.checkColor(i,j), food_color) then		
+				food_amount = food_amount + 1
+
+			end
+			
+		end
+	end
+
+	local missing_food = food_total - food_amount
+	
+	for j = 1, missing_food do
+
+		local x = Stat.randomInteger(0,ENV_WIDTH)
+		local y = Stat.randomInteger(0,ENV_HEIGHT)
+			
+		if Draw.compareColor(Map.checkColor(x,y),background_color) then
+			Map.modifyColor(x,y,food_color)
+		else 
+			j = j - 1
+		end
+	end
 
 end
 

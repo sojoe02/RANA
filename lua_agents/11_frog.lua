@@ -45,32 +45,64 @@
 Move = require "ranalib_movement"
 Map = require "ranalib_map"
 Shared = require "ranalib_shared"
+Agent = require "ranalib_agent"
 
---load the foragin module
-Forage = require "11_forage"
+--load the behaviour modules
+Forage = require "11_forage_module"
+Oscillate = require "11_oscillator_module"
 
-Energy = 0
 Food = 0
+
+state_foraging 		= "state_for"
+state_oscillating 	= "state_osc"
+state = state_foraging
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
 function InitializeAgent()
 
-	background_color = Shared.getTable("background_color")
-	food_color 	= Shared.getTable("food_color")
+	local background_color = Shared.getTable("background_color")
+	local food_color 	= Shared.getTable("food_color")
+	--local forage_amount = Shared.getNumber("forage_amount")
+	local food_move_speed = Shared.getNumber("food_move_speed")
+
+	--say(food_move_speed)
 	
 	Forage.configure{search_radius=10, 
 					search_move_radius=30, 
-					move_speed=5, 
+					move_speed=food_move_speed, 
 					background_color=background_color, 
-					food_color=food_color}
+					food_color=food_color,
+					forage_amount=5}
+
+	Oscillate.configure()
+	Agent.changeColor{r=0, g=100, b=200}
 end
 
 function takeStep()
 
-	Forage.forage()
+	--check state
+	if state == state_foraging then
+		
+		Forage.TakeStep()
+		
+		if Food >= 100 then
+			state = state_oscillating
+			Agent.changeColor{r=200, g= 0, b=0}
+		end
+
+	elseif state == state_oscillating then
+		
+		Oscillate.TakeStep()
+		
+		if Food <= 0 then
+			state = state_foraging
+			Agent.changeColor{r=0, g=100, b=200}
+		end
+	end
+
 end
 
 function cleanUp()
-	l_debug("Prey #: " .. ID .. " has " ..Energy .. " Energy and " .. Food .. " Food" )
+	l_debug("Prey #: " .. ID .. " has " .. Food .. " Food" )
 end
 

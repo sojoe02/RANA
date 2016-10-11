@@ -9,7 +9,9 @@ function ranaLibMovement.to(options)
 	local yy = options.y or posY
 	local sspeed = options.speed or Speed
 
-	--ranaLibMovement.setSpeed(sspeed)
+	ranaLibMovement.setSpeed(sspeed)
+
+	--say(sspeed ..","..Speed)
 
 
 	if xx > ENV_WIDTH then xx = ENV_WIDTH end
