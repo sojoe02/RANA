@@ -67,8 +67,8 @@ function InitializeAgent()
 
 	--say(food_move_speed)
 	
-	Forage.configure{search_radius=10, 
-					search_move_radius=30, 
+	Forage.configure{search_radius=5, 
+					search_move_radius=20, 
 					move_speed=food_move_speed, 
 					background_color=background_color, 
 					food_color=food_color,
@@ -78,6 +78,7 @@ function InitializeAgent()
 	Agent.changeColor{r=0, g=100, b=200}
 end
 
+
 function takeStep()
 
 	--check state
@@ -85,7 +86,7 @@ function takeStep()
 		
 		Forage.TakeStep()
 		
-		if Food >= 100 then
+		if Food >= 20 then
 			state = state_oscillating
 			Agent.changeColor{r=200, g= 0, b=0}
 		end

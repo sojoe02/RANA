@@ -54,6 +54,7 @@ function InitializeAgent()
 
 	ids = Shared.getTable("ids")
 	agent_table = Shared.getTable("agents")
+	population = Shared.getTable("population")
 	--say(Utility.serializeTable(agent_table))
 
 end
@@ -69,17 +70,22 @@ end
 function CleanUp()
 
 	--Write the oscillation data to a csv file.
-	file = io.open("11_overall_stats.csv", "w")
+	--
+	for key1,value1 in pairs(population) do
+	
+		file = io.open("11_overall_stats_"..value1.speed..".csv", "w")
+		file:write("id("..value1.speed.."),".. "calls(" ..value1.speed..")\n")
 --
 --	say(Utility.serializeTable(agent_table))
 
-	for key,value in pairs(ids) do
-			file:write(value ..",".. agent_table[value].call_amount..","..agent_table[value].movement_speed .."\n")
+		for key,value in pairs(ids) do
+			if agent_table[value].movement_speed == value1.speed then
+				file:write(value ..","..agent_table[value].call_amount .."\n")
+			end
+		end
+	
+		file:close()
+
 	end
-
-	file:close()
-
-	l_debug("Data Collector is done\n")
-
 end
 

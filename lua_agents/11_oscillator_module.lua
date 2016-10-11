@@ -48,9 +48,9 @@ local Olevels = {}
 local iteration = 1
 
 -- Oscillator values:
-local T = 0.500 -- Time period.
-local e = 0.030 -- Period variance with mean of 0.
-local r = 0.100 -- falltime.
+local T = 2.000 -- Time period.
+local e = 0.20 -- Period variance with mean of 0.
+local r = 0.500 -- falltime.
 local Tt = 0 -- active period targeted time. Peak is then equal to Tt-r
 local Tn = 0 -- active period time
 local peaked = false -- boolean helping with numeric resolution issues.
