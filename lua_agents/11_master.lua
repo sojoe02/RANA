@@ -79,7 +79,7 @@ function initializeAgent()
 	local ids = {}
 	
 	for key,value in pairs(population) do
-		for i =0, frog_amount do
+		for i = 1, frog_amount do
 			Shared.storeNumber("food_move_speed", value.speed)
 			local ID = Agent.addAgent("11_frog.lua")
 			table.insert(ids, ID)
