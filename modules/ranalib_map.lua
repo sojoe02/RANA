@@ -64,6 +64,8 @@ function RanaLibMap.radialMapScan(radius)
 
 	end
 
+	--if table[1]== nil then return nil end  
+
 	return table
 end
 
@@ -76,6 +78,8 @@ function RanaLibMap.radialMapColorScan(radius, r, g, b)
 			table = l_radialMapColorScan(radius, PositionX, PositionY, r, g, b)
 
 	end
+
+	--if table[1]==nil then return nil end
 
 	return table
 

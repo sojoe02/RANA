@@ -147,6 +147,7 @@ public:
     bool removed;
     lua_State* L;
 
+    double moveFactor;
     void getSyncData();
 };
 

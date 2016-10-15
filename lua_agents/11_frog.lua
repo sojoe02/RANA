@@ -76,17 +76,19 @@ function InitializeAgent()
 
 	Oscillate.configure()
 	Agent.changeColor{r=0, g=100, b=200}
+	--StepMultiple = 10
 end
-
 
 function takeStep()
 
 	--check state
 	if state == state_foraging then
 		
+		
 		Forage.TakeStep()
 		
 		if Food >= 20 then
+			--StepMultiple = 1
 			state = state_oscillating
 			Agent.changeColor{r=200, g= 0, b=0}
 		end
@@ -96,6 +98,7 @@ function takeStep()
 		Oscillate.TakeStep()
 		
 		if Food <= 0 then
+			--StepMultiple = 10
 			state = state_foraging
 			Agent.changeColor{r=0, g=100, b=200}
 		end

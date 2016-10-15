@@ -21,11 +21,12 @@ local _Eat
 
 local Map = require "ranalib_map"
 local Movement = require "ranalib_movement"
+local Utility = require "ranalib_utility"
 
 function forager.TakeStep()
 
 	if not Moving then
-		
+		--say(PositionX..":".. DestinationX)	
 		if state == state_search then
 			_Search()
 		elseif state == state_eat then
@@ -54,29 +55,34 @@ end
 
 _Search = function()
 
-	local table = Map.radialMapScan(search_radius)
+	local table = Map.radialMapColorScan(search_radius, food_color[1], food_color[2], food_color[3])
 
-	local start_index = l_getRandomInteger(1, #table)
+	if table ~= nil then
+		local start_index = l_getRandomInteger(1, #table)
 
-	for i = 0, #table-1 do
+		--say(Utility.serializeTable(table))
+		for i = 0, #table-1 do
 		
-		--local index = i
-		local index = (start_index+i) % #table + 1
+			--local index = i
+			local index = (start_index+i) % #table + 1
 		  
-		local r = table[index].R
-		local g = table[index].G
-		local b = table[index].B
+			local r = table[index].R
+			local g = table[index].G
+			local b = table[index].B
 
-		if _CompareColor({r,g,b}, food_color) then
+			--if _CompareColor({r,g,b}, food_color) then
 
 			Move.to{x=table[index].posX, y=table[index].posY,speed=move_speed}
+			--Map.modifyColor(table[index].posX, table[index].posY,background_color)
 		
-		---set a new state and return
+			---set a new state and return
 			state = state_eat
+			--	return
+			--end		
 			return
-		end		
 
 	end
+end
 	--if no grass is found search a new area
 	Move.to{x=PositionX+l_getRandomInteger(-move_radius, move_radius), y=PositionY+l_getRandomInteger(-move_radius, move_radius), speed=move_speed}
 	

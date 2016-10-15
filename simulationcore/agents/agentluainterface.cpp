@@ -205,6 +205,8 @@ AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double po
         //Call the Initialization function for the agent
         lua_settop(L,0);
     }
+
+    moveFactor = Phys::getMacroFactor() * Phys::getTimeRes();
 }
 
 AgentLuaInterface::~AgentLuaInterface()
@@ -390,14 +392,15 @@ void AgentLuaInterface::movement()
     gridmove = lua_toboolean(L,-1);
     //bool collision = false;
 
+
     if(posX != destinationX || posY != destinationY)
     {
         double angle = std::atan2(destinationX-posX, destinationY-posY);
         double vY = speed * std::cos(angle);
         double vX = speed * std::sin(angle);
 
-        double newPosX = posX + Phys::getMacroFactor()*Phys::getTimeRes() * vX;
-        double newPosY = posY + Phys::getMacroFactor()*Phys::getTimeRes() * vY;
+        double newPosX = posX + moveFactor * vX * macroFactorMultiple;
+        double newPosY = posY + moveFactor * vY * macroFactorMultiple;
 
 
         //Check if the agent overshoots it's target destinations.
@@ -817,7 +820,7 @@ int AgentLuaInterface::l_radialMapColorScan(lua_State *L)
     int b = lua_tonumber(L, -1);
     //Output::Inst()->kprintf("radius %d, posX %d, posY %d", radius, posX, posY);
 
-
+    int count = 0;
 
     MatriceInt result = Scanning::radialMask(radius);
 
@@ -831,12 +834,14 @@ int AgentLuaInterface::l_radialMapColorScan(lua_State *L)
             if( result[i][j] == 1)
                 //(posX + i != posX+radius || posY + j != posY+radius ))
             {
-                index++;
 
                 rgba color = MapHandler::getPixelInfo(posX+i, posY+j);
 
                 if(r == color.red && g == color.green && b == color.blue)
                 {
+ //                   Output::Inst()->kprintf("%i,%i,%i", color.red, color.green, color.blue);
+                    count++;
+                    index++;
 
                     lua_pushnumber(L, index);
                     lua_newtable(L);
@@ -859,6 +864,11 @@ int AgentLuaInterface::l_radialMapColorScan(lua_State *L)
                 }
             }
         }
+    }
+
+    if(count == 0)
+    {
+        lua_pushnil(L);
     }
     return 1;
 }

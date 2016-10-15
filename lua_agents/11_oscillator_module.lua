@@ -80,7 +80,7 @@ end
 
 function oscillator.TakeStep()
 
-	Tn = Tn + STEP_RESOLUTION
+	Tn = Tn + STEP_RESOLUTION * StepMultiple
 
 	if Tn >= Tt-r and peaked == false then
 		Event.emit{description="Signal"}
