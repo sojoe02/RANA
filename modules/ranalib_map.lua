@@ -67,6 +67,20 @@ function RanaLibMap.radialMapScan(radius)
 	return table
 end
 
+function RanaLibMap.radialMapColorScan(radius, r, g, b)
+
+	local table
+
+	if type(radius) == "number" and radius > 0 then
+
+			table = l_radialMapColorScan(radius, PositionX, PositionY, r, g, b)
+
+	end
+
+	return table
+
+end
+
 -- modiffies the map with a new color only if the current color on the map corresponds
 -- to a given color. This ensures that agent don't try and modify a pixel color twice.
 function RanaLibMap.quantumModify(x, y, check_color, change_color) 

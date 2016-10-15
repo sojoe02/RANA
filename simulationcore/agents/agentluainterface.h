@@ -77,6 +77,7 @@ public:
     static int l_checkMap(lua_State *L);
     static int l_checkMapAndChange(lua_State *L);
     static int l_radialMapScan(lua_State *L);
+    static int l_radialMapColorScan(lua_State *L);
 
     static int l_addPosition(lua_State *L);
     static int l_checkPosition(lua_State *L);

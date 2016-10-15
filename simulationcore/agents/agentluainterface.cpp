@@ -142,6 +142,7 @@ AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double po
         lua_register(L, "l_checkMap", l_checkMap);
         lua_register(L, "l_checkMapAndChange", l_checkMapAndChange);
         lua_register(L, "l_radialMapScan", l_radialMapScan);
+        lua_register(L, "l_radialMapColorScan", l_radialMapColorScan);
 
         lua_register(L, "l_checkPosition", l_checkPosition);
         lua_register(L, "l_updatePosition", l_updatePosition);
@@ -806,6 +807,61 @@ int AgentLuaInterface::l_checkMapAndChange(lua_State *L)
     return 1;
 }
 
+int AgentLuaInterface::l_radialMapColorScan(lua_State *L)
+{
+    int radius = lua_tonumber(L, -6);
+    int posX = lua_tonumber(L, -5) - radius;
+    int posY = lua_tonumber(L, -4) - radius;
+    int r = lua_tonumber(L, -3);
+    int g = lua_tonumber(L, -2);
+    int b = lua_tonumber(L, -1);
+    //Output::Inst()->kprintf("radius %d, posX %d, posY %d", radius, posX, posY);
+
+
+
+    MatriceInt result = Scanning::radialMask(radius);
+
+    lua_newtable(L);
+    int index = 0;
+
+    for (int i = 1; i < radius*2; i++)
+    {
+        for(int j = 1; j < radius*2; j++)
+        {
+            if( result[i][j] == 1)
+                //(posX + i != posX+radius || posY + j != posY+radius ))
+            {
+                index++;
+
+                rgba color = MapHandler::getPixelInfo(posX+i, posY+j);
+
+                if(r == color.red && g == color.green && b == color.blue)
+                {
+
+                    lua_pushnumber(L, index);
+                    lua_newtable(L);
+                    lua_pushstring(L,"posX");
+                    lua_pushnumber(L, posX+i);
+                    lua_settable(L, -3);
+                    lua_pushstring(L, "posY");
+                    lua_pushnumber(L, posY+j);
+                    lua_settable(L, -3);
+                    lua_pushstring(L,"R");
+                    lua_pushnumber(L, color.red);
+                    lua_settable(L, -3);
+                    lua_pushstring(L,"G");
+                    lua_pushnumber(L, color.green);
+                    lua_settable(L, -3);
+                    lua_pushstring(L,"B");
+                    lua_pushnumber(L, color.blue);
+                    lua_settable(L, -3);
+                    lua_settable(L, -3);
+                }
+            }
+        }
+    }
+    return 1;
+}
 
 int AgentLuaInterface::l_radialMapScan(lua_State *L)
 {
