@@ -50,6 +50,17 @@ function _CleanUp()
 
 end
 
+function _EventInitialization(posx, posy)
+
+	if EventInitialization ~= nil then
+		EventInitialization(posx, posy)
+	else
+		PositionX = posx
+		PositionY = posy
+	end
+
+end
+
 function _ProcessEventFunction(sourceX, sourceY, posX, posY, time, serialTable)
 	
 	if string.len(serialTable) > 3 then
@@ -69,6 +80,5 @@ function _ProcessEventFunction(sourceX, sourceY, posX, posY, time, serialTable)
 	else 
 		return ProcessEventFunction{sX=sourceX, sY=sourceY, pX=posX, pY=posY, time=time, table=_eventTable}
 	end
-
 end
 

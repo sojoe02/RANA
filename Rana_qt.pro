@@ -83,7 +83,8 @@ unix: export(first.depends)
 unix: export(copydata.commands)
 unix: QMAKE_EXTRA_TARGETS += first copydata
 #
-QMAKE_CXXFLAGS += -Wno-unused-variable -Wno-unused-parameter
+QMAKE_CXXFLAGS += -Wextra -Wno-unused-variable -Wno-unused-parameter
+QMAKE_CXXFLAGS_RELEASE += -o3
 CONFIG += c++14
 #QMAKE_CXXFLAGS += -std=c++1y -Wno-unused-variable -Wno-unused-parameter
 #CONFIG += stdlib=libc++ lc++abi o3
