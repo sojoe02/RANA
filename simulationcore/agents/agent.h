@@ -52,6 +52,8 @@ public:
     double getPosX();
 	double getPosY();
 
+	void setPositions(double x, double y, double z){posX=x; posY=y; posZ=z;}
+
 	bool removeGroup(int group);
 	void addGroup(int group);
 

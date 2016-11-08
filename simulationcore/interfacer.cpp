@@ -16,6 +16,7 @@ void Interfacer::initInterfacer(Supervisor *arg_master)
     agentFilenames.clear();
     agents.clear();
 	//activesector = arg_activesector;
+
 }
 
 int Interfacer::addLuaAgent(double x, double y, double z, std::string path, std::string filename)
@@ -67,6 +68,17 @@ std::shared_ptr<AgentLuaInterface> Interfacer::getAgentPtr(int id)
 	{
 		return itr->second;
 	} else return NULL;
+}
+
+void Interfacer::modifyAgentInfo(std::vector<agentInfo> infolist)
+{
+	for(agentInfo &info : infolist)
+	{
+		auto &agent = agents[info.id];
+
+		agent->setPositions(2,3,8);
+
+	}
 }
 
 
