@@ -82,11 +82,12 @@ void Sector::retrievePopPos(std::list<agentInfo> &infolist){
         if(master->removedIDs.find(lua.second->getID()) ==
 				master->removedIDs.end())
 		{
-			agentInfo info;
-            info.id = lua.second->getID();
-            info.y = lua.second->getPosY();
-            info.x = lua.second->getPosX();
+			agentInfo info = lua.second->getAgentInfo();
+			//info.id = lua.second->getID();
+			//info.y = lua.second->getPosY();
+			//info.x = lua.second->getPosX();
 			infolist.push_back(info);
+
 		}
 	}
 }

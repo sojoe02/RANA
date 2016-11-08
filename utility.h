@@ -49,11 +49,19 @@ struct rgba
 
 struct agentInfo
 {
-    int x;
-    int y;
+	double x;
+	double y;
+	double z;
     int id;
+	rgba color;
+
+	double radius;
+	double mass;
+	double charge;
     //std::string filename;
+
 };
+
 
 struct agentTmu
 {

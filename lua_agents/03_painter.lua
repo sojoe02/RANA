@@ -50,7 +50,7 @@ function takeStep()
 	local x = Stat.randomInteger(0, ENV_WIDTH)
 	local y = Stat.randomInteger(0, ENV_HEIGHT)
 
-	Map.modifyColor(x,y,Stat.randomInteger(1,255),Stat.randomInteger(1,255),Stat.randomInteger(1,255)) 
+	Map.modifyColor(x,y,{Stat.randomInteger(1,255),Stat.randomInteger(1,255),Stat.randomInteger(1,255)}) 
 
 end
 
