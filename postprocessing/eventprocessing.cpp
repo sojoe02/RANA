@@ -330,13 +330,15 @@ void EventProcessing::recursiveZlevel(AgentLuaInterface *auton, EventQueue::data
         if (duration != 0)
             max = duration/timeRes;
 
-        for(int i = 0; i < (int)max; i++)
+        //Output::Inst()->kprintf("%f", max);
+
+        for(int i = 1; i < (int)max; i++)
         {
             if(zitr != zBlocks->end())
             {
                 //auton->processFunction(event, i/timeRes,x+displaceX*mapRes,
                 //				   y+displaceY*mapRes,z,duration);
-                zitr.value()->addZValue(z, arrivalTime);
+                zitr.value()->addZValue(z, arrivalTime+i);
             }
         }
 

@@ -22,7 +22,6 @@ SOURCES += main.cpp\
     graphics/agentItem.cpp \
     runner.cpp \
     postprocessing/eventprocessing.cpp \
-    postprocessing/eventmap.cpp \
     postprocessing/colorutility.cpp \
     eventdialog.cpp \
     postprocessing/graphics/zblock.cpp \
@@ -51,7 +50,6 @@ HEADERS  += mainwindow.h \
     graphics/agentItem.h \
     runner.h \
     postprocessing/eventprocessing.h \
-    postprocessing/eventmap.h \
     postprocessing/colorutility.h \
     eventdialog.h \
     postprocessing/graphics/zblock.h \
