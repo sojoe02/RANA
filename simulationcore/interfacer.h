@@ -22,6 +22,7 @@ public:
 	static std::shared_ptr<AgentLuaInterface> getAgentPtr(int id);
 	static void submitEEvent(std::unique_ptr<EventQueue::eEvent> eEvent);
 
+	void modifyAgentInfo(std::vector<agentInfo> infolist);
 private:
 
     static Supervisor *master;

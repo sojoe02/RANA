@@ -28,7 +28,8 @@
 #include "../sector.h"
 
     Agent::Agent(int ID, double posX, double posY, double posZ, Sector *sector)
-:ID(ID), macroFactorMultiple(1), posX(posX), posY(posY), posZ(posZ), sector(sector)
+:ID(ID), macroFactorMultiple(1), posX(posX), posY(posY), posZ(posZ), sector(sector),
+	  radius(0), mass(0), charge(0)
 {
 
 }
@@ -37,16 +38,51 @@ int Agent::getID(){
 	return ID;
 }
 
-std::string Agent::getDesc(){
+std::string Agent::getDesc()
+{
 	return desc;
 }
 
-double Agent::getPosX(){
+double Agent::getPosX()
+{
 	return posX;
 }
 
-double Agent::getPosY(){
+double Agent::getPosY()
+{
 	return posY;
+}
+
+double Agent ::getPosZ()
+{
+	return posZ;
+}
+
+void Agent::setColor(int r, int g, int b, int a)
+{
+	color.red = r;
+	color.green = g;
+	color.blue = b;
+	color.alpha = a;
+}
+
+agentInfo Agent::getAgentInfo()
+{
+
+	agentInfo info;
+
+	info.color = color;
+	info.charge = charge;
+	info.mass = mass;
+	info.id = ID;
+	info.radius = radius;
+
+	info.x = posX;
+	info.y = posY;
+	info.z = posZ;
+
+	return info;
+
 }
 
 bool Agent::removeGroup(int group)

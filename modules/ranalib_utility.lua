@@ -7,6 +7,10 @@ function RanaLibUtility.deserializeTable(string)
 	--say(string)
 	if string.len(string) < 3 then 
 		return nil
+
+	elseif string == nil then
+		say("No data available")
+		return nil
 	end
 
 	loadstring("stable="..string)()

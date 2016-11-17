@@ -99,10 +99,14 @@ AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double po
         lua_setglobal(L, "EVENT_RESOLUTION");
         lua_pushnumber(L, macroFactorMultiple);
         lua_setglobal(L, "StepMultiple");
+
         lua_pushnumber(L, Phys::getEnvX());
         lua_setglobal(L, "ENV_WIDTH");
         lua_pushnumber(L, Phys::getEnvY());
-        lua_setglobal(L, "ENV_HEIGHT");
+		lua_setglobal(L, "ENV_HEIGHT");
+		lua_pushnumber(L, Phys::getEnvZ());
+		lua_setglobal(L, "ENV_DEPTH");
+
         lua_pushnumber(L, destinationX);
         lua_setglobal(L, "DestinationX");
         lua_pushnumber(L,destinationY);
@@ -112,7 +116,24 @@ AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double po
         lua_pushboolean(L, moving);
         lua_setglobal(L, "Moving");
         lua_pushboolean(L, gridmove);
-        lua_setglobal(L, "GridMove");
+		lua_setglobal(L, "GridMove");
+
+		lua_pushnumber(L, mass);
+		lua_setglobal(L, "Mass");
+		lua_pushnumber(L, charge);
+		lua_setglobal(L, "Charge");
+		lua_pushnumber(L, radius);
+		lua_setglobal(L, "Radius");
+
+		lua_pushnumber(L, color.red);
+		lua_setglobal(L, "ColorRed");
+		lua_pushnumber(L, color.green);
+		lua_setglobal(L, "ColorGreen");
+		lua_pushnumber(L, color.blue);
+		lua_setglobal(L, "ColorBlue");
+		lua_pushnumber(L, color.alpha);
+		lua_setglobal(L, "ColorAlpha");
+
         //lua_newtable(L);
         //lua_setglobal(L, "EventTable");
         //Register all the API functions:
@@ -205,6 +226,7 @@ AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double po
         //Call the Initialization function for the agent
         lua_settop(L,0);
     }
+
 
     moveFactor = Phys::getMacroFactor() * Phys::getTimeRes();
 }
@@ -363,11 +385,12 @@ std::unique_ptr<EventQueue::eEvent> AgentLuaInterface::handleEvent(std::unique_p
         lua_getglobal(L,"_HandleEvent");
         lua_pushnumber(L, eventPtr->event->posX);
         lua_pushnumber(L, eventPtr->event->posY);
+		lua_pushnumber(L, eventPtr->event->posZ);
         lua_pushnumber(L, eventPtr->event->originID);
         lua_pushstring(L, eventPtr->event->desc.c_str());
         lua_pushstring(L, eventPtr->event->luatable.c_str());
 
-        if(lua_pcall(L,5,0,0)!=LUA_OK)
+		if(lua_pcall(L,6,0,0)!=LUA_OK)
         {
             Output::Inst()->kprintf("<b><font color=\"brown\">Error on event handling.%s, %s</font></b></>",filename.c_str(),lua_tostring(L,-1));
             Output::RunSimulation.store(false);
@@ -546,7 +569,17 @@ void AgentLuaInterface::getSyncData()
 {
     if(removed) return;
     try
-    {
+	{
+		lua_getglobal(L, "ColorRed");
+		lua_getglobal(L, "ColorGreen");
+		lua_getglobal(L, "ColorBlue");
+		lua_getglobal(L, "ColorAlpha");
+		lua_getglobal(L, "PositionZ");
+
+		lua_getglobal(L, "Mass");
+		lua_getglobal(L, "Charge");
+		lua_getglobal(L, "Radius");
+
         lua_getglobal(L, "GridMove");
         lua_getglobal(L, "StepMultiple");
         lua_getglobal(L, "PositionX");
@@ -554,7 +587,19 @@ void AgentLuaInterface::getSyncData()
         lua_getglobal(L, "DestinationX");
         lua_getglobal(L, "DestinationY");
         lua_getglobal(L, "Speed");
-        lua_getglobal(L, "Moving");
+		lua_getglobal(L, "Moving");
+
+		radius = lua_tonumber(L, -9);
+		charge = lua_tonumber(L, -10);
+		mass = lua_tonumber(L, -11);
+
+		posZ = lua_tonumber(L, -12);
+
+		color.alpha = lua_tonumber(L, -13);
+		color.red = lua_tonumber(L, -16);
+		color.green = lua_tonumber(L, -15);
+		color.blue = lua_tonumber(L, -14);
+
 
         int stepMultiple = (int)lua_tonumber(L, -7);
         if(stepMultiple >=0 )
@@ -1292,16 +1337,17 @@ int AgentLuaInterface::l_emitEvent(lua_State *L)
     std::unique_ptr<EventQueue::eEvent>
             sendEvent(new EventQueue::eEvent());
 
-    sendEvent->originID = lua_tonumber(L, -8);
-    sendEvent->posX	= lua_tonumber(L, -7);
-    sendEvent->posY = lua_tonumber(L, -6);
-    sendEvent->propagationSpeed = lua_tonumber(L,-5);
+	sendEvent->originID = lua_tonumber(L, -9);
+	sendEvent->posX	= lua_tonumber(L, -8);
+	sendEvent->posY = lua_tonumber(L, -7);
+	sendEvent->propagationSpeed = lua_tonumber(L,-6);
     sendEvent->activationTime = Phys::getCTime()+1;
     sendEvent->id = ID::generateEventID();
-    sendEvent->desc = lua_tostring(L, -4);
-    sendEvent->targetID = lua_tonumber(L, -3);
-    sendEvent->targetGroup = lua_tonumber(L, -2);
-    sendEvent->luatable = lua_tostring(L, -1);
+	sendEvent->desc = lua_tostring(L, -5);
+	sendEvent->targetID = lua_tonumber(L, -4);
+	sendEvent->targetGroup = lua_tonumber(L, -3);
+	sendEvent->luatable = lua_tostring(L, -2);
+	sendEvent->posZ = lua_tonumber(L, -1);
 
     Interfacer::submitEEvent(std::move(sendEvent));
     return 0;
@@ -1361,6 +1407,8 @@ int AgentLuaInterface::l_setMacroFactorMultipler(lua_State *L)
     return 0;
 
 }
+
+
 
 
 //Emergency brake -- do not pull --!

@@ -27,6 +27,8 @@
 #include <memory>
 #include <unordered_set>
 
+#include <utility.h>
+
 #include "../eventqueue.h"
 
 class EventQueue;
@@ -50,6 +52,8 @@ public:
     double getPosX();
 	double getPosY();
 
+	void setPositions(double x, double y, double z){posX=x; posY=y; posZ=z;}
+
 	bool removeGroup(int group);
 	void addGroup(int group);
 
@@ -62,6 +66,12 @@ public:
 	int getMacroFactorMultipler();
 	void setMacroFactorMultipler(int multipler);
 
+	void setColor(int r, int g, int b, int a = 255);
+	//rgba getColor(){return color;}
+	agentInfo getAgentInfo();
+
+	double getPosZ();
+
 protected:
 
 	void distroEEvent(std::unique_ptr<EventQueue::eEvent> event);
@@ -73,6 +83,12 @@ protected:
     double posX, posY, posZ;
     std::vector<double> statusVector;
     Sector* sector;
+	rgba color;
+
+	double radius;
+	double mass;
+	double charge;
+
 
     friend class Sector;
 };

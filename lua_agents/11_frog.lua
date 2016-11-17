@@ -75,6 +75,7 @@ function InitializeAgent()
 					forage_amount=5}
 
 	Oscillate.configure()
+
 	Agent.changeColor{r=0, g=100, b=200}
 	--StepMultiple = 10
 end

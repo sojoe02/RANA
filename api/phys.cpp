@@ -132,6 +132,11 @@ double Phys::getEnvY()
     return env_y * scale;
 }
 
+double Phys::getEnvZ()
+{
+	return 1;
+}
+
 double Phys::getMersenneFloat(double min=0, double max=1)
 {
     double random = ((double)Phys::int_dist(Phys::rng)/(double)LLONG_MAX);

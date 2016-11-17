@@ -60,6 +60,7 @@ class EventQueue
 			double propagationSpeed;
 			double posX;
 			double posY;
+			double posZ;
             std::string luatable;
 			std::string desc;
 			unsigned long long activationTime;

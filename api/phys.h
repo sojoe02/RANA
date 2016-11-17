@@ -77,8 +77,10 @@ class Phys
         static int64_t getMersenneInteger(int64_t min, int64_t max);
 
 		static void setEnvironment(double x, double y);
+
 		static double getEnvX();
 		static double getEnvY();
+		static double getEnvZ();
 
         static void move(double v, double posX, double posY,
                          double desX, double desY,
