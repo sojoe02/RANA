@@ -13,8 +13,6 @@ TARGET = Rana_qt
 TEMPLATE = app
 
 
-
-
 SOURCES += main.cpp\
         mainwindow.cpp \
     output.cpp \

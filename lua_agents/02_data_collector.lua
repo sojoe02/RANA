@@ -46,6 +46,7 @@ Event	= require "ranalib_event"
 Core	= require "ranalib_core"
 Stat	= require "ranalib_statistic"
 Shared 	= require "ranalib_shared"
+Utility = require "ranalib_utility"
 
 function InitializeAgent()
 	
@@ -58,6 +59,7 @@ end
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
 function HandleEvent(event)
+	--say(Utility.serializeTable(event))
 	agent_table[event.ID] = agent_table[event.ID] + 1
 end
 
