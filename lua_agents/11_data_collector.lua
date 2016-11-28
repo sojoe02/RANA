@@ -62,6 +62,8 @@ end
 -- Init of the lua frog, function called upon initilization of the LUA auton.
 function HandleEvent(event)
 
+--say(event.ID)
+
 	agent_table[event.ID].call_amount = agent_table[event.ID].call_amount + 1
 
 end
