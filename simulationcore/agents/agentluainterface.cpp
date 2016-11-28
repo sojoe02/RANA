@@ -1347,7 +1347,9 @@ int AgentLuaInterface::l_emitEvent(lua_State *L)
 	sendEvent->targetID = lua_tonumber(L, -4);
 	sendEvent->targetGroup = lua_tonumber(L, -3);
 	sendEvent->luatable = lua_tostring(L, -2);
-	sendEvent->posZ = lua_tonumber(L, -1);
+    sendEvent->posZ = lua_tonumber(L, -1);
+
+    //Output::Inst()->kprintf("%f", sendEvent->propagationSpeed);
 
     Interfacer::submitEEvent(std::move(sendEvent));
     return 0;

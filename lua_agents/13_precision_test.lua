@@ -46,6 +46,11 @@ Event = require "ranalib_event"
 Shared = require "ranalib_shared"	
 Stat = require "ranalib_statistic"
 Move = require "ranalib_movement"
+Core = require "ranalib_core"
+
+starting = false
+listenID = 0
+count = 0
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
 function InitializeAgent()
@@ -53,32 +58,46 @@ function InitializeAgent()
 	say("Agent #: " .. ID .. " has been initialized")
 
 	if ID == 1 then
-		PositionX = ENV_WIDTH/2
-		PositionY = ENV_HEIGHT/2
+		PositionX = 50
+		PositionY = 50
+		listenID = 4
+		starting = true
+	elseif ID == 2 then
+		PositionX = 150
+		PositionY = 50
+		listenID = 1
+	elseif ID == 3 then
+		PositionX = 150
+		PositionY = 150
+		listenID = 2
+	elseif ID == 4 then
+		PositionX = 50
+		PositionY = 150
+		listenID = 3
 	end
 
-	
 end
 
 function HandleEvent(event)
 
-	fibonacci_tail(2000)
+	if event.ID == listenID then
 
-	if event.description == "ping" then
---			say("Agent: "..ID .." received a ping from: "..event.ID ..", saying: "..event.table.msg)
---			Event.emit{speed=343,targetID=event.ID, description="pong"}
+			Event.emit{speed=400}
 
-	elseif event.description == "pong" then
---			say("Agent: "..ID.." received a pong from agent: ".. event.ID)
+			if ID == 1 then
+				count = count + 1
+				say("Time: "..Core.time().." , " ..count.."," ..listenID)
+			end
 	end
 
 end
 
 function takeStep()
-
-	if Stat.randomInteger(1,1/STEP_RESOLUTION) <= 1 then
-		--say("Agent:"..ID.." is emiting ping")
-	 	Event.emit{speed=343,description="ping",table={msg="I am agent "..ID}}
+	
+	if starting == true then
+		Event.emit{speed=400}
+		say("Time: "..Core.time().." Count: " ..count)
+		starting = false
 	end
 
 end
@@ -87,22 +106,3 @@ function cleanUp()
 	l_debug("Agent #: " .. ID .. " is done\n")
 end
 
-function fibonacci(n)
-    if n<3 then
-        return 1
-    else
-        return fibonacci(n-1) + fibonacci(n-2)
-    end
-end
-
-function fibonacci_tail(n)
-    local function f(a, b, n)
-        if n < 3 then
-            return b
-        else
-            return f(b, a+b, n-1)
-        end
-    end
- 
-    return f(1,1,n)
-end

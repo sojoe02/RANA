@@ -2,7 +2,7 @@ function _HandleEvent(sourceX, sourceY, sourceZ, originID, description, serialTa
 	
 	--local eventTable = {}
 	if string.len(serialTable) > 3 then 
-		say(serialTable)
+		--say(serialTable)
 		loadstring("_eventTable="..serialTable)()
 	else 
 		_eventTable = {}

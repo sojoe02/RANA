@@ -14,8 +14,7 @@ function RanaLibEvent.emit(options)
 		options.table or false,
 		options.targetID or 0,
 		options.targetGroup or 0
-		)
-
+		)		
 end
 
 -- Deserializes the serialized table received with an event.

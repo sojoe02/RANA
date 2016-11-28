@@ -86,8 +86,8 @@ CONFIG += c++14
 #CONFIG += stdlib=libc++ lc++abi o3
 
 unix: CONFIG += link_pkgconfig
-unix: PKGCONFIG += luajit
-#unix: PKGCONFIG += lua51
+#unix: PKGCONFIG += luajit
+unix: PKGCONFIG += lua51
 #unix: PKGCONFIG += lua5.3
 
 
