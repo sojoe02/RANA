@@ -41,41 +41,68 @@
 -- GridMove 		-- Is collision detection active (default = false).
 -- ------------------------------------
 
--- Import Rana lua libraries.
-Event	= require "ranalib_event"
-Core	= require "ranalib_core"
-Stat	= require "ranalib_statistic"
-Shared 	= require "ranalib_shared"
-Utility = require "ranalib_utility"
+-- Import valid Rana lua libraries.
+Event = require "ranalib_event"
+Shared = require "ranalib_shared"	
+Stat = require "ranalib_statistic"
+Move = require "ranalib_movement"
+Core = require "ranalib_core"
 
-function InitializeAgent()
-	
-	say("Data Collector initialized")
-
-	ids = Shared.getTable("ids")
-	agent_table = Shared.getTable("agents")
-
-end
+starting = false
+listenID = 0
+count = 0
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
-function HandleEvent(event)
-	--say(Utility.serializeTable(event))
-	agent_table[event.ID] = agent_table[event.ID] + 1
-end
+function InitializeAgent()
 
+	say("Agent #: " .. ID .. " has been initialized")
 
-function CleanUp()
-
-	--Write the oscillation data to a csv file.
-	file = io.open("02_overall_stats.csv", "w")
-
-	for key,value in pairs(ids) do
-			file:write(value ..",".. agent_table[value] .."\n")
+	if ID == 1 then
+		PositionX = 50
+		PositionY = 50
+		listenID = 4
+		starting = true
+	elseif ID == 2 then
+		PositionX = 150
+		PositionY = 50
+		listenID = 1
+	elseif ID == 3 then
+		PositionX = 150
+		PositionY = 150
+		listenID = 2
+	elseif ID == 4 then
+		PositionX = 50
+		PositionY = 150
+		listenID = 3
 	end
 
-	file:close()
+end
 
-	l_debug("Data Collector is done\n")
+function HandleEvent(event)
 
+	if event.ID == listenID then
+
+			Event.emit{speed=400}
+
+			if ID == 1 then
+				count = count + 1
+				say("Time: "..Core.time().." , " ..count.."," ..listenID)
+			end
+	end
+
+end
+
+function takeStep()
+	
+	if starting == true then
+		Event.emit{speed=400}
+		say("Time: "..Core.time().." Count: " ..count)
+		starting = false
+	end
+
+end
+
+function cleanUp()
+	l_debug("Agent #: " .. ID .. " is done\n")
 end
 

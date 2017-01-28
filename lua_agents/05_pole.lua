@@ -31,21 +31,62 @@
 
 -- Import valid Rana lua libraries.
 Event = require "ranalib_event"
+Agent = require "ranalib_agent"
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
 function initializeAgent()
 
-	l_debug("Pole agent #: " .. ID .. " has been initialized")
+	say("Pole agent #: " .. ID .. " has been initialized")
+
+	Agent.changeColor{r=255}
+
 
 end
 
 function handleEvent(sourceX, sourceY, sourceID, eventDescription, eventTable)
+
+	local event_table = {x=sourceX, y=sourceY}
 	
-	Event.emit{targetID=sourceID, speed=343, description="echo"}
+	Event.emit{targetID=sourceID, speed=343, description="echo", table=event_table} 
 
 end
 
 function cleanUp()
 	l_debug("Agent #: " .. ID .. " is done\n")
+end
+
+function ProcessEvent(data)
+
+	local A = 10
+
+
+	--local denom = math.sqrt(data.sX*data.sX+data.sY*data.sY) * math.sqrt(data.pY*data.pY+data.pX*data.pX)
+
+	--local angle = 10
+
+	--if denom > 0 then 
+	--
+	--local scalar = data.sX*data.pX+data.sY*data.pY
+	--angle = math.acos(scalar)
+
+	--say(scalar .." : " .. angle)
+	angle = math.abs(math.atan2(data.sX-data.table.x, data.sY-data.table.y) - math.atan2(data.sX-data.pX, data.sY-data.pY))
+	--angle2 = math.abs(math.atan2(PositionX, PositionY) - math.atan2(data.pX-PositionX, data.pY-PositionY))
+
+	--angle = math.abs(angle1 - angle2)
+
+	--say(angle)
+
+
+	
+		--angle = math.acos((data.sX*data.pX+data.sY*data.pY)/denom)
+	--end
+
+	local Ae = 1/(1+angle * A)
+
+	--say(angle)
+
+	return Ae, 0.2
+
 end
 

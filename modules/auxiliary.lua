@@ -1,14 +1,16 @@
-function _HandleEvent(sourceX, sourceY,sourceZ, originID, description, serialTable)
+function _HandleEvent(sourceX, sourceY, originID, description, serialTable)
 	
 	--local eventTable = {}
 	if string.len(serialTable) > 3 then 
+		--say(serialTable)
 		loadstring("_eventTable="..serialTable)()
 	else 
 		_eventTable = {}
 	end
 
-	if HandleEvent ~= nil then 
-		HandleEvent{X=sourceX, Y=sourceY, ID=originID, description=description, table=_eventTable}
+	if HandleEvent ~= nil then
+
+		HandleEvent{X=sourceX, Y=sourceY, Z=sourceZ, ID=originID, description=description, table=_eventTable}
 	
 	elseif handleEvent ~= nil then
 		handleEvent(sourceX, sourceY, originID, description, _eventTable)
@@ -70,7 +72,7 @@ function _ProcessEventFunction(sourceX, sourceY, posX, posY, time, serialTable)
 		_eventTable = {}
 	end
 
-	if ProcessEventFunction == nil then
+	if ProcessEvent == nil then
 
 		if posX == sourceX and posY == sourceY then
 			return 1,0
@@ -78,7 +80,7 @@ function _ProcessEventFunction(sourceX, sourceY, posX, posY, time, serialTable)
 			return .5,0
 		end
 	else 
-		return ProcessEventFunction{sX=sourceX, sY=sourceY, pX=posX, pY=posY, time=time, table=_eventTable}
+		return ProcessEvent{sX=sourceX, sY=sourceY, pX=posX, pY=posY, time=time, table=_eventTable}
 	end
 end
 

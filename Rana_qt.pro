@@ -13,8 +13,6 @@ TARGET = Rana_qt
 TEMPLATE = app
 
 
-
-
 SOURCES += main.cpp\
         mainwindow.cpp \
     output.cpp \
@@ -22,7 +20,6 @@ SOURCES += main.cpp\
     graphics/agentItem.cpp \
     runner.cpp \
     postprocessing/eventprocessing.cpp \
-    postprocessing/eventmap.cpp \
     postprocessing/colorutility.cpp \
     eventdialog.cpp \
     postprocessing/graphics/zblock.cpp \
@@ -51,7 +48,6 @@ HEADERS  += mainwindow.h \
     graphics/agentItem.h \
     runner.h \
     postprocessing/eventprocessing.h \
-    postprocessing/eventmap.h \
     postprocessing/colorutility.h \
     eventdialog.h \
     postprocessing/graphics/zblock.h \
@@ -90,8 +86,8 @@ CONFIG += c++14
 #CONFIG += stdlib=libc++ lc++abi o3
 
 unix: CONFIG += link_pkgconfig
-unix: PKGCONFIG += luajit
-#unix: PKGCONFIG += lua51
+#unix: PKGCONFIG += luajit
+unix: PKGCONFIG += lua51
 #unix: PKGCONFIG += lua5.3
 
 
