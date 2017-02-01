@@ -74,7 +74,7 @@ public:
 	void setEventSceneRect(int x, int y);
 	bool eventFilter(QObject *watched, QEvent *event);
 
-	void addGraphicAgent(int Id, int posX, int posY);
+	void addGraphicAgent(int Id, int posX, int posY, rgba color);
 	void removeGraphicAgent(int id);
 	void changeGraphicAgentColor(int id, int r, int g, int b, int alpha);
     void enableRunButton(bool enabled);
@@ -105,8 +105,8 @@ private slots:
 
     void on_enableRunButton(bool enabled);
 
-	void on_addGraphicAgent(int id, int posX, int posY);
-    void on_changeGraphicAgentColor(int id, int r, int g, int b, int alpha);
+	void on_addGraphicAgent(int id, int posX, int posY, rgba color);
+	//void on_changeGraphicAgentColor(int id, int r, int g, int b, int alpha);
     void on_removeGraphicAgent(int Id);
 
     void on_initializeTimerTimeout();
@@ -154,8 +154,8 @@ signals:
     void writeRegularSignal(QString something);
     void enableRunButtonSignal(bool);
 
-	void addGraphicAgentSignal(int id, int posX, int posY);
-    void changeGraphicAgentColorSignal(int id, int r, int b, int g, int alpha);
+	void addGraphicAgentSignal(int id, int posX, int posY, rgba color);
+	//void changeGraphicAgentColorSignal(int id, int r, int b, int g, int alpha);
 	void removeGraphicAgentSignal(int Id);
 
 	//postprocessing:

@@ -22,7 +22,7 @@
 #include "agentItem.h"
 
 
-agentItem::agentItem(QString id) :
+agentItem::agentItem(QString id, rgba color) :
     id(id), pencolor(Qt::white), showid(true)
 {
 }
@@ -55,9 +55,9 @@ void agentItem::paint(QPainter *painter,
 	}
 }
 
-void agentItem::setColor(int r, int g, int b, int alpha)
+void agentItem::setColor(rgba color)
 {
-	pencolor = QColor(r,g,b,alpha);
+	pencolor = QColor(color.red, color.green, color.blue, color.alpha);
 	this->update();
 }
 

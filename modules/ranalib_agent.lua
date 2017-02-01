@@ -104,23 +104,24 @@ end
 -- values are valid. 
 function ranaLibAgent.changeColor(options)
 	
-	local r = options.r or 0
-	local g = options.g or 0
-	local b = options.b or 0
-	local alpha = options.alpha or 255
-	local id = options.id or ID
+	ColorRed = options.r or 0
+	ColorGreen = options.g or 0
+	ColorBlue = options.b or 0
+	ColorAlpha = options.alpha or 255
 
-	if r ~= currentColor.r or g ~= currentColor.g or b ~= currentColor.b or alpha ~= currentColor.alpha then
-		currentColor.r = r
-		currentColor.g = g
-		currentColor.b = b
-		currentColor.alpha = alpha
+	--if r ~= currentColor.r or g ~= currentColor.g or b ~= currentColor.b or alpha ~= currentColor.alpha then
+		--currentColor.r = r
+		--currentColor.g = g
+		--currentColor.b = b
+		--currentColor.alpha = alpha
+
+
 		
-		return l_changeAgentColor(id,r,g,b,alpha)
+		--return l_changeAgentColor(id,r,g,b,alpha)
 		
-	else 
-		return true
-	end
+	--else
+		--return true
+	--end
 
 end
  

@@ -53,8 +53,11 @@ AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double po
 
     desc = "LUA";
     //Output::Inst()->kprintf("%f,%f", posX, posY);
+	color.red=255;
+	color.green=255;
+	color.blue=0;
 
-    Output::Inst()->addGraphicAgent(ID, -1,-1);
+	Output::Inst()->addGraphicAgent(ID, -1,-1, color);
     //Setup up the LUA stack:
     L = luaL_newstate();
     if(L == NULL)
@@ -195,7 +198,6 @@ AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double po
         lua_register(L, "l_addGroup", l_addGroup);
         lua_register(L, "l_removeGroup", l_removeGroup);
         lua_register(L, "l_setStepMultiplier", l_setMacroFactorMultipler);
-        lua_register(L, "l_changeAgentColor", l_changeAgentColor);
 
         std::string auxLib = Output::Inst()->RanaDir;
         auxLib.append("/modules/auxiliary.lua");
@@ -1304,30 +1306,6 @@ int AgentLuaInterface::l_removeAgent(lua_State *L)
     int id = lua_tonumber(L, -1);
     bool removed = Interfacer::removeAgent(id);
     lua_pushboolean(L, removed);
-
-    return 1;
-}
-
-int AgentLuaInterface::l_changeAgentColor(lua_State *L)
-{
-    int id = lua_tointeger(L, -5);
-    int r = lua_tointeger(L, -4);
-    int g = lua_tointeger(L, -3);
-    int b = lua_tointeger(L, -2);
-    int alpha = lua_tointeger(L, -1);
-    bool success = true;
-
-    if (r < 0 || r > 255 || g < 0 || g > 255 ||
-            b < 0 || b > 255 || alpha < 0 || alpha > 255 )
-    {
-        success = false;
-    } else
-    {
-        Output::Inst()->changeGraphicAgentColor(id, r, g, b, alpha);
-    }
-
-    lua_pushboolean(L, success);
-
 
     return 1;
 }

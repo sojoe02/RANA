@@ -192,16 +192,16 @@ void Output::removeGraphicAgent(int Id)
 	mainWindow->removeGraphicAgent(Id);
 }
 
-void Output::addGraphicAgent(int Id, double posX, double posY)
+void Output::addGraphicAgent(int Id, double posX, double posY, rgba color)
 {
     std::lock_guard<std::mutex> guard(autonMutex);
-    mainWindow->addGraphicAgent(Id, int(posX)/Phys::getScale(), int(posY)/Phys::getScale());
+	mainWindow->addGraphicAgent(Id, int(posX)/Phys::getScale(), int(posY)/Phys::getScale(), color);
 }
 
-void Output::changeGraphicAgentColor(int id, int r, int g, int b, int alpha)
-{
-    mainWindow->changeGraphicAgentColor(id, r, g, b, alpha);
-}
+//void Output::changeGraphicAgentColor(int id, int r, int g, int b, int alpha)
+//{
+//    mainWindow->changeGraphicAgentColor(id, r, g, b, alpha);
+//}
 
 void Output::enableRunBotton(bool enabled)
 {

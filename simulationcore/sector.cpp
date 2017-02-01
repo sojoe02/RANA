@@ -83,6 +83,7 @@ void Sector::retrievePopPos(std::list<agentInfo> &infolist){
 				master->removedIDs.end())
 		{
 			agentInfo info = lua.second->getAgentInfo();
+//			Output::Inst()->kprintf("%i,%i,%i", info.color.blue, info.color.green, info.color.red);
 			//info.id = lua.second->getID();
 			//info.y = lua.second->getPosY();
 			//info.x = lua.second->getPosX();

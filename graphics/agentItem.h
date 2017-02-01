@@ -25,15 +25,17 @@
 #include <QPainter>
 #include <QGraphicsItem>
 
+#include <utility.h>
+
 class agentItem : public QGraphicsItem
 {
     //Q_OBJECT
 public:
-    agentItem(QString id);
+    agentItem(QString id, rgba color);
 
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-	void setColor(int r, int g, int b, int alpha=255);
+	void setColor(rgba color);
     void showID(bool show);
 
 private:

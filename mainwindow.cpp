@@ -80,14 +80,14 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(this,SIGNAL(writeStatusSignal(unsigned long long,unsigned long long)),
 					 this,SLOT(on_udateStatus(unsigned long long,unsigned long long)));
 
-	QObject::connect(this,SIGNAL(addGraphicAgentSignal(int,int,int)),
-						this,SLOT(on_addGraphicAgent(int,int,int)));
+	QObject::connect(this,SIGNAL(addGraphicAgentSignal(int,int,int,rgba)),
+						this,SLOT(on_addGraphicAgent(int,int,int,rgba)));
 
 	QObject::connect(this, SIGNAL(removeGraphicAgentSignal(int)),
 					 this, SLOT(on_removeGraphicAgent(int)));
 
-    QObject::connect(this, SIGNAL(changeGraphicAgentColorSignal(int,int,int,int,int)),
-                     this, SLOT(on_changeGraphicAgentColor(int,int,int,int,int)));
+//    QObject::connect(this, SIGNAL(changeGraphicAgentColorSignal(int,int,int,int,int)),
+//                     this, SLOT(on_changeGraphicAgentColor(int,int,int,int,int)));
 
     QObject::connect(this,SIGNAL(enableRunButtonSignal(bool)),
                      this, SLOT(on_enableRunButton(bool)));
@@ -398,6 +398,7 @@ void MainWindow::on_updateMap(INFOLIST infolist)
 
     mapItem->setPixmap(QPixmap::fromImage(*mapImage));
     mapItem->setZValue(1);
+	
 
     //INFOLIST::iterator itr;
 
@@ -405,11 +406,13 @@ void MainWindow::on_updateMap(INFOLIST infolist)
     {
         int x = itr->x/Phys::getScale();
         int y = itr->y/Phys::getScale();
+		rgba color = itr->color;
+		
 		int Id = itr->id;
 
         if(!graphAgents.contains(Id))
         {
-			addGraphicAgent(Id, x, y);
+			addGraphicAgent(Id, x, y, color);
 
         } else
         {
@@ -417,6 +420,7 @@ void MainWindow::on_updateMap(INFOLIST infolist)
             agentItem *gfxItem = i.value();
             gfxItem->setX(x);
             gfxItem->setY(y);
+			gfxItem->setColor(color);
         }
 	}
 
@@ -432,18 +436,18 @@ void MainWindow::on_updateMap(INFOLIST infolist)
  * @see MainWindow::on_addGraphicAgent()
  */
 
-void MainWindow::addGraphicAgent(int id, int posX, int posY)
+void MainWindow::addGraphicAgent(int id, int posX, int posY, rgba color)
 {
     //ui->generateButton->setEnabled(false);
     //ui->runButton->setEnabled(false);
-	emit addGraphicAgentSignal(id, posX, posY);
+	emit addGraphicAgentSignal(id, posX, posY, color);
 }
 
-void MainWindow::on_addGraphicAgent(int id, int posX, int posY)
+void MainWindow::on_addGraphicAgent(int id, int posX, int posY, rgba color)
 {
 
     //itializeTimer->start(500);
-	agentItem *gfxItem = new agentItem(QString::number(id));
+	agentItem *gfxItem = new agentItem(QString::number(id), color);
 	gfxItem->setZValue(2);
 	gfxItem->setX(posX);
     gfxItem->setY(posY);
@@ -470,18 +474,18 @@ void MainWindow::on_addGraphicAgent(int id, int posX, int posY)
     //ui->generateButton->setEnabled(true);
 }
 
-void MainWindow::changeGraphicAgentColor(int id, int r, int g, int b, int alpha)
-{
-    emit changeGraphicAgentColorSignal(id,r,g,b,alpha);
+//void MainWindow::changeGraphicAgentColor(int id, int r, int g, int b, int alpha)
+//{
+//    emit changeGraphicAgentColorSignal(id,r,g,b,alpha);
 
-}
+//}
 
-void MainWindow::on_changeGraphicAgentColor(int id, int r, int g, int b, int alpha)
-{
-	auto i = graphAgents.find(id);
-	agentItem *gfxItem = i.value();
-    gfxItem->setColor(r,g,b,alpha);
-}
+//void MainWindow::on_changeGraphicAgentColor(int id, int r, int g, int b, int alpha)
+//{
+//	auto i = graphAgents.find(id);
+//	agentItem *gfxItem = i.value();
+//    gfxItem->setColor(r,g,b,alpha);
+//}
 
 void MainWindow::enableRunButton(bool enabled)
 {
@@ -1270,7 +1274,8 @@ void MainWindow::on_vis_activeMapSpinBox_valueChanged(int arg1)
     {
         for(auto ditr = itr.value().begin(); ditr != itr.value().end(); ++ditr)
         {
-            agentItem *item = new agentItem(QString::number(ditr.value().id));
+			rgba color;
+			agentItem *item = new agentItem(QString::number(ditr.value().id),color);
             item->setX(ditr.value().x/ui->vis_resolutionSpinBox->value());
             item->setY(ditr.value().y/ui->vis_resolutionSpinBox->value());
             //item->setX(20);

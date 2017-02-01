@@ -60,6 +60,7 @@ double Agent ::getPosZ()
 
 void Agent::setColor(int r, int g, int b, int a)
 {
+	std::lock_guard<std::mutex> guard(mutex);
 	color.red = r;
 	color.green = g;
 	color.blue = b;

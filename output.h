@@ -67,8 +67,8 @@ public:
 	void updateZvalue(QString string);
 
 	void removeGraphicAgent(int Id);
-	void addGraphicAgent(int Id, double posX, double posY);
-	void changeGraphicAgentColor(int id, int r, int g, int b, int alpha);
+	void addGraphicAgent(int Id, double posX, double posY, rgba color);
+	//void changeGraphicAgentColor(int id, int r, int g, int b, int alpha);
     void enableRunBotton(bool enabled);
 
 private:

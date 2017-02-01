@@ -84,6 +84,8 @@ protected:
     std::vector<double> statusVector;
     Sector* sector;
 	rgba color;
+	
+	std::mutex	mutex;
 
 	double radius;
 	double mass;
