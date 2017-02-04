@@ -32,6 +32,7 @@
 #include "output.h"
 #include "ID.h"
 #include "interfacer.h"
+#include "../api/scanning.h"
 
 using std::chrono::duration_cast;
 using std::chrono::milliseconds;
@@ -88,6 +89,7 @@ void FlowControl::generateEnvironment(double width, double height, int threads,
     Phys::setEnvironment(width, height);
     Shared::initShared();
     Interfacer::initInterfacer(masteragent);
+	//Scanning::edgeMask();
 
     masteragent->generateMap(width,height,threads,timeResolution, macroResolution);
 
@@ -216,7 +218,7 @@ void FlowControl::runSimulation(int time)
             {
                 std::this_thread::sleep_for(std::chrono::milliseconds(delay));
             }
-            if(cMacroStep % (int)Phys::getMacroFactor() == 0)
+			if(cMacroStep % (int)Phys::getMacroFactor()/100 == 0)
             {
                 retrievePopPos();
             }

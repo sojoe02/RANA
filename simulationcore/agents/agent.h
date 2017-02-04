@@ -91,6 +91,8 @@ protected:
 	double mass;
 	double charge;
 
+	double angle;
+
 
     friend class Sector;
 };

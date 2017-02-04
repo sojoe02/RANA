@@ -29,7 +29,7 @@
 
     Agent::Agent(int ID, double posX, double posY, double posZ, Sector *sector)
 :ID(ID), macroFactorMultiple(1), posX(posX), posY(posY), posZ(posZ), sector(sector),
-	  radius(0), mass(0), charge(0)
+	  radius(0), mass(0), charge(0),angle(0)
 {
 
 }
@@ -81,6 +81,8 @@ agentInfo Agent::getAgentInfo()
 	info.x = posX;
 	info.y = posY;
 	info.z = posZ;
+
+	info.angle = angle;
 
 	return info;
 

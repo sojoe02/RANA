@@ -140,7 +140,7 @@
           <number>10000</number>
          </property>
          <property name="singleStep">
-          <number>100</number>
+          <number>1</number>
          </property>
         </widget>
        </item>
@@ -927,6 +927,13 @@
              </property>
              <property name="shortcut">
               <string>Ctrl+I</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="showAngle_checkbox">
+             <property name="text">
+              <string>Disable Angle</string>
              </property>
             </widget>
            </item>

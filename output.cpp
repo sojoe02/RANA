@@ -192,10 +192,10 @@ void Output::removeGraphicAgent(int Id)
 	mainWindow->removeGraphicAgent(Id);
 }
 
-void Output::addGraphicAgent(int Id, double posX, double posY, rgba color)
+void Output::addGraphicAgent(int Id, double posX, double posY, rgba color, double angle)
 {
     std::lock_guard<std::mutex> guard(autonMutex);
-	mainWindow->addGraphicAgent(Id, int(posX)/Phys::getScale(), int(posY)/Phys::getScale(), color);
+	mainWindow->addGraphicAgent(Id, int(posX)/Phys::getScale(), int(posY)/Phys::getScale(), color, angle);
 }
 
 //void Output::changeGraphicAgentColor(int id, int r, int g, int b, int alpha)

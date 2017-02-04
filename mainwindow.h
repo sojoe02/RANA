@@ -74,7 +74,7 @@ public:
 	void setEventSceneRect(int x, int y);
 	bool eventFilter(QObject *watched, QEvent *event);
 
-	void addGraphicAgent(int Id, int posX, int posY, rgba color);
+	void addGraphicAgent(int Id, int posX, int posY, rgba color, double angle);
 	void removeGraphicAgent(int id);
 	void changeGraphicAgentColor(int id, int r, int g, int b, int alpha);
     void enableRunButton(bool enabled);
@@ -105,7 +105,7 @@ private slots:
 
     void on_enableRunButton(bool enabled);
 
-	void on_addGraphicAgent(int id, int posX, int posY, rgba color);
+	void on_addGraphicAgent(int id, int posX, int posY, rgba color, double angle);
 	//void on_changeGraphicAgentColor(int id, int r, int g, int b, int alpha);
     void on_removeGraphicAgent(int Id);
 
@@ -146,6 +146,14 @@ private slots:
 	void on_vis_disableAgentsCheckBox_toggled(bool checked);
 	void on_vis_disableAgentIDs_toggled(bool checked);
 	
+	void on_showAngle_checkbox_clicked(bool checked);
+
+	void on_vis_disableAgentIDs_clicked(bool checked);
+
+	void on_vis_disableAgentIDs_clicked();
+
+	void on_showAngle_checkbox_toggled(bool checked);
+
 signals:
 
     void map_updateSignal(INFOLIST infolist);
@@ -154,7 +162,7 @@ signals:
     void writeRegularSignal(QString something);
     void enableRunButtonSignal(bool);
 
-	void addGraphicAgentSignal(int id, int posX, int posY, rgba color);
+	void addGraphicAgentSignal(int id, int posX, int posY, rgba color, double angle);
 	//void changeGraphicAgentColorSignal(int id, int r, int b, int g, int alpha);
 	void removeGraphicAgentSignal(int Id);
 

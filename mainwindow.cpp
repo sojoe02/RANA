@@ -80,8 +80,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(this,SIGNAL(writeStatusSignal(unsigned long long,unsigned long long)),
 					 this,SLOT(on_udateStatus(unsigned long long,unsigned long long)));
 
-	QObject::connect(this,SIGNAL(addGraphicAgentSignal(int,int,int,rgba)),
-						this,SLOT(on_addGraphicAgent(int,int,int,rgba)));
+	QObject::connect(this,SIGNAL(addGraphicAgentSignal(int,int,int,rgba,double)),
+						this,SLOT(on_addGraphicAgent(int,int,int,rgba,double)));
 
 	QObject::connect(this, SIGNAL(removeGraphicAgentSignal(int)),
 					 this, SLOT(on_removeGraphicAgent(int)));
@@ -407,12 +407,13 @@ void MainWindow::on_updateMap(INFOLIST infolist)
         int x = itr->x/Phys::getScale();
         int y = itr->y/Phys::getScale();
 		rgba color = itr->color;
+		double angle = itr->angle;
 		
 		int Id = itr->id;
 
         if(!graphAgents.contains(Id))
         {
-			addGraphicAgent(Id, x, y, color);
+			addGraphicAgent(Id, x, y, color, angle);
 
         } else
         {
@@ -421,6 +422,7 @@ void MainWindow::on_updateMap(INFOLIST infolist)
             gfxItem->setX(x);
             gfxItem->setY(y);
 			gfxItem->setColor(color);
+			gfxItem->setAngle(angle);
         }
 	}
 
@@ -436,22 +438,24 @@ void MainWindow::on_updateMap(INFOLIST infolist)
  * @see MainWindow::on_addGraphicAgent()
  */
 
-void MainWindow::addGraphicAgent(int id, int posX, int posY, rgba color)
+void MainWindow::addGraphicAgent(int id, int posX, int posY, rgba color, double angle)
 {
     //ui->generateButton->setEnabled(false);
     //ui->runButton->setEnabled(false);
-	emit addGraphicAgentSignal(id, posX, posY, color);
+	emit addGraphicAgentSignal(id, posX, posY, color, angle);
 }
 
-void MainWindow::on_addGraphicAgent(int id, int posX, int posY, rgba color)
+void MainWindow::on_addGraphicAgent(int id, int posX, int posY, rgba color, double angle)
 {
 
     //itializeTimer->start(500);
-	agentItem *gfxItem = new agentItem(QString::number(id), color);
+	agentItem *gfxItem = new agentItem(QString::number(id), color, angle);
+
 	gfxItem->setZValue(2);
 	gfxItem->setX(posX);
     gfxItem->setY(posY);
     gfxItem->showID(!ui->vis_disableAgentIDs->isChecked());
+
 
     //Output::Inst()->kprintf("ID is %i", Id);
     //Output::Inst()->kprintf("Size of the agent array %i", graphAgents.size());
@@ -1275,7 +1279,7 @@ void MainWindow::on_vis_activeMapSpinBox_valueChanged(int arg1)
         for(auto ditr = itr.value().begin(); ditr != itr.value().end(); ++ditr)
         {
 			rgba color;
-			agentItem *item = new agentItem(QString::number(ditr.value().id),color);
+			agentItem *item = new agentItem(QString::number(ditr.value().id),color, 0);
             item->setX(ditr.value().x/ui->vis_resolutionSpinBox->value());
             item->setY(ditr.value().y/ui->vis_resolutionSpinBox->value());
             //item->setX(20);
@@ -1428,4 +1432,28 @@ void MainWindow::on_zoomSlider_actionTriggered(int action)
 void MainWindow::on_zoomSlider_sliderMoved(int position)
 {
 
+}
+
+void MainWindow::on_showAngle_checkbox_clicked(bool checked)
+{
+
+}
+
+void MainWindow::on_vis_disableAgentIDs_clicked(bool checked)
+{
+
+}
+
+void MainWindow::on_vis_disableAgentIDs_clicked()
+{
+
+}
+
+void MainWindow::on_showAngle_checkbox_toggled(bool checked)
+{
+	for(auto itr = graphAgents.begin(); itr != graphAgents.end(); ++itr)
+	{
+		itr.value()->showAngle(!checked);
+	}
+	ui->graphicsView->viewport()->update();
 }

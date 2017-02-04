@@ -57,7 +57,7 @@ AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double po
 	color.green=255;
 	color.blue=0;
 
-	Output::Inst()->addGraphicAgent(ID, -1,-1, color);
+	Output::Inst()->addGraphicAgent(ID, -1,-1, color, 0);
     //Setup up the LUA stack:
     L = luaL_newstate();
     if(L == NULL)
@@ -136,6 +136,10 @@ AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double po
 		lua_setglobal(L, "ColorBlue");
 		lua_pushnumber(L, color.alpha);
 		lua_setglobal(L, "ColorAlpha");
+
+		lua_pushnumber(L, 0);
+		lua_setglobal(L, "Angle");
+
 
         //lua_newtable(L);
         //lua_setglobal(L, "EventTable");
@@ -427,6 +431,16 @@ void AgentLuaInterface::movement()
         double newPosX = posX + moveFactor * vX * macroFactorMultiple;
         double newPosY = posY + moveFactor * vY * macroFactorMultiple;
 
+		if( newPosX > Phys::getEnvX() || newPosY > Phys::getEnvY())
+		{
+			destinationX = posX;
+			destinationY = posY;
+			lua_pushboolean(L, false);
+			lua_setglobal(L, "Moving");
+
+			return;
+		}
+
 
         //Check if the agent overshoots it's target destinations.
         if(		(posX >= destinationX && newPosX <= destinationX &&
@@ -572,6 +586,8 @@ void AgentLuaInterface::getSyncData()
     if(removed) return;
     try
 	{
+		lua_getglobal(L, "Angle");
+
 		lua_getglobal(L, "ColorRed");
 		lua_getglobal(L, "ColorGreen");
 		lua_getglobal(L, "ColorBlue");
@@ -590,6 +606,8 @@ void AgentLuaInterface::getSyncData()
         lua_getglobal(L, "DestinationY");
         lua_getglobal(L, "Speed");
 		lua_getglobal(L, "Moving");
+
+		angle = lua_tonumber(L, -17);
 
 		radius = lua_tonumber(L, -9);
 		charge = lua_tonumber(L, -10);

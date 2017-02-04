@@ -22,9 +22,18 @@
 #include "agentItem.h"
 
 
-agentItem::agentItem(QString id, rgba color) :
-    id(id), pencolor(Qt::white), showid(true)
+static const QPointF points[3] = {
+	QPointF(0, 1.25),
+	QPointF(0, -1.25),
+	QPointF(4, 0),
+};
+
+
+agentItem::agentItem(QString id, rgba color, double angle) :
+	id(id), pencolor(Qt::white), showid(true), angle(angle), angleShow(true)
 {
+	pencolor = QColor(color.red, color.green, color.blue, color.alpha);
+
 }
 
 QRectF agentItem::boundingRect() const
@@ -39,19 +48,33 @@ void agentItem::paint(QPainter *painter,
                       const QStyleOptionGraphicsItem *option,
                       QWidget *widget)
 {
-    QRectF rect = boundingRect();
+
 	QPen pen (pencolor, 1);
-    painter->setPen(pen);
-    painter->drawPoint(0,0);
-    painter->drawPoint(1,1);
-    painter->drawPoint(-1,-1);
-    painter->drawPoint(1,-1);
-    painter->drawPoint(-1,1);
-    //painter->drawRect(rect);
-    if(showid)
+	painter->setPen(pen);
+//	painter->fillPath();
+
+	//painter->drawRect(rect);
+	if(showid)
 	{
+		QRectF rect = boundingRect();
 		painter->setFont(QFont("Arial", 4));
-        painter->drawText(rect, Qt::AlignCenter, id);
+		painter->drawText(rect, Qt::AlignCenter, id);
+	}
+
+	if(angleShow)
+	{
+//		painter->drawLine(0,0,5,0);
+		painter->drawPolygon(points,3,Qt::OddEvenFill);
+
+	}
+	else
+	{
+
+		painter->drawPoint(0,0);
+		painter->drawPoint(1,1);
+		painter->drawPoint(-1,-1);
+		painter->drawPoint(1,-1);
+		painter->drawPoint(-1,1);
 	}
 }
 
@@ -64,6 +87,24 @@ void agentItem::setColor(rgba color)
 void agentItem::showID(bool show)
 {
 	this->showid = show;
+}
+
+void agentItem::setAngle(double angle)
+{
+	this->angle = angle;
+	this->setRotation(angle);
+
+}
+
+double agentItem::getAngle()
+{
+	return angle;
+}
+
+void agentItem::showAngle(bool angleShow)
+{
+	this->angleShow = angleShow;
+
 }
 
 
