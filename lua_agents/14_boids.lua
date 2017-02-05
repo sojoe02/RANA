@@ -48,9 +48,12 @@ Move = require "ranalib_movement"
 Collision = require "ranalib_collision"
 Utility = require "ranalib_utility"
 Agent = require "ranalib_agent"
+Event = require "ranalib_event"
+RanaMath = require "ranalib_math"
 
 scanMultiple = 10
-repulsionRange = 15
+attractionRange = 50
+repulsionRange = 10
 counter = 1
 
 -- Initialization of the agent.
@@ -58,13 +61,15 @@ function InitializeAgent()
 	
 	say("Agent #: " .. ID .. " has been initialized")
 
-	Move.to{x= ENV_WIDTH/2, y= ENV_HEIGHT/2}
+	Move.toRandom()
 
-	Angle =math.atan2(ENV_HEIGHT/2-PositionY, ENV_WIDTH/2-PositionX)*57.2958
+	--Angle =math.atan2(ENV_HEIGHT/2-PositionY, ENV_WIDTH/2-PositionX)*57.2958
 
 	Speed = 40
 	GridMove = true
 	Moving = true
+
+	Move.byAngle(181)
 
 	--Angle = Stat.randomInteger(1,360)
 
@@ -72,14 +77,44 @@ function InitializeAgent()
 
 end
 
+function HandleEvent(event)
+
+	--determine relevance
+	--
+	local distance = RanaMath.calcDistance{x1=PositionX, x2=event.X, y1=PositionY, y2=event.Y} 
+	if distance < attractionRange and distance > repulsionRange then
+
+		if RanaMath.calcAngle{x1=PositionX, x2=event.X, y1=PositionY, y2=event.Y} < 90 then
+			Move.byAngle(event.table.angle)
+		end
+	end
+	
+		
+
+
+	
+end
 
 function TakeStep()
 	
-	if not Moving then
-		
-		Agent.changeColor{r=255}
 
-		if counter % scanMultiple == 0 then 
+		Agent.changeColor{b=255}
+
+		if not Moving then
+			Move.toRandom()
+		end
+
+
+		if Stat.randomInteger(1,1000) == 1 then
+
+			local table = {angle=Angle}
+
+			Event.emit{table=table}
+
+
+		end
+
+		if counter % scanMultiple == 0 and Stat.randomInteger(1,1000) == 1 then 
 			table = Collision.radialCollisionScan(repulsionRange)
 
 			if table ~= nil then
@@ -87,14 +122,14 @@ function TakeStep()
 				--set a random destination modifier
 				local destX = Stat.randomInteger(1,10)
 				local destY = Stat.randomInteger(1,10)
-				
+
 				--get a valid random entry in the table
 				local entry = Stat.randomInteger(1,#table)
 
 				-- retrieve any random colliding agent positon in the table.
 				-- and set a new destination accordingly.
 				local rand = Stat.randomInteger(0,1)
-				
+
 				if rand == 1 then
 					if table[entry].posX >= PositionX then 
 						destX = -destX
@@ -114,20 +149,19 @@ function TakeStep()
 
 				-- set the new destination and move there
 				Move.to{x=PositionX+destX, y=PositionY+destY}
+				--
 
-				Angle =math.atan2(DestinationY-PositionY, DestinationX-PositionX)*57.2958
+				--Angle =math.atan2(DestinationY-PositionY, DestinationX-PositionX)*57.2958
 
 				scanMultiple = 10
 
-			else 
+			else
 				scanMultiple = scanMultiple * 1,1
+	
 			end
-		end
-	else
-
-		Agent.changeColor{b=255}
 
 	end
+
 	counter = counter +1
 end
 

@@ -25,7 +25,7 @@
 static const QPointF points[3] = {
 	QPointF(0, 1.25),
 	QPointF(0, -1.25),
-	QPointF(4, 0),
+	QPointF(4.5, 0),
 };
 
 

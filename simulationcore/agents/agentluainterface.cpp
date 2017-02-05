@@ -431,10 +431,11 @@ void AgentLuaInterface::movement()
         double newPosX = posX + moveFactor * vX * macroFactorMultiple;
         double newPosY = posY + moveFactor * vY * macroFactorMultiple;
 
-		if( newPosX > Phys::getEnvX() || newPosY > Phys::getEnvY())
+		if( newPosX > Phys::getEnvX() || newPosY > Phys::getEnvY() || newPosX < 0 || newPosY < 0)
 		{
 			destinationX = posX;
 			destinationY = posY;
+			moving = false;
 			lua_pushboolean(L, false);
 			lua_setglobal(L, "Moving");
 
