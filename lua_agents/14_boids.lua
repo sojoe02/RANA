@@ -51,29 +51,38 @@ Agent = require "ranalib_agent"
 Event = require "ranalib_event"
 RanaMath = require "ranalib_math"
 
-scanMultiple = 10
-attractionRange = 50
-repulsionRange = 10
+scanMultiple = 100
+attractionRange = 30
+repulsionRange = 5
 counter = 1
+
+edgethresshold = 30
+
+avoiding = true
+adjusting = false
+adjustvalue = 0
+adjustmodifier = 20
+adjustrate = .3
+adjustmodulator = 1
 
 -- Initialization of the agent.
 function InitializeAgent()
 	
 	say("Agent #: " .. ID .. " has been initialized")
-
-	Move.toRandom()
-
+	say(Stat.randomInteger(10,30))
 	--Angle =math.atan2(ENV_HEIGHT/2-PositionY, ENV_WIDTH/2-PositionX)*57.2958
+	--
+	adjustmodifier = Stat.randomInteger(10,30)
 
 	Speed = 40
 	GridMove = true
 	Moving = true
 
-	Move.byAngle(181)
-
+	Move.byAngle(Stat.randomInteger(1,360))
+	--Move.byAngle(120)
 	--Angle = Stat.randomInteger(1,360)
 
-	say(Angle)
+	--say(Angle)
 
 end
 
@@ -81,88 +90,227 @@ function HandleEvent(event)
 
 	--determine relevance
 	--
-	local distance = RanaMath.calcDistance{x1=PositionX, x2=event.X, y1=PositionY, y2=event.Y} 
-	if distance < attractionRange and distance > repulsionRange then
-
-		if RanaMath.calcAngle{x1=PositionX, x2=event.X, y1=PositionY, y2=event.Y} < 90 then
-			Move.byAngle(event.table.angle)
-		end
-	end
-	
+	--
+	if event.description == "angle" then
+		local distance = RanaMath.calcDistance{x1=PositionX, x2=event.X, y1=PositionY, y2=event.Y} 
 		
+	--	say(distance)
+
+		if distance < attractionRange and distance > repulsionRange  and not avoiding then
+
+			local angle = RanaMath.calcAngle{x1=PositionX, x2=event.X, y1=PositionY, y2=event.Y} 
+
+			--if math.abs(Angle-angle) >=180 then
+
+				if math.abs(Angle - event.table.angle) >= 45 then
+					if Angle > event.table.angle then
+						Move.byAngle(Angle-10)
+					elseif Angle < event.table.angle then 
+						Move.byAngle(Angle+10)
+					end
+				else
+					Move.byAngle(event.table.angle)
+
+				end
+				--Move.byAngle(event.table.angle)
+
+				--Agent.changeColor{g=255}
+
+				--Event.emit{targetID = event.ID}
+
+			--else
+
+				--Agent.changeColor{r=255}
+
+			--end
+
+		else 
+			--Agent.changeColor{r=255}
+		end
+
+	else
+		Agent.changeColor{r=255}
+
+	end
 
 
-	
+
+
+
+
 end
 
 function TakeStep()
-	
 
-		Agent.changeColor{b=255}
 
-		if not Moving then
-			Move.toRandom()
+	if adjusting then
+		adjust(adjustmodulator)
+	end
+
+
+	if not Moving then
+		--Move.toRandom()
+	end
+
+	if not adjusting then
+
+		if Angle > 270 and Angle <= 360 then
+			if PositionY < 0 + edgethresshold then
+				--Move.byAngle(Angle+.3)
+				adjusting = true
+				adjust()
+				adjustmodulator = 1
+			end
+			if PositionX > ENV_WIDTH-edgethresshold then
+				adjusting = true
+				--Move.byAngle(Angle-.3)
+				adjust()
+				adjustmodulator = -1
+			end
 		end
+
+
+		if Angle > 0 and Angle <90 then
+
+			if PositionX > ENV_WIDTH-edgethresshold then
+				--Move.byAngle(Angle+.3)
+				adjusting = true
+				adjustmodulator = 1
+			end
+				if PositionY > ENV_HEIGHT-edgethresshold  then
+				--Move.byAngle(Angle-.3)
+				adjusting = true
+				adjustmodulator = -1
+			end
+
+		end
+
+		if Angle >= 90 and Angle <=180 then
+
+			if PositionX < 0+edgethresshold then
+				adjusting = true
+
+				adjustmodulator = -1
+			end	--Move.byAngle(Angle-.3)
+
+			if PositionY > ENV_HEIGHT-edgethresshold then
+				--				Move.byAngle(Angle+.3)
+				adjusting = true
+				adjustmodulator = 1
+			end
+
+		end
+
+		if Angle >180 and Angle <=270 then
+
+			if PositionX < 0+edgethresshold then
+				--Move.byAngle(Angle+.3)
+				adjusting = true
+				adjustmodulator = 1
+			end
+				if PositionY < 0+edgethresshold then
+				--Move.byAngle(Angle-.3)
+				adjusting = true
+				adjustmodulator = -1
+			end
+
+		end
+
+
+
+
 
 
 		if Stat.randomInteger(1,1000) == 1 then
 
 			local table = {angle=Angle}
 
-			Event.emit{table=table}
+			Event.emit{table=table, description="angle"}
 
 
 		end
 
-		if counter % scanMultiple == 0 and Stat.randomInteger(1,1000) == 1 then 
+		if Stat.randomInteger(1, scanMultiple) == 1 then 
 			table = Collision.radialCollisionScan(repulsionRange)
 
 			if table ~= nil then
 
-				--set a random destination modifier
-				local destX = Stat.randomInteger(1,10)
-				local destY = Stat.randomInteger(1,10)
+				Agent.changeColor{r=255}
 
-				--get a valid random entry in the table
-				local entry = Stat.randomInteger(1,#table)
 
-				-- retrieve any random colliding agent positon in the table.
-				-- and set a new destination accordingly.
-				local rand = Stat.randomInteger(0,1)
 
-				if rand == 1 then
-					if table[entry].posX >= PositionX then 
-						destX = -destX
-					end
-					if table[entry].posY > PositionY then
-						destY = -destY
-					end
-				else 
-					if table[entry].posX > PositionX then 
-						destX = -destX
-					end
-					if table[entry].posY >= PositionY then
-						destY = -destY
-					end
+				Move.byAngle(Angle+Stat.randomInteger(-10,10))
 
-				end
-
-				-- set the new destination and move there
-				Move.to{x=PositionX+destX, y=PositionY+destY}
 				--
+				---set a random destination modifier
+				--	local destX = Stat.randomInteger(1,5)
+				--	local destY = Stat.randomInteger(1,5)
+
+				--	--get a valid random entry in the table
+				--	local entry = Stat.randomInteger(1,#table)
+
+				--	-- retrieve any random colliding agent positon in the table.
+				--	-- and set a new destination accordingly.
+				--	local rand = Stat.randomInteger(0,1)
+
+				--	--				if RanaMath.calcAngle{x1=PositionX, x2=table[entry].posX, y1= table[entry].posY} - then
+
+				--	if rand == 1 then
+				--		if table[entry].posX >= PositionX then 
+				--			destX = -destX
+				--		end
+				--		if table[entry].posY > PositionY then
+				--			destY = -destY
+				--		end
+				--	else 
+				--		if table[entry].posX > PositionX then 
+				--			destX = -destX
+				--		end
+				--		if table[entry].posY >= PositionY then
+				--			destY = -destY
+				--		end
+
+				--	end
+
+				--	-- set the new destination and move there
+				--	Move.to{x=PositionX+destX, y=PositionY+destY}
+				--	--
 
 				--Angle =math.atan2(DestinationY-PositionY, DestinationX-PositionX)*57.2958
 
-				scanMultiple = 10
+				
+
+				avoiding = true
 
 			else
-				scanMultiple = scanMultiple * 1,1
-	
+				--scanMultiple = scanMultiple * 1,1
+
+				Agent.changeColor{b=255, r=255, g=255}
+
+				avoiding = false
+
+				--				Agent.changeColor{b=0,r=255}
+
 			end
+
+		end
+
+		counter = counter +1
+	end
+
+end
+
+function adjust(modifier)
+
+	if adjusting and adjustvalue < adjustmodifier then
+		adjustvalue = adjustvalue + adjustrate
+
+		Move.byAngle(Angle+adjustrate*adjustmodulator)
+
+	else 
+		adjusting = false
+		adjustvalue = 0
 
 	end
 
-	counter = counter +1
 end
-
-

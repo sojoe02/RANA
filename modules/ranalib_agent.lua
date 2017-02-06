@@ -16,8 +16,8 @@ function ranaLibAgent.addAgent(filename, posX, posY)
 	local mapWidth, mapHeight = l_getEnvironmentSize()
 	local path = l_getAgentPath()
 
-	local posX = posX or l_getRandomInteger(1,mapHeight)
-	local posY = posY or l_getRandomInteger(1,mapWidth)
+	local posX = posX or l_getRandomInteger(1,mapWidth)
+	local posY = posY or l_getRandomInteger(1,mapHeight)
 	
 	if type(filename) == "string" then
 		local ID = l_addAgent(posX, posY, 0, path, filename)

@@ -55,7 +55,7 @@ food_color = {0,255,0}
 food_percentage = 0.01
 
 population = {{speed=1},{speed=2},{speed=3}} -- various populations each with a different movement speed.
-frog_amount = 100 -- number of frog agents pr. population
+frog_amount = 20 -- number of frog agents pr. population
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
 function initializeAgent()
@@ -94,8 +94,8 @@ function initializeAgent()
 
 	--
 	--
-	PositionX = -1
-	PositionY = -1
+	PositionX = 1
+	PositionY = 1
 	--
 	--
 
