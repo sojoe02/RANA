@@ -51,9 +51,9 @@ Agent = require "ranalib_agent"
 Event = require "ranalib_event"
 RanaMath = require "ranalib_math"
 
-scanMultiple = 100
+scanMultiple = 10
 attractionRange = 30
-repulsionRange = 5
+repulsionRange =6
 counter = 1
 
 edgethresshold = 30
@@ -61,8 +61,8 @@ edgethresshold = 30
 avoiding = true
 adjusting = false
 adjustvalue = 0
-adjustmodifier = 20
-adjustrate = .3
+adjustmodifier = 40
+adjustrate = 2
 adjustmodulator = 1
 
 -- Initialization of the agent.
@@ -94,24 +94,37 @@ function HandleEvent(event)
 	if event.description == "angle" then
 		local distance = RanaMath.calcDistance{x1=PositionX, x2=event.X, y1=PositionY, y2=event.Y} 
 		
-	--	say(distance)
+		--say(distance)
+
+
+			--local angle = RanaMath.calcAngle{x1=PositionX, x2=event.X, y1=PositionY, y2=event.Y}
+		--say(angle)
 
 		if distance < attractionRange and distance > repulsionRange  and not avoiding then
 
-			local angle = RanaMath.calcAngle{x1=PositionX, x2=event.X, y1=PositionY, y2=event.Y} 
+	--		say(distance)
 
-			--if math.abs(Angle-angle) >=180 then
+			local angle = RanaMath.calcAngle{x1=PositionX, x2=event.X, y1=PositionY, y2=event.Y}
 
+		--	say(angle)
+
+			if math.abs(Angle-angle) >=180 then
 				if math.abs(Angle - event.table.angle) >= 45 then
-					if Angle > event.table.angle then
+					
+				if Angle > event.table.angle then
+
 						Move.byAngle(Angle-10)
+
 					elseif Angle < event.table.angle then 
 						Move.byAngle(Angle+10)
 					end
+
 				else
-					Move.byAngle(event.table.angle)
+
+					--Move.byAngle(event.table.angle)
 
 				end
+			end
 				--Move.byAngle(event.table.angle)
 
 				--Agent.changeColor{g=255}
@@ -221,7 +234,7 @@ function TakeStep()
 
 
 
-		if Stat.randomInteger(1,1000) == 1 then
+		if Stat.randomInteger(1,500) == 1 then
 
 			local table = {angle=Angle}
 
@@ -239,7 +252,7 @@ function TakeStep()
 
 
 
-				Move.byAngle(Angle+Stat.randomInteger(-10,10))
+				Move.byAngle(Angle+Stat.randomInteger(-30,30))
 
 				--
 				---set a random destination modifier

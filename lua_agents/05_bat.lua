@@ -98,8 +98,8 @@ function cleanUp()
 	l_debug("Agent #: " .. ID .. " is done\n")
 end
 
-function processEventFunction(sourceX, sourceY, posX, posY, time, eventTable)
+function ProcessEvent()
 
-	return 2
+	return 2,0.1
 
 end

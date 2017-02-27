@@ -31,10 +31,13 @@ function ranaLibMovement.to(options)
 	--if matchAngle == true then
 
 		Angle = math.atan2(DestinationY-PositionY, DestinationX-PositionX)*57.2958
-		--if Angle < 0 then
-		--	Angle = Angle + 360
+		if Angle < 0 then
+			Angle =  360+Angle
+		elseif Angle > 360 then
+			Angle = 360-Angle
 
-		--end
+
+		end
 		--say(Angle)
 		
 	--end

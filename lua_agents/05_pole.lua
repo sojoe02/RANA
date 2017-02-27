@@ -86,7 +86,7 @@ function ProcessEvent(data)
 
 	--say(angle)
 
-	return Ae, 0.2
+	return Ae, 0.1
 
 end
 

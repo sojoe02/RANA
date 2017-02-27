@@ -43,66 +43,62 @@
 
 -- Import valid Rana lua libraries.
 Event = require "ranalib_event"
-Shared = require "ranalib_shared"	
-Stat = require "ranalib_statistic"
 Move = require "ranalib_movement"
+
+suspend = 1
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
 function InitializeAgent()
-
 	say("Agent #: " .. ID .. " has been initialized")
 
-	if ID == 1 then
+	if ID == 2 then suspend = 8*1/STEP_RESOLUTION end
+
+	if ID == 3 then 
+		PositionX = 0
+		PositionY = 0
+		Speed = 5
+	
+	end
+
+	if ID == 2 then 
+		PositionX = ENV_WIDTH/2-4
+		PositionY = ENV_HEIGHT/2+0
+	end
+
+	if ID == 1 then 
 		PositionX = ENV_WIDTH/2
 		PositionY = ENV_HEIGHT/2
 	end
 
-	
 end
 
 function HandleEvent(event)
 
---	fibonacci_tail(2000)
-
-	if event.description == "ping" then
-			say("Agent: "..ID .." received a ping from: "..event.ID ..", saying: "..event.table.msg)
-			Event.emit{speed=343,targetID=event.ID, description="pong"}
-
-	elseif event.description == "pong" then
-		say("Agent: "..ID.." received a pong from agent: ".. event.ID)
+	if event.ID == 2 and ID ~= 1 then
+		Move.to{x=event.X, y=event.Y}
 	end
-
 end
 
 function takeStep()
 
-	if Stat.randomInteger(1,1/STEP_RESOLUTION) <= 1 then
+	suspend = suspend -1
+
+
+	if suspend == 0 and ID ~= 3 then
+
 		say("Agent:"..ID.." is emiting ping")
 	 	Event.emit{speed=343,description="ping",table={msg="I am agent "..ID}}
+		suspend = 1/STEP_RESOLUTION
+
 	end
 
+	if suspend == 0 and ID == 3 then
+
+		if ID == 3 then Move.to{x=ENV_WIDTH/2, y=ENV_HEIGHT/2} end
+
+	end
+
+
 end
 
-function cleanUp()
-	l_debug("Agent #: " .. ID .. " is done\n")
-end
 
-function fibonacci(n)
-    if n<3 then
-        return 1
-    else
-        return fibonacci(n-1) + fibonacci(n-2)
-    end
-end
-
-function fibonacci_tail(n)
-    local function f(a, b, n)
-        if n < 3 then
-            return b
-        else
-            return f(b, a+b, n-1)
-        end
-    end
- 
-    return f(1,1,n)
-end

@@ -46,6 +46,7 @@
 Event = require "ranalib_event"
 Stat = require "ranalib_statistic"
 Move = require "ranalib_movement"
+Env = require "lib_env_lake"
 
 -- Initialization of the agent.
 function initializeAgent()
@@ -58,18 +59,16 @@ function initializeAgent()
 	--DestinationX = 1
 	--DestinationY = 1
 	--Speed = 3
+	--
+	Env.buildEnvironment()
+
+	Speed = 9
 end
 
 
 function takeStep()
 
-	if not Moving then
+	if not Moving then Move.toRandom() end
 
-		local x = Stat.randomInteger(1, ENV_WIDTH)
-		local y = Stat.randomInteger(1, ENV_HEIGHT)		
-
-		Move.to{x=x, y=y, speed=10}
-		
-	end
 end
 

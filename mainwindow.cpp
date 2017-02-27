@@ -1285,6 +1285,10 @@ void MainWindow::on_vis_activeMapSpinBox_valueChanged(int arg1)
             //item->setX(20);
             //item->setY(20);
             item->setZValue(3);
+			item->setScale(1/(double)ui->vis_resolutionSpinBox->value());
+			//item->setScale(1/ui->vis_resolutionSpinBox->value());
+			item->showAngle(false);
+			item->showID(false);
             eventScene->addItem(item);
             groupItems.append(item);
             //Output::Inst()->kprintf("agent item found");
