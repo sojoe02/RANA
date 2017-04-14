@@ -37,6 +37,7 @@ SOURCES += main.cpp\
     simulationcore/sector.cpp \
     simulationcore/supervisor.cpp \
     simulationcore/agents/agent.cpp \
+    simulationcore/agents/agentinterface.cpp \
     simulationcore/agents/agentluainterface.cpp \
     simulationcore/eventqueue.cpp
 
@@ -65,6 +66,7 @@ HEADERS  += mainwindow.h \
     simulationcore/sector.h \
     simulationcore/supervisor.h \
     simulationcore/agents/agent.h \
+    simulationcore/agents/agentinterface.h \
     simulationcore/agents/agentluainterface.h \
     simulationcore/eventqueue.h
 

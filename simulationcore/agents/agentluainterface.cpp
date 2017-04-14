@@ -50,7 +50,6 @@ AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double po
     : Agent(ID, posX, posY, posZ, sector), destinationX(posX), destinationY(posY),speed(1), moving(false),gridmove(false),filename(filename),
       nofile(false),removed(false),L(NULL)
 {
-
     desc = "LUA";
     //Output::Inst()->kprintf("%f,%f", posX, posY);
 	color.red=255;
@@ -1183,7 +1182,7 @@ int AgentLuaInterface::l_radialCollisionScan(lua_State *L)
             {
                 collision = GridMovement::checkCollision(posX+i, posY+j);
 
-                //Output::Inst()->kdebug("Checking: %d, %d", posX+i, posY+j);
+                //Output::Inst()->kdebl_radialMapColorScanug("Checking: %d, %d", posX+i, posY+j);
 
                 if (collision)
                 {

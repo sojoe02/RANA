@@ -49,8 +49,10 @@ public:
 
     std::string getDesc();
     int getID();
+
     double getPosX();
 	double getPosY();
+	double getPosZ();
 
 	void setPositions(double x, double y, double z){posX=x; posY=y; posZ=z;}
 
@@ -69,8 +71,6 @@ public:
 	void setColor(int r, int g, int b, int a = 255);
 	//rgba getColor(){return color;}
 	agentInfo getAgentInfo();
-
-	double getPosZ();
 
 protected:
 

@@ -53,7 +53,7 @@ double Agent::getPosY()
 	return posY;
 }
 
-double Agent ::getPosZ()
+double Agent::getPosZ()
 {
 	return posZ;
 }

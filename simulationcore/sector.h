@@ -34,6 +34,7 @@
 
 #include "supervisor.h"
 #include "eventqueue.h"
+#include "agents/agentinterface.h"
 #include "agents/agentluainterface.h"
 
 #include "utility.h"
@@ -41,6 +42,7 @@
 class Supervisor;
 class AgentListener;
 class AgentScreamer;
+class AgentInterface;
 class AgentLuaInterface;
 class Sector
 {
@@ -79,9 +81,13 @@ private:
         std::map<int,std::shared_ptr<AgentLuaInterface>> luaAgents;
         std::list<std::shared_ptr<AgentLuaInterface>> newAgents;
 
+        std::map<int,std::shared_ptr<AgentInterface>> cppAgents;
+        std::list<std::shared_ptr<AgentInterface>> newCppAgents;
+
 		std::list<int> removalIDs;
 
 		friend class Agent;
+		friend class AgentInterface;
 		friend class AgentLuaInterface;
 		double posX;
 		double posY;
