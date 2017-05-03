@@ -72,6 +72,8 @@ function _saveNewAgentParametersToFile()
 
     print("Simulation #: "..currentSimulation.." of "..totalIterations)
     print("Experiment #: "..currentExperiments.." of "..numOfExperiments)
+    print("\tVar1: "..paramTable[3].v1.." to 1")
+    print("\tVar2: "..paramTable[3].v2.." of 100")
 
 end
 
