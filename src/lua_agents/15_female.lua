@@ -48,6 +48,7 @@ Stat	= require "ranalib_statistic"
 Shared 	= require "ranalib_shared"
 Utility = require "ranalib_utility"
 Agent 	= require "ranalib_agent"
+Utility = require "ranalib_utility"
 
 x = 0.060
 beta =  x + 0.030
@@ -58,16 +59,10 @@ synced_calls = 0
 synced = false
 
 -- data sets
-iteration = 1
+sim = {}
 
 function InitializeAgent()
-        --l_debug("Female agent #: " .. ID .. " is being initialized")
-
-        tbl = loadParameters("female")
-
-        --positionX = ENV_WIDTH/2
-        --positionY = ENV_HEIGHT/2
-        --say("Fema "..ID.." x "..positionX.." y "..positionY)
+        sim = Utility.loadTable("simulation", "_parameters.data")
 
 	ids = Shared.getTable("ids")
 	agent_table = Shared.getTable("agents")
@@ -77,7 +72,6 @@ end
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
 function HandleEvent(event)
-	--say(Utility.serializeTable(event))
 	agent_table[event.ID] = agent_table[event.ID] + 1
 
 	if countdown > 0 then
@@ -106,7 +100,7 @@ function TakeStep()
 end
 
 function CleanUp()
-        file = io.open("test_output/data_female_5_"..iteration.."_"..ID..".csv", "w")
+        file = io.open("test_output/data_female_"..sim.expIteration.."_"..sim.simIteration.."_"..ID..".csv", "w")
 
 	for key,value in pairs(ids) do
             file:write(value ..",".. agent_table[value] .."\n")
@@ -114,66 +108,9 @@ function CleanUp()
 
         file:close()
 
-        file2 = io.open("test_output/box_data_5_"..iteration.."_"..ID..".csv", "w")
+        file2 = io.open("test_output/box_data_"..sim.expIteration.."_"..sim.simIteration.."_"..ID..".csv", "w")
         file2:write(synced_calls .."\n")
         file2:close()
 
-        --say(Utility.serializeTable(agent_table))
-        --say("Total number of calls: ".. total_calls)
-        --say("Number of calls within thresshold: ".. synced_calls)
-
         Agent.removeAgent(ID)
-        --l_debug("Female - Clean up for Agent " .. ID .. " is done")
-end
-
---  TODO: Put function somewhere else so all agents can get to it
-function loadParameters( key )
-
-    local ftables,err = loadfile( "_parameters.data" )
-    if err then
-        return _,err
-    end
-
-    local tables = ftables()
-
-    for idx = 1,#tables do
-
-        local tolinki = {}
-
-        for i,v in pairs( tables[idx] ) do
-            --  Set so the agent knows what iteration we are doing.
-            if i == "simIteration" then
-                if iteration ~= nil then
-                    iteration = v
-                end
-            end
-
-            if i == "name" and v == key then
-
-                if type( v ) == "table" then
-                    tables[idx][i] = tables[v[1]]
-                end
-
-                if type( i ) == "table" and tables[i[1]] then
-                    table.insert( tolinki,{ i,tables[i[1]] } )
-                end
-
-            end
-
-        end
-
-        for _,v in ipairs( tolinki ) do
-            tables[idx][v[2]],tables[idx][v[1]] =  tables[idx][v[1]],nil
-        end
-
-    end
-
-    for i = 1,#tables do
-        if tables[i].name == key then
-            return tables[i]
-        end
-    end
-
-    return nil
-
 end

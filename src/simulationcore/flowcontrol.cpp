@@ -56,6 +56,24 @@ FlowControl::FlowControl(Control *control)
     {
         luaL_openlibs(L);
 
+        // Register the path to the Rana specific lua modules
+        lua_getglobal(L, "package");
+        lua_getfield(L, -1, "path");
+        std::string cur_path = lua_tostring(L, -1);
+        std::string module_path = Output::Inst()->RanaDir;
+        //Output::Inst()->kdebug(module_path.c_str());
+        module_path.append("/src/modules/?.lua");
+        //Output::Inst()->kdebug(module_path.c_str());
+        cur_path.append(";");
+        cur_path.append(module_path);
+        cur_path.append(";");
+        cur_path.append(Output::Inst()->AgentPath);
+        cur_path.append("?.lua");
+        lua_pop(L,1);
+        lua_pushstring(L, cur_path.c_str());
+        lua_setfield(L,-2,"path");
+        lua_pop(L,1);
+
         //  Register the path to the simulation config module
         std::string simLib = Output::Inst()->RanaDir;
         simLib.append("/src/modules/ranalib_simconfig.lua");

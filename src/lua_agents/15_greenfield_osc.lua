@@ -64,19 +64,18 @@ Event	= require "ranalib_event"
 Core	= require "ranalib_core"
 Stat	= require "ranalib_statistic"
 Agent 	= require "ranalib_agent"
+Utility = require "ranalib_utility"
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
 function initializeAgent()
         --l_debug("Oscillator agent #: " .. ID .. " is being initialized")
 
-        tbl = loadParameters("greenfield")
+        sim = Utility.loadTable("simulation", "_parameters.data")
+        tbl = Utility.loadTable("greenfield", "_parameters.data")
+
         if tbl ~= nil then
             s = tbl.v1
         end
-
-        --positionX = Stat.randomMean(ENV_WIDTH/4,ENV_WIDTH/2)
-        --positionY = Stat.randomMean(ENV_HEIGHT/4,ENV_HEIGHT/2)
-        --say("GFie "..ID.." x "..positionX.." y "..positionY)
 
         Tt = T + Stat.randomMean(e,0)
 end
@@ -125,12 +124,14 @@ function handleEvent(sourceX, sourceY, sourceID, eventDescription, eventTable)
 		end
 		pause = true
 	end
+
 end
 
 function cleanUp()
+
 	--Write the oscillation data to a csv file.
 	if ID <= 4 then
-                file = io.open("test_output/data_green_5_"..iteration.."_"..ID..".csv", "w")
+                file = io.open("test_output/data_green_"..sim.expIteration.."_"..sim.simIteration.."_"..ID..".csv", "w")
 		for i,v in pairs(Olevels) do
 			file:write(i..","..v.."\n")
 		end
@@ -138,59 +139,6 @@ function cleanUp()
 	end
 
         Agent.removeAgent(ID)
-
-        --l_debug("Green - Clean up for Agent " .. ID .. " is done")
-end
-
---  TODO: Put function somewhere else so all agents can get to it
-function loadParameters( key )
-
-    local ftables,err = loadfile( "_parameters.data" )
-    if err then
-        return _,err
-    end
-
-    local tables = ftables()
-
-    for idx = 1,#tables do
-
-        local tolinki = {}
-
-        for i,v in pairs( tables[idx] ) do
-            --  Set so the agent knows what iteration we are doing.
-            if i == "simIteration" then
-                if iteration ~= nil then
-                    iteration = v
-                end
-            end
-
-            if i == "name" and v == key then
-
-                if type( v ) == "table" then
-                    tables[idx][i] = tables[v[1]]
-                end
-
-                if type( i ) == "table" and tables[i[1]] then
-                    table.insert( tolinki,{ i,tables[i[1]] } )
-                end
-
-            end
-
-        end
-
-        for _,v in ipairs( tolinki ) do
-            tables[idx][v[2]],tables[idx][v[1]] =  tables[idx][v[1]],nil
-        end
-
-    end
-
-    for i = 1,#tables do
-        if tables[i].name == key then
-            return tables[i]
-        end
-    end
-
-    return nil
 
 end
 

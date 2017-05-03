@@ -46,37 +46,40 @@ Agent   = require "ranalib_agent"
 Shared  = require "ranalib_shared"
 Stat    = require "ranalib_statistic"
 Sim     = require "ranalib_simconfig"
+Utility = require "ranalib_utility"
+
+--  Data
+sim = {}
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
-oscillator_amount = 2
-
 function InitializeAgent()
-        --l_debug("Master agent #: " .. ID .. " is being initialized")
 
-        -- Add the data collector agent.
-        PositionX = -1
-        PositionY = -1
+    -- Add the data collector agent.
+    PositionX = -1
+    PositionY = -1
 
-        agent_table = {}
-        ids = {}
+    agent_table = {}
+    ids = {}
 
-        initiateGreenfield()
-        --initiateFreerunning()
+    sim = Utility.loadTable("master", "_parameters.data")
 
-        Shared.storeTable("agents", agent_table)
-        Shared.storeTable("ids", ids)
+    initiateGreenfield()
 
-        local ID = Agent.addAgent("15_female.lua", 100, 100)
+    Shared.storeTable("agents", agent_table)
+    Shared.storeTable("ids", ids)
+
+    local ID = Agent.addAgent("15_female.lua", 100, 100)
 end
 
 function initiateGreenfield()
     -- Load up the greenfield oscillator agents.
-    for i=1 , oscillator_amount do
-            local ID = Agent.addAgent("15_greenfield_osc.lua", 70+20*i, 100)
+    local ID = Agent.addAgent("15_greenfield_osc.lua", 100-sim.v2, 100)
+    table.insert(ids, ID)
+    agent_table[ID]=0
 
-            table.insert(ids, ID)
-            agent_table[ID]=0
-    end
+    local ID = Agent.addAgent("15_greenfield_osc.lua", 100+sim.v2, 100)
+    table.insert(ids, ID)
+    agent_table[ID]=0
 end
 
 function initiateFreerunning()
@@ -92,6 +95,5 @@ end
 
 function cleanUp()
     Agent.removeAgent(ID)
-    --l_debug("Master - Clean up for Agent " .. ID .. " is done")
 end
 
