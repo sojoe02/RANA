@@ -4,8 +4,9 @@ parname = "_parameters.data"
 
 currentSimulation = 0           --  Current simulation
 currentExperiments = 1          --  Current experiment
-numOfExperiments = 5            --  How many simulations with the same parameters do we want
-totalIterations = 100000        --  The total number of simulations ( v1_t/v1_ss * v2_t/v2_ss )
+numOfExperiments = 1            --  How many simulations with the same parameters do we want
+totalIterations = 50600         --  The total number of simulations
+
 
 --  Import Rana lua libraries
 Utility = require "ranalib_utility"
@@ -20,20 +21,10 @@ configTbl =
         numAgents=2
     },
     {
-        name="greenfield",
-        v1_f = 0.0,
-        v1_t = 1.0,
-        v2_f = 1.0,
-        v2_t = 100.0,
-        v1_ss = 0.01,
-        v2_ss = 0.2,
-        numVar=2
-    },
-    {
         name="master",
         v1_f = 0.0,
-        v1_t = 1.0,
-        v2_f = 1.0,
+        v1_t = 1.01,
+        v2_f = 0.0,
         v2_t = 100.0,
         v1_ss = 0.01,
         v2_ss = 0.2,
@@ -56,9 +47,9 @@ function _loadNumberIterations()
 end
 
 function _saveNewAgentParametersToFile()
+    currentSimulation = currentSimulation + 1
 
     local paramTable = configTbl
-
     for key, value in pairs(configTbl) do
         if(type(value) == "table") then
             tbl = Utility.handleParameterTable(value, currentSimulation)
@@ -67,17 +58,42 @@ function _saveNewAgentParametersToFile()
     end
 
     Utility.saveTable( paramTable, parname )
-    currentSimulation = currentSimulation + 1
     configTbl[1].simIteration = configTbl[1].simIteration + 1
 
     print("Simulation #: "..currentSimulation.." of "..totalIterations)
     print("Experiment #: "..currentExperiments.." of "..numOfExperiments)
-    print("\tVar1: "..paramTable[3].v1.." to 1")
-    print("\tVar2: "..paramTable[3].v2.." of 100")
+    print("\tVar1: "..paramTable[2].v1.." to "..paramTable[2].v1_t-paramTable[2].v1_ss)
+    print("\tVar2: "..paramTable[2].v2.." to "..paramTable[2].v2_t)
 
 end
 
+function test()
 
+    v1_ss = 0.01
+    v1_f = 0
+    v1_t = 1.01
+
+    v2_ss = 0.2
+    v2_f = 0.0
+    v2_t = 100
+
+    v1 = v1_f
+    v2 = v2_f
+
+    for i=1,50600 do
+
+        v1 = round(v1 + v1_ss, 5)
+
+        if round(v1 - math.floor(v1 / v1_t) * v1_t, 5) == 0 then
+            v2 = round(v2 + v2_ss, 5)
+            v1 = round(0, 5)
+        end
+
+        print("v1: "..v1.. "\tv2: "..v2)
+
+    end
+
+end
 
 
 

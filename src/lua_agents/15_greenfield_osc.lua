@@ -71,7 +71,7 @@ function initializeAgent()
         --l_debug("Oscillator agent #: " .. ID .. " is being initialized")
 
         sim = Utility.loadTable("simulation", "_parameters.data")
-        tbl = Utility.loadTable("greenfield", "_parameters.data")
+        tbl = Utility.loadTable("master", "_parameters.data")
 
         if tbl ~= nil then
             s = tbl.v1

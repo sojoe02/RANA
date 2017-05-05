@@ -215,20 +215,49 @@ function RanaLibUtility.handleParameterTable( tbl, it )
 end
 
 function singleParam( tbl, it )
+
+    v1_tmp = tbl.v1_f
+
+    for i=1,it do
+        v1_tmp = round(v1_tmp + tbl.v1_ss, 5)
+    end
+
+    print("v1: "..v1_tmp)
+
     return{
-        v1 = tbl.v1_ss * math.fmod( it, ((tbl.v1_t-tbl.v1_f)/tbl.v1_ss) )
+        v1 = v1_tmp
     }
 end
 
 function doubleParam( tbl, it )
+
+    v1_tmp = tbl.v1_f
+    v2_tmp = tbl.v2_f
+
+    for i=1,it do
+
+        v1_tmp = round(v1_tmp + tbl.v1_ss, 5)
+
+        if round(v1_tmp - math.floor(v1_tmp / tbl.v1_t) * tbl.v1_t, 5) == 0 then
+            v2_tmp = round(v2_tmp + tbl.v2_ss, 5)
+            v1_tmp = round(0, 5)
+        end
+
+    end
+
     return{
-        v1 = tbl.v1_ss * math.floor( it / ((tbl.v1_t-tbl.v1_f)/tbl.v1_ss) ),
-        v2 = tbl.v2_ss * math.fmod( it, ((tbl.v2_t-tbl.v2_f)/tbl.v2_ss) )
+        v1 = v1_tmp,
+        v2 = v2_tmp
     }
 end
 
 function dynamicParam( tbl, it )
     --  TODO
+end
+
+function round(num, numDecimalPlaces)
+    local mult = 10^(numDecimalPlaces or 0)
+    return math.floor(num * mult + 0.5) / mult
 end
 
 return RanaLibUtility
