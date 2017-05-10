@@ -80,17 +80,19 @@ unix: export(copydata.commands)
 unix: QMAKE_EXTRA_TARGETS += first copydata
 #
 QMAKE_CXXFLAGS += -Wextra -Wno-unused-variable -Wno-unused-parameter
-QMAKE_CXXFLAGS_RELEASE += -o3
+QMAKE_CXXFLAGS_RELEASE += -O3
 CONFIG += c++14
 #QMAKE_CXXFLAGS += -std=c++1y -Wno-unused-variable -Wno-unused-parameter
 #CONFIG += stdlib=libc++ lc++abi o3
 
+####
+unix: LIBS += -lm -lstdc++
+####
+
 unix: CONFIG += link_pkgconfig
-#unix: PKGCONFIG += luajit
-unix: PKGCONFIG += lua51
+unix: PKGCONFIG += luajit
+#unix: PKGCONFIG += lua51
 #unix: PKGCONFIG += lua5.3
-
-
 
 macx: QMAKE_CXXFLAGS += -std=c++14 -mmacosx-version-min=10.7
 
