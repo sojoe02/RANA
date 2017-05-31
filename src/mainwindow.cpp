@@ -126,12 +126,6 @@ MainWindow::~MainWindow()
  * Generates an simulation, if a valid map has been loaded or generated.
  *
  */
-
-void MainWindow::resetSimulation()
-{
-    on_generateButton_clicked();
-}
-
 void MainWindow::on_generateButton_clicked()
 {
     qApp->processEvents();
@@ -180,9 +174,9 @@ void MainWindow::on_generateButton_clicked()
 			double timeRes = 1/(double)std::pow(10,exponent);
 			//Output::Inst()->kprintf("resolution is: %.20f", timeRes);
 			double macroRes = std::pow(10,ui->macroSpinBox->value());
-			Output::Inst()->kprintf("macro resolution is: %f , timeRes %f", macroRes, timeRes);
+            //Output::Inst()->kprintf("macro resolution is: %f , timeRes %f", macroRes, timeRes);
 			macroRes = (1/timeRes)/macroRes;
-			Output::Inst()->kprintf("macro resolution is: %f", macroRes);
+            //Output::Inst()->kprintf("macro resolution is: %f", macroRes);
 
 
             int agentAmount = ui->luaSpinBox->value();
@@ -198,8 +192,8 @@ void MainWindow::on_generateButton_clicked()
             //generate the simulation and initialize agents
             int threads = ui->advThreadSpinBox->value();
 
-            control->generateEnvironment(mapImage, threads, timeRes, macroRes,
-                                         agentAmount,stringPath);
+            control->setEnvironmentVariables(mapImage, threads, timeRes, macroRes,
+                                             agentAmount,stringPath);
 
             //Output::Inst()->kprintf("generating environment, %d, %s",
                           //          agentAmount, stringPath.c_str());
@@ -432,7 +426,6 @@ void MainWindow::on_updateMap(INFOLIST infolist)
  * @param posY Y position of the agent.
  * @see MainWindow::on_addGraphicAgent()
  */
-
 void MainWindow::addGraphicAgent(int id, int posX, int posY, rgba color, double angle)
 {
     //ui->generateButton->setEnabled(false);
@@ -684,7 +677,6 @@ void MainWindow::on_tabWidget_currentChanged(int index)
 	}
 }
 
-
 /**
  * @brief Allows browsing for valid lua agents.
  */
@@ -712,7 +704,7 @@ void MainWindow::on_runButton_clicked()
 	else
 	{
         //ui->generateButton->setDisabled(true);
-        control->runSimulation(ui->runTimeSpinBox->value());
+        control->startSimulation(ui->runTimeSpinBox->value());
     }
 }
 

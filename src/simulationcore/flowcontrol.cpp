@@ -166,8 +166,6 @@ void FlowControl::toggleLiveView(bool enable)
  */
 void FlowControl::runSimulation(int time)
 {
-
-
     std::string positionFilePath = Output::Inst()->RanaDir;
     positionFilePath.append("/");
     positionFilePath.append(positionFilename.c_str());
@@ -180,8 +178,7 @@ void FlowControl::runSimulation(int time)
     file.open(positionFilePath.c_str(),std::ofstream::out | std::ofstream::app | std::ofstream::binary);
 
     stop = false;
-    Output::Inst()->kprintf("Running Simulation of: %i[s], with resolution of %f \n",
-                            time, timeResolution);
+    Output::Inst()->kprintf("Running Simulation of: %i[s], with resolution of %f \n",time, timeResolution);
     Output::RunSimulation = true;
 
     unsigned long long iterations = (double)time/timeResolution;
@@ -266,9 +263,7 @@ void FlowControl::runSimulation(int time)
 
     auto endsim = steady_clock::now();
     duration_cast<seconds>(start2-endsim).count();
-    Output::Inst()->kprintf("Simulation run took:\t %llu[s] of computing time"
-                            , duration_cast<seconds>(endsim - start2).count()
-                            );
+    Output::Inst()->kprintf("Simulation run took:\t %llu[s] of computing time\n", duration_cast<seconds>(endsim - start2).count());
     file.close();
 }
 

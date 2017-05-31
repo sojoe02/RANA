@@ -52,9 +52,8 @@ class Control : public QObject
         ~Control();
 
         /**
-        * @brief generateEnvironment
-        * Generates a new environment, an environment is needed to
-        * start a simulation run.
+        * @brief setEnvironmentVariables
+        * Set parameters for the environment.
         * @param map pointer to the loaded image map
         * @param scale amount of m2 pr pixel
         * @param timeRes microstep resolution
@@ -62,11 +61,18 @@ class Control : public QObject
         * @param agentAmount number of Lua agents
         * @param agentPath path to the agent
         */
-        void generateEnvironment(QImage *map, int threads, double timeRes,
+        void setEnvironmentVariables(QImage *map, int threads, double timeRes,
                                  double macroRes, int agentAmount, std::string agentPath);
 
+        /**
+        * @brief generateEnvironment
+        * Generates a new environment, an environment is needed to
+        * start a simulation run.
+        */
+        void generateEnvironment();
+
         bool checkEnvPresence();
-        void runSimulation(unsigned long long runTime);
+        void startSimulation(unsigned long long runTime);
         void stopSimulation();
 
         void saveExternalEvents(std::string filename);
@@ -81,12 +87,26 @@ class Control : public QObject
 
         void threadTest(std::string something);
 
+    //  Public slot
+    public slots:
+        void on_simDone();
+
     //  Public attributes
     public:
         std::list<double[3]> updatePositions();
 
     //  Private Methods
     private:
+        void updateLuaSimulationConfigs();
+        void readyAgentDomain();
+        void killAgentDomain();
+        void readyRunner();
+        void killRunner();
+        void killRunthread();
+
+    //  Private slot
+    private slots:
+        void runSimulation();
 
     //  Private Attributes
     private:
@@ -97,22 +117,26 @@ class Control : public QObject
         QFuture<void> populateFuture;
 
         bool running;
-        bool generated;
         bool stopped;
+        bool generated;
         bool generating;
 
-        int currentNumberOfSimulation = 0;
-        int totalNumberOfSimulations = 0;
+        int currentNumberOfSimulation = 1;
+        int totalNumberOfSimulations = 1;
+        unsigned long long runTime;
+
+        QImage *map;
+        int threads;
+        double timeRes;
+        double macroRes;
+        int agentAmount;
+        std::string agentPath;
 
         lua_State* L;
 
-    public slots:
-        void on_simDone();
-
     signals:
         void startDoWork(FlowControl *agentDomain, unsigned long long runtime);
-
-
+        void runSimulationSignal();
 };
 
 #endif // CONTROL_H

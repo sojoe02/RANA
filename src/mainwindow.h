@@ -55,8 +55,6 @@ public:
 
 	~MainWindow();
 
-        void resetSimulation();
-
 	void changeRunButton(QString text);
 	void advanceProgess(int percentage);
 	void runButtonHide();

@@ -51,7 +51,7 @@ n = 1
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
 function InitializeAgent()
-	say("Agent #: " .. ID .. " has been initialized")
+        --say("Agent #: " .. ID .. " has been initialized")
 
 	if ID == 1 then
 		PositionX = ENV_WIDTH/2
@@ -92,7 +92,7 @@ function takeStep()
 end
 
 function cleanUp()
-	l_debug("Agent #: " .. ID .. " is done\n")
+        --l_debug("Agent #: " .. ID .. " is done\n")
 end
 
 function fibonacci(n)

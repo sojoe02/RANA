@@ -25,8 +25,8 @@
 #include "src/output.h"
 
 Control::Control(MainWindow* mainwindow)
-    : agentDomain(NULL), mainwindow(mainwindow),
-      running(false), generated(false), stopped(true),generating(false)
+    : agentDomain(NULL), mainwindow(mainwindow), running(false),
+      generated(false), stopped(true), generating(false)
 {
     L = luaL_newstate();
 
@@ -66,15 +66,123 @@ Control::Control(MainWindow* mainwindow)
             std::cout << "\tSim file loaded: " << simLib << std::endl;
         }
     }
+
     try{
         lua_settop(L,0);
-        lua_getglobal(L,"_loadInitializeSimulation");
-        if(lua_pcall(L,0,1,0)!=LUA_OK){
-            Output::Inst()->kprintf("Control - Lua_simconfig - Doesn't work");
-        }else{
-            this->totalNumberOfSimulations  = lua_tonumber(L,-1);
-        }
+        lua_getglobal(L,"_getInitialCurrentSimulation");
+        if(lua_pcall(L,0,1,0)!=LUA_OK){ Output::Inst()->kprintf("Control - Lua_simconfig - Can't get current"); }
+        else{ this->currentNumberOfSimulation = lua_tonumber(L,-1); }
+        lua_settop(L,0);
+        lua_getglobal(L,"_getTotalNumberSimulation");
+        if(lua_pcall(L,0,1,0)!=LUA_OK){ Output::Inst()->kprintf("Control - Lua_simconfig - Can't get total"); }
+        else{ this->totalNumberOfSimulations = lua_tonumber(L,-1); }
+        lua_settop(L,0);
+        lua_getglobal(L,"_initializeParameterForSimulation");
+        if(lua_pcall(L,0,0,0)!=LUA_OK){ Output::Inst()->kprintf("Control - Lua_simconfig - Can't set params"); }
+
     }catch(std::exception& e){ Output::Inst()->kprintf("Control - Exception"); }
+
+    connect(this, &Control::runSimulationSignal, this, &Control::runSimulation);
+}
+
+Control::~Control()
+{
+    killRunthread();
+}
+
+void Control::setEnvironmentVariables(QImage *map, int threads, double timeRes, double macroRes, int agentAmount, std::string agentPath)
+{
+    this->map = map;
+    this->threads = threads;
+    this->timeRes = timeRes;
+    this->macroRes = macroRes;
+    this->agentAmount = agentAmount;
+    this->agentPath = agentPath;
+
+    currentNumberOfSimulation = 1;
+
+    generateEnvironment();
+}
+
+void Control::generateEnvironment()
+{
+    if(!running && !generating)
+    {
+        generating = true;
+
+        if(populateFuture.isRunning())
+        {
+            Output::Inst()->kprintf("A previous system was being populated, it will be cancelled\n");
+            populateFuture.cancel();
+            populateFuture.waitForFinished();
+        }
+        Output::KillSimulation.store(true);
+
+        readyAgentDomain();
+
+        generating = false;
+    } else{
+        Output::Inst()->kprintf("Simulation is being generating or it is running");
+    }
+}
+
+void Control::startSimulation(unsigned long long runTime)
+{
+    this->runTime = runTime;
+
+    emit runSimulationSignal();
+}
+
+void Control::runSimulation()
+{
+    generateEnvironment();
+    readyRunner();
+
+    running = true;
+
+    Output::SimRunning.store(true);
+    mainwindow->changeRunButton("Stop");
+
+    emit startDoWork(agentDomain, runTime);
+}
+
+void Control::on_simDone()
+{
+    killRunner();
+    killAgentDomain();
+    killRunthread();
+
+    mainwindow->changeRunButton("Run");
+    mainwindow->runButtonHide();
+
+    Output::SimRunning.store(false);
+    Output::Inst()->kprintf("Simulation Done\n");
+    running = false;
+
+    if(totalNumberOfSimulations > currentNumberOfSimulation){
+        currentNumberOfSimulation++;
+        updateLuaSimulationConfigs();
+        emit runSimulationSignal();
+    }
+}
+
+void Control::updateLuaSimulationConfigs(){
+
+    try{
+        lua_settop(L,0);
+        lua_getglobal(L,"_setCurrentSimulation");
+        lua_pushnumber(L, currentNumberOfSimulation);
+        if(lua_pcall(L,1,0,0)!=LUA_OK){ Output::Inst()->kprintf("Control - Lua_simconfig - Set new Simulation"); }
+        lua_settop(L,0);
+        lua_getglobal(L,"_loadNewParameters");
+        if(lua_pcall(L,0,0,0)!=LUA_OK){ Output::Inst()->kprintf("Control - Lua_simconfig - Save new parameters"); }
+    }catch(std::exception& e){ Output::Inst()->kprintf("Control - Exception"); }
+
+}
+
+void Control::readyRunner()
+{
+    killRunner();
 
     runner = new Runner();
     runner->moveToThread(&runThread);
@@ -82,25 +190,38 @@ Control::Control(MainWindow* mainwindow)
     connect(this, &Control::startDoWork, runner, &Runner::doWork);
     connect(&runThread, &QThread::finished, runner, &QObject::deleteLater);
     connect(runner, &Runner::simulationDone, this, &Control::on_simDone);
-    //runThread.setStackSize(1024*1024*512);
+
     runThread.start();
 }
 
-Control::~Control()
+void Control::readyAgentDomain()
 {
-    runThread.quit();
-    runThread.wait();
+    killAgentDomain();
+
+    agentDomain = new FlowControl(this);
+    agentDomain->generateEnvironment(map->width(),map->height(),threads,agentAmount,timeRes,macroRes,agentPath);
+    populateFuture = QtConcurrent::run(agentDomain, &FlowControl::populateSystem);
 }
 
-void Control::runSimulation(unsigned long long runTime)
+void Control::killAgentDomain()
 {
-    running = true;
-    //runThread.setStackSize(1024*1024*1024);
-    Output::SimRunning.store(true);
-    mainwindow->changeRunButton("Stop");
-    emit startDoWork(agentDomain, runTime);
-    //runner->setParameters(agentDomain, runTime);
-    //runThread->start();
+    if(agentDomain != NULL){
+        delete agentDomain;
+        agentDomain = NULL;
+    }
+}
+
+void Control::killRunner()
+{
+    if(runner != NULL){
+        delete runner;
+        runner = NULL;
+    }
+}
+
+void Control::killRunthread(){
+    runThread.quit();
+    runThread.wait();
 }
 
 void Control::stopSimulation()
@@ -108,60 +229,9 @@ void Control::stopSimulation()
     agentDomain->stopSimulation();
 }
 
-void Control::generateEnvironment(QImage *map, int threads,
-                                  double timeRes, double macroRes,
-                                  int agentAmount, std::string agentPath)
-{
-    if(!running || !generating)
-    {
-        generating = true;
-        if(populateFuture.isRunning())
-        {
-            Output::Inst()->kprintf("A previous system was being populated, it will be cancelled");
-            populateFuture.cancel();
-            populateFuture.waitForFinished();
-        }
-        Output::KillSimulation.store(true);
-
-        Output::Inst()->kprintf("Generating environment");
-
-        if(agentDomain != NULL)
-        {
-            //Output::Inst()->kprintf("Deleting agent domain");
-            delete agentDomain;
-            agentDomain = NULL;
-        }
-
-        agentDomain = new FlowControl(this);
-
-        agentDomain->generateEnvironment(map->width(),map->height(),threads,
-                                         agentAmount,timeRes,macroRes,agentPath);
-        //agentDomain->populateSystem();
-
-        populateFuture = QtConcurrent::run(agentDomain, &FlowControl::populateSystem);
-
-        //populateFuture.waitForFinished();
-
-        //ture.waitForFinished();
-        //QThread::msleep(1000);
-        generating = false;
-    } else
-        Output::Inst()->kprintf("Simulation is being generating or it is running");
-    //retrieve and update the positions:
-}
-
 void Control::threadTest(std::string something)
 {
     int i = 0;
-}
-
-void Control::on_simDone()
-{
-    running = false;
-    mainwindow->changeRunButton("Run");
-    mainwindow->runButtonHide();
-    Output::SimRunning.store(false);
-    Output::Inst()->kprintf("Simulation Done");
 }
 
 void Control::refreshPopPos(std::list<agentInfo> infolist)
