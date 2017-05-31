@@ -2,10 +2,10 @@
 simname = "_simconfig.data"
 parname = "_parameters.data"
 
-currentSimulation = 0           --  Current simulation
+currentSimulation = 0       --  Current simulation
+totalIterations = 50601         --  The total number of simulations
 currentExperiments = 1          --  Current experiment
 numOfExperiments = 1            --  How many simulations with the same parameters do we want
-totalIterations = 50600         --  The total number of simulations
 
 
 --  Import Rana lua libraries

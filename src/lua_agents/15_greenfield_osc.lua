@@ -131,7 +131,7 @@ function cleanUp()
 
 	--Write the oscillation data to a csv file.
 	if ID <= 4 then
-                file = io.open("test_output/data_green_"..sim.expIteration.."_"..sim.simIteration.."_"..ID..".csv", "w")
+                file = io.open("test_output/male/data_green_"..sim.expIteration.."_"..sim.simIteration.."_"..ID..".csv", "w")
 		for i,v in pairs(Olevels) do
 			file:write(i..","..v.."\n")
 		end

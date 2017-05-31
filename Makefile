@@ -564,7 +564,6 @@ distclean: clean
 first: $(first) copydata
 
 copydata:
-	$(COPY_DIR) /home/theis/workspace/RANA/modules /home/theis/workspace/RANA
 
 mocclean: compiler_moc_header_clean compiler_moc_source_clean
 

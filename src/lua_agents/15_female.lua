@@ -100,7 +100,7 @@ function TakeStep()
 end
 
 function CleanUp()
-        file = io.open("test_output/data_female_"..sim.expIteration.."_"..sim.simIteration.."_"..ID..".csv", "w")
+        file = io.open("test_output/female/other/data_female_"..sim.expIteration.."_"..sim.simIteration.."_"..ID..".csv", "w")
 
 	for key,value in pairs(ids) do
             file:write(value ..",".. agent_table[value] .."\n")
@@ -108,9 +108,11 @@ function CleanUp()
 
         file:close()
 
-        file2 = io.open("test_output/box_data_"..sim.expIteration.."_"..sim.simIteration.."_"..ID..".csv", "w")
+        file2 = io.open("test_output/female/box/box_data_"..sim.expIteration.."_"..sim.simIteration.."_"..ID..".csv", "w")
         file2:write(synced_calls .."\n")
         file2:close()
+
+        print("Saving to: ".."test_output/female/box/box_data_"..sim.expIteration.."_"..sim.simIteration.."_"..ID..".csv\n")
 
         Agent.removeAgent(ID)
 end

@@ -75,7 +75,7 @@ FORMS   += ui/mainwindow.ui \
     ui/about.ui
 
 #copy the lua modules to the correct directory, "wherever" Qmake puts it
-unix: copydata.commands = $(COPY_DIR) $$PWD/modules $$OUT_PWD
+#unix: copydata.commands = $(COPY_DIR) $$PWD/modules $$OUT_PWD
 unix: first.depends = $(first) copydata
 unix: export(first.depends)
 unix: export(copydata.commands)
