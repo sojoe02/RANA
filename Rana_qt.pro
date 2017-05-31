@@ -12,7 +12,6 @@ CONFIG += warn_on
 TARGET = Rana_qt
 TEMPLATE = app
 
-
 SOURCES += src/main.cpp\
     src/mainwindow.cpp \
     src/output.cpp \
@@ -75,7 +74,7 @@ FORMS   += ui/mainwindow.ui \
     ui/about.ui
 
 #copy the lua modules to the correct directory, "wherever" Qmake puts it
-#unix: copydata.commands = $(COPY_DIR) $$PWD/modules $$OUT_PWD
+unix: copydata.commands = $(COPY_DIR) $$PWD/src/modules $$OUT_PWD
 unix: first.depends = $(first) copydata
 unix: export(first.depends)
 unix: export(copydata.commands)
@@ -140,6 +139,10 @@ DISTFILES += \
     src/lua_agents/11_oscillator_module.lua \
     src/lua_agents/12_master.lua \
     src/lua_agents/13_precision_test.lua \
+    src/lua_agents/15_master.lua \
+    src/lua_agents/15_female.lua \
+    src/lua_agents/15_freerunning_osc.lua \
+    src/lua_agents/15_greenfield_osc.lua \
     src/modules/auxiliary.lua \
     src/modules/lib_env_lake.lua \
     src/modules/lib_table.lua \
@@ -159,8 +162,5 @@ DISTFILES += \
     src/modules/ranalib_physics.lua \
     src/modules/wrapper_auxiliary.lua \
     src/modules/ranalib_variable.lua \
-    src/modules/ranalib_simconfig.lua \
-    src/lua_agents/15_master.lua \
-    src/lua_agents/15_female.lua \
-    src/lua_agents/15_freerunning_osc.lua \
-    src/lua_agents/15_greenfield_osc.lua
+    src/modules/ranalib_simconfig.lua
+

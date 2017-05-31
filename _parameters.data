@@ -6,7 +6,7 @@ return {
 },
 -- Table: {2}
 {
-   ["simIteration"]=50605,
+   ["simIteration"]=1,
    ["numAgents"]=2,
    ["name"]="simulation",
    ["expIteration"]=1,
@@ -21,7 +21,7 @@ return {
    ["name"]="master",
    ["v1_f"]=0,
    ["v2_f"]=0,
-   ["v1"]=0.04,
-   ["v2"]=100.2,
+   ["v1"]=0.01,
+   ["v2"]=0,
 },
 }

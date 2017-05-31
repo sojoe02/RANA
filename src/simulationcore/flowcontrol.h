@@ -30,10 +30,6 @@
 #include<stdio.h>
 #include<fstream>
 
-#include "lua.h"
-#include "lauxlib.h"
-#include "lualib.h"
-
 #include "supervisor.h"
 #include "src/simulationcore/interfacer.h"
 #include "src/mainwindow.h"
@@ -44,65 +40,56 @@ class Control;
 class Supervisor;
 class FlowControl
 {
-	public:
+    public:
         FlowControl(Control *control);
         ~FlowControl();
 
-        void generateEnvironment(double width, double height, int threads, int agentAmount,
+        void generateEnvironment(double width, double height, int resolution, int agentAmount,
                                  double timeResolution, int macroFactor, std::string filename);
-        void retrievePopPos();
-		void runSimulation(int time);
 
-		bool checkEnvPresence();
-		void stopSimulation();
-		void saveExternalEvents(std::string filename);
-		void updateStatus();
+        void retrievePopPos();
+
+        void runSimulation(int time);
+
+        bool checkEnvPresence();
+        void stopSimulation();
+        void saveExternalEvents(std::string filename);
+        void updateStatus();
 
         void toggleLiveView(bool enable);
         void populateSystem();
 
-        bool runAgain();
-
-private:
-        int numIt = 0;
-        int simNumIt = 0;
-
-        void setNewParameters();
-        void resetSimulation();
-
+    private:
         Control *control;
-		bool mapGenerated;
+        bool mapGenerated;
         Interfacer doctor;
         Supervisor *masteragent;
 
-        int threads;
-		double timeResolution;
-		double macroResolution;
+        double timeResolution;
+        double macroResolution;
 
-		unsigned long long cMacroStep;
-		unsigned long long cMicroStep;
+        unsigned long long cMacroStep;
+        unsigned long long cMicroStep;
 
-		int macroFactor;
-		int mapWidth, mapHeight;
-		unsigned long long iterations;
-		unsigned long long i;
+        int macroFactor;
+        int mapWidth, mapHeight;
+        unsigned long long iterations;
+        unsigned long long i;
 
-		//Atomic thread controllers:
-		std::atomic_bool stop;
-		std::mutex stopMutex;
+        //Atomic thread controllers:
+        std::atomic_bool stop;
+        std::mutex stopMutex;
         std::atomic_bool fetchPositions;
 
         int agentAmount;
-        std::string agentFilename;
+        std::string luaFilename;
 
-		typedef std::list<agentInfo> onlineAgents;
-		std::unordered_map<unsigned long long, onlineAgents> positionMap;
-		bool storePositions;
+        typedef std::list<agentInfo> onlineAgents;
+        std::unordered_map<unsigned long long, onlineAgents> positionMap;
+        bool storePositions;
         std::string positionFilename;
 
         std::ofstream file;
-
-        lua_State* L;
 };
 
 #endif // FLOWCONTROL_H

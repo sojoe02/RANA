@@ -140,6 +140,10 @@ DIST          = src/lua_agents/01_pingpong.lua \
 		src/lua_agents/11_oscillator_module.lua \
 		src/lua_agents/12_master.lua \
 		src/lua_agents/13_precision_test.lua \
+		src/lua_agents/15_master.lua \
+		src/lua_agents/15_female.lua \
+		src/lua_agents/15_freerunning_osc.lua \
+		src/lua_agents/15_greenfield_osc.lua \
 		src/modules/auxiliary.lua \
 		src/modules/lib_env_lake.lua \
 		src/modules/lib_table.lua \
@@ -160,10 +164,6 @@ DIST          = src/lua_agents/01_pingpong.lua \
 		src/modules/wrapper_auxiliary.lua \
 		src/modules/ranalib_variable.lua \
 		src/modules/ranalib_simconfig.lua \
-		src/lua_agents/15_master.lua \
-		src/lua_agents/15_female.lua \
-		src/lua_agents/15_freerunning_osc.lua \
-		src/lua_agents/15_greenfield_osc.lua \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/linux.conf \
@@ -564,6 +564,7 @@ distclean: clean
 first: $(first) copydata
 
 copydata:
+	$(COPY_DIR) /home/theis/workspace/RANA/src/modules /home/theis/workspace/RANA
 
 mocclean: compiler_moc_header_clean compiler_moc_source_clean
 
@@ -1143,20 +1144,18 @@ BUILD/obj/shared.o: src/api/shared.cpp src/output.h \
 		src/api/shared.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/shared.o src/api/shared.cpp
 
-BUILD/obj/flowcontrol.o: src/simulationcore/flowcontrol.cpp src/ID.h \
-		src/output.h \
-		src/mainwindow.h \
-		src/control.h \
-		src/utility.h \
-		src/runner.h \
-		src/simulationcore/flowcontrol.h \
+BUILD/obj/flowcontrol.o: src/simulationcore/flowcontrol.cpp src/simulationcore/flowcontrol.h \
 		src/simulationcore/supervisor.h \
 		src/simulationcore/eventqueue.h \
 		src/simulationcore/sector.h \
 		src/simulationcore/agents/agentinterface.h \
 		src/simulationcore/agents/agent.h \
+		src/utility.h \
 		src/simulationcore/agents/agentluainterface.h \
 		src/simulationcore/interfacer.h \
+		src/mainwindow.h \
+		src/control.h \
+		src/runner.h \
 		src/graphics/agentItem.h \
 		src/postprocessing/postcontrol.h \
 		src/postprocessing/eventrunner.h \
@@ -1164,9 +1163,12 @@ BUILD/obj/flowcontrol.o: src/simulationcore/flowcontrol.cpp src/ID.h \
 		src/postprocessing/graphics/zblock.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
+		src/ID.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
-		src/api/shared.h
+		src/api/shared.h \
+		src/output.h \
+		src/api/scanning.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/flowcontrol.o src/simulationcore/flowcontrol.cpp
 
 BUILD/obj/interfacer.o: src/simulationcore/interfacer.cpp src/output.h \

@@ -22,15 +22,17 @@
 #ifndef CONTROL_H
 #define CONTROL_H
 
-
 #include <QtGui>
+#include <QObject>
 #include <QtConcurrent/qtconcurrentrun.h>
 
 //STL libraries:
 #include <string>
 #include <list>
 
-#include <QObject>
+#include "lua.h"
+#include "lauxlib.h"
+#include "lualib.h"
 
 #include "src/mainwindow.h"
 #include "src/utility.h"
@@ -42,71 +44,73 @@ class FlowControl;
 class MainWindow;
 class Control : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 
-public:
+    //  Public methods
+    public:
+        Control(MainWindow* mainwindow);
+        ~Control();
 
-    Control(MainWindow* mainwindow);
-    ~Control();
+        /**
+        * @brief generateEnvironment
+        * Generates a new environment, an environment is needed to
+        * start a simulation run.
+        * @param map pointer to the loaded image map
+        * @param scale amount of m2 pr pixel
+        * @param timeRes microstep resolution
+        * @param macroRes macrostep resotution
+        * @param agentAmount number of Lua agents
+        * @param agentPath path to the agent
+        */
+        void generateEnvironment(QImage *map, int threads, double timeRes,
+                                 double macroRes, int agentAmount, std::string agentPath);
 
-    bool checkEnvPresence();
+        bool checkEnvPresence();
+        void runSimulation(unsigned long long runTime);
+        void stopSimulation();
 
-    void runSimulation(unsigned long long runTime);
-    void runsimulation();   //TODO: Make private
-    void stopSimulation();
+        void saveExternalEvents(std::string filename);
+        void refreshPopPos(std::list<agentInfo> infolist);
 
-    /**
-     * @brief generateEnvironment
-     * Generates a new environment, an environment is needed to
-     * start a simulation run.
-     * @param map pointer to the loaded image map
-     * @param scale amount of m2 pr pixel
-     * @param timeRes microstep resolution
-     * @param macroRes macrostep resotution
-     * @param agentAmount number of Lua agents
-     * @param agentPath path to the agent
-     */
-    void generateEnvironment(QImage *map, int threads, double timeRes,
-                             double macroRes, int agentAmount, std::string agentPath);
+        bool isGenerated();
+        bool isRunning();
 
-    void generateEnvironment(int width, int heigth, int threads,double timeRes,
-                             double macroRes, int agentAmount, std::string agentPath);
+        void saveEvents(QString path);
 
-    std::list<double[3]> updatePositions();
+        void toggleLiveView(bool enable);
 
-    void saveExternalEvents(std::string filename);
-    void refreshPopPos(std::list<agentInfo> infolist);
+        void threadTest(std::string something);
 
-    bool isGenerated();
-    bool isRunning();
-    unsigned long long getRunTime();
+    //  Public attributes
+    public:
+        std::list<double[3]> updatePositions();
 
-	void saveEvents(QString path);
+    //  Private Methods
+    private:
 
-    void toggleLiveView(bool enable);
+    //  Private Attributes
+    private:
+        FlowControl *agentDomain;
+        MainWindow *mainwindow;
+        Runner *runner;
+        QThread runThread;
+        QFuture<void> populateFuture;
 
-    void threadTest(std::string something);
+        bool running;
+        bool generated;
+        bool stopped;
+        bool generating;
 
-public slots:
+        int currentNumberOfSimulation = 0;
+        int totalNumberOfSimulations = 0;
 
-    void on_simDone();
+        lua_State* L;
 
-signals:
+    public slots:
+        void on_simDone();
 
-    void startDoWork(FlowControl *agentDomain, unsigned long long runtime);
-
-private:
-    FlowControl *agentDomain;
-    MainWindow *mainwindow;
-    Runner *runner;
-    QThread runThread;
-    QFuture<void> populateFuture;
-
-    bool running;
-    bool generated;
-    bool stopped;
-    bool generating;
-    unsigned long long runTime;
+    signals:
+        void startDoWork(FlowControl *agentDomain, unsigned long long runtime);
 
 
 };

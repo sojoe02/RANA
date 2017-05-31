@@ -3,7 +3,7 @@ simname = "_simconfig.data"
 parname = "_parameters.data"
 
 currentSimulation = 0       --  Current simulation
-totalIterations = 50601         --  The total number of simulations
+totalIterations = 10         --  The total number of simulations
 currentExperiments = 1          --  Current experiment
 numOfExperiments = 1            --  How many simulations with the same parameters do we want
 
@@ -32,7 +32,7 @@ configTbl =
     }
 }
 
-function _loadNumberIterations()
+function _loadInitializeSimulation()
 
     if totalIterations == nil then
         return 1
