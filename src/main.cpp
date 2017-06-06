@@ -19,12 +19,12 @@
 //along with RANA.  If not, see <http://www.gnu.org/licenses/>.
 //
 //--end_license--
-#include <QApplication>
 #include <stdio.h>
 #include <string>
+#include <iostream>
 
-#include "src/ID.h"
-#include "src/mainwindow.h"
+#include "version.h" 
+/*vinclude "src/ID.h"
 #include "src/api/phys.h"
 #include "src/api/gridmovement.h"
 #include "src/output.h"
@@ -32,25 +32,15 @@
 int ID::aID = 0;
 unsigned long long ID::eID = 0;
 unsigned long long ID::tmu = 0;
-unsigned long long ID::nID = 0;
+unsigned long long ID::nID = 0;*/
 
 int main(int argc, char *argv[])
 {
     //srand(time(0));
-    Phys::seedMersenne();
-    Output::DelayValue = 0;
-    Output::LegacyMode.store(false);
-    GridMovement::initGrid(1);
+ //  Phys::seedMersenne();
+ //  Output::DelayValue = 0;
+   // Output::LegacyMode.store(false);
+	
+	std::cout << gGIT_VERSION << std::endl << gGIT_VERSION_SHORT << std::endl;
 
-    qDebug() << Phys::getMersenneInteger(1, RAND_MAX) << Phys::getMersenneInteger(1, RAND_MAX) << Phys::getMersenneFloat(1, RAND_MAX) <<Phys::getMersenneInteger(1, RAND_MAX) ;
-
-
-    QApplication a(argc, argv);
-    MainWindow *w = new MainWindow();
-
-    Output::Inst()->setMainWindow(w);
-
-    w->show();
-
-    return a.exec();
 }
