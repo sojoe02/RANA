@@ -4,8 +4,10 @@ bin/
 build/
 documentation/
 test/
+test_output/
 
 # FileTypes:
+*.csv
 *.swp
 *.swo
 *.kas
