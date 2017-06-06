@@ -56,6 +56,7 @@ function initializeAgent()
 	say("Agent #: " .. ID .. " has been initialized")
 	group = Stat.randomInteger(1,5)
 	Agent.joinGroup(group)
+	say("I belong to group: " ..group )
 
 
 end

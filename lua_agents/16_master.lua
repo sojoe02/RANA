@@ -1,4 +1,4 @@
---begin_license--
+----begin_license--
 --
 --Copyright 	2013 - 2016 	Søren Vissing Jørgensen.
 --
@@ -41,85 +41,43 @@
 -- GridMove 		-- Is collision detection active (default = false).
 -- ------------------------------------
 
+-- Import Rana lua libraries.
+Agent	= require "ranalib_agent"
+Shared = require "ranalib_shared"
+-- Init of the lua frog, function called upon initilization of the LUA auton.
+inquiline_amount = 35
+host_amount = 10
+inquiline_repulsion_range = 30
+inquiline_detection_range = 30
 
--- Import valid Rana lua libraries.
-Stat = require "ranalib_statistic"
-Move = require "ranalib_movement"
-Collision = require "ranalib_collision"
-Utility = require "ranalib_utility"
-Agent = require "ranalib_agent"
-
-scanMultiple = 10
-repulsionRange = 1
-counter = 1
-
--- Initialization of the agent.
 function InitializeAgent()
+	-- Add the data collector agent.
+  	PositionX = -1
+	PositionY = -1
+
+	host_ids = {}
+	inquiline_ids = {}
+
+	Shared.storeNumber("inquiline_repulsion_range", inquiline_repulsion_range)
+	Shared.storeNumber("inquiline_detection_range", inquiline_detection_range)
+
+	-- Load up the oscillator agents.
+	for i=1 , inquiline_amount do
+		local ID = Agent.addAgent("16_inquiline.lua")
+		table.insert(inquiline_ids, ID)
+	end	
+
+	for i=1, host_amount do
+		local ID = Agent.addAgent("16_host.lua")
+		table.insert(host_ids, ID)
+	end
 	
-	say("Agent #: " .. ID .. " has been initialized")
-
-	Move.to{x= ENV_WIDTH/2, y= ENV_HEIGHT/2}
-
-	Speed = 40
-	GridMove = true
-	Moving = true
+	Shared.storeTable("inquiline_ids", inquiline_IDs) --not used for anything
+	Shared.storeTable("host_ids", host_IDs) --not used for anything
 
 end
-
 
 function TakeStep()
-	
-	if not Moving then
-		
-		Agent.changeColor{r=255}
-
-		if counter % scanMultiple == 0 then 
-			table = Collision.radialCollisionScan(repulsionRange)
-
-			if table ~= nil then
-
-				--set a random destination modifier
-				local destX = Stat.randomInteger(1,10)
-				local destY = Stat.randomInteger(1,10)
-				
-				--get a valid random entry in the table
-				local entry = Stat.randomInteger(1,#table)
-
-				-- retrieve any random colliding agent positon in the table.
-				-- and set a new destination accordingly.
-				local rand = Stat.randomInteger(0,1)
-				
-				if rand == 1 then
-					if table[entry].posX >= PositionX then 
-						destX = -destX
-					end
-					if table[entry].posY > PositionY then
-						destY = -destY
-					end
-				else 
-					if table[entry].posX > PositionX then 
-						destX = -destX
-					end
-					if table[entry].posY >= PositionY then
-						destY = -destY
-					end
-
-				end
-
-				-- set the new destination and move there
-				Move.to{x=PositionX+destX, y=PositionY+destY} 	
-				scanMultiple = 10
-
-			else 
-				scanMultiple = scanMultiple * 1,1
-			end
-		end
-	else
-
-		Agent.changeColor{b=255}
-
-	end
-	counter = counter +1
+	Agent.removeAgent(ID)
 end
-
 

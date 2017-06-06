@@ -48,10 +48,12 @@ Move = require "ranalib_movement"
 Collision = require "ranalib_collision"
 Utility = require "ranalib_utility"
 Agent = require "ranalib_agent"
+Event = require "ranalib_event"
 
 scanMultiple = 10
-repulsionRange = 1
-counter = 1
+repulsionRange = 15
+call_counter = 1
+
 
 -- Initialization of the agent.
 function InitializeAgent()
@@ -60,7 +62,7 @@ function InitializeAgent()
 
 	Move.to{x= ENV_WIDTH/2, y= ENV_HEIGHT/2}
 
-	Speed = 40
+	Speed = 6
 	GridMove = true
 	Moving = true
 
@@ -68,58 +70,16 @@ end
 
 
 function TakeStep()
-	
-	if not Moving then
-		
-		Agent.changeColor{r=255}
 
-		if counter % scanMultiple == 0 then 
-			table = Collision.radialCollisionScan(repulsionRange)
-
-			if table ~= nil then
-
-				--set a random destination modifier
-				local destX = Stat.randomInteger(1,10)
-				local destY = Stat.randomInteger(1,10)
-				
-				--get a valid random entry in the table
-				local entry = Stat.randomInteger(1,#table)
-
-				-- retrieve any random colliding agent positon in the table.
-				-- and set a new destination accordingly.
-				local rand = Stat.randomInteger(0,1)
-				
-				if rand == 1 then
-					if table[entry].posX >= PositionX then 
-						destX = -destX
-					end
-					if table[entry].posY > PositionY then
-						destY = -destY
-					end
-				else 
-					if table[entry].posX > PositionX then 
-						destX = -destX
-					end
-					if table[entry].posY >= PositionY then
-						destY = -destY
-					end
-
-				end
-
-				-- set the new destination and move there
-				Move.to{x=PositionX+destX, y=PositionY+destY} 	
-				scanMultiple = 10
-
-			else 
-				scanMultiple = scanMultiple * 1,1
-			end
-		end
-	else
-
-		Agent.changeColor{b=255}
-
+	if call_counter == 100 then
+		Event.emit{description="host"}
+		call_counter = 0
 	end
-	counter = counter +1
+
+	if not Moving then Move.toRandom() end
+
+	call_counter = call_counter + 1
+	
 end
 
 

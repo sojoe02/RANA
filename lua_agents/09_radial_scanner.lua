@@ -52,7 +52,7 @@ function initializeAgent()
 	GridMove = true
 
 	if ID == 1 then
-		local table = Map.getRadialMask(5)
+		local table = Map.getRadialMask(100) 
 		local tableString = Utility.serializeTable(table)
 		say(tableString)
 	end
@@ -61,7 +61,7 @@ end
 
 function takeStep()
 
-	local table = Collision.radialCollisionScan(10)
+	local table = Collision.radialCollisionScan(100)
 	
 	if table then
 		

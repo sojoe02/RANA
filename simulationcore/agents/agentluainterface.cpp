@@ -559,7 +559,7 @@ void AgentLuaInterface::setRemoved()
 {
     //Output::Inst()->kprintf("removing agent.#.%i",ID);
     removed = true;
-    GridMovement::removePos(ID);
+	//GridMovement::removePos(ID);
 }
 
 void AgentLuaInterface::simDone()

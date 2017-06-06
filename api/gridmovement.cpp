@@ -88,16 +88,16 @@ void GridMovement::removePos(int id)
     {
         if(posItr != posMap->end())
         {
-            pList *tmp = &posItr->second;
+			pList *tmp = &posItr->second;
 
-            for(auto it=tmp->begin(); it != tmp->end(); ++it)
+			for(auto it=tmp->begin(); it != tmp->end(); ++it)
             {
-                if(it != tmp->end())
+				if(it != tmp->end())
                 {
-                    if(*it == id)
+					if(*it == id)
                     {
                         //Output::Inst()->kprintf("remove something id'ish...%i,%i", *it,id);
-                        tmp->remove(id);
+						tmp->remove(id);
                         break;
                     }
                 }
