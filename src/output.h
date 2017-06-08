@@ -22,12 +22,9 @@
 #ifndef OUTPUT_H
 #define OUTPUT_H
 
-#include <QtGui>
-
 #include <atomic>
-#include "src/mainwindow.h"
+#include <mutex>
 
-class MainWindow;
 class Output
 {
 public:
@@ -39,7 +36,6 @@ public:
     void updateStatus(unsigned long long internalEvents, unsigned long long externalEvents);
     void progressBar(unsigned long long current, unsigned long long maximum);
     void updatePosition(int id, double x, double y);
-    void setMainWindow(MainWindow *mainwindow);
 
     static std::atomic<int> DelayValue;
     static std::atomic<bool> RunSimulation;
@@ -48,28 +44,17 @@ public:
     static std::atomic<bool> SimRunning;
     static std::atomic<bool> LegacyMode;
 
-    //Post processing things:
-    void ppprintf(const char* msg, ...);
-    void ppprogressbar(int current, int maximum);
-    void setEventSceneRect(int x, int y);
-
     static unsigned long long RUNTIME;
     static std::string AgentPath;
     static std::string AgentFile;
     static std::string RanaDir;
 
-    void updateZvalue(QString string);
-
-    void removeGraphicAgent(int Id);
-    void addGraphicAgent(int Id, double posX, double posY, rgba color, double angle);
-    //void changeGraphicAgentColor(int id, int r, int g, int b, int alpha);
     void enableRunBotton(bool enabled);
 
 private:
 
     Output();
     static Output* output;
-    static MainWindow* mainWindow;
     static std::mutex autonMutex;
 };
 

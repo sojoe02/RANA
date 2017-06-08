@@ -37,8 +37,8 @@
 #include "src/simulationcore/interfacer.h"
 #include "src/simulationcore/supervisor.h"
 
-Sector::Sector(double posX, double posY, double width, double height, Supervisor* master, int id)
-    :initAmount(0),master(master), posX(posX), posY(posY),width(width),height(height),id(id)
+Sector::Sector(double posX, double posY, double width, double height, Supervisor* supervisor, int id)
+	:initAmount(0),supervisor(supervisor), posX(posX), posY(posY),width(width),height(height),id(id)
 {
 
 }
@@ -75,7 +75,7 @@ void Sector::populate(int agentSize ,std::string filename, int agentType)
 void Sector::retrievePopPos(std::list<agentInfo> &infolist){
     for(const auto &lua : luaAgents)
     {
-        if(master->removedIDs.find(lua.second->getID()) == master->removedIDs.end())
+		if(supervisor->removedIDs.find(lua.second->getID()) == supervisor->removedIDs.end())
         {
             agentInfo info = lua.second->getAgentInfo();
             //info.id = lua.second->getID();
@@ -90,7 +90,7 @@ void Sector::retrievePopPos(std::list<agentInfo> &infolist){
 /**
  * Event initiation phase
  * Queries all autons on wether they are going create be an event or not, if
- * an event is initated it will be added the masters eventqueue.
+ * an event is initated it will be added the supervisors eventqueue.
  * @param macroResolution the resolution of the macrostep (microStepRes * macroFactor)
  */
 void Sector::takeStepPhase(unsigned long long tmu)
@@ -105,7 +105,7 @@ void Sector::takeStepPhase(unsigned long long tmu)
 
             if(eevent != NULL)
             {
-                master->receiveEEventPtr(std::move(eevent));
+				supervisor->receiveEEventPtr(std::move(eevent));
             }
         }
     }
@@ -135,7 +135,7 @@ void Sector::takeStepPhase(unsigned long long tmu)
 
 /**
  * Event distribution phase.
- * Recieves an eventlist from the Master to distribute among local autons
+ * Recieves an eventlist from the supervisor to distribute among local autons
  * @param event EventQueue ptr holding external events.
  */
 void Sector::distroPhase(const EventQueue::eEvent* event)
@@ -148,8 +148,8 @@ void Sector::distroPhase(const EventQueue::eEvent* event)
 
             if(ieventPtr != NULL)
             {
-                master->incrementEEventCounter(event->id);
-                master->receiveIEventPtr(std::move(ieventPtr));
+				supervisor->incrementEEventCounter(event->id);
+				supervisor->receiveIEventPtr(std::move(ieventPtr));
             }
         }
     }
@@ -166,7 +166,7 @@ void Sector::simDone()
 //perform an event for an auton in question:
 void Sector::performEvent(std::unique_ptr<EventQueue::eEvent> event)
 {
-	master->receiveEEventPtr(std::move(event));
+	supervisor->receiveEEventPtr(std::move(event));
 }
 
 

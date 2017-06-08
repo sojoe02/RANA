@@ -25,12 +25,12 @@
 #include <stdio.h>
 #include <thread>
 #include <chrono>
+#include <iostream>
 
-#include "src/output.h"
-#include "src/api/phys.h"
+#include "output.h"
+//#include "src/api/phys.h"
 
 Output* Output::output;
-MainWindow* Output::mainWindow;
 
 std::mutex Output::autonMutex;
 std::atomic<int> Output::DelayValue;
@@ -38,9 +38,9 @@ std::atomic<bool> Output::RunSimulation;
 std::atomic<bool> Output::KillSimulation;
 std::atomic<bool> Output::RunEventProcessing;
 std::atomic<bool> Output::SimRunning;
-std::atomic<bool> Output::LegacyMode;
 
 unsigned long long Output::RUNTIME = 0;
+
 std::string Output::AgentPath = "";
 std::string Output::AgentFile = "";
 std::string Output::RanaDir = "";
@@ -56,6 +56,7 @@ Output* Output::Inst()
 
 Output::Output()
 {
+	std::cout << "This is the output class singleton" << std::endl;
 
 }
 
@@ -75,12 +76,7 @@ void Output::kprintf(const char* msg, ...)
     char buffer[4096] = {};
     vsprintf(buffer, msg, args);
 
-    QString string(buffer);
-
-	qDebug() << buffer;
-
-	mainWindow->write_regularOutput(string);
-
+	std::cout << buffer << std::endl;
     va_end(args);
     //lock.unlock();
 }
@@ -99,11 +95,7 @@ void Output::kdebug(const char* msg, ...)
     char buffer[4096] = {};
     vsprintf(buffer, msg, args);
 
-    QString string(buffer);
-
-    qDebug() << buffer;
-
-    mainWindow->write_output(string);
+	std::cout << buffer << std::endl;
 
     va_end(args);
     //lock.unlock();
@@ -120,7 +112,7 @@ void Output::kdebug(const char* msg, ...)
  */
 void Output::updateStatus(unsigned long long internalEvents, unsigned long long externalEvents)
 {
-	mainWindow->write_status(internalEvents, externalEvents);
+
 }
 
 /**
@@ -132,79 +124,10 @@ void Output::updateStatus(unsigned long long internalEvents, unsigned long long 
 void Output::progressBar(unsigned long long current, unsigned long long maximum)
 {
     int progress = (current * 100)/maximum;
-    mainWindow->advanceProgess(progress);
 }
 
-/**
- * @brief Updates the event postprocessing progress bar
- * @param current Current progress value
- * @param maximum Maximun progress value
- * @see MainWindow::advancePPProgess()
- */
-void Output::ppprogressbar(int current, int maximum)
-{
-	int progress = (current * 100)/maximum;
-	mainWindow->advancePPProgess(progress);
-}
-
-void Output::setEventSceneRect(int x, int y)
-{
-	mainWindow->setEventSceneRect(x, y);
-}
-
-void Output::setMainWindow(MainWindow *mainwindow)
-{
-	Output::mainWindow = mainwindow;
-}
-
-/**
- * @brief Deprecated use Output::kprintf()
- * @param msg
- */
-void Output::ppprintf(const char *msg,...)
-{
-	va_list args;
-	va_start(args, msg);
-
-	char buffer[2048] = {};
-	vsnprintf(buffer, 2047, msg, args);
-
-	QString string(buffer);
-
-	mainWindow->write_PPOutput(string);
-
-	va_end(args);
-}
-
-/**
- * @brief Writes a string to the zvalue label, in event postprocessing.
- * @param string
- */
-void Output::updateZvalue(QString string)
-{
-	Output::mainWindow->writeZValue(string);
-}
-
-void Output::removeGraphicAgent(int Id)
-{
-    mainWindow->removeGraphicAgent(Id);
-}
-
-void Output::addGraphicAgent(int Id, double posX, double posY, rgba color, double angle)
-{
-    std::lock_guard<std::mutex> guard(autonMutex);
-    mainWindow->addGraphicAgent(Id, int(posX)/Phys::getScale(), int(posY)/Phys::getScale(), color, angle);
-}
-
-/*
-void Output::changeGraphicAgentColor(int id, int r, int g, int b, int alpha)
-{
-    mainWindow->changeGraphicAgentColor(id, r, g, b, alpha);
-}
-*/
 
 void Output::enableRunBotton(bool enabled)
 {
-    mainWindow->enableRunButton(enabled);
 
 }

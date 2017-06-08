@@ -22,10 +22,6 @@
 #ifndef CONTROL_H
 #define CONTROL_H
 
-#include <QtGui>
-#include <QObject>
-#include <QtConcurrent/qtconcurrentrun.h>
-
 //STL libraries:
 #include <string>
 #include <list>
@@ -34,21 +30,20 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
-#include "src/mainwindow.h"
+
 #include "src/utility.h"
 #include "src/runner.h"
 #include "src/simulationcore/flowcontrol.h"
 
 class Runner;
 class FlowControl;
-class MainWindow;
-class Control : public QObject
+class Control
 {
-    Q_OBJECT
+
 
     //  Public methods
     public:
-        Control(MainWindow* mainwindow);
+		Control();
         ~Control();
 
         /**
@@ -61,8 +56,8 @@ class Control : public QObject
         * @param agentAmount number of Lua agents
         * @param agentPath path to the agent
         */
-        void setEnvironmentVariables(QImage *map, int threads, double timeRes,
-                                 double macroRes, int agentAmount, std::string agentPath);
+		//void setEnvironmentVariables(QImage *map, int threads, double timeRes,
+		  //                       double macroRes, int agentAmount, std::string agentPath);
 
         /**
         * @brief generateEnvironment
@@ -75,7 +70,7 @@ class Control : public QObject
         void startSimulation(unsigned long long runTime);
         void stopSimulation();
 
-        void saveExternalEvents(std::string filename);
+		void saveExthernalEvents(std::string filename);
         void refreshPopPos(std::list<agentInfo> infolist);
 
         bool isGenerated();
@@ -110,11 +105,7 @@ class Control : public QObject
 
     //  Private Attributes
     private:
-        FlowControl *agentDomain;
-        MainWindow *mainwindow;
-        Runner *runner;
-        QThread runThread;
-        QFuture<void> populateFuture;
+        FlowControl *agentDomain;       
 
         bool running;
         bool stopped;
@@ -125,7 +116,6 @@ class Control : public QObject
         int totalNumberOfSimulations = 1;
         unsigned long long runTime;
 
-        QImage *map;
         int threads;
         double timeRes;
         double macroRes;
@@ -134,9 +124,6 @@ class Control : public QObject
 
         lua_State* L;
 
-    signals:
-        void startDoWork(FlowControl *agentDomain, unsigned long long runtime);
-        void runSimulationSignal();
 };
 
 #endif // CONTROL_H

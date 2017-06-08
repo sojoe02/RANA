@@ -40,20 +40,18 @@
 #include "src/utility.h"
 
 class Supervisor;
-class AgentListener;
-class AgentScreamer;
 class AgentInterface;
 class AgentLuaInterface;
 class Sector
 {
 	public:
-        Sector(double posX,double posY, double width, double height, Supervisor* master, int id);
+		Sector(double posX,double posY, double width, double height, Supervisor* supervisor, int id);
         ~Sector();
 
         void generateAgent();
         void populate(int LUASize, std::string filename, int agentType);
         void takeStepPhase(unsigned long long tmu);
-        //function to receive events the master, and distribute them on all local sector
+		//function to receive events the supervisor, and distribute them on all local sector
         void distroPhase(const EventQueue::eEvent *event);
         std::list<EventQueue::iEvent> responsePhase();
         void retrievePopPos(std::list<agentInfo> &infolist);
@@ -68,13 +66,13 @@ class Sector
         std::promise<int> taskPromise;
         std::promise<bool> taskDonePromise;
 
-private:
+	private:
         //purge events before current tmu.
         void purgeEvents();
         //Functions to perform during a microStep.
         //check whether or not there is to be initiated an event on one of its residents.
         void performEvent(std::unique_ptr<EventQueue::eEvent> event);
-        Supervisor *master;
+		Supervisor *supervisor;
 
         std::map<int,std::shared_ptr<AgentLuaInterface>> luaAgents;
         std::list<std::shared_ptr<AgentLuaInterface>> newAgents;

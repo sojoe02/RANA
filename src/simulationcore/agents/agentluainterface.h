@@ -59,19 +59,17 @@ public:
     //Interface.
     static int l_debug(lua_State *L);
     static int l_print(lua_State *L);
-    static int l_generateEventID(lua_State *L);
+	//static int l_generateEventID(lua_State *L);
 
     //Physics.
     static int l_speedOfSound(lua_State *L);
-    static int l_distance(lua_State *L);
     static int l_currentTime(lua_State *L);
 	static int l_currentTimeS(lua_State *L);
-    static int l_getMacroFactor(lua_State *L);
     static int l_getTimeResolution(lua_State *L);
     static int l_getMersenneFloat(lua_State *L);
     static int l_getMersenneInteger(lua_State *L);
 
-    //Map and movement.
+	//Map.
     static int l_getEnvironmentSize(lua_State *L);
     static int l_modifyMap(lua_State *L);
     static int l_checkMap(lua_State *L);
@@ -79,17 +77,12 @@ public:
     static int l_radialMapScan(lua_State *L);
     static int l_radialMapColorScan(lua_State *L);
 
+	//Collision.
     static int l_addPosition(lua_State *L);
     static int l_checkPosition(lua_State *L);
-    static int l_updatePosition(lua_State *L);
-    static int l_checkCollision(lua_State *L);
     static int l_checkCollisionRadial(lua_State *L);
     static int l_getMaskRadial(lua_State *L);
-    static int l_gridMove(lua_State *L);
-    static int l_getGridScale(lua_State *L);
-    static int l_initializeGrid(lua_State *L);
 	static int l_radialCollisionScan(lua_State *L);
-    static int l_updatePositionIfFree(lua_State *L);
 
     //Shared values.
     static int l_getSharedNumber(lua_State *L);
@@ -114,9 +107,6 @@ public:
     void processFunction(EventQueue::dataEvent *devent, double mapRes,
                          double x, double y,
                          double &zvalue, double &duration);
-
-    static int l_changeAgentColor(lua_State *L);
-
     void InitializeAgent();
 
 private:
@@ -129,7 +119,6 @@ private:
     double destinationY;
     double speed; //meters pr second
     bool moving;
-    bool gridmove;
 
     void setRemoved();
     void simDone();

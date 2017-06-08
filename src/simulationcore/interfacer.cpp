@@ -3,7 +3,7 @@
 #include "src/output.h"
 #include "src/simulationcore/interfacer.h"
 
-Supervisor* Interfacer::master = NULL;
+Supervisor* Interfacer::supervisor = NULL;
 std::map<int, std::string> Interfacer::agentFilenames;
 std::map<int, std::shared_ptr<AgentLuaInterface>> Interfacer::agents;
 std::map<int, std::shared_ptr<AgentInterface>> Interfacer::agentsCpp;
@@ -11,9 +11,9 @@ std::mutex Interfacer::eventMutex;
 std::mutex Interfacer::agentMutex;
 std::mutex Interfacer::agentPtrMutex;
 
-void Interfacer::initInterfacer(Supervisor *arg_master)
+void Interfacer::initInterfacer(Supervisor *supervisor)
 {
-	master = arg_master;
+	this.supervisor = arg_supervisor;
     agentFilenames.clear();
     agents.clear();
     agentsCpp.clear();
@@ -24,7 +24,7 @@ int Interfacer::addLuaAgent(double x, double y, double z, std::string path, std:
 {
     std::lock_guard<std::mutex> guard(agentMutex);
 
-    int id = master->addAgent(x, y, z, path, filename, "Lua");
+	int id = supervisor->addAgent(x, y, z, path, filename, "Lua");
     //Output::Inst()->addGraphicAgent(id,x,y);
 
     return id;
@@ -52,7 +52,7 @@ int Interfacer::addCppAgent(double x, double y, double z, std::string path, std:
 {
     std::lock_guard<std::mutex> guard(agentMutex);
 
-	int id = master->addAgent(x, y, z, path, filename, "Cpp");
+	int id = supervisor->addAgent(x, y, z, path, filename, "Cpp");
 
 	return id;
 }
@@ -79,7 +79,7 @@ bool Interfacer::removeAgent(int Id)
 {
     std::lock_guard<std::mutex> guard(agentMutex);
 
-    if(master->removeAgent(Id))
+	if(supervisor->removeAgent(Id))
     {
         Output::Inst()->removeGraphicAgent(Id);
         return true;
@@ -106,5 +106,5 @@ void Interfacer::submitEEvent(std::unique_ptr<EventQueue::eEvent> eEvent)
 {
     std::lock_guard<std::mutex> guard(eventMutex);
 
-    master->receiveEEventPtr(std::move(eEvent));
+	supervisor->receiveEEventPtr(std::move(eEvent));
 }

@@ -40,6 +40,7 @@ int main(int argc, char *argv[])
  //  Phys::seedMersenne();
  //  Output::DelayValue = 0;
    // Output::LegacyMode.store(false);
+    std::cout << "this is the shit" << std::endl;
 	
 	std::cout << gGIT_VERSION << std::endl << gGIT_VERSION_SHORT << std::endl;
 
