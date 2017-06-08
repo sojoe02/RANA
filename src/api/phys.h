@@ -57,32 +57,23 @@ class Phys
         static void setMacroFactor(int macroFactor);
         static void setCTime(unsigned long long ctime);
 
-        static unsigned long long speedOfSound(double x_origin, double y_origin,
-				double x_dest, double y_dest);
+		static unsigned long long speedOfEvent(double x_origin, double x_dest
+											   ,double y_origin, double y_dest
+											   ,double propagationSpeed);
 
-		static unsigned long long speedOfEvent(double x_origin, double y_origin,
-				double x_dest, double y_dest, double propagationSpeed);
+		static unsigned long long speedOfEvent(double x_origin, double x_dest
+											   , double y_origin, double y_dest
+											   , double z_origin, double z_dest
+											   , double propagationSpeed);
 
-		static double calcDistance(double x_origin, double y_origin, 
-				double x_dest, double y_dest);
 		static unsigned long long getCTime();
-
 		static void incTime();
-		static void seedMersenne();
 		static void setTimeRes(double timeResolution);
 
+		static void seedMersenne();
+
 		static double getMersenneFloat(double min, double max);
-        static int64_t getMersenneInteger(int64_t min, int64_t max);
-
-		static void setEnvironment(double x, double y);
-
-		static double getEnvX();
-		static double getEnvY();
-		static double getEnvZ();
-
-        static void move(double v, double posX, double posY,
-                         double desX, double desY,
-						 double &newX, double &newY);
+		static int64_t getMersenneInteger(int64_t min, int64_t max);
 
 		static void setScale(double scale){Phys::scale = scale;}
 		static double getScale(){return Phys::scale;}

@@ -22,13 +22,13 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/version.cpp.in
 				${CMAKE_CURRENT_BINARY_DIR}/version.cpp)
 set(version_file "${CMAKE_CURRENT_BINARY_DIR}/version.cpp")
 
-#set(source_files "${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp")
+find_package(PkgConfig REQUIRED)
 
-#INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR/src}
-#	)
+pkg_search_module(LIBZMQ REQUIRED libzmq)
+#pkg_search_module(LUAJIT REQUIRED luajit)
+
+
 set(CMAKE_CXX_FLAGS "-std=c++14")
+
+
 ADD_SUBDIRECTORY(src)
-
-
-#Add the version_file to the project build.
-

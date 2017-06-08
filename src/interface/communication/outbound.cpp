@@ -27,49 +27,42 @@
 #include <chrono>
 #include <iostream>
 
-#include "output.h"
-//#include "src/api/phys.h"
+#include "outbound.h"
 
-Output* Output::output;
 
-std::mutex Output::autonMutex;
-std::atomic<int> Output::DelayValue;
-std::atomic<bool> Output::RunSimulation;
-std::atomic<bool> Output::KillSimulation;
-std::atomic<bool> Output::RunEventProcessing;
-std::atomic<bool> Output::SimRunning;
+Outbound* Outbound::outbound;
 
-unsigned long long Output::RUNTIME = 0;
+std::mutex Outbound::autonMutex;
 
-std::string Output::AgentPath = "";
-std::string Output::AgentFile = "";
-std::string Output::RanaDir = "";
-
-Output* Output::Inst()
+Outbound* Outbound::Inst()
 {
-    if(!output)
-        output = new Output();
+	if(!outbound)
+		outbound = new Outbound();
 
-    return output;
+	return outbound;
 }
 
 
-Output::Output()
+Outbound::Outbound()
 {
-	std::cout << "This is the output class singleton" << std::endl;
+	std::cout << "This is the outbound class singleton" << std::endl;
+}
+
+void Outbound::say(std::string msgh)
+{
 
 }
+
 
 /**
- * @brief Ranas version of printf, prints a message to current active output
- * For example kprintf("sum of %i + %i = %i", 5, 5, 10) will output "sum of
+ * @brief Ranas version of printf, prints a message to current active outbound
+ * For example kprintf("sum of %i + %i = %i", 5, 5, 10) will outbound "sum of
  * 5 + 5 = 10", the string can be html formatted!
- * @param msg formated string that is to written to output
- * @see MainWindow::write_regularOutput()
+ * @param msg formated string that is to written to outbound
+ * @see MainWindow::write_regularoutbound()
  */
-void Output::kprintf(const char* msg, ...)
+void Outbound::say(const char* msg, ...)
 {
-    //lock.lock();
     va_list args;
     va_start(args, msg);
 
@@ -78,17 +71,14 @@ void Output::kprintf(const char* msg, ...)
 
 	std::cout << buffer << std::endl;
     va_end(args);
-    //lock.unlock();
 }
 
 /**
- * @brief Same as Output::kprintf but it's output can be disabled via the menu
- * @see Output::kprintf()
- * @see MainWindow::write_output()
+ * @brief Same as outbound::kprintf but it's outbound can be disabled via the menu
+ * @see Outbound::kprintf()
  */
-void Output::kdebug(const char* msg, ...)
+void Outbound::shout(const char* msg, ...)
 {
-    //lock.lock();
     va_list args;
     va_start(args, msg);
 
@@ -98,7 +88,6 @@ void Output::kdebug(const char* msg, ...)
 	std::cout << buffer << std::endl;
 
     va_end(args);
-    //lock.unlock();
 }
 
 /**
@@ -108,9 +97,8 @@ void Output::kdebug(const char* msg, ...)
  * @param eventInit number of events initiated
  * @param internalEvents total number of internal events
  * @param externalEvents total number of external events
- * @see MainWindow::on_udateStatus()
  */
-void Output::updateStatus(unsigned long long internalEvents, unsigned long long externalEvents)
+void Outbound::updateStatus(unsigned long long internalEvents, unsigned long long externalEvents)
 {
 
 }
@@ -121,13 +109,8 @@ void Output::updateStatus(unsigned long long internalEvents, unsigned long long 
  * @param maximum Final microstep
  * @see MainWindow::advanceProgess()
  */
-void Output::progressBar(unsigned long long current, unsigned long long maximum)
+void Outbound::progressBar(unsigned long long current, unsigned long long maximum)
 {
     int progress = (current * 100)/maximum;
 }
 
-
-void Output::enableRunBotton(bool enabled)
-{
-
-}

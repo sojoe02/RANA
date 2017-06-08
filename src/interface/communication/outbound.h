@@ -19,43 +19,36 @@
 //along with RANA.  If not, see <http://www.gnu.org/licenses/>.
 //
 //--end_license--
-#ifndef OUTPUT_H
-#define OUTPUT_H
+#ifndef OUTBOUND_H
+#define OUTBOUND_H
 
 #include <atomic>
 #include <mutex>
+#include <unordered_map>
 
-class Output
+class Outbound
 {
 public:
-    static Output* Inst();
+	static Outbound* Inst();
 
-    void kprintf(const char* msg, ...);
-    void kdebug(const char* msg, ...);
+	void say(std::string msg);
+	void say(const char* msg, ...);
+	void shout(const char* msg, ...);
 
     void updateStatus(unsigned long long internalEvents, unsigned long long externalEvents);
     void progressBar(unsigned long long current, unsigned long long maximum);
     void updatePosition(int id, double x, double y);
 
-    static std::atomic<int> DelayValue;
-    static std::atomic<bool> RunSimulation;
-    static std::atomic<bool> KillSimulation;
-    static std::atomic<bool> RunEventProcessing;
-    static std::atomic<bool> SimRunning;
-    static std::atomic<bool> LegacyMode;
-
-    static unsigned long long RUNTIME;
-    static std::string AgentPath;
-    static std::string AgentFile;
-    static std::string RanaDir;
-
-    void enableRunBotton(bool enabled);
-
 private:
 
-    Output();
-    static Output* output;
-    static std::mutex autonMutex;
+	std::unordered_map<std::string, std::string> messages;
+
+
+	Outbound();
+	static Outbound* outbound;
+	static std::mutex autonMutex;
+
+
 };
 
-#endif // OUTPUT_H
+#endif // OUTBOUND_H

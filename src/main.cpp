@@ -24,22 +24,29 @@
 #include <iostream>
 
 #include "version.h" 
-/*vinclude "src/ID.h"
-#include "src/api/phys.h"
-#include "src/api/gridmovement.h"
-#include "src/output.h"
+//include "src/ID.h"
+#include "phys.h"
+#include "communication/outbound.h"
+#include "communication/inbound.h"
+//#include "src/api/gridmovement.h"
+//#include "src/output.h"
 
-int ID::aID = 0;
-unsigned long long ID::eID = 0;
-unsigned long long ID::tmu = 0;
-unsigned long long ID::nID = 0;*/
+//int ID::aID = 0;
+//unsigned long long ID::eID = 0;
+//unsigned long long ID::tmu = 0;
+//unsigned long long ID::nID = 0;
 
 int main(int argc, char *argv[])
 {
     //srand(time(0));
- //  Phys::seedMersenne();
- //  Output::DelayValue = 0;
-   // Output::LegacyMode.store(false);
+	Phys::seedMersenne();
+	//Output::DelayValue = 0;
+	//Output::LegacyMode.store(false);
+
+	double random = Phys::getMersenneFloat(1,90.2);
+
+	std::cout << random << std::endl;
+
     std::cout << "this is the shit" << std::endl;
 	
 	std::cout << gGIT_VERSION << std::endl << gGIT_VERSION_SHORT << std::endl;
