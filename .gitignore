@@ -19,5 +19,5 @@ cmake/
 *.lua~
 *.tmp
 *.*pre1
-
+CMakeLists.txt.user
 /Cmake/
