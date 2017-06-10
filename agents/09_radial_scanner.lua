@@ -71,7 +71,7 @@ function takeStep()
 			say("\tAgent: "..table[i].id .. " at X:".. table[i].posX .. " Y:" .. table[i].posY) 
 		end
 		--local tableString = Utility.serializeTable(table)
-		--say(tableString)
+		--agentSay(tableString)
 
 	end
 

@@ -4,40 +4,65 @@
 #include <string>
 #include <map>
 #include <mutex>
+#include <atomic>
 
-#include "src/simulationcore/agents/agent.h"
-#include "src/simulationcore/agents/agentluainterface.h"
-#include "src/simulationcore/agents/agentinterface.h"
-#include "src/simulationcore/sector.h"
-#include "src/simulationcore/supervisor.h"
+#include "simulationcore/agents/agent.h"
+#include "simulationcore/agents/agentluainterface.h"
+#include "simulationcore/agents/agentinterface.h"
+#include "simulationcore/sector.h"
+#include "simulationcore/supervisor.h"
+#include "simulationcore/eventqueue.h"
+#include "utility.h"
 
-class Interfacer
-{
-public:
-	static void initInterfacer(Supervisor* supervisor);
+class Interfacer {
+ public:
+  static void
+  initInterfacer(Supervisor *supervisor);
 
-	static int addLuaAgent(double x, double y, double z, std::string path, std::string filename);
-	static void addLuaAgentPtr(std::shared_ptr<AgentLuaInterface> luaPtr);
-	static std::shared_ptr<AgentLuaInterface> getAgentPtr(int id);
+  static int
+  addLuaAgent(double x, double y, double z, std::string path, std::string filename);
 
-	static int addCppAgent(double x, double y, double z, std::string path, std::string filename);
-	static void addCppAgentPtr(std::shared_ptr<AgentInterface> cppPtr);
-	static std::shared_ptr<AgentInterface> getAgentCppPtr(int id);
+  static void
+  addLuaAgentPtr(std::shared_ptr<AgentLuaInterface> luaPtr);
 
-	static bool removeAgent(int ID);
-	static std::map<int, std::string> getAgentInfo();
-	static void submitEEvent(std::unique_ptr<EventQueue::eEvent> eEvent);
-	void modifyAgentInfo(std::vector<agentInfo> infolist);
+  static std::shared_ptr<AgentLuaInterface>
+  getAgentPtr(int id);
 
-private:
+  static int
+  addCppAgent(double x, double y, double z, std::string path, std::string filename);
 
-	static Supervisor *supervisor;
-	static std::map<int, std::string> agentFilenames;
-	static std::map<int, std::shared_ptr<AgentLuaInterface>> agents;
-	static std::map<int, std::shared_ptr<AgentInterface>> agentsCpp;
-    static std::mutex eventMutex;
-    static std::mutex agentMutex;
-    static std::mutex agentPtrMutex;
+  static void
+  addCppAgentPtr(std::shared_ptr<AgentInterface> cppPtr);
+
+  static std::shared_ptr<AgentInterface>
+  getAgentCppPtr(int id);
+
+  static bool
+  removeAgent(int ID);
+
+  static std::map<int, std::string>
+  getAgentInfo();
+
+  static void
+  submitEEvent(std::unique_ptr<EventQueue::eEvent> eEvent);
+
+  void
+  modifyAgentInfo(std::vector<agentInfo> infolist);
+
+  static std::atomic_bool KillSimulation;
+  static std::atomic_bool RunSimulation;
+  static std::atomic_bool SimRunning;
+
+
+ private:
+
+  static Supervisor *supervisor;
+  static std::map<int, std::string> agentFilenames;
+  static std::map<int, std::shared_ptr<AgentLuaInterface>> agents;
+  static std::map<int, std::shared_ptr<AgentInterface>> agentsCpp;
+  static std::mutex eventMutex;
+  static std::mutex agentMutex;
+  static std::mutex agentPtrMutex;
 };
 
 #endif // INTERFACER_H

@@ -35,140 +35,166 @@
 #include <mutex>
 
 class Agent;
-class EventQueue
-{
-	public:
-		EventQueue(); 
-		~EventQueue();
 
-		struct simInfo{
-			char luaFileName[1024]; /*!< Filename of the lua auton thats active in this simulation*/
-			unsigned long long eventAmount; /*!< Number of external events active in the simulation*/
-			int numberOfAgents; /*!< Total number of autons*/
-			double timeResolution; /*!< Resolution of the simulation number of microsteps possible pr second*/
-			int macroFactor; /*!< Macro Factor */
-			unsigned long long tmuAmount; /*!< number of total timeunist of  Timeresolution performed  */
-			double areaY; /*!< Areas Y size[m] (std computer coordinate system with reversed Y axis)*/
-			double areaX; /*!< Areas X size[m] */
-			double mapResolution;
-		};
+class EventQueue {
+ public:
+  EventQueue();
 
-		//define the external Event:
-		struct eEvent
-		{
-			unsigned long long id;
-			double propagationSpeed;
-			double posX;
-			double posY;
-			double posZ;
-            std::string luatable;
-			std::string desc;
-			unsigned long long activationTime;
-			int targetID;
-			int targetGroup;
-			int originID;
-			std::atomic_uint reference_count;
-            eEvent() : targetGroup(0), reference_count(0){}
-		};
+  ~EventQueue();
 
+  struct simInfo {
+	  char luaFileName[1024]; /*!< Filename of the lua auton thats active in this simulation*/
+	  unsigned long long eventAmount; /*!< Number of external events active in the simulation*/
+	  int numberOfAgents; /*!< Total number of autons*/
+	  double timeResolution; /*!< Resolution of the simulation number of microsteps possible pr second*/
+	  int macroFactor; /*!< Macro Factor */
+	  unsigned long long tmuAmount; /*!< number of total timeunist of  Timeresolution performed  */
+	  double areaY; /*!< Areas Y size[m] (std computer coordinate system with reversed Y axis)*/
+	  double areaX; /*!< Areas X size[m] */
+	  double mapResolution;
+  };
 
+  //define the external Event:
+  struct eEvent {
+	  unsigned long long id;
+	  double propagationSpeed;
+	  double posX;
+	  double posY;
+	  double posZ;
+	  std::string luatable;
+	  std::string desc;
+	  unsigned long long activationTime;
+	  int targetID;
+	  int targetGroup;
+	  int originID;
+	  std::atomic_uint reference_count;
 
-		//define the internal Event:
-		struct iEvent
-		{
-            Agent *origin;
-			const eEvent *event;
-			unsigned long long activationTime;
-			unsigned long long id;
-			std::string desc;
-			int originID;
-		};
+	  eEvent()
+		  : targetGroup(0), reference_count(0)
+	  {}
+  };
 
-		//define the data event, precisely the same as events:
-		struct dataEvent
-		{
-			unsigned long long id;
-            int targetID;
-			unsigned long long activationTime;
-			double propagationSpeed;
-			double originX;
-			double originY;
-			int originID;
-			char desc[150];
-			char table[1024];
-			char filename[256];
-		};
+  //define the internal Event:
+  struct iEvent {
+	  Agent *origin;
+	  const eEvent *event;
+	  unsigned long long activationTime;
+	  unsigned long long id;
+	  std::string desc;
+	  int originID;
+  };
 
-		struct autonInfo
-		{
-			int ID;
-			int eventAmount;
-			char info[1000];
-		};
+  //define the data event, precisely the same as events:
+  struct dataEvent {
+	  unsigned long long id;
+	  int targetID;
+	  unsigned long long activationTime;
+	  double propagationSpeed;
+	  double originX;
+	  double originY;
+	  int originID;
+	  char desc[150];
+	  char table[1024];
+	  char filename[256];
+  };
 
+  struct autonInfo {
+	  int ID;
+	  int eventAmount;
+	  char info[1000];
+  };
 
-		//handling of external Events:
-        void insertEEvent(std::unique_ptr<eEvent> eeventPtr);
-        std::list<std::unique_ptr<eEvent> > getEEventList(unsigned long long tmu);
-		bool eEventsAtTime(unsigned long long tmu);
-		unsigned long long getNextTmu();
-        void legacyFront();
+  //handling of external Events:
+  void
+  insertEEvent(std::unique_ptr<eEvent> eeventPtr);
 
-        const EventQueue::eEvent* addUsedEEvent(std::unique_ptr<eEvent> eEvent);
+  std::list<std::unique_ptr<eEvent> >
+  getEEventList(unsigned long long tmu);
 
-        //handle the reference mechanism of the external event pointers:
-        void decrementEeventCounter(unsigned long long id);
-        void incrementEeventCounter(unsigned long long id);
+  bool
+  eEventsAtTime(unsigned long long tmu);
 
-		//handling of internal Events:
-        void insertIEvent(std::unique_ptr<EventQueue::iEvent> ieventPtr);
-        std::list<std::unique_ptr<iEvent> > getIEventList(unsigned long long tmu);
-		bool iEventsAtTime(unsigned long long tmu);
-		unsigned long long getNextItmu();
+  unsigned long long
+  getNextTmu();
 
-		void printLTmus();
-		void printATmus();
+  void
+  legacyFront();
 
-		//saving events to a binary file:
-		void saveEEventData(std::string path, std::string luaFileName,
-				int autonAmount, double areaY, double areaX);
+  const EventQueue::eEvent *
+  addUsedEEvent(std::unique_ptr<eEvent> eEvent);
 
-		//check the size of the eventQueue:
-		unsigned long long getESize();
-		unsigned long long getISize();
+  //handle the reference mechanism of the external event pointers:
+  void
+  decrementEeventCounter(unsigned long long id);
 
-		void addAgentInfo(int id, std::string filename);
+  void
+  incrementEeventCounter(unsigned long long id);
 
-	private:
+  //handling of internal Events:
+  void
+  insertIEvent(std::unique_ptr<iEvent> ieventPtr);
 
-		void printTest();
-        typedef std::list<std::unique_ptr<eEvent>> eEvents;
-        typedef std::list<std::unique_ptr<iEvent>> iEvents;
+  std::list<std::unique_ptr<iEvent> >
+  getIEventList(unsigned long long tmu);
 
-        std::unordered_map<unsigned long long, iEvents> iMap;
-        std::unordered_map<unsigned long long, eEvents> eMap;
-        std::unordered_map<unsigned long long, std::unique_ptr<eEvent>> usedEEvents;
+  bool
+  iEventsAtTime(unsigned long long tmu);
 
-        std::list<std::unique_ptr<eEvent>> legacyEvents;
+  unsigned long long
+  getNextItmu();
 
-		//time keeper lists:
-		std::list<unsigned long long> activeTmu;
-		std::list<unsigned long long> legacyTmu;
-		std::list<unsigned long long>::iterator legacyIt;
-		std::list<unsigned long long>::iterator activeIt;
+  void
+  printLTmus();
 
-		//time keeper hash:
-		std::unordered_set<unsigned long long> tmuSet;
+  void
+  printATmus();
 
-		//agent info map:
-		std::unordered_map<int, std::string> agentFilenames;
+  //saving events to a binary file:
+  void
+  saveEEventData(std::string path, std::string luaFileName, int autonAmount, double areaY, double areaX);
 
-		//size of the eventqueue:
-		unsigned long long eSize;
-        unsigned long long iSize;
+  //check the size of the eventQueue:
+  unsigned long long
+  getESize();
 
-        std::mutex eEventMutex;
-        std::mutex iEventMutex;
+  unsigned long long
+  getISize();
+
+  void
+  addAgentInfo(int id, std::string filename);
+
+ private:
+
+  void
+  printTest();
+
+  typedef std::list<std::unique_ptr<eEvent>> eEvents;
+  typedef std::list<std::unique_ptr<iEvent>> iEvents;
+
+  std::unordered_map<unsigned long long, iEvents> iMap;
+  std::unordered_map<unsigned long long, eEvents> eMap;
+  std::unordered_map<unsigned long long, std::unique_ptr<eEvent>> usedEEvents;
+
+  std::list<std::unique_ptr<eEvent>> legacyEvents;
+
+  //time keeper lists:
+  std::list<unsigned long long> activeTmu;
+  std::list<unsigned long long> legacyTmu;
+  std::list<unsigned long long>::iterator legacyIt;
+  std::list<unsigned long long>::iterator activeIt;
+
+  //time keeper hash:
+  std::unordered_set<unsigned long long> tmuSet;
+
+  //agent info map:
+  std::unordered_map<int, std::string> agentFilenames;
+
+  //size of the eventqueue:
+  unsigned long long eSize;
+  unsigned long long iSize;
+
+  std::mutex eEventMutex;
+  std::mutex iEventMutex;
 };
 
 #endif // EVENTQUEUE_H

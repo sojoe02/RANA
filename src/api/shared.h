@@ -26,28 +26,33 @@
 #include <unordered_map>
 #include <shared_mutex>
 
-class Shared
-{
-public:
-    Shared();
+class Shared {
+ public:
+  Shared();
 
-    static double getNumber(std::string key);
-	static void addNumber(std::string key, double value);
+  static double
+  getNumber(std::string key);
 
-	static std::string getString(std::string key);
-	static void addString(std::string key, std::string value);
+  static void
+  addNumber(std::string key, double value);
 
-	static void initShared();
+  static std::string
+  getString(std::string key);
 
-private:
+  static void
+  addString(std::string key, std::string value);
 
-    static std::shared_timed_mutex numberMutex;
-    static std::shared_timed_mutex stringMutex;
+  static void
+  initShared();
 
-	static std::unordered_map<std::string, double> sharedNumbers;
-	static std::unordered_map<std::string, std::string> sharedStrings;
+ private:
+
+  static std::shared_timed_mutex numberMutex;
+  static std::shared_timed_mutex stringMutex;
+
+  static std::unordered_map<std::string, double> sharedNumbers;
+  static std::unordered_map<std::string, std::string> sharedStrings;
 
 };
-
 
 #endif // SHARED_H

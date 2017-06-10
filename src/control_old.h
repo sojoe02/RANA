@@ -30,99 +30,135 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
-
 #include "src/utility.h"
 #include "src/runner.h"
 #include "src/simulationcore/flowcontrol.h"
 
 class Runner;
+
 class FlowControl;
-class Control
-{
+
+class Control {
 
 
-    //  Public methods
-    public:
-		Control();
-        ~Control();
+  //  Public methods
+ public:
+  Control();
 
-        /**
-        * @brief setEnvironmentVariables
-        * Set parameters for the environment.
-        * @param map pointer to the loaded image map
-        * @param scale amount of m2 pr pixel
-        * @param timeRes microstep resolution
-        * @param macroRes macrostep resotution
-        * @param agentAmount number of Lua agents
-        * @param agentPath path to the agent
-        */
-		//void setEnvironmentVariables(QImage *map, int threads, double timeRes,
-		  //                       double macroRes, int agentAmount, std::string agentPath);
+  ~Control();
 
-        /**
-        * @brief generateEnvironment
-        * Generates a new environment, an environment is needed to
-        * start a simulation run.
-        */
-        void generateEnvironment();
+  /**
+  * @brief setEnvironmentVariables
+  * Set parameters for the environment.
+  * @param map pointer to the loaded image map
+  * @param scale amount of m2 pr pixel
+  * @param timeRes microstep resolution
+  * @param macroRes macrostep resotution
+  * @param agentAmount number of Lua agents
+  * @param agentPath path to the agent
+  */
+  //void setEnvironmentVariables(QImage *map, int threads, double timeRes,
+  //                       double macroRes, int agentAmount, std::string agentPath);
 
-        bool checkEnvPresence();
-        void startSimulation(unsigned long long runTime);
-        void stopSimulation();
+  /**
+  * @brief generateEnvironment
+  * Generates a new environment, an environment is needed to
+  * start a simulation run.
+  */
+  void
+  generateEnvironment();
 
-		void saveExthernalEvents(std::string filename);
-        void refreshPopPos(std::list<agentInfo> infolist);
+  bool
+  checkEnvPresence();
 
-        bool isGenerated();
-        bool isRunning();
+  void
+  startSimulation(unsigned long long runTime);
 
-        void saveEvents(QString path);
+  void
+  stopSimulation();
 
-        void toggleLiveView(bool enable);
+  void
+  saveExthernalEvents(std::string filename);
 
-        void threadTest(std::string something);
+  void
+  refreshPopPos(std::list<agentInfo> infolist);
 
-    //  Public slot
-    public slots:
-        void on_simDone();
+  bool
+  isGenerated();
 
-    //  Public attributes
-    public:
-        std::list<double[3]> updatePositions();
+  bool
+  isRunning();
 
-    //  Private Methods
-    private:
-        void updateLuaSimulationConfigs();
-        void readyAgentDomain();
-        void killAgentDomain();
-        void readyRunner();
-        void killRunner();
-        void killRunthread();
+  void
+  saveEvents(QString path);
 
-    //  Private slot
-    private slots:
-        void runSimulation();
+  void
+  toggleLiveView(bool enable);
 
-    //  Private Attributes
-    private:
-        FlowControl *agentDomain;       
+  void
+  threadTest(std::string something);
 
-        bool running;
-        bool stopped;
-        bool generated;
-        bool generating;
+  //  Public slot
+ public
+  slots
+	  :
+  void
 
-        int currentNumberOfSimulation = 1;
-        int totalNumberOfSimulations = 1;
-        unsigned long long runTime;
+  on_simDone();
 
-        int threads;
-        double timeRes;
-        double macroRes;
-        int agentAmount;
-        std::string agentPath;
+  //  Public attributes
+ public:
+  std::list<double[3]>
+  updatePositions();
 
-        lua_State* L;
+  //  Private Methods
+ private:
+  void
+  updateLuaSimulationConfigs();
+
+  void
+  readyAgentDomain();
+
+  void
+  killAgentDomain();
+
+  void
+  readyRunner();
+
+  void
+  killRunner();
+
+  void
+  killRunthread();
+
+  //  Private slot
+ private
+  slots
+	  :
+  void
+
+  runSimulation();
+
+  //  Private Attributes
+ private:
+  FlowControl *agentDomain;
+
+  bool running;
+  bool stopped;
+  bool generated;
+  bool generating;
+
+  int currentNumberOfSimulation = 1;
+  int totalNumberOfSimulations = 1;
+  unsigned long long runTime;
+
+  int threads;
+  double timeRes;
+  double macroRes;
+  int agentAmount;
+  std::string agentPath;
+
+  lua_State *L;
 
 };
 

@@ -85,7 +85,7 @@ function takeStep()
         n = n + 1
 
 	if Stat.randomInteger(1,1/STEP_RESOLUTION) <= 1 then
-		--say("Agent:"..ID.." is emiting ping")
+		--agentSay("Agent:"..ID.." is emiting ping")
 	 	Event.emit{speed=343,description="ping",table={msg="I am agent "..ID}}
 	end
 

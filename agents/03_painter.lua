@@ -56,6 +56,6 @@ end
 
 function cleanUp()
 	local color = Map.checkColor(1,1)
-	say("Color at 1,1 is R:".. color.R .. " G:".. color.G .." B:"..color.B)
+	agentSay("Color at 1,1 is R:".. color.R .. " G:".. color.G .." B:"..color.B)
 
 end

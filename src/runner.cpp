@@ -23,16 +23,22 @@
 #include "src/runner.h"
 #include "src/output.h"
 
-Runner::Runner(){}
+Runner::Runner()
+{}
 
-void Runner::doWork(FlowControl *agentDomain, unsigned long long runTime)
+void
+Runner::doWork(FlowControl *agentDomain, unsigned long long runTime)
 {
-    if( agentDomain != NULL && runTime != 0 ){
-        agentDomain->runSimulation(runTime);
-    } else{
+  if(agentDomain != NULL && runTime != 0)
+	{
+	  agentDomain->runSimulation(runTime);
+	}
+  else
+	{
 
-		Output::Inst()->kprintf("No Agentdomain and/or Runtime not defined");
-    }
-    emit simulationDone();
+	  Output::Inst()->kprintf("No Agentdomain and/or Runtime not defined");
+	}
+  emit
+  simulationDone();
 }
 

@@ -85,7 +85,7 @@ function HandleEvent(event)
 	else
 		--say(synced_calls)
 		synced_calls = 0
-                --say(event.ID)
+                --agentSay(event.ID)
 		countdown = beta
 		synced = true
 	end

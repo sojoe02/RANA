@@ -29,30 +29,28 @@
 
 #include "outbound.h"
 
-
-Outbound* Outbound::outbound;
+Outbound *Outbound::outbound;
 
 std::mutex Outbound::autonMutex;
 
-Outbound* Outbound::Inst()
+Outbound *
+Outbound::Inst()
 {
-	if(!outbound)
-		outbound = new Outbound();
+  if(!outbound)
+	outbound = new Outbound();
 
-	return outbound;
+  return outbound;
 }
-
 
 Outbound::Outbound()
 {
-	std::cout << "This is the outbound class singleton" << std::endl;
+  std::cout << "This is the outbound class singleton" << std::endl;
 }
 
-void Outbound::say(std::string msgh)
-{
+void
+Outbound::agentSay(std::string msg){
 
 }
-
 
 /**
  * @brief Ranas version of printf, prints a message to current active outbound
@@ -61,33 +59,35 @@ void Outbound::say(std::string msgh)
  * @param msg formated string that is to written to outbound
  * @see MainWindow::write_regularoutbound()
  */
-void Outbound::say(const char* msg, ...)
+void
+Outbound::agentSay(const char *msg, ...)
 {
-    va_list args;
-    va_start(args, msg);
+  va_list args;
+  va_start(args, msg);
 
-    char buffer[4096] = {};
-    vsprintf(buffer, msg, args);
+  char buffer[4096] = {};
+  vsprintf(buffer, msg, args);
 
-	std::cout << buffer << std::endl;
-    va_end(args);
+  std::cout << buffer << std::endl;
+  va_end(args);
 }
 
 /**
  * @brief Same as outbound::kprintf but it's outbound can be disabled via the menu
  * @see Outbound::kprintf()
  */
-void Outbound::shout(const char* msg, ...)
+void
+Outbound::agentShout(const char *msg, ...)
 {
-    va_list args;
-    va_start(args, msg);
+  va_list args;
+  va_start(args, msg);
 
-    char buffer[4096] = {};
-    vsprintf(buffer, msg, args);
+  char buffer[4096] = {};
+  vsprintf(buffer, msg, args);
 
-	std::cout << buffer << std::endl;
+  std::cout << buffer << std::endl;
 
-    va_end(args);
+  va_end(args);
 }
 
 /**
@@ -98,7 +98,8 @@ void Outbound::shout(const char* msg, ...)
  * @param internalEvents total number of internal events
  * @param externalEvents total number of external events
  */
-void Outbound::updateStatus(unsigned long long internalEvents, unsigned long long externalEvents)
+void
+Outbound::updateStatus(unsigned long long internalEvents, unsigned long long externalEvents)
 {
 
 }
@@ -109,8 +110,9 @@ void Outbound::updateStatus(unsigned long long internalEvents, unsigned long lon
  * @param maximum Final microstep
  * @see MainWindow::advanceProgess()
  */
-void Outbound::progressBar(unsigned long long current, unsigned long long maximum)
+void
+Outbound::progressBar(unsigned long long current, unsigned long long maximum)
 {
-    int progress = (current * 100)/maximum;
+  int progress = (current * 100) / maximum;
 }
 

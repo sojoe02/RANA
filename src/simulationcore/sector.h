@@ -23,7 +23,6 @@
 #ifndef SECTOR_H
 #define SECTOR_H
 
-
 #include <map>
 #include <list>
 #include <string>
@@ -32,66 +31,98 @@
 #include <atomic>
 #include <future>
 
-#include "src/simulationcore/supervisor.h"
-#include "src/simulationcore/eventqueue.h"
-#include "src/simulationcore/agents/agentinterface.h"
-#include "src/simulationcore/agents/agentluainterface.h"
+#include "simulationcore/supervisor.h"
+#include "simulationcore/eventqueue.h"
+#include "simulationcore/agents/agentinterface.h"
+#include "simulationcore/agents/agentluainterface.h"
 
-#include "src/utility.h"
+#include "utility.h"
 
 class Supervisor;
+
 class AgentInterface;
+
 class AgentLuaInterface;
-class Sector
-{
-	public:
-		Sector(double posX,double posY, double width, double height, Supervisor* supervisor, int id);
-        ~Sector();
 
-        void generateAgent();
-        void populate(int LUASize, std::string filename, int agentType);
-        void takeStepPhase(unsigned long long tmu);
-		//function to receive events the supervisor, and distribute them on all local sector
-        void distroPhase(const EventQueue::eEvent *event);
-        std::list<EventQueue::iEvent> responsePhase();
-        void retrievePopPos(std::list<agentInfo> &infolist);
-        int initAmount;
-        void simDone();
-        int getID(){ return id; }
-        int addAgent(double x, double y, double z, std::string filename, std::string type);
+class Sector {
+ public:
+  Sector(double posX, double posY, double width, double height, Supervisor *supervisor, int id);
 
-        bool removeAgent(int arg_id);
-        int containsAgent(int arg_id);
+  ~Sector();
 
-        std::promise<int> taskPromise;
-        std::promise<bool> taskDonePromise;
+  void
+  generateAgent();
 
-	private:
-        //purge events before current tmu.
-        void purgeEvents();
-        //Functions to perform during a microStep.
-        //check whether or not there is to be initiated an event on one of its residents.
-        void performEvent(std::unique_ptr<EventQueue::eEvent> event);
-		Supervisor *supervisor;
+  void
+  populate(int LUASize, std::string filename, int agentType);
 
-        std::map<int,std::shared_ptr<AgentLuaInterface>> luaAgents;
-        std::list<std::shared_ptr<AgentLuaInterface>> newAgents;
+  void
+  takeStepPhase(unsigned long long tmu);
 
-        std::map<int,std::shared_ptr<AgentInterface>> cppAgents;
-        std::list<std::shared_ptr<AgentInterface>> newCppAgents;
+  //function to receive events the supervisor, and distribute them on all local sector
+  void
+  distroPhase(const EventQueue::eEvent *event);
 
-        std::list<int> removalIDs;
+  std::list<EventQueue::iEvent>
+  responsePhase();
 
-        friend class Agent;
-        friend class AgentInterface;
-        friend class AgentLuaInterface;
-        double posX;
-        double posY;
-        double width;
-        double height;
-        int id;
+  void
+  retrievePopPos(std::list<agentInfo> &infolist);
 
-        int agentType;
+  int initAmount;
+
+  void
+  simDone();
+
+  int
+  getID()
+  { return id; }
+
+  int
+  addAgent(double x, double y, double z, std::string filename, std::string type);
+
+  bool
+  removeAgent(int arg_id);
+
+  int
+  containsAgent(int arg_id);
+
+  std::promise<int> taskPromise;
+  std::promise<bool> taskDonePromise;
+
+ private:
+  //purge events before current tmu.
+  void
+  purgeEvents();
+
+  //Functions to perform during a microStep.
+  //check whether or not there is to be initiated an event on one of its residents.
+  void
+  performEvent(std::unique_ptr<EventQueue::eEvent> event);
+
+  Supervisor *supervisor;
+
+  std::map<int, std::shared_ptr<AgentLuaInterface>> luaAgents;
+  std::list<std::shared_ptr<AgentLuaInterface>> newAgents;
+
+  std::map<int, std::shared_ptr<AgentInterface>> cppAgents;
+  std::list<std::shared_ptr<AgentInterface>> newCppAgents;
+
+  std::list<int> removalIDs;
+
+  friend class Agent;
+
+  friend class AgentInterface;
+
+  friend class AgentLuaInterface;
+
+  double posX;
+  double posY;
+  double width;
+  double height;
+  int id;
+
+  int agentType;
 };
 
 #endif // SECTOR_H

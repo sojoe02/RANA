@@ -110,7 +110,7 @@ function initializeAgent()
 		local y = Stat.randomInteger(0,ENV_HEIGHT)
 			
 		if Draw.compareColor(Map.checkColor(x,y),background_color) then
-			--say("succes")
+			--agentSay("succes")
 
 			Map.modifyColor(x,y,food_color)
 

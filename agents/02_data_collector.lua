@@ -59,7 +59,7 @@ end
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
 function HandleEvent(event)
-	--say(Utility.serializeTable(event))
+	--agentSay(Utility.serializeTable(event))
 	agent_table[event.ID] = agent_table[event.ID] + 1
 end
 

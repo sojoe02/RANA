@@ -60,7 +60,7 @@ _Search = function()
 	if table ~= nil then
 		local start_index = l_getRandomInteger(1, #table)
 
-		--say(Utility.serializeTable(table))
+		--agentSay(Utility.serializeTable(table))
 		for i = 0, #table-1 do
 		
 			--local index = i

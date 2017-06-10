@@ -1,4 +1,3 @@
-
 # Directories:
 bin/
 build/
@@ -6,6 +5,9 @@ documentation/
 test/
 test_output/
 cmake/
+.idea/
+Cmake/
+cmake-build*/
 
 # FileTypes:
 *.csv
@@ -20,4 +22,6 @@ cmake/
 *.tmp
 *.*pre1
 CMakeLists.txt.user
-/Cmake/
+CMakeLists.txt.user.old
+
+

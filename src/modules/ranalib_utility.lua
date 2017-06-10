@@ -9,7 +9,7 @@ function RanaLibUtility.deserializeTable(string)
 		return nil
 
 	elseif string == nil then
-		say("No data available")
+		agentSay("No data available")
 		return nil
 	end
 

@@ -58,7 +58,7 @@ call_counter = 1
 -- Initialization of the agent.
 function InitializeAgent()
 	
-	say("Agent #: " .. ID .. " has been initialized")
+	agentSay("Agent #: " .. ID .. " has been initialized")
 
 	Move.to{x= ENV_WIDTH/2, y= ENV_HEIGHT/2}
 

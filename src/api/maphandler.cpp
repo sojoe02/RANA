@@ -28,94 +28,99 @@
 
 QImage *MapHandler::image = NULL;
 MainWindow *MapHandler::parent = NULL;
-std::unordered_map<int, MatriceInt > MapHandler::radialMasks;
+std::unordered_map<int, MatriceInt> MapHandler::radialMasks;
 std::shared_timed_mutex MapHandler::mapMutex;
 
 MapHandler::MapHandler(MainWindow *parent)
 {
-    parent = parent;
+  parent = parent;
 }
 
-void MapHandler::setImage(QImage *argImage)
+void
+MapHandler::setImage(QImage *argImage)
 {
-    MapHandler::image = argImage;
+  MapHandler::image = argImage;
 }
 
-rgba MapHandler::getPixelInfo(int argX, int argY)
+rgba
+MapHandler::getPixelInfo(int argX, int argY)
 {
-    std::shared_lock<std::shared_timed_mutex> readerLock(mapMutex);
+  std::shared_lock<std::shared_timed_mutex> readerLock(mapMutex);
 
-    rgba values;
+  rgba values;
 
-    if(image != NULL && image->width() > argX && image->height() > argY
-                    && argX >= 0 && argY >= 0)
-    {
+  if(image != NULL && image->width() > argX && image->height() > argY
+	 && argX >= 0 && argY >= 0)
+	{
 
-        QRgb info = image->pixel(argX, argY);
+	  QRgb info = image->pixel(argX, argY);
 
-        values.red = qRed(info);
-        values.green = qGreen(info);
-        values.blue = qBlue(info);
-        values.alpha = 0;
+	  values.red = qRed(info);
+	  values.green = qGreen(info);
+	  values.blue = qBlue(info);
+	  values.alpha = 0;
 
-    }else
-    {
-        values.red = 256;
-        values.green = 256;
-        values.blue = 256;
-        values.alpha = 256;
-    }
+	}
+  else
+	{
+	  values.red = 256;
+	  values.green = 256;
+	  values.blue = 256;
+	  values.alpha = 256;
+	}
 
-    return values;
+  return values;
 }
 
-bool MapHandler::checkAndChange(int argX, int argY, rgba check_color, rgba change_color)
+bool
+MapHandler::checkAndChange(int argX, int argY, rgba check_color, rgba change_color)
 {
 
-    if(image != NULL && image->width() > argX && image->height() > argY
-                    && argX >= 0 && argY >= 0)
-    {
-        std::lock_guard<std::shared_timed_mutex>
-                writerlock(mapMutex);
+  if(image != NULL && image->width() > argX && image->height() > argY
+	 && argX >= 0 && argY >= 0)
+	{
+	  std::lock_guard<std::shared_timed_mutex>
+		  writerlock(mapMutex);
 
-        QRgb info = image->pixel(argX, argY);
+	  QRgb info = image->pixel(argX, argY);
 
-        if(check_color.red == qRed(info) && check_color.green == qGreen(info)
-                && check_color.blue == qBlue(info) )
-        {
-            QRgb value = qRgb(change_color.red, change_color.green,
-                              change_color.blue);
-            image->setPixel(argX, argY, value);
-            return true;
-        }
+	  if(check_color.red == qRed(info) && check_color.green == qGreen(info)
+		 && check_color.blue == qBlue(info))
+		{
+		  QRgb value = qRgb(change_color.red, change_color.green, change_color.blue);
+		  image->setPixel(argX, argY, value);
+		  return true;
+		}
 
-    }
+	}
 
-    return false;
+  return false;
 }
 
-bool MapHandler::setPixelInfo(int argX, int argY, rgba argValue)
+bool
+MapHandler::setPixelInfo(int argX, int argY, rgba argValue)
 {
 
-    if (image != NULL && image->width() > argX && image->height() > argY
-                    && argX >= 0 && argY >= 0)
-    {
+  if(image != NULL && image->width() > argX && image->height() > argY
+	 && argX >= 0 && argY >= 0)
+	{
 
-        std::lock_guard<std::shared_timed_mutex>
-                writerLock(mapMutex);
+	  std::lock_guard<std::shared_timed_mutex>
+		  writerLock(mapMutex);
 
-        QRgb value;
-        //Output::Inst()->kprintf("%i, %i, %i",argValue.red, argValue.green, argValue.blue);
-        int red = argValue.red;
-        int green = argValue.green;
-        int blue = argValue.blue;
+	  QRgb value;
+	  //Output::Inst()->kprintf("%i, %i, %i",argValue.red, argValue.green, argValue.blue);
+	  int red = argValue.red;
+	  int green = argValue.green;
+	  int blue = argValue.blue;
 
-        value = qRgb(red,green,blue);
-        image->setPixel(argX, argY, value);
+	  value = qRgb(red, green, blue);
+	  image->setPixel(argX, argY, value);
 
-        return true;
-    } else
-        return false;
+	  return true;
+	}
+  else
+	return false;
 }
 
 /*MatriceInt MapHandler::drawCircle( int radius, char channel, int posX, int posY)

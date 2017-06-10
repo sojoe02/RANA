@@ -52,7 +52,7 @@ function initializeAgent()
 	say("Agent #: " .. ID .. " has been initialized")
 
 	if Moving ~= true then
-		say("I am not moving".. STEP_RESOLUTION.. ":" .. PositionX)
+		agentSay("I am not moving".. STEP_RESOLUTION.. ":" .. PositionX)
 	end
 	--Moving = true
 	--DestinationX = 1

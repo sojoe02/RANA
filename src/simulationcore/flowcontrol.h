@@ -29,67 +29,81 @@
 #include<sys/types.h>
 #include<stdio.h>
 #include<fstream>
+#include <unordered_map>
 
 #include "supervisor.h"
-#include "src/simulationcore/interfacer.h"
-#include "src/mainwindow.h"
-#include "src/utility.h"
-#include "src/control.h"
+#include "simulationcore/interfacer.h"
+#include "utility.h"
+//#include "src/control.h"
 
 class Control;
+
 class Supervisor;
-class FlowControl
-{
-    public:
-        FlowControl(Control *control);
-        ~FlowControl();
 
-        void generateEnvironment(double width, double height, int resolution, int agentAmount,
-                                 double timeResolution, int macroFactor, std::string filename);
+class FlowControl {
+ public:
+  FlowControl(Control *control);
 
-        void retrievePopPos();
+  ~FlowControl();
 
-        void runSimulation(int time);
+  void
+  generateEnvironment(double width, double height, int resolution, int agentAmount, double timeResolution, int macroFactor, std::string filename);
 
-        bool checkEnvPresence();
-        void stopSimulation();
-        void saveExternalEvents(std::string filename);
-        void updateStatus();
+  void
+  retrievePopPos();
 
-        void toggleLiveView(bool enable);
-        void populateSystem();
+  void
+  runSimulation(int time);
 
-    private:
-        Control *control;
-        bool mapGenerated;
-        Interfacer doctor;
-        Supervisor *masteragent;
+  bool
+  checkEnvPresence();
 
-        double timeResolution;
-        double macroResolution;
+  void
+  stopSimulation();
 
-        unsigned long long cMacroStep;
-        unsigned long long cMicroStep;
+  void
+  saveExternalEvents(std::string filename);
 
-        int macroFactor;
-        int mapWidth, mapHeight;
-        unsigned long long iterations;
-        unsigned long long i;
+  void
+  updateStatus();
 
-        //Atomic thread controllers:
-        std::atomic_bool stop;
-        std::mutex stopMutex;
-        std::atomic_bool fetchPositions;
+  void
+  toggleLiveView(bool enable);
 
-        int agentAmount;
-        std::string luaFilename;
+  void
+  populateSystem();
 
-        typedef std::list<agentInfo> onlineAgents;
-        std::unordered_map<unsigned long long, onlineAgents> positionMap;
-        bool storePositions;
-        std::string positionFilename;
+ private:
+  Control *control;
+  bool mapGenerated;
+  Interfacer doctor;
+  Supervisor *supervisor;
 
-        std::ofstream file;
+  double timeResolution;
+  double macroResolution;
+
+  unsigned long long cMacroStep;
+  unsigned long long cMicroStep;
+
+  int macroFactor;
+  int mapWidth, mapHeight;
+  unsigned long long iterations;
+  unsigned long long i;
+
+  //Atomic thread controllers:
+  std::atomic_bool stop;
+  std::mutex stopMutex;
+  std::atomic_bool fetchPositions;
+
+  int agentAmount;
+  std::string luaFilename;
+
+  typedef std::list<agentInfo> onlineAgents;
+  std::unordered_map<unsigned long long, onlineAgents> positionMap;
+  bool storePositions;
+  std::string positionFilename;
+
+  std::ofstream file;
 };
 
 #endif // FLOWCONTROL_H

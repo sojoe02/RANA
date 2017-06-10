@@ -57,7 +57,7 @@ end
 
 function _ProcessEventFunction(sourceX, sourceY, posX, posY, time, serialTable)
         if string.len(serialTable) > 3 then
-                --say(serialTable)
+                --agentSay(serialTable)
                 loadstring("_eventTable="..serialTable)()
         else
                 _eventTable = {}

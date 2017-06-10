@@ -27,71 +27,111 @@
 #include <memory>
 #include <unordered_set>
 
-#include "src/utility.h"
-#include "src/simulationcore/eventqueue.h"
+#include "utility.h"
+#include "simulationcore/eventqueue.h"
 
 class EventQueue;
+
 class Sector;
-class Agent
-{
-public:
-    Agent(int ID, double posX, double posY, double posZ, Sector *sector);
 
-    virtual ~Agent(){}
+class Agent {
+ public:
+  Agent(int ID, double posX, double posY, double posZ, Sector *sector);
 
-    virtual std::unique_ptr<EventQueue::iEvent> processEvent(EventQueue::eEvent* event);
-    virtual std::unique_ptr<EventQueue::eEvent> handleEvent(std::unique_ptr<EventQueue::iEvent> event);
-    virtual std::unique_ptr<EventQueue::eEvent> takeStep(){return NULL;}
+  virtual ~Agent()
+  {}
 
-    virtual void processFunction(EventQueue::dataEvent *devent, double mapRes, double x, double y, double &zvalue, double &duration){}
+  virtual std::unique_ptr<EventQueue::iEvent>
+  processEvent(EventQueue::eEvent *event);
 
-    std::string getDesc();
-    int getID();
+  virtual std::unique_ptr<EventQueue::eEvent>
+  handleEvent(std::unique_ptr<EventQueue::iEvent> event);
 
-    double getPosX();
-	double getPosY();
-	double getPosZ();
+  virtual std::unique_ptr<EventQueue::eEvent>
+  takeStep()
+  { return NULL; }
 
-	void setPositions(double x, double y, double z){posX=x; posY=y; posZ=z;}
+  virtual void
+  processFunction(EventQueue::dataEvent *devent, double mapRes, double x, double y, double &zvalue, double &duration)
+  {}
 
-	bool removeGroup(int group);
-	void addGroup(int group);
+  std::string
+  getDesc();
 
-    void simDone(){}
+  int
+  getID();
 
-    bool operator==(Agent &other) const;
-    bool operator!=(Agent &other) const;
-	bool checkGroup(int group);
+  double
+  getPosX();
 
-	int getMacroFactorMultipler();
-	void setMacroFactorMultipler(int multipler);
+  double
+  getPosY();
 
-	void setColor(int r, int g, int b, int a = 255);
-	//rgba getColor(){return color;}
-	agentInfo getAgentInfo();
+  double
+  getPosZ();
 
-protected:
+  void
+  setPositions(double x, double y, double z)
+  {
+	posX = x;
+	posY = y;
+	posZ = z;
+  }
 
-	void distroEEvent(std::unique_ptr<EventQueue::eEvent> event);
+  bool
+  removeGroup(int group);
 
-    int ID;
-    int macroFactorMultiple; //how many macrostep pr. macrostep(if 0 the agent will be ignored completely).
-	std::unordered_set<int> groups;
-    std::string desc;
-    double posX, posY, posZ;
-    std::vector<double> statusVector;
-    Sector* sector;
-	rgba color;
+  void
+  addGroup(int group);
 
-    std::mutex mutex;
+  void
+  simDone()
+  {}
 
-	double radius;
-	double mass;
-	double charge;
-    double angle;
+  bool
+  operator==(Agent &other) const;
 
+  bool
+  operator!=(Agent &other) const;
 
-    friend class Sector;
+  bool
+  checkGroup(int group);
+
+  int
+  getMacroFactorMultipler();
+
+  void
+  setMacroFactorMultipler(int multipler);
+
+  void
+  setColor(int r, int g, int b, int a = 255);
+
+  //rgba getColor(){return color;}
+  agentInfo
+  getAgentInfo();
+
+ protected:
+
+  void
+  distroEEvent(std::unique_ptr<EventQueue::eEvent> event);
+
+  int ID;
+  int macroFactorMultiple; //how many macrostep pr. macrostep(if 0 the agent will be ignored completely).
+  std::unordered_set<int> groups;
+  std::string desc;
+  double posX, posY, posZ;
+  std::vector<double> statusVector;
+  Sector *sector;
+  rgba color;
+
+  std::mutex mutex;
+
+  double radius;
+  double mass;
+  double charge;
+  double angle;
+
+  friend class Sector;
 };
 
 #endif // AGENT_H

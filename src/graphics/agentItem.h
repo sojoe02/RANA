@@ -27,27 +27,39 @@
 
 #include "src/utility.h"
 
-class agentItem : public QGraphicsItem
-{
-    //Q_OBJECT
-public:
-    agentItem(QString id, rgba color, double angle);
+class agentItem : public QGraphicsItem {
+  //Q_OBJECT
+ public:
+  agentItem(QString id, rgba color, double angle);
 
-    QRectF boundingRect() const;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-    void setColor(rgba color);
-    void showID(bool show);
+  QRectF
+  boundingRect() const;
 
-    void showAngle(bool);
-    void setAngle(double angle);
-    double getAngle();
-private:
+  void
+  paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
-    QString id;
-    QColor pencolor;
-    bool showid;
-    double angle = 0;
-    bool angleShow;
+  void
+  setColor(rgba color);
+
+  void
+  showID(bool show);
+
+  void
+  showAngle(bool);
+
+  void
+  setAngle(double angle);
+
+  double
+  getAngle();
+
+ private:
+
+  QString id;
+  QColor pencolor;
+  bool showid;
+  double angle = 0;
+  bool angleShow;
 
 };
 

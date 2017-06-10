@@ -5,28 +5,35 @@
 
 #include "src/control.h"
 
-namespace Ui {
+namespace Ui
+{
 class EventDialog;
 }
 
-class EventDialog : public QDialog
-{
-	Q_OBJECT
+class EventDialog : public QDialog {
+  Q_OBJECT
 
-public:
-	explicit EventDialog(Control *control, QWidget *parent = 0);
-	~EventDialog();
+ public:
+  explicit EventDialog(Control *control, QWidget *parent = 0);
 
-private slots:
-	void on_event_savePushButton_clicked();
+  ~EventDialog();
 
-	void on_event_exitPushButton_clicked();
+ private
+  slots
+	  :
+  void
 
-	void on_event_browsePushButton_clicked();
+  on_event_savePushButton_clicked();
 
-private:
-	Ui::EventDialog *ui;
-	Control *control;
+  void
+  on_event_exitPushButton_clicked();
+
+  void
+  on_event_browsePushButton_clicked();
+
+ private:
+  Ui::EventDialog *ui;
+  Control *control;
 };
 
 #endif // EVENTDIALOG_H

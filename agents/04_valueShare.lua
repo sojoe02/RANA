@@ -90,7 +90,7 @@ function takeStep()
 	elseif Rand == 3 and ID == 1 then
 
 		index = "string"
-		say("Agent:"..ID.." is submitting a string to shared ")
+		agentSay("Agent:"..ID.." is submitting a string to shared ")
 		Shared.storeString(index, "Agent "..ID.." stored this string")
 		Event.emit{description="string",table="{index=\""..index.."\"}"}
 		

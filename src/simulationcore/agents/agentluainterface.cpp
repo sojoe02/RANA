@@ -1,6 +1,6 @@
 //
 //Copyright 	2013 	Søren Vissing Jørgensen.
-//			2014	Søren Vissing Jørgensen, Center for Bio-Robotics, SDU, MMMI.  
+//			2014	Søren Vissing Jørgensen, Center for Bio-Robotics, SDU, MMMI.
 //
 //This file is part of RANA.
 //
@@ -19,115 +19,119 @@
 //
 //--end_license--
 
-#include <iostream>
-#include <cstring>
-#include <string>
-#include <random>
 #include <chrono>
-#include <iostream>
-#include <exception>
 #include <climits>
 #include <cmath>
+#include <cstring>
+#include <exception>
+#include <iostream>
 #include <mutex>
+#include <random>
+#include <string>
 
 #include "lua.hpp"
 //#include "lauxlib.h"
 //#include "lualib.h"
 
-#include "src/ID.h"
-#include "src/output.h"
-#include "src/api/phys.h"
-#include "src/api/shared.h"
-#include "src/api/scanning.h"
-#include "src/simulationcore/interfacer.h"
-#include "src/simulationcore/agents/agentluainterface.h"
+#include "ID.h"
+#include "api/phys.h"
+#include "api/scanning.h"
+#include "api/shared.h"
+#include "communication/outbound.h"
+#include "simulationcore/agents/agentluainterface.h"
+#include "simulationcore/interfacer.h"
 
-AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double posZ, Sector *sector, std::string filename)
-	:Agent(ID,posX,posY,posZ,sector),destinationX(posX),destinationY(posY),speed(1),moving(false),
-    filename(filename),nofile(false),removed(false),L(NULL)
+AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double posZ, Sector* sector, std::string filename)
+    : Agent(ID, posX, posY, posZ, sector)
+    , destinationX(posX)
+    , destinationY(posY)
+    , speed(1)
+    , moving(false)
+    , filename(filename)
+    , nofile(false)
+    , removed(false)
+    , L(NULL)
 {
     //Output::Inst()->kprintf("%f,%f", posX, posY);
     desc = "LUA";
-    color.red=255;
-    color.green=255;
-    color.blue=0;
-    Output::Inst()->addGraphicAgent(ID,-1,-1,color,0);
+    color.red = 255;
+    color.green = 255;
+    color.blue = 0;
+    //Output::Inst()->addGraphicAgent(ID, -1, -1, color, 0);
 
     //Setup up the LUA stack:
     L = luaL_newstate();
-    if(L == NULL)
-    {
-        Output::Inst()->kprintf("<b><font color=\"brown\">A new Agent cannot be initialized. Lua(%s) is out of memory, Killing simulation</font></b></>", LUA_VERSION);
-        Output::KillSimulation.store(true);
+    if (L == NULL) {
+        Outbound::Inst()->simOutput(
+            "<b><font color=\"brown\">A new Agent cannot be initialized. Lua(%s) is out of memory, Killing simulation</font></b></>", LUA_VERSION);
+        //Outbound::KillSimulation.store(true);
         removed = true;
-    }
-    else
-    {
+    } else {
         luaL_openlibs(L);
 
-        // Register the path to the Rana specific lua modules
-        lua_getglobal(L, "package");
-        lua_getfield(L, -1, "path");
-        std::string cur_path = lua_tostring(L, -1);
-        std::string module_path = Output::Inst()->RanaDir;
-        //Output::Inst()->kdebug(module_path.c_str());
-        module_path.append("/src/modules/?.lua");
-        //Output::Inst()->kdebug(module_path.c_str());
-        cur_path.append(";");
-        cur_path.append(module_path);
-        cur_path.append(";");
-        cur_path.append(Output::Inst()->AgentPath);
-        cur_path.append("?.lua");
-        lua_pop(L,1);
-        lua_pushstring(L, cur_path.c_str());
-        lua_setfield(L,-2,"path");
-        lua_pop(L,1);
+        //	  // Register the path to the Rana specific lua modules
+        //	  lua_getglobal(L, "package");
+        //	  lua_getfield(L, -1, "path");
+        //	  std::string cur_path = lua_tostring(L, -1);
+        //	  //std::string module_path = Outbound::Inst()->RanaDir;
+        //	  //Output::Inst()->kdebug(module_path.c_str());
+        //	  module_path.append("/src/modules/?.lua");
+        //	  //Output::Inst()->kdebug(module_path.c_str());
+        //	  cur_path.append(";");
+        //	  cur_path.append(module_path);
+        //	  cur_path.append(";");
+        //	  cur_path.append(Output::Inst()->AgentPath);
+        //	  cur_path.append("?.lua");
+        //	  lua_pop(L, 1);
+        //	  lua_pushstring(L, cur_path.c_str());
+        //	  lua_setfield(L, -2, "path");
+        //	  lua_pop(L, 1);
 
         //set the global values for the agent:
-        lua_pushnumber(L,ID);
-        lua_setglobal(L,"ID");
-        lua_pushnumber(L,posX);
-        lua_setglobal(L,"PositionX");
-        lua_pushnumber(L,posY);
+        lua_pushnumber(L, ID);
+        lua_setglobal(L, "ID");
+        lua_pushnumber(L, posX);
+        lua_setglobal(L, "PositionX");
+        lua_pushnumber(L, posY);
         lua_setglobal(L, "PositionY");
-        lua_pushnumber(L, Phys::getMacroFactor()*Phys::getTimeRes());
+        lua_pushnumber(L, Phys::getMacroFactor() * Phys::getTimeRes());
         lua_setglobal(L, "STEP_RESOLUTION");
         lua_pushnumber(L, Phys::getTimeRes());
         lua_setglobal(L, "EVENT_RESOLUTION");
         lua_pushnumber(L, macroFactorMultiple);
         lua_setglobal(L, "StepMultiple");
 
-        lua_pushnumber(L, Phys::getEnvX());
-        lua_setglobal(L, "ENV_WIDTH");
-        lua_pushnumber(L, Phys::getEnvY());
-		lua_setglobal(L, "ENV_HEIGHT");
-		lua_pushnumber(L, Phys::getEnvZ());
-		lua_setglobal(L, "ENV_DEPTH");
+        //	  lua_pushnumber(L, Phys::getEnvX()); //TODO fix the environment variables on Agent level.
+        //	  lua_setglobal(L, "ENV_WIDTH");
+        //	  lua_pushnumber(L, Phys::getEnvY());
+        //	  lua_setglobal(L, "ENV_HEIGHT");
+        //	  lua_pushnumber(L, Phys::getEnvZ());
+        //	  lua_setglobal(L, "ENV_DEPTH");
 
         lua_pushnumber(L, destinationX);
         lua_setglobal(L, "DestinationX");
-        lua_pushnumber(L,destinationY);
+        lua_pushnumber(L, destinationY);
         lua_setglobal(L, "DestinationY");
         lua_pushnumber(L, speed);
         lua_setglobal(L, "Speed");
         lua_pushboolean(L, moving);
         lua_setglobal(L, "Moving");
 
-		lua_pushnumber(L, mass);
-		lua_setglobal(L, "Mass");
-		lua_pushnumber(L, charge);
-		lua_setglobal(L, "Charge");
-		lua_pushnumber(L, radius);
-		lua_setglobal(L, "Radius");
+        lua_pushnumber(L, mass);
+        lua_setglobal(L, "Mass");
+        lua_pushnumber(L, charge);
+        lua_setglobal(L, "Charge");
+        lua_pushnumber(L, radius);
+        lua_setglobal(L, "Radius");
 
-		lua_pushnumber(L, color.red);
-		lua_setglobal(L, "ColorRed");
-		lua_pushnumber(L, color.green);
-		lua_setglobal(L, "ColorGreen");
-		lua_pushnumber(L, color.blue);
-		lua_setglobal(L, "ColorBlue");
-		lua_pushnumber(L, color.alpha);
-		lua_setglobal(L, "ColorAlpha");
+        lua_pushnumber(L, color.red);
+        lua_setglobal(L, "ColorRed");
+        lua_pushnumber(L, color.green);
+        lua_setglobal(L, "ColorGreen");
+        lua_pushnumber(L, color.blue);
+        lua_setglobal(L, "ColorBlue");
+        lua_pushnumber(L, color.alpha);
+        lua_setglobal(L, "ColorAlpha");
 
         lua_pushnumber(L, 0);
         lua_setglobal(L, "Angle");
@@ -139,13 +143,12 @@ AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double po
         //Interface.
         lua_register(L, "l_debug", l_debug);
         lua_register(L, "l_print", l_print);
-        lua_register(L, "say", l_debug);
-        lua_register(L, "shout", l_print);
+        lua_register(L, "agentSay", l_debug);
+        lua_register(L, "agentShout", l_print);
 
-		//Physics.
+        //Physics.
         lua_register(L, "l_speedOfSound", l_speedOfSound);
-        lua_register(L, "l_distance", l_distance);
-        lua_register(L, "l_currentTime",l_currentTime);
+        lua_register(L, "l_currentTime", l_currentTime);
         lua_register(L, "l_currentTimeS", l_currentTimeS);
         lua_register(L, "l_getTimeResolution", l_getTimeResolution);
         lua_register(L, "l_getMersenneFloat", l_getMersenneFloat);
@@ -153,7 +156,7 @@ AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double po
         lua_register(L, "l_getRandomInteger", l_getMersenneInteger);
         lua_register(L, "l_getMersenneInteger", l_getMersenneInteger);
 
-		//Map.
+        //Map.
         lua_register(L, "l_getEnvironmentSize", l_getEnvironmentSize);
         lua_register(L, "l_modifyMap", l_modifyMap);
         lua_register(L, "l_checkMap", l_checkMap);
@@ -161,15 +164,15 @@ AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double po
         lua_register(L, "l_radialMapScan", l_radialMapScan);
         lua_register(L, "l_radialMapColorScan", l_radialMapColorScan);
 
-		//Collision.
+        //Collision.
         lua_register(L, "l_checkPosition", l_checkPosition);
-        lua_register(L, "l_addPosition", l_addPosition);
-		lua_register(L, "l_checkCollision", l_checkCollision);
-		lua_register(L, "l_checkCollisionRadial", l_checkCollisionRadial);
+        //lua_register(L, "l_addPosition", l_addPosition);
+        //lua_register(L, "l_checkCollision", l_checkCollision);//TODO fix collision detection.
+        lua_register(L, "l_checkCollisionRadial", l_checkCollisionRadial);
 
         //Shared values.
         lua_register(L, "l_getSharedNumber", l_getSharedNumber);
-        lua_register(L, "l_addSharedNumber",l_addSharedNumber);
+        lua_register(L, "l_addSharedNumber", l_addSharedNumber);
         lua_register(L, "l_getSharedString", l_getSharedString);
         lua_register(L, "l_addSharedString", l_addSharedString);
 
@@ -185,25 +188,23 @@ AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double po
         lua_register(L, "l_removeGroup", l_removeGroup);
         lua_register(L, "l_setStepMultiplier", l_setMacroFactorMultipler);
 
-        std::string auxLib = Output::Inst()->RanaDir;
-        auxLib.append("/src/modules/auxiliary.lua");
+        std::string auxLib = ""; //Output::Inst()->RanaDir; TODO find a fixed point to store the directory where Rana is installed.
+        //auxLib.append("/src/modules/auxiliary.lua");
 
         std::string settingsPath = filename;
-        settingsPath.erase(settingsPath.end()-4,settingsPath.end());
+        settingsPath.erase(settingsPath.end() - 4, settingsPath.end());
         settingsPath.append("_settings.lua");
 
-        if(luaL_loadfile(L, auxLib.c_str()) || lua_pcall(L,0,0,0))
-        {
-            Output::Inst()->kprintf("<font color=\"red\">error : %s <\font>", lua_tostring(L, -1));
+        if (luaL_loadfile(L, auxLib.c_str()) || lua_pcall(L, 0, 0, 0)) {
+            Outbound::Inst()->simOutput("<font color=\"red\">error : %s <\font>", lua_tostring(L, -1));
             nofile = true;
-            Output::Inst()->kprintf("Lua Agent disabled\n");
+            Outbound::Inst()->simOutput("Lua Agent disabled\n");
         }
 
-        if(luaL_loadfile(L, filename.c_str() ) || lua_pcall(L,0,0,0))
-        {
-            Output::Inst()->kprintf("<font color=\"red\">error : %s <\font>", lua_tostring(L, -1));
+        if (luaL_loadfile(L, filename.c_str()) || lua_pcall(L, 0, 0, 0)) {
+            Outbound::Inst()->simOutput("<font color=\"red\">error : %s <\font>", lua_tostring(L, -1));
             nofile = true;
-            Output::Inst()->kprintf("Lua Agent disabled\n");
+            Outbound::Inst()->simOutput("Lua Agent disabled\n");
         }
 
         //if(sector != NULL)
@@ -211,19 +212,17 @@ AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double po
 
         getSyncData();
         //Call the Initialization function for the agent
-        lua_settop(L,0);
+        lua_settop(L, 0);
     }
-
 
     moveFactor = Phys::getMacroFactor() * Phys::getTimeRes();
 }
 
 AgentLuaInterface::~AgentLuaInterface()
 {
-    if(L != NULL)
-    {
+    if (L != NULL) {
         //Output::Inst()->kprintf("Deleting agent %d", ID);
-        lua_settop(L,0);
+        lua_settop(L, 0);
         //lua_gc(L,LUA_GCCOLLECT,0);
         lua_close(L);
         //delete L;
@@ -233,29 +232,24 @@ AgentLuaInterface::~AgentLuaInterface()
 
 void AgentLuaInterface::InitializeAgent()
 {
-    if(removed)
-    {
+    if (removed) {
         return;
     }
 
-    lua_settop(L,0);
-    try
-    {
+    lua_settop(L, 0);
+    try {
         //init the LUA frog:
         lua_getglobal(L, "_InitializeAgent");
         //Call the initAgent function (3 arguments, 0 results):
-        if(lua_pcall(L,0,0,0)!=LUA_OK)
-        {
-            Output::Inst()->kprintf("<b><font color=\"brown\">Error on agent initialization, %s</font></b></>",	lua_tostring(L,-1));
+        if (lua_pcall(L, 0, 0, 0) != LUA_OK) {
+            Outbound::Inst()->simOutput("<b><font color=\"brown\">Error on agent initialization, %s</font></b></>", lua_tostring(L, -1));
             nofile = true;
-            Output::Inst()->kprintf("Lua Agent disabled\n");
+            Outbound::Inst()->simOutput("Lua Agent disabled\n");
         }
 
-    }
-    catch(std::exception& e)
-    {
-        Output::Inst()->kprintf("<b><font color=\"red\">Error on Agent initialization. %s, %s</font></b></>" , filename.c_str() ,e.what());
-        Output::RunSimulation = false;
+    } catch (std::exception& e) {
+        Outbound::Inst()->simOutput("<b><font color=\"red\">Error on Agent initialization. %s, %s</font></b></>", filename.c_str(), e.what());
+        Interfacer::RunSimulation.store(false);
     }
 
     getSyncData();
@@ -274,27 +268,23 @@ void AgentLuaInterface::InitializeAgent()
  * @param event pointer to the external event.
  * @return internal event.
  */
-std::unique_ptr<EventQueue::iEvent> AgentLuaInterface::processEvent(const EventQueue::eEvent *event)
+std::unique_ptr<EventQueue::iEvent>
+AgentLuaInterface::processEvent(const EventQueue::eEvent* event)
 {
-    if (removed) return NULL;
+    if (removed)
+        return NULL;
 
-    if (event->targetID == 0 || event->targetID == ID)
-    {
+    if (event->targetID == 0 || event->targetID == ID) {
         std::unique_ptr<EventQueue::iEvent> ievent(new EventQueue::iEvent());
 
         ievent->origin = this;
         ievent->event = event;
 
-        if (event->propagationSpeed == 0)
-        {
-            ievent->activationTime = Phys::getCTime()+1;
+        if (event->propagationSpeed == 0) {
+            ievent->activationTime = Phys::getCTime() + 1;
 
-        } else
-        {
-            ievent->activationTime =
-                    Phys::speedOfEvent(event->posX,
-                                       event->posY,
-                                       posX, posY, event->propagationSpeed)+1;
+        } else {
+            ievent->activationTime = Phys::speedOfEvent(event->posX, event->posY, posX, posY, event->propagationSpeed) + 1;
         }
 
         ievent->id = ID::generateEventID();
@@ -314,24 +304,24 @@ std::unique_ptr<EventQueue::iEvent> AgentLuaInterface::processEvent(const EventQ
  * @return EventQueue::eEvent pointer to an external event or
  * a null pointer in which case nothing happens.
  */
-std::unique_ptr<EventQueue::eEvent> AgentLuaInterface::takeStep()
+std::unique_ptr<EventQueue::eEvent>
+AgentLuaInterface::takeStep()
 {
-    if(removed) return NULL;
-    if(nofile) return NULL;
-    lua_settop(L,0);
+    if (removed)
+        return NULL;
+    if (nofile)
+        return NULL;
+    lua_settop(L, 0);
 
-    try
-    {
+    try {
         lua_getglobal(L, "_TakeStep");
-        if(lua_pcall(L,0,0,0) !=LUA_OK)
-        {
-            Output::Inst()->kprintf("<b><font color=\"brown\">Lua error on takeStep. %s, %s</font></b></>", filename.c_str() ,lua_tostring(L,-1));
-            Output::RunSimulation.store(false);
+        if (lua_pcall(L, 0, 0, 0) != LUA_OK) {
+            Outbound::Inst()->simOutput("<b><font color=\"brown\">Lua error on takeStep. %s, %s</font></b></>", filename.c_str(), lua_tostring(L, -1));
+            Interfacer::RunSimulation.store(false);
             return NULL;
         }
 
-        if(moving)
-        {
+        if (moving) {
             movement();
         }
 
@@ -339,11 +329,9 @@ std::unique_ptr<EventQueue::eEvent> AgentLuaInterface::takeStep()
 
         return NULL;
 
-    }
-    catch(std::exception &e)
-    {
-        Output::Inst()->kprintf("<b><font color=\"red\">Exception on takeStep. %s, %s</font></b></>", filename.c_str()  ,e.what());
-        Output::RunSimulation.store(false);
+    } catch (std::exception& e) {
+        Outbound::Inst()->simOutput("<b><font color=\"red\">Exception on takeStep. %s, %s</font></b></>", filename.c_str(), e.what());
+        Interfacer::RunSimulation.store(false);
     }
     return NULL;
 }
@@ -356,38 +344,37 @@ std::unique_ptr<EventQueue::eEvent> AgentLuaInterface::takeStep()
  * @param event pointer to the internal event.
  * @return external event.
  */
-std::unique_ptr<EventQueue::eEvent> AgentLuaInterface::handleEvent(std::unique_ptr<EventQueue::iEvent> eventPtr)
+std::unique_ptr<EventQueue::eEvent>
+AgentLuaInterface::handleEvent(std::unique_ptr<EventQueue::iEvent> eventPtr)
 {
-    if(removed) return NULL;
-    if(nofile) return NULL;
+    if (removed)
+        return NULL;
+    if (nofile)
+        return NULL;
     //If the event isn't broadcast and the targetID is not mine
-    lua_settop(L,0);
+    lua_settop(L, 0);
     //Output::Inst()->kprintf("handles event");
-    try
-    {
+    try {
 
-        lua_getglobal(L,"_HandleEvent");
+        lua_getglobal(L, "_HandleEvent");
         lua_pushnumber(L, eventPtr->event->posX);
         lua_pushnumber(L, eventPtr->event->posY);
-		lua_pushnumber(L, eventPtr->event->posZ);
+        lua_pushnumber(L, eventPtr->event->posZ);
         lua_pushnumber(L, eventPtr->event->originID);
         lua_pushstring(L, eventPtr->event->desc.c_str());
         lua_pushstring(L, eventPtr->event->luatable.c_str());
 
-		if(lua_pcall(L,6,0,0)!=LUA_OK)
-        {
-            Output::Inst()->kprintf("<b><font color=\"brown\">Error on event handling.%s, %s</font></b></>",filename.c_str(),lua_tostring(L,-1));
-            Output::RunSimulation.store(false);
+        if (lua_pcall(L, 6, 0, 0) != LUA_OK) {
+            Outbound::Inst()->simOutput("<b><font color=\"brown\">Error on event handling.%s, %s</font></b></>", filename.c_str(), lua_tostring(L, -1));
+            Interfacer::RunSimulation.store(false);
             return NULL;
         }
         getSyncData();
         return NULL;
 
-    }
-    catch(std::exception &e)
-    {
-        Output::Inst()->kprintf("<b><font color=\"red\">Exception on event handling.%s, %s</font></b></>",filename.c_str(), e.what());
-        Output::RunSimulation = false;
+    } catch (std::exception& e) {
+        Outbound::Inst()->simOutput("<b><font color=\"red\">Exception on event handling.%s, %s</font></b></>", filename.c_str(), e.what());
+        Interfacer::RunSimulation.store(false);
     }
 
     return NULL;
@@ -396,9 +383,6 @@ std::unique_ptr<EventQueue::eEvent> AgentLuaInterface::handleEvent(std::unique_p
 void AgentLuaInterface::movement()
 {
     //bool collision = false;
-
-
-
 }
 
 /********************************************************
@@ -416,39 +400,38 @@ void AgentLuaInterface::movement()
  * @param zvalue, the address of the zvalue is to be written at.
  * @param duration, the address the events duration is to be written at.
  */
-void AgentLuaInterface::processFunction(EventQueue::dataEvent *devent, double time, double x, double y, double &zvalue, double &duration)
+void AgentLuaInterface::processFunction(EventQueue::dataEvent* devent, double time, double x, double y, double& zvalue, double& duration)
 {
-    if(removed) return;
+    //TODO rethink how event processing should be handled, on the agent level (if it should be handled at all!)
+    //    if (removed)
+    //        return;
 
-    try{
-        lua_settop(L,0);
+    //    try {
+    //        lua_settop(L, 0);
 
-        //Output::Inst()->kprintf("hugahuga--%s", devent->table);
+    //        //Output::Inst()->kprintf("hugahuga--%s", devent->table);
 
-        lua_getglobal(L, "_ProcessEventFunction");
-        lua_pushnumber(L, devent->originX);
-        lua_pushnumber(L, devent->originY);
-        lua_pushnumber(L, x);
-        lua_pushnumber(L, y);
-        lua_pushnumber(L, time);
-        lua_pushstring(L, devent->table);
+    //        lua_getglobal(L, "_ProcessEventFunction");
+    //        lua_pushnumber(L, devent->originX);
+    //        lua_pushnumber(L, devent->originY);
+    //        lua_pushnumber(L, x);
+    //        lua_pushnumber(L, y);
+    //        lua_pushnumber(L, time);
+    //        lua_pushstring(L, devent->table);
 
-        if(lua_pcall(L,6,2,0)!=LUA_OK){
-            Output::Inst()->kprintf("Error on calling _ProcessEventFunction : %s\n,",lua_tostring(L,-1));
-            Output::RunEventProcessing.store(false);
-            return;
-        } else
-        {
-            zvalue = lua_tonumber(L,-2);
-            duration = lua_tonumber(L,-1);
-        }
+    //        if (lua_pcall(L, 6, 2, 0) != LUA_OK) {
+    //            Outbound::Inst()->simOutput("Error on calling _ProcessEventFunction : %s\n,", lua_tostring(L, -1));
+    //            Interfacer::RunEventProcessing.store(false);
+    //            return;
+    //        } else {
+    //            zvalue = lua_tonumber(L, -2);
+    //            duration = lua_tonumber(L, -1);
+    //        }
 
-    }
-    catch(std::exception &e)
-    {
-        Output::Inst()->kprintf("<b><font color=\"red\">Error on processEvent..%s</font></b></>", e.what());
-        Output::RunEventProcessing.store(false);
-    }
+    //    } catch (std::exception& e) {
+    //        Outbound::Inst()->simOutput("<b><font color=\"red\">Error on processEvent..%s</font></b></>", e.what());
+    //        Interfacer::RunEventProcessing.store(false);
+    //    }
 }
 
 /********************************************************
@@ -460,71 +443,65 @@ void AgentLuaInterface::setRemoved()
 {
     //Output::Inst()->kprintf("removing agent.#.%i",ID);
     removed = true;
-	//GridMovement::removePos(ID);
+    //GridMovement::removePos(ID);
 }
 
 void AgentLuaInterface::simDone()
 {
-    if(nofile)
+    if (nofile)
         return;
-    try
-    {
+    try {
         lua_getglobal(L, "_CleanUp");
 
-        if(lua_pcall(L,0,0,0)!=LUA_OK)
-        {
-            Output::Inst()->kprintf("<b><font color=\"brown\">Error on cleanUp. %s</font></b></>",lua_tostring(L,-1));
+        if (lua_pcall(L, 0, 0, 0) != LUA_OK) {
+            Outbound::Inst()->simOutput("<b><font color=\"brown\">Error on cleanUp. %s</font></b></>", lua_tostring(L, -1));
         }
-    }
-    catch(std::exception& e)
-    {
-        Output::Inst()->kprintf("<b><font color=\"red\">Exception on cleanUp. %s</font></b></>", e.what());
+    } catch (std::exception& e) {
+        Outbound::Inst()->simOutput("<b><font color=\"red\">Exception on cleanUp. %s</font></b></>", e.what());
     }
 }
 
 void AgentLuaInterface::getSyncData()
 {
-    if(removed) return;
-    try
-	{
+    if (removed)
+        return;
+    try {
         lua_getglobal(L, "Angle");
 
-		lua_getglobal(L, "ColorRed");
-		lua_getglobal(L, "ColorGreen");
-		lua_getglobal(L, "ColorBlue");
-		lua_getglobal(L, "ColorAlpha");
-		lua_getglobal(L, "PositionZ");
+        lua_getglobal(L, "ColorRed");
+        lua_getglobal(L, "ColorGreen");
+        lua_getglobal(L, "ColorBlue");
+        lua_getglobal(L, "ColorAlpha");
+        lua_getglobal(L, "PositionZ");
 
-		lua_getglobal(L, "Mass");
-		lua_getglobal(L, "Charge");
-		lua_getglobal(L, "Radius");
+        lua_getglobal(L, "Mass");
+        lua_getglobal(L, "Charge");
+        lua_getglobal(L, "Radius");
 
-		//lua_getglobal(L, "GridMove");
+        //lua_getglobal(L, "GridMove");
         lua_getglobal(L, "StepMultiple");
         lua_getglobal(L, "PositionX");
         lua_getglobal(L, "PositionY");
         lua_getglobal(L, "DestinationX");
         lua_getglobal(L, "DestinationY");
         lua_getglobal(L, "Speed");
-		lua_getglobal(L, "Moving");
+        lua_getglobal(L, "Moving");
 
-		angle = lua_tonumber(L, -16);
+        angle = lua_tonumber(L, -16);
 
-		radius = lua_tonumber(L, -8);
-		charge = lua_tonumber(L, -9);
-		mass = lua_tonumber(L, -10);
+        radius = lua_tonumber(L, -8);
+        charge = lua_tonumber(L, -9);
+        mass = lua_tonumber(L, -10);
 
-		posZ = lua_tonumber(L, -11);
+        posZ = lua_tonumber(L, -11);
 
-		color.alpha = lua_tonumber(L, -12);
-		color.red = lua_tonumber(L, -15);
-		color.green = lua_tonumber(L, -14);
-		color.blue = lua_tonumber(L, -13);
-
+        color.alpha = lua_tonumber(L, -12);
+        color.red = lua_tonumber(L, -15);
+        color.green = lua_tonumber(L, -14);
+        color.blue = lua_tonumber(L, -13);
 
         int stepMultiple = (int)lua_tonumber(L, -7);
-        if(stepMultiple >=0 )
-        {
+        if (stepMultiple >= 0) {
             macroFactorMultiple = stepMultiple;
         }
         posX = lua_tonumber(L, -6);
@@ -535,11 +512,9 @@ void AgentLuaInterface::getSyncData()
         speed = lua_tonumber(L, -2);
         moving = lua_toboolean(L, -1);
 
-    }
-    catch(std::exception &e)
-    {
-        Output::Inst()->kprintf("<b><font color=\"red\">Exception on retrieving sync data, %s</font></b></>", e.what());
-        Output::RunSimulation.store(false);
+    } catch (std::exception& e) {
+        Outbound::Inst()->simOutput("<b><font color=\"red\">Exception on retrieving sync data, %s</font></b></>", e.what());
+        Interfacer::RunSimulation.store(false);
         return;
     }
 }
@@ -549,17 +524,16 @@ void AgentLuaInterface::getSyncData()
  *
  ********************************************************/
 
-
 /**
  * Calls Ranas debug msg. wrapper function with a given string.
  * Can be disabled.
  * @return 0.
  */
-int AgentLuaInterface::l_debug(lua_State *L)
+int AgentLuaInterface::l_debug(lua_State* L)
 {
     std::string string = lua_tostring(L, -1);
     string.resize(4096);
-    Output::Inst()->kdebug(string.c_str());
+    Outbound::Inst()->agentShout(string.c_str());
     return 0;
 }
 
@@ -569,11 +543,11 @@ int AgentLuaInterface::l_debug(lua_State *L)
  * @return
  */
 
-int AgentLuaInterface::l_print(lua_State *L)
+int AgentLuaInterface::l_print(lua_State* L)
 {
     std::string string = lua_tostring(L, -1);
-    string.resize(4096);
-    Output::Inst()->kprintf(string.c_str());
+    string.resize(4096); //TODO it might nolonger be relevant to cut agent output to size (4096)
+    Outbound::Inst()->agentSay(string.c_str());
     return 0;
 }
 
@@ -585,19 +559,18 @@ int AgentLuaInterface::l_print(lua_State *L)
  * @param L Lua state pointer on which the timestep should be pushed.
  * @return number of items pushed to the stack, ie number of results.
  */
-int AgentLuaInterface::l_speedOfSound(lua_State *L)
+int AgentLuaInterface::l_speedOfSound(lua_State* L)
 {
     //push the arguments:
-    double posX = lua_tonumber(L,-1);
-    double posY = lua_tonumber(L,-2);
-    double origX = lua_tonumber(L,-3);
-    double origY = lua_tonumber(L,-4);
-    double propagationSpeed = lua_tonumber(L,-5);
+    double posX = lua_tonumber(L, -1);
+    double posY = lua_tonumber(L, -2);
+    double origX = lua_tonumber(L, -3);
+    double origY = lua_tonumber(L, -4);
+    double propagationSpeed = lua_tonumber(L, -5);
 
-    unsigned long long t =
-            Phys::speedOfEvent(posX, posY, origX, origY, propagationSpeed);
+    unsigned long long t = Phys::speedOfEvent(posX, posY, origX, origY, propagationSpeed);
 
-    lua_pushnumber(L,t);
+    lua_pushnumber(L, t);
 
     return 1;
 }
@@ -606,367 +579,358 @@ int AgentLuaInterface::l_speedOfSound(lua_State *L)
  * Get the current timestep.
  * @see l_speedOfSound
  */
-int AgentLuaInterface::l_currentTime(lua_State *L)
+int AgentLuaInterface::l_currentTime(lua_State* L)
 {
     unsigned long long t = Phys::getCTime();
-    lua_pushnumber(L,t);
+    lua_pushnumber(L, t);
     return 1;
 }
 
-int AgentLuaInterface::l_currentTimeS(lua_State *L)
+int AgentLuaInterface::l_currentTimeS(lua_State* L)
 {
-    double time = (double)Phys::getCTime()*Phys::getTimeRes();
-    lua_pushnumber(L,time);
+    double time = (double)Phys::getCTime() * Phys::getTimeRes();
+    lua_pushnumber(L, time);
     return 1;
 }
 
-int AgentLuaInterface::l_getTimeResolution(lua_State *L)
+int AgentLuaInterface::l_getTimeResolution(lua_State* L)
 {
     double tr = Phys::getTimeRes();
-    lua_pushnumber(L,tr);
+    lua_pushnumber(L, tr);
     return 1;
 }
 
-int AgentLuaInterface::l_getMersenneFloat(lua_State *L)
+int AgentLuaInterface::l_getMersenneFloat(lua_State* L)
 {
-    double low = lua_tonumber(L,-2);
+    double low = lua_tonumber(L, -2);
     double high = lua_tonumber(L, -1);
 
     //Output::Inst()->kdebug("%f,%f", low, high);
-    double number = Phys::getMersenneFloat(low,high);
+    double number = Phys::getMersenneFloat(low, high);
 
-    lua_pushnumber(L,number);
+    lua_pushnumber(L, number);
     return 1;
 }
 
-int AgentLuaInterface::l_getMersenneInteger(lua_State *L)
+int AgentLuaInterface::l_getMersenneInteger(lua_State* L)
 {
-    int64_t low = lua_tonumber(L,-2);
+    int64_t low = lua_tonumber(L, -2);
     int64_t high = lua_tonumber(L, -1);
     int64_t number = low;
 
-    if(low > high)
-    {
+    if (low > high) {
         number = Phys::getMersenneInteger(high, low);
-    }
-    else if(high > low)
-    {
+    } else if (high > low) {
         number = Phys::getMersenneInteger(low, high);
     }
 
-    lua_pushnumber(L,number);
+    lua_pushnumber(L, number);
     return 1;
 }
 
 //Map and position.
-int AgentLuaInterface::l_getEnvironmentSize(lua_State *L)
+int AgentLuaInterface::l_getEnvironmentSize(lua_State* L)
 {
-    lua_pushnumber(L,Phys::getEnvX());
-    lua_pushnumber(L,Phys::getEnvY());
-    return 2;
-
+    //lua_pushnumber(L, Phys::getEnvX());
+    //lua_pushnumber(L, Phys::getEnvY());
+    return 0;
 }
 
-
-int AgentLuaInterface::l_modifyMap(lua_State *L)
+int AgentLuaInterface::l_modifyMap(lua_State* L)
 {
-//    double x = lua_tonumber(L, -5);
-//    double y = lua_tonumber(L, -4);
+    //    double x = lua_tonumber(L, -5);
+    //    double y = lua_tonumber(L, -4);
 
-//    int modX = x * Phys::getScale();
-//    int modY = y * Phys::getScale();
+    //    int modX = x * Phys::getScale();
+    //    int modY = y * Phys::getScale();
 
-//    rgba color;
+    //    rgba color;
 
-//    color.red = lua_tonumber(L, -3);
-//    color.green = lua_tonumber(L, -2);
-//    color.blue = lua_tonumber(L, -1);
-//    color.alpha = 0;
+    //    color.red = lua_tonumber(L, -3);
+    //    color.green = lua_tonumber(L, -2);
+    //    color.blue = lua_tonumber(L, -1);
+    //    color.alpha = 0;
 
-//    bool success = MapHandler::setPixelInfo(modX, modY, color);
-//    lua_pushboolean(L, success);
-	return 0;
+    //    bool success = MapHandler::setPixelInfo(modX, modY, color);
+    //    lua_pushboolean(L, success);
+    return 0;
 }
 
-int AgentLuaInterface::l_checkMap(lua_State *L)
+int AgentLuaInterface::l_checkMap(lua_State* L)
 {
-//    double x = lua_tonumber(L, -2);
-//    double y = lua_tonumber(L, -1);
+    //    double x = lua_tonumber(L, -2);
+    //    double y = lua_tonumber(L, -1);
 
-//    int checkX = x * Phys::getScale();
-//    int checkY = y * Phys::getScale();
+    //    int checkX = x * Phys::getScale();
+    //    int checkY = y * Phys::getScale();
 
-//    rgba color = MapHandler::getPixelInfo(checkX, checkY);
+    //    rgba color = MapHandler::getPixelInfo(checkX, checkY);
 
-//    lua_pushnumber(L, color.red);
-//    lua_pushnumber(L, color.green);
-//    lua_pushnumber(L, color.blue);
-	return 0;
+    //    lua_pushnumber(L, color.red);
+    //    lua_pushnumber(L, color.green);
+    //    lua_pushnumber(L, color.blue);
+    return 0;
 }
 
-int AgentLuaInterface::l_checkMapAndChange(lua_State *L)
+int AgentLuaInterface::l_checkMapAndChange(lua_State* L)
 {
-//    double x = lua_tonumber(L, -8);
-//    double y = lua_tonumber(L, -7);
+    //    double x = lua_tonumber(L, -8);
+    //    double y = lua_tonumber(L, -7);
 
-//    int modX = x * Phys::getScale();
-//    int modY = y * Phys::getScale();
+    //    int modX = x * Phys::getScale();
+    //    int modY = y * Phys::getScale();
 
-//    rgba check_color;
+    //    rgba check_color;
 
-//    check_color.red = lua_tonumber(L, -6);
-//    check_color.green = lua_tonumber(L, -5);
-//    check_color.blue = lua_tonumber(L, -4);
-//    check_color.alpha = 0;
+    //    check_color.red = lua_tonumber(L, -6);
+    //    check_color.green = lua_tonumber(L, -5);
+    //    check_color.blue = lua_tonumber(L, -4);
+    //    check_color.alpha = 0;
 
-//    rgba change_color;
+    //    rgba change_color;
 
-//    change_color.red = lua_tonumber(L, -3);
-//    change_color.green = lua_tonumber(L, -2);
-//    change_color.blue = lua_tonumber(L, -1);
-//    change_color.alpha = 0;
+    //    change_color.red = lua_tonumber(L, -3);
+    //    change_color.green = lua_tonumber(L, -2);
+    //    change_color.blue = lua_tonumber(L, -1);
+    //    change_color.alpha = 0;
 
-//    bool changed = false;
+    //    bool changed = false;
 
-//    changed = MapHandler::checkAndChange(modX, modY, check_color, change_color);
+    //    changed = MapHandler::checkAndChange(modX, modY, check_color, change_color);
 
-//    lua_pushboolean(L, changed);
-
-	return 0;
-}
-
-int AgentLuaInterface::l_radialMapColorScan(lua_State *L)
-{
-//    int radius = lua_tonumber(L, -6);
-//    int posX = lua_tonumber(L, -5) - radius;
-//    int posY = lua_tonumber(L, -4) - radius;
-//    int r = lua_tonumber(L, -3);
-//    int g = lua_tonumber(L, -2);
-//    int b = lua_tonumber(L, -1);
-//    //Output::Inst()->kprintf("radius %d, posX %d, posY %d", radius, posX, posY);
-
-//    int count = 0;
-
-//    MatriceInt result = Scanning::radialMask(radius);
-
-//    lua_newtable(L);
-//    int index = 0;
-
-//    for (int i = 1; i < radius*2; i++)
-//    {
-//        for(int j = 1; j < radius*2; j++)
-//        {
-//            if( result[i][j] == 1)
-//                //(posX + i != posX+radius || posY + j != posY+radius ))
-//            {
-
-//                rgba color = MapHandler::getPixelInfo(posX+i, posY+j);
-
-//                if(r == color.red && g == color.green && b == color.blue)
-//                {
-// //                   Output::Inst()->kprintf("%i,%i,%i", color.red, color.green, color.blue);
-//                    count++;
-//                    index++;
-
-//                    lua_pushnumber(L, index);
-//                    lua_newtable(L);
-//                    lua_pushstring(L,"posX");
-//                    lua_pushnumber(L, posX+i);
-//                    lua_settable(L, -3);
-//                    lua_pushstring(L, "posY");
-//                    lua_pushnumber(L, posY+j);
-//                    lua_settable(L, -3);
-//                    lua_pushstring(L,"R");
-//                    lua_pushnumber(L, color.red);
-//                    lua_settable(L, -3);
-//                    lua_pushstring(L,"G");
-//                    lua_pushnumber(L, color.green);
-//                    lua_settable(L, -3);
-//                    lua_pushstring(L,"B");
-//                    lua_pushnumber(L, color.blue);
-//                    lua_settable(L, -3);
-//                    lua_settable(L, -3);
-//                }
-//            }
-//        }
-//    }
-
-//    if(count == 0)
-//    {
-//        lua_pushnil(L);
-//    }
-	return 0;
-}
-
-int AgentLuaInterface::l_radialMapScan(lua_State *L)
-{
-//    int radius = lua_tonumber(L, -3);
-//    int posX = lua_tonumber(L, -2) - radius;
-//    int posY = lua_tonumber(L, -1) - radius;
-//    //Output::Inst()->kprintf("radius %d, posX %d, posY %d", radius, posX, posY);
-//    MatriceInt result = Scanning::radialMask(radius);
-
-//    lua_newtable(L);
-//    int index = 0;
-
-//    for (int i = 1; i < radius*2; i++)
-//    {
-//        for(int j = 1; j < radius*2; j++)
-//        {
-//            if( result[i][j] == 1)
-//                //(posX + i != posX+radius || posY + j != posY+radius ))
-//            {
-//                index++;
-
-//                rgba color = MapHandler::getPixelInfo(posX+i, posY+j);
-
-//                lua_pushnumber(L, index);
-//                lua_newtable(L);
-//                lua_pushstring(L,"posX");
-//                lua_pushnumber(L, posX+i);
-//                lua_settable(L, -3);
-//                lua_pushstring(L, "posY");
-//                lua_pushnumber(L, posY+j);
-//                lua_settable(L, -3);
-//                lua_pushstring(L,"R");
-//                lua_pushnumber(L, color.red);
-//                lua_settable(L, -3);
-//                lua_pushstring(L,"G");
-//                lua_pushnumber(L, color.green);
-//                lua_settable(L, -3);
-//                lua_pushstring(L,"B");
-//                lua_pushnumber(L, color.blue);
-//                lua_settable(L, -3);
-//                lua_settable(L, -3);
-
-//            }
-//        }
-//    }
-	return 0;
-}
-
-
-
-int AgentLuaInterface::l_checkPosition(lua_State *L)
-{
-//    int posX = 0;
-//    int posY = 0;
-
-//    posX = lua_tonumber(L, -2) *GridMovement::getScale()+.5;
-//    posY = lua_tonumber(L, -1) *GridMovement::getScale()+.5;
-
-//    pList agentList = GridMovement::checkPosition(posX, posY);
-
-//    lua_newtable(L);
-
-//    int i = 1;
-//    for(pList::iterator it = agentList.begin(); it != agentList.end(); ++it,i++)
-//    {
-//        lua_pushnumber(L, i);
-//        lua_pushnumber(L, *it);
-//        lua_settable(L, -3);
-//    }
-
-	return 0;
-}
-
-
-
-int AgentLuaInterface::l_checkCollisionRadial(lua_State *L)
-{
-//    int radius = lua_tonumber(L, -1);
-//    int posX = lua_tonumber(L, -3) - radius;
-//    int posY = lua_tonumber(L, -2) - radius;
-
-//    //Output::Inst()->kdebug("collision checked at posX+i %i and posY+");
-//    MatriceInt result = Scanning::radialMask(radius);
-
-//    bool collision = false;
-
-//    for (int i = 1; i < radius*2; i++)
-//    {
-//        for(int j = 1; j < radius*2; j++)
-//        {
-//            if( result[i][j] == 1 && (posX+i != posX+radius || posY+j != posY+radius ))
-//            {
-//                //Output::Inst()->kdebug("collision checked at posX+i %i and posY+j %i", posX+i, posY+j);
-//                collision = GridMovement::checkCollision(posX+i, posY+j);
-
-//                if (collision)
-//                {
-//                    lua_pushboolean(L, collision);
-//                    return 1;
-//                }
-//            }
-//        }
-//    }
-
-//    lua_pushboolean(L, collision);
-
-	return 0;
-}
-
-int AgentLuaInterface::l_getMaskRadial(lua_State *L)
-{
-//    int radius = lua_tonumber(L, -3);
-//    int posX = lua_tonumber(L, -2) - radius;
-//    int posY = lua_tonumber(L, -1) - radius;
-//    //Output::Inst()->kprintf("radius %d, posX %d, posY %d", radius, posX, posY);
-//    MatriceInt result = Scanning::radialMask(radius);
-
-//    lua_newtable(L);
-//    int index = 0;
-
-//    for (int i = 1; i < radius*2; i++)
-//    {
-//        for(int j = 1; j < radius*2; j++)
-//        {
-//            if( result[i][j] == 1)
-//                //(posX + i != posX+radius || posY + j != posY+radius ))
-//            {
-//                index++;
-
-//                lua_pushnumber(L, index);
-//                lua_newtable(L);
-//                lua_pushstring(L,"posX");
-//                lua_pushnumber(L, posX + i);
-//                lua_settable(L, -3);
-//                lua_pushstring(L,"posY");
-//                lua_pushnumber(L, posY + j);
-//                lua_settable(L, -3);
-//                lua_settable(L, -3);
-//                /*if(result[i][j] == 1 && (posX +i != posX+radius || posY + j != posY+radius))
-//            /{
-//                rgba color;
-//                color.blue = 255;
-//                color.green = 0;
-//                color.red = 0;
-//                MapHandler::setPixelInfo(posX+i, posY+j, color);
-//            }
-//            else
-//            {
-//                rgba color2;
-//                color2.blue = 0;
-//                color2.green = 0;
-//                color2.red = 255;
-//                MapHandler::setPixelInfo(posX+i, posY+j, color2);
-//            }*/
-//            }
-//        }
-//    }
-	return 0;
-}
-
-int AgentLuaInterface::l_initializeGrid(lua_State *L)
-{
-	//GridMovement::initGrid(lua_tonumber(L, -1));
+    //    lua_pushboolean(L, changed);
 
     return 0;
 }
 
+int AgentLuaInterface::l_radialMapColorScan(lua_State* L)
+{
+    //    int radius = lua_tonumber(L, -6);
+    //    int posX = lua_tonumber(L, -5) - radius;
+    //    int posY = lua_tonumber(L, -4) - radius;
+    //    int r = lua_tonumber(L, -3);
+    //    int g = lua_tonumber(L, -2);
+    //    int b = lua_tonumber(L, -1);
+    //    //Output::Inst()->kprintf("radius %d, posX %d, posY %d", radius, posX, posY);
+
+    //    int count = 0;
+
+    //    MatriceInt result = Scanning::radialMask(radius);
+
+    //    lua_newtable(L);
+    //    int index = 0;
+
+    //    for (int i = 1; i < radius*2; i++)
+    //    {
+    //        for(int j = 1; j < radius*2; j++)
+    //        {
+    //            if( result[i][j] == 1)
+    //                //(posX + i != posX+radius || posY + j != posY+radius ))
+    //            {
+
+    //                rgba color = MapHandler::getPixelInfo(posX+i, posY+j);
+
+    //                if(r == color.red && g == color.green && b == color.blue)
+    //                {
+    // //                   Output::Inst()->kprintf("%i,%i,%i", color.red, color.green, color.blue);
+    //                    count++;
+    //                    index++;
+
+    //                    lua_pushnumber(L, index);
+    //                    lua_newtable(L);
+    //                    lua_pushstring(L,"posX");
+    //                    lua_pushnumber(L, posX+i);
+    //                    lua_settable(L, -3);
+    //                    lua_pushstring(L, "posY");
+    //                    lua_pushnumber(L, posY+j);
+    //                    lua_settable(L, -3);
+    //                    lua_pushstring(L,"R");
+    //                    lua_pushnumber(L, color.red);
+    //                    lua_settable(L, -3);
+    //                    lua_pushstring(L,"G");
+    //                    lua_pushnumber(L, color.green);
+    //                    lua_settable(L, -3);
+    //                    lua_pushstring(L,"B");
+    //                    lua_pushnumber(L, color.blue);
+    //                    lua_settable(L, -3);
+    //                    lua_settable(L, -3);
+    //                }
+    //            }
+    //        }
+    //    }
+
+    //    if(count == 0)
+    //    {
+    //        lua_pushnil(L);
+    //    }
+    return 0;
+}
+
+int AgentLuaInterface::l_radialMapScan(lua_State* L)
+{
+    //    int radius = lua_tonumber(L, -3);
+    //    int posX = lua_tonumber(L, -2) - radius;
+    //    int posY = lua_tonumber(L, -1) - radius;
+    //    //Output::Inst()->kprintf("radius %d, posX %d, posY %d", radius, posX, posY);
+    //    MatriceInt result = Scanning::radialMask(radius);
+
+    //    lua_newtable(L);
+    //    int index = 0;
+
+    //    for (int i = 1; i < radius*2; i++)
+    //    {
+    //        for(int j = 1; j < radius*2; j++)
+    //        {
+    //            if( result[i][j] == 1)
+    //                //(posX + i != posX+radius || posY + j != posY+radius ))
+    //            {
+    //                index++;
+
+    //                rgba color = MapHandler::getPixelInfo(posX+i, posY+j);
+
+    //                lua_pushnumber(L, index);
+    //                lua_newtable(L);
+    //                lua_pushstring(L,"posX");
+    //                lua_pushnumber(L, posX+i);
+    //                lua_settable(L, -3);
+    //                lua_pushstring(L, "posY");
+    //                lua_pushnumber(L, posY+j);
+    //                lua_settable(L, -3);
+    //                lua_pushstring(L,"R");
+    //                lua_pushnumber(L, color.red);
+    //                lua_settable(L, -3);
+    //                lua_pushstring(L,"G");
+    //                lua_pushnumber(L, color.green);
+    //                lua_settable(L, -3);
+    //                lua_pushstring(L,"B");
+    //                lua_pushnumber(L, color.blue);
+    //                lua_settable(L, -3);
+    //                lua_settable(L, -3);
+
+    //            }
+    //        }
+    //    }
+    return 0;
+}
+
+int AgentLuaInterface::l_checkPosition(lua_State* L)
+{
+    //    int posX = 0;
+    //    int posY = 0;
+
+    //    posX = lua_tonumber(L, -2) *GridMovement::getScale()+.5;
+    //    posY = lua_tonumber(L, -1) *GridMovement::getScale()+.5;
+
+    //    pList agentList = GridMovement::checkPosition(posX, posY);
+
+    //    lua_newtable(L);
+
+    //    int i = 1;
+    //    for(pList::iterator it = agentList.begin(); it != agentList.end(); ++it,i++)
+    //    {
+    //        lua_pushnumber(L, i);
+    //        lua_pushnumber(L, *it);
+    //        lua_settable(L, -3);
+    //    }
+
+    return 0;
+}
+
+int AgentLuaInterface::l_checkCollisionRadial(lua_State* L)
+{
+    //    int radius = lua_tonumber(L, -1);
+    //    int posX = lua_tonumber(L, -3) - radius;
+    //    int posY = lua_tonumber(L, -2) - radius;
+
+    //    //Output::Inst()->kdebug("collision checked at posX+i %i and posY+");
+    //    MatriceInt result = Scanning::radialMask(radius);
+
+    //    bool collision = false;
+
+    //    for (int i = 1; i < radius*2; i++)
+    //    {
+    //        for(int j = 1; j < radius*2; j++)
+    //        {
+    //            if( result[i][j] == 1 && (posX+i != posX+radius || posY+j != posY+radius ))
+    //            {
+    //                //Output::Inst()->kdebug("collision checked at posX+i %i and posY+j %i", posX+i, posY+j);
+    //                collision = GridMovement::checkCollision(posX+i, posY+j);
+
+    //                if (collision)
+    //                {
+    //                    lua_pushboolean(L, collision);
+    //                    return 1;
+    //                }
+    //            }
+    //        }
+    //    }
+
+    //    lua_pushboolean(L, collision);
+
+    return 0;
+}
+
+int AgentLuaInterface::l_getMaskRadial(lua_State* L)
+{
+    //    int radius = lua_tonumber(L, -3);
+    //    int posX = lua_tonumber(L, -2) - radius;
+    //    int posY = lua_tonumber(L, -1) - radius;
+    //    //Output::Inst()->kprintf("radius %d, posX %d, posY %d", radius, posX, posY);
+    //    MatriceInt result = Scanning::radialMask(radius);
+
+    //    lua_newtable(L);
+    //    int index = 0;
+
+    //    for (int i = 1; i < radius*2; i++)
+    //    {
+    //        for(int j = 1; j < radius*2; j++)
+    //        {
+    //            if( result[i][j] == 1)
+    //                //(posX + i != posX+radius || posY + j != posY+radius ))
+    //            {
+    //                index++;
+
+    //                lua_pushnumber(L, index);
+    //                lua_newtable(L);
+    //                lua_pushstring(L,"posX");
+    //                lua_pushnumber(L, posX + i);
+    //                lua_settable(L, -3);
+    //                lua_pushstring(L,"posY");
+    //                lua_pushnumber(L, posY + j);
+    //                lua_settable(L, -3);
+    //                lua_settable(L, -3);
+    //                /*if(result[i][j] == 1 && (posX +i != posX+radius || posY + j != posY+radius))
+    //            /{
+    //                rgba color;
+    //                color.blue = 255;
+    //                color.green = 0;
+    //                color.red = 0;
+    //                MapHandler::setPixelInfo(posX+i, posY+j, color);
+    //            }
+    //            else
+    //            {
+    //                rgba color2;
+    //                color2.blue = 0;
+    //                color2.green = 0;
+    //                color2.red = 255;
+    //                MapHandler::setPixelInfo(posX+i, posY+j, color2);
+    //            }*/
+    //            }
+    //        }
+    //    }
+    return 0;
+}
+
+//int AgentLuaInterface::l_initializeGrid(lua_State* L)
+//{
+//    //GridMovement::initGrid(lua_tonumber(L, -1));
+
+//    return 0;
+//}
+
 //Shared values.
 
-int AgentLuaInterface::l_addSharedNumber(lua_State *L)
+int AgentLuaInterface::l_addSharedNumber(lua_State* L)
 {
     std::string key = lua_tostring(L, -2);
     double value = lua_tonumber(L, -1);
@@ -976,25 +940,22 @@ int AgentLuaInterface::l_addSharedNumber(lua_State *L)
     return 0;
 }
 
-int AgentLuaInterface::l_getSharedNumber(lua_State *L)
+int AgentLuaInterface::l_getSharedNumber(lua_State* L)
 {
     std::string key = lua_tostring(L, -1);
     //Output::Inst()->kprintf(key.c_str());
 
     double value = Shared::getNumber(key);
 
-    if (value == LLONG_MIN)
-    {
+    if (value == LLONG_MIN) {
         lua_pushstring(L, "no_value");
-    } else
-    {
+    } else {
         lua_pushnumber(L, value);
     }
     return 1;
-
 }
 
-int AgentLuaInterface::l_addSharedString(lua_State *L)
+int AgentLuaInterface::l_addSharedString(lua_State* L)
 {
     std::string key = lua_tostring(L, -2);
     std::string value = lua_tostring(L, -1);
@@ -1004,7 +965,7 @@ int AgentLuaInterface::l_addSharedString(lua_State *L)
     return 0;
 }
 
-int AgentLuaInterface::l_getSharedString(lua_State *L)
+int AgentLuaInterface::l_getSharedString(lua_State* L)
 {
     std::string key = lua_tostring(L, -1);
     std::string value = Shared::getString(key);
@@ -1016,15 +977,15 @@ int AgentLuaInterface::l_getSharedString(lua_State *L)
 
 //Simulation core.
 
-int AgentLuaInterface::l_getAgentPath(lua_State *L)
+int AgentLuaInterface::l_getAgentPath(lua_State* L)
 {
-    lua_pushstring(L,Output::AgentPath.c_str());
-    lua_pushstring(L,Output::AgentFile.c_str());
+    //lua_pushstring(L, Output::AgentPath.c_str());
+    //lua_pushstring(L, Output::AgentFile.c_str());//TODO find somewhere to stor the string of the agent paths.
 
     return 2;
 }
 
-int AgentLuaInterface::l_addAgent(lua_State *L)
+int AgentLuaInterface::l_addAgent(lua_State* L)
 {
     double posX = lua_tonumber(L, -5);
     double posY = lua_tonumber(L, -4);
@@ -1039,7 +1000,7 @@ int AgentLuaInterface::l_addAgent(lua_State *L)
     return 1;
 }
 
-int AgentLuaInterface::l_removeAgent(lua_State *L)
+int AgentLuaInterface::l_removeAgent(lua_State* L)
 {
 
     int id = lua_tonumber(L, -1);
@@ -1049,22 +1010,21 @@ int AgentLuaInterface::l_removeAgent(lua_State *L)
     return 1;
 }
 
-
-int AgentLuaInterface::l_emitEvent(lua_State *L)
+int AgentLuaInterface::l_emitEvent(lua_State* L)
 {
     std::unique_ptr<EventQueue::eEvent>
-            sendEvent(new EventQueue::eEvent());
+        sendEvent(new EventQueue::eEvent());
 
-	sendEvent->originID = lua_tonumber(L, -9);
-	sendEvent->posX	= lua_tonumber(L, -8);
-	sendEvent->posY = lua_tonumber(L, -7);
-	sendEvent->propagationSpeed = lua_tonumber(L,-6);
-    sendEvent->activationTime = Phys::getCTime()+1;
+    sendEvent->originID = lua_tonumber(L, -9);
+    sendEvent->posX = lua_tonumber(L, -8);
+    sendEvent->posY = lua_tonumber(L, -7);
+    sendEvent->propagationSpeed = lua_tonumber(L, -6);
+    sendEvent->activationTime = Phys::getCTime() + 1;
     sendEvent->id = ID::generateEventID();
-	sendEvent->desc = lua_tostring(L, -5);
-	sendEvent->targetID = lua_tonumber(L, -4);
-	sendEvent->targetGroup = lua_tonumber(L, -3);
-	sendEvent->luatable = lua_tostring(L, -2);
+    sendEvent->desc = lua_tostring(L, -5);
+    sendEvent->targetID = lua_tonumber(L, -4);
+    sendEvent->targetGroup = lua_tonumber(L, -3);
+    sendEvent->luatable = lua_tostring(L, -2);
     sendEvent->posZ = lua_tonumber(L, -1);
 
     //Output::Inst()->kprintf("%f", sendEvent->propagationSpeed);
@@ -1073,13 +1033,13 @@ int AgentLuaInterface::l_emitEvent(lua_State *L)
     return 0;
 }
 
-int AgentLuaInterface::l_stopSimulation(lua_State *L)
+int AgentLuaInterface::l_stopSimulation(lua_State* L)
 {
-    Output::RunSimulation.store(false);
+    Interfacer::RunSimulation.store(false);
     return 0;
 }
 
-int AgentLuaInterface::l_addGroup(lua_State *L)
+int AgentLuaInterface::l_addGroup(lua_State* L)
 {
     int id = lua_tonumber(L, -1);
     int group = lua_tonumber(L, -2);
@@ -1087,26 +1047,24 @@ int AgentLuaInterface::l_addGroup(lua_State *L)
     bool success = false;
 
     auto autonPtr = Interfacer::getAgentPtr(id);
-    if (autonPtr != NULL)
-    {
+    if (autonPtr != NULL) {
         autonPtr->addGroup(group);
         success = true;
     }
 
-    lua_pushboolean(L,success);
+    lua_pushboolean(L, success);
 
     return 0;
 }
 
-int AgentLuaInterface::l_removeGroup(lua_State *L)
+int AgentLuaInterface::l_removeGroup(lua_State* L)
 {
     int id = lua_tonumber(L, -2);
     int group = lua_tonumber(L, -1);
     bool removed = false;
 
     auto autonPtr = Interfacer::getAgentPtr(id);
-    if (autonPtr != NULL)
-    {
+    if (autonPtr != NULL) {
         removed = autonPtr->removeGroup(group);
     }
 
@@ -1114,29 +1072,25 @@ int AgentLuaInterface::l_removeGroup(lua_State *L)
     return 1;
 }
 
-int AgentLuaInterface::l_setMacroFactorMultipler(lua_State *L)
+int AgentLuaInterface::l_setMacroFactorMultipler(lua_State* L)
 {
     int id = lua_tonumber(L, -2);
     int macroFactorMultiple = lua_tonumber(L, -1);
 
     auto autonPtr = Interfacer::getAgentPtr(id);
 
-    if(autonPtr != NULL)
+    if (autonPtr != NULL)
         autonPtr->setMacroFactorMultipler(macroFactorMultiple);
 
     return 0;
-
 }
 
 //Emergency brake -- do not pull --!
-int AgentLuaInterface::luapanic(lua_State *L)
+int AgentLuaInterface::luapanic(lua_State* L)
 {
     std::string str = lua_tostring(L, 1);
-    Output::Inst()->kprintf("<b>PANIC,%s</b></>", str.c_str());
-    Output::KillSimulation.store(true);
+    Outbound::Inst()->simOutput("<b>PANIC,%s</b></>", str.c_str());
+    Interfacer::KillSimulation.store(true);
 
     return 0;
 }
-
-
-

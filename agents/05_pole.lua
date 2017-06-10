@@ -84,7 +84,7 @@ function ProcessEvent(data)
 
 	local Ae = 1/(1+angle * A)
 
-	--say(angle)
+	--agentSay(angle)
 
 	return Ae, 0.2
 

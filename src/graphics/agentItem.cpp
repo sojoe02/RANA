@@ -21,44 +21,45 @@
 //--end_license--
 #include "agentItem.h"
 
-
 static const QPointF points[3] = {
-    QPointF(0, 1.25),
-    QPointF(0, -1.25),
-    QPointF(4.5, 0),
+	QPointF(0, 1.25),
+	QPointF(0, -1.25),
+	QPointF(4.5, 0),
 };
 
-
-agentItem::agentItem(QString id, rgba color, double angle) :
-    id(id), pencolor(Qt::white), showid(true), angle(angle), angleShow(true)
+agentItem::agentItem(QString id, rgba color, double angle)
+	:
+	id(id), pencolor(Qt::white), showid(true), angle(angle), angleShow(true)
 {
-    pencolor = QColor(color.red, color.green, color.blue, color.alpha);
+  pencolor = QColor(color.red, color.green, color.blue, color.alpha);
 
 }
 
-QRectF agentItem::boundingRect() const
+QRectF
+agentItem::boundingRect() const
 {
-    //Still needs to be implemented properly so it really depicts size of
-    // graphical representation of the agent.
-    //qreal penWidth = 1;
-    return QRectF(0,0,10,10);
+  //Still needs to be implemented properly so it really depicts size of
+  // graphical representation of the agent.
+  //qreal penWidth = 1;
+  return QRectF(0, 0, 10, 10);
 }
 
-void agentItem::paint(QPainter *painter,const QStyleOptionGraphicsItem *option,QWidget *widget)
+void
+agentItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    QPen pen (pencolor, 1);
-    painter->setPen(pen);
+  QPen pen(pencolor, 1);
+  painter->setPen(pen);
 //	painter->fillPath();
 
-    //painter->drawRect(rect);
-    if(showid)
-    {
-        QRectF rect = boundingRect();
-        painter->setFont(QFont("Arial", 4));
-        painter->drawText(rect, Qt::AlignCenter, id);
-    }
+  //painter->drawRect(rect);
+  if(showid)
+	{
+	  QRectF rect = boundingRect();
+	  painter->setFont(QFont("Arial", 4));
+	  painter->drawText(rect, Qt::AlignCenter, id);
+	}
 
-    painter->drawPoint(0,0);
+  painter->drawPoint(0, 0);
 /*
     if(angleShow)
     {
@@ -78,31 +79,36 @@ void agentItem::paint(QPainter *painter,const QStyleOptionGraphicsItem *option,Q
 */
 }
 
-void agentItem::setColor(rgba color)
+void
+agentItem::setColor(rgba color)
 {
-    pencolor = QColor(color.red, color.green, color.blue, color.alpha);
-    this->update();
+  pencolor = QColor(color.red, color.green, color.blue, color.alpha);
+  this->update();
 }
 
-void agentItem::showID(bool show)
+void
+agentItem::showID(bool show)
 {
-    this->showid = show;
+  this->showid = show;
 }
 
-void agentItem::setAngle(double angle)
+void
+agentItem::setAngle(double angle)
 {
-    this->angle = angle;
-    this->setRotation(angle);
+  this->angle = angle;
+  this->setRotation(angle);
 }
 
-double agentItem::getAngle()
+double
+agentItem::getAngle()
 {
-    return angle;
+  return angle;
 }
 
-void agentItem::showAngle(bool angleShow)
+void
+agentItem::showAngle(bool angleShow)
 {
-    this->angleShow = angleShow;
+  this->angleShow = angleShow;
 
 }
 

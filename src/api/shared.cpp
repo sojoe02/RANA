@@ -1,7 +1,7 @@
 //--begin_license--
 //
 //Copyright 	2013 	Søren Vissing Jørgensen.
-//			2014	Søren Vissing Jørgensen, Center for Bio-Robotics, SDU, MMMI.  
+//			2014	Søren Vissing Jørgensen, Center for Bio-Robotics, SDU, MMMI.
 //
 //This file is part of RANA.
 //
@@ -22,8 +22,8 @@
 #include <climits>
 #include <iostream>
 
-#include "src/output.h"
-#include "src/api/shared.h"
+#include "api/shared.h"
+#include "communication/outbound.h"
 
 std::unordered_map<std::string, double> Shared::sharedNumbers;
 std::unordered_map<std::string, std::string> Shared::sharedStrings;
@@ -36,78 +36,77 @@ std::shared_timed_mutex Shared::stringMutex;
 
 void Shared::initShared()
 {
-	//if (sharedNumbers != NULL)
-	//{
-	sharedNumbers.clear();
-	sharedStrings.clear();
-	//sharedNumbers;
-	//	delete sharedStrings;
-	//} else
-	//{
-	//	sharedNumbers = new std::unordered_map<std::string, double>();
-	//	sharedStrings = new std::unordered_map<std::string, std::string()>;
-	//}
+    //if (sharedNumbers != NULL)
+    //{
+    sharedNumbers.clear();
+    sharedStrings.clear();
+    //sharedNumbers;
+    //	delete sharedStrings;
+    //} else
+    //{
+    //	sharedNumbers = new std::unordered_map<std::string, double>();
+    //	sharedStrings = new std::unordered_map<std::string, std::string()>;
+    //}
 }
 
 void Shared::addNumber(std::string key, double value)
 {
     std::lock_guard<std::shared_timed_mutex>
-            writerLock(numberMutex);
+        writerLock(numberMutex);
 
     sharedNumbers[key] = value;
     /*if(sharedNumbers.find(key) == sharedNumbers.end())
-		sharedNumbers.insert(std::pair<std::string, double>(key, value));
-	else
-	{
-		sharedNumbers.erase(key);
-		sharedNumbers.insert(std::pair<std::string, double>(key, value));
-    }*/
-
+	  sharedNumbers.insert(std::pair<std::string, double>(key, value));
+  else
+  {
+	  sharedNumbers.erase(key);
+	  sharedNumbers.insert(std::pair<std::string, double>(key, value));
+  }*/
 }
 
-double Shared::getNumber(std::string key)
+double
+Shared::getNumber(std::string key)
 {
     std::shared_lock<std::shared_timed_mutex>
-            readerLock(numberMutex);
+        readerLock(numberMutex);
 
-	auto sharedItr = sharedNumbers.find(key);
+    auto sharedItr = sharedNumbers.find(key);
 
-	if(sharedItr != sharedNumbers.end())
-	{
+    if (sharedItr != sharedNumbers.end()) {
         return sharedItr->second;
 
-	} else return LLONG_MIN;
+    } else
+        return LLONG_MIN;
 }
 
 void Shared::addString(std::string key, std::string value)
 {
 
-
     std::lock_guard<std::shared_timed_mutex>
-            writerLock(stringMutex);
+        writerLock(stringMutex);
 
     sharedStrings[key] = value;
     //Output::Inst()->kprintf(value.c_str());
 
     /*if(sharedStrings.find(key) == sharedStrings.end())
-		sharedStrings.insert(std::pair<std::string, std::string>(key, value));
-	else
-	{
-		sharedStrings.erase(key);
-		sharedStrings.insert(std::pair<std::string, std::string>(key, value));
-    }*/
+	  sharedStrings.insert(std::pair<std::string, std::string>(key, value));
+  else
+  {
+	  sharedStrings.erase(key);
+	  sharedStrings.insert(std::pair<std::string, std::string>(key, value));
+  }*/
 }
 
-std::string Shared::getString(std::string key)
+std::string
+Shared::getString(std::string key)
 {
     std::shared_lock<std::shared_timed_mutex>
-            writerLock(stringMutex);
+        writerLock(stringMutex);
 
-	auto sharedItr = sharedStrings.find(key);
+    auto sharedItr = sharedStrings.find(key);
 
-	if(sharedItr != sharedStrings.end())
-	{
-		return sharedItr->second;
-	} else return "";
+    if (sharedItr != sharedStrings.end()) {
+        return sharedItr->second;
+    } else
+        return "";
 }
-

@@ -79,7 +79,7 @@ function takeStep()
 
 	--if not joined then 
 	--	Agent.joinGroup(group)
-	--	say("Agent #"..ID.." joined a group "..group )
+	--	agentSay("Agent #"..ID.." joined a group "..group )
 	--	joined = true
 	--end
 

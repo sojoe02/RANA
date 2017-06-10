@@ -63,7 +63,7 @@ function ranaLibMovement.byAngle(angle_var)
 	local y =PositionY + radius * math.sin(angle) 
 
 	--say(y)
---	say(x)
+--	agentSay(x)
 
 	ranaLibMovement.to{x=x,y=y}
 

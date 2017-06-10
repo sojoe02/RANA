@@ -31,90 +31,118 @@
 #include <condition_variable>
 #include <future>
 
-#include "src/simulationcore/eventqueue.h"
-#include "src/simulationcore/sector.h"
-#include "src/utility.h"
+#include "simulationcore/eventqueue.h"
+#include "simulationcore/sector.h"
+#include "utility.h"
 
 class Sector;
-class Supervisor
-{
-public:
-    Supervisor();
-    ~Supervisor();
 
-	void generateMap(double width, double height, int resolution,
-					 double timeResolution, double macroResolution);
+class Supervisor {
+ public:
+  Supervisor();
 
+  ~Supervisor();
 
-	void populateSystem(int listenerSize, int screamerSize,
-						int LUASize, std::string filename);
+  void
+  generateMap(double width, double height, int resolution, double timeResolution, double macroResolution);
 
+  void
+  populateSystem(int listenerSize, int screamerSize, int LUASize, std::string filename);
 
-	void microStep(unsigned long long tmu);
-	void macroStep(unsigned long long tmu);
-	unsigned long long getNextMicroTmu();
+  void
+  microStep(unsigned long long tmu);
 
-	void receiveEEventPtr(std::unique_ptr<EventQueue::eEvent> eEvent);
+  void
+  macroStep(unsigned long long tmu);
 
-    void decrementEEventCounter(unsigned long long id){eventQueue->decrementEeventCounter(id);}
-    void incrementEEventCounter(unsigned long long id){eventQueue->incrementEeventCounter(id);}
+  unsigned long long
+  getNextMicroTmu();
 
-    void receiveIEventPtr(std::unique_ptr<EventQueue::iEvent> ievent);
-	void addExternalEventPtr(EventQueue::eEvent *eEvent);
+  void
+  receiveEEventPtr(std::unique_ptr<EventQueue::eEvent> eEvent);
 
-	void printStatus();
+  void
+  decrementEEventCounter(unsigned long long id)
+  { eventQueue->decrementEeventCounter(id); }
 
-	std::list<agentInfo> retrievePopPos();
+  void
+  incrementEEventCounter(unsigned long long id)
+  { eventQueue->incrementEeventCounter(id); }
 
-	void saveExternalEvents(std::string filename);
+  void
+  receiveIEventPtr(std::unique_ptr<EventQueue::iEvent> ievent);
 
-    int addAgent(double x, double y, double z, std::string path, std::string filename, std::string type);
-	bool removeAgent(int ID);
+  void
+  addExternalEventPtr(EventQueue::eEvent *eEvent);
 
-	void simDone();
+  void
+  printStatus();
 
-    std::set<int> removedIDs;
+  std::list<agentInfo>
+  retrievePopPos();
 
-    void setSimulationType(int numberOfAgents);
+  void
+  saveExternalEvents(std::string filename);
 
-private:
+  int
+  addAgent(double x, double y, double z, std::string path, std::string filename, std::string type);
 
-    std::vector<Sector*> sectors;
-    std::vector<std::thread*> threads;
+  bool
+  removeAgent(int ID);
 
-    std::vector<Sector*>::iterator itNest;
-	//sector index to keep track of which sector the next auton should be added at:
-	int sectorIndex;
+  void
+  simDone();
 
-	//functions for the different phases in a microstep:
-	//list to hold events generated each step.
-	std::list<EventQueue::eEvent*> stepEvents;
+  std::set<int> removedIDs;
 
-	void excecuteEvents();
-	void querysectors();
-	double timeResolution;
-	double macroResolution;
+  void
+  setSimulationType(int numberOfAgents);
 
-	int autonAmount;
-    int sectorAmount;
-    std::string agentFilename;
-	double areaX;
-	double areaY;
+ private:
 
-	EventQueue *eventQueue;
+  std::vector<Sector *> sectors;
+  std::vector<std::thread *> threads;
 
-	unsigned long long eEventInitAmount;
-	unsigned long long responseAmount;
-	unsigned long long externalDistroAmount;
-	unsigned long long tmu;
+  std::vector<Sector *>::iterator itNest;
+  //sector index to keep track of which sector the next auton should be added at:
+  int sectorIndex;
 
-    static void runStepPhase(Sector *sector);
-    static std::condition_variable CvStepStart;
-    static std::condition_variable CvStepDone;
-    static std::mutex mutexStep;
-    static std::mutex mutexStepDone;
-    static int task;
+  //functions for the different phases in a microstep:
+  //list to hold events generated each step.
+  std::list<EventQueue::eEvent *> stepEvents;
 
-    int simulationType;
+  void
+  excecuteEvents();
+
+  void
+  querysectors();
+
+  double timeResolution;
+  double macroResolution;
+
+  int autonAmount;
+  int sectorAmount;
+  std::string agentFilename;
+  double areaX;
+  double areaY;
+
+  EventQueue *eventQueue;
+
+  unsigned long long eEventInitAmount;
+  unsigned long long responseAmount;
+  unsigned long long externalDistroAmount;
+  unsigned long long tmu;
+
+  static void
+  runStepPhase(Sector *sector);
+
+  static std::condition_variable CvStepStart;
+  static std::condition_variable CvStepDone;
+  static std::mutex mutexStep;
+  static std::mutex mutexStepDone;
+  static int task;
+
+  int simulationType;
 };
+
 #endif // SUPERVISOR_H

@@ -1,7 +1,7 @@
 //--begin_license--
 //
 //Copyright 	2013 	Søren Vissing Jørgensen.
-//			2014	Søren Vissing Jørgensen, Center for Bio-Robotics, SDU, MMMI.  
+//			2014	Søren Vissing Jørgensen, Center for Bio-Robotics, SDU, MMMI.
 //
 //This file is part of RANA.
 //
@@ -20,23 +20,24 @@
 //
 //--end_license--
 
-#include <string>
-#include <sstream>
 #include <set>
+#include <sstream>
+#include <string>
 
+#include <algorithm>
+#include <future>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <algorithm>
-#include <future>
 
-#include "src/output.h"
-#include "src/utility.h"
-#include "src/api/phys.h"
-#include "src/simulationcore/supervisor.h"
+#include "api/phys.h"
+#include "communication/outbound.h"
+#include "simulationcore/eventqueue.h"
+#include "simulationcore/supervisor.h"
+#include "utility.h"
 
-#define TASK_STEP 	300
-#define TASK_STOP	400
+#define TASK_STEP 300
+#define TASK_STOP 400
 
 std::condition_variable Supervisor::CvStepStart;
 std::condition_variable Supervisor::CvStepDone;
@@ -45,10 +46,14 @@ std::mutex Supervisor::mutexStepDone;
 int Supervisor::task;
 
 Supervisor::Supervisor()
-    :sectorIndex(0), sectorAmount(0) ,eEventInitAmount(0), responseAmount(0),
-      externalDistroAmount(0), tmu(0)
+    : sectorIndex(0)
+    , sectorAmount(0)
+    , eEventInitAmount(0)
+    , responseAmount(0)
+    , externalDistroAmount(0)
+    , tmu(0)
 {
-    eventQueue = new EventQueue;
+    eventQueue = new EventQueue();
     srand(time(NULL));
 }
 
@@ -56,17 +61,14 @@ Supervisor::~Supervisor()
 {
     delete eventQueue;
 
-    for(const auto &s : sectors)
-    {
+    for (const auto& s : sectors) {
         s->taskPromise.set_value(TASK_STOP);
     }
-    for(const auto &t : threads)
-    {
+    for (const auto& t : threads) {
         t->join();
     }
 
-    for(const auto &s : sectors)
-    {
+    for (const auto& s : sectors) {
         delete s;
     }
 }
@@ -95,21 +97,19 @@ void Supervisor::generateMap(double width, double height, int sectorAmount, doub
     areaX = width;
     areaY = height;
 
-    if(!sectors.empty())
-    {
+    if (!sectors.empty()) {
         sectors.clear();
     }
 
-    for(int i=0; i<sectorAmount; i++)
-    {
+    for (int i = 0; i < sectorAmount; i++) {
         std::string id;
         std::stringstream ss;
         ss << i;
         id.append(ss.str());
 
-        Sector *nest = new Sector(0,0,width,height,this,i);
+        Sector* nest = new Sector(0, 0, width, height, this, i);
 
-        std::thread *t = new std::thread(Supervisor::runStepPhase, nest);
+        std::thread* t = new std::thread(Supervisor::runStepPhase, nest);
         threads.push_back(t);
 
         sectors.push_back(nest);
@@ -127,12 +127,12 @@ void Supervisor::generateMap(double width, double height, int sectorAmount, doub
  * @param axlist x positions of all Lua autons
  */
 
-std::list<agentInfo> Supervisor::retrievePopPos()
+std::list<agentInfo>
+Supervisor::retrievePopPos()
 {
 
     std::list<agentInfo> agentinfo;
-    for(const auto &s : sectors)
-    {
+    for (const auto& s : sectors) {
         s->retrievePopPos(agentinfo);
     }
 
@@ -153,8 +153,7 @@ void Supervisor::populateSystem(int listenerSize, int screamerSize, int LUASize,
 {
     std::vector<int> LUAVector;
 
-    for(uint i = 0; i < sectors.size(); i++)
-    {
+    for (uint i = 0; i < sectors.size(); i++) {
         LUAVector.push_back(0);
     }
 
@@ -162,20 +161,18 @@ void Supervisor::populateSystem(int listenerSize, int screamerSize, int LUASize,
     agentFilename = filename;
 
     uint j = 0;
-    for(int i = 0; i<LUASize; i++, j++)
-    {
-        if(i % sectors.size() == 0) j = 0;
+    for (int i = 0; i < LUASize; i++, j++) {
+        if (i % sectors.size() == 0)
+            j = 0;
         LUAVector.at(j)++;
     }
     //Output::Inst()->kdebug("working here! %i, %i", LUAVector.size(), LUAVector.at(0));
     j = 0;
-    for(auto itr = LUAVector.begin(); itr != LUAVector.end(); ++itr, j++)
-    {
-        Sector *sector = sectors.at(j);
+    for (auto itr = LUAVector.begin(); itr != LUAVector.end(); ++itr, j++) {
+        Sector* sector = sectors.at(j);
         //Output::Inst()->kdebug("Working not here %i", *itr);
         sector->populate(*itr, filename, simulationType);
     }
-
 }
 
 /********************************************************
@@ -196,7 +193,6 @@ void Supervisor::receiveIEventPtr(std::unique_ptr<EventQueue::iEvent> ievent)
     eventQueue->insertIEvent(std::move(ievent));
 }
 
-
 /**
  * Takes a microstep.
  * During a microstep the autons can take act on internal events
@@ -208,66 +204,55 @@ void Supervisor::receiveIEventPtr(std::unique_ptr<EventQueue::iEvent> ievent)
 void Supervisor::microStep(unsigned long long tmu)
 {
     //Output::Inst()->kprintf("Taking microstep at %d \n", tmu);
-    if(eventQueue->eEventsAtTime(tmu))
-    {
+    if (eventQueue->eEventsAtTime(tmu)) {
         auto elist = eventQueue->getEEventList(tmu);
 
-        for(auto &e : elist) //; eListItr != elist.end(); ++eListItr)
+        for (auto& e : elist) //; eListItr != elist.end(); ++eListItr)
         {
             const EventQueue::eEvent* eEventPtr = eventQueue->addUsedEEvent(std::move(e));
 
-            for(const auto &s : sectors)
-            {
-               s->distroPhase(eEventPtr);
+            for (const auto& s : sectors) {
+                s->distroPhase(eEventPtr);
             }
         }
     }
 
-    if(eventQueue->iEventsAtTime(tmu))
-    {
+    if (eventQueue->iEventsAtTime(tmu)) {
         auto ilist = eventQueue->getIEventList(tmu);
 
-        if( simulationType == 0 ) //LUA agents
+        if (simulationType == 0) //LUA agents
         {
-            for(auto &e : ilist)
-            {
+            for (auto& e : ilist) {
                 //Output::Inst()->kprintf("origin id is %i", event->originID);
-                if (removedIDs.find(e->originID) == removedIDs.end())
-                {
+                if (removedIDs.find(e->originID) == removedIDs.end()) {
                     std::unique_ptr<EventQueue::iEvent> iEventPtr(std::move(e));
 
-                    AgentLuaInterface *luaAgent = (AgentLuaInterface*)iEventPtr->origin;
+                    AgentLuaInterface* luaAgent = (AgentLuaInterface*)iEventPtr->origin;
                     eventQueue->decrementEeventCounter(iEventPtr->event->id);
 
                     std::unique_ptr<EventQueue::eEvent> eEventPtr = luaAgent->handleEvent(std::move(iEventPtr));
 
-                    if(eEventPtr != NULL)
+                    if (eEventPtr != NULL)
                         eventQueue->insertEEvent(std::move(eEventPtr));
-
                 }
             }
-        }
-        else if( simulationType == 1 ) //CPP agents
+        } else if (simulationType == 1) //CPP agents
         {
-            for(auto &e : ilist)
-            {
+            for (auto& e : ilist) {
                 //Output::Inst()->kprintf("origin id is %i", event->originID);
-                if (removedIDs.find(e->originID) == removedIDs.end())
-                {
+                if (removedIDs.find(e->originID) == removedIDs.end()) {
                     std::unique_ptr<EventQueue::iEvent> iEventPtr(std::move(e));
 
-                    AgentInterface *cppAgent = (AgentInterface*)iEventPtr->origin;
+                    AgentInterface* cppAgent = (AgentInterface*)iEventPtr->origin;
                     eventQueue->decrementEeventCounter(iEventPtr->event->id);
 
                     std::unique_ptr<EventQueue::eEvent> eEventPtr = cppAgent->handleEvent(std::move(iEventPtr));
 
-                    if(eEventPtr != NULL)
+                    if (eEventPtr != NULL)
                         eventQueue->insertEEvent(std::move(eEventPtr));
                 }
             }
         }
-
-
     }
 
     eventQueue->legacyFront();
@@ -277,7 +262,8 @@ void Supervisor::microStep(unsigned long long tmu)
  * Returns next viable tmu
  * @see EventQueue::getNextTmu()
  */
-unsigned long long Supervisor::getNextMicroTmu()
+unsigned long long
+Supervisor::getNextMicroTmu()
 {
     //eventQueue->printATmus();
     return eventQueue->getNextTmu();
@@ -291,17 +277,14 @@ unsigned long long Supervisor::getNextMicroTmu()
 void Supervisor::macroStep(unsigned long long tmu)
 {
 
-    for(const auto &s : sectors)
-    {
+    for (const auto& s : sectors) {
         s->taskPromise.set_value(TASK_STEP);
     }
 
-    for(const auto &s : sectors)
-    {
+    for (const auto& s : sectors) {
         std::future<bool> stepDoneFuture = s->taskDonePromise.get_future();
         stepDoneFuture.wait();
         s->taskDonePromise = std::promise<bool>();
-
     }
 }
 
@@ -312,21 +295,17 @@ void Supervisor::macroStep(unsigned long long tmu)
  * @param macroResolution
  * @param time
  */
-void Supervisor::runStepPhase(Sector *sector)
+void Supervisor::runStepPhase(Sector* sector)
 {
-    while(true)
-    {
+    while (true) {
         std::future<int> stepFuture = sector->taskPromise.get_future();
         stepFuture.wait();
         int task = stepFuture.get();
         sector->taskPromise = std::promise<int>();
 
-        if(task == TASK_STOP)
-        {
+        if (task == TASK_STOP) {
             break;
-        }
-        else if(task == TASK_STEP)
-        {
+        } else if (task == TASK_STEP) {
             sector->takeStepPhase(Phys::getCTime());
         }
 
@@ -341,7 +320,7 @@ void Supervisor::runStepPhase(Sector *sector)
  */
 void Supervisor::printStatus()
 {
-    Output::Inst()->updateStatus(eventQueue->getISize(), eventQueue->getESize());
+    Outbound::Inst()->updateStatus(eventQueue->getISize(), eventQueue->getESize());
 }
 
 /**
@@ -350,13 +329,12 @@ void Supervisor::printStatus()
  */
 void Supervisor::saveExternalEvents(std::string filename)
 {
-    eventQueue->saveEEventData(filename, agentFilename,autonAmount,areaY,areaX);
+    eventQueue->saveEEventData(filename, agentFilename, autonAmount, areaY, areaX);
 }
 
 void Supervisor::simDone()
 {
-    for(const auto &s : sectors)
-    {
+    for (const auto& s : sectors) {
         s->simDone();
     }
 }
@@ -367,28 +345,25 @@ int Supervisor::addAgent(double x, double y, double z, std::string path, std::st
 
     sectorIndex++;
 
-    if(sectorIndex == (int)sectors.size())
-        sectorIndex = 0 ;
+    if (sectorIndex == (int)sectors.size())
+        sectorIndex = 0;
 
     nestItr += sectorIndex;
 
-    int id = (*nestItr)->addAgent(x, y, z, path+filename, type);
+    int id = (*nestItr)->addAgent(x, y, z, path + filename, type);
 
     eventQueue->addAgentInfo(id, filename);
 
     return id;
-
 }
 
 //The agent will be removed at the next macrostep:
 bool Supervisor::removeAgent(int arg_id)
 {
-    for(const auto &s : sectors)
-    {
+    for (const auto& s : sectors) {
         bool removed = s->removeAgent(arg_id);
 
-        if(removed)
-        {
+        if (removed) {
             removedIDs.insert(arg_id);
             return true;
         }
@@ -399,13 +374,9 @@ bool Supervisor::removeAgent(int arg_id)
 //  Choose whether to use LUA or CPP agents.
 void Supervisor::setSimulationType(int numberOfAgents)
 {
-    if( numberOfAgents < 5000 )
-    {
+    if (numberOfAgents < 5000) {
         simulationType = 0;
-    }
-    else
-    {
+    } else {
         simulationType = 1;
     }
 }
-

@@ -26,21 +26,30 @@
 #include "src/simulationcore/flowcontrol.h"
 
 class FlowControl;
-class Runner : public QObject
-{
-    Q_OBJECT
-public:
-    explicit Runner();
 
-signals:
+class Runner : public QObject {
+  Q_OBJECT
+ public:
+  explicit Runner();
 
-	void simulationDone();
+  signals
+	  :
 
-public slots:
+  void
 
-	void doWork(FlowControl *agentDomain, unsigned long long runTime);
+  simulationDone();
 
-private:
+ public
+  slots
+	  :
+
+  void
+  doWork(FlowControl
+  *agentDomain,
+  unsigned long long runTime
+  );
+
+ private:
 
 };
 

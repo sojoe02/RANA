@@ -65,7 +65,7 @@ function InitializeAgent()
 	--local forage_amount = Shared.getNumber("forage_amount")
 	local food_move_speed = Shared.getNumber("food_move_speed")
 
-	--say(food_move_speed)
+	--agentSay(food_move_speed)
 	
 	Forage.configure{search_radius=5, 
 					search_move_radius=20, 

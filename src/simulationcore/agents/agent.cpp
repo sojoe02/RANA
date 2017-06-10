@@ -24,127 +24,145 @@
 #include <iostream>
 #include <memory>
 
-#include "src/simulationcore/sector.h"
-#include "src/simulationcore/agents/agent.h"
+#include "simulationcore/sector.h"
+#include "agent.h"
 
 Agent::Agent(int ID, double posX, double posY, double posZ, Sector *sector)
-:ID(ID), macroFactorMultiple(1), posX(posX), posY(posY), posZ(posZ), sector(sector),
-  radius(0), mass(0), charge(0),angle(0)
+	: ID(ID), macroFactorMultiple(1), posX(posX), posY(posY), posZ(posZ), sector(sector),
+	  radius(0), mass(0), charge(0), angle(0)
 {
 }
 
-int Agent::getID(){
-	return ID;
+int
+Agent::getID()
+{
+  return ID;
 }
 
-std::string Agent::getDesc()
+std::string
+Agent::getDesc()
 {
-	return desc;
+  return desc;
 }
 
-double Agent::getPosX()
+double
+Agent::getPosX()
 {
-	return posX;
+  return posX;
 }
 
-double Agent::getPosY()
+double
+Agent::getPosY()
 {
-	return posY;
+  return posY;
 }
 
-double Agent::getPosZ()
+double
+Agent::getPosZ()
 {
-	return posZ;
+  return posZ;
 }
 
-void Agent::setColor(int r, int g, int b, int a)
+void
+Agent::setColor(int r, int g, int b, int a)
 {
-    std::lock_guard<std::mutex> guard(mutex);
-	color.red = r;
-	color.green = g;
-	color.blue = b;
-	color.alpha = a;
+  std::lock_guard<std::mutex> guard(mutex);
+  color.red = r;
+  color.green = g;
+  color.blue = b;
+  color.alpha = a;
 }
 
-agentInfo Agent::getAgentInfo()
+agentInfo
+Agent::getAgentInfo()
 {
-	agentInfo info;
+  agentInfo info;
 
-	info.color = color;
-	info.charge = charge;
-	info.mass = mass;
-	info.id = ID;
-	info.radius = radius;
+  info.color = color;
+  info.charge = charge;
+  info.mass = mass;
+  info.id = ID;
+  info.radius = radius;
 
-	info.x = posX;
-	info.y = posY;
-	info.z = posZ;
+  info.x = posX;
+  info.y = posY;
+  info.z = posZ;
 
-    info.angle = angle;
+  info.angle = angle;
 
-	return info;
+  return info;
 }
 
-bool Agent::removeGroup(int group)
+bool
+Agent::removeGroup(int group)
 {
-	auto itr = groups.find(group);
+  auto itr = groups.find(group);
 
-	if(itr != groups.end())
+  if(itr != groups.end())
 	{
-		groups.erase(itr);
-		return true;
+	  groups.erase(itr);
+	  return true;
 	}
+  return false;
+}
+
+void
+Agent::addGroup(int group)
+{
+  groups.insert(group);
+}
+
+bool
+Agent::checkGroup(int group)
+{
+  auto itr = groups.find(group);
+
+  if(itr != groups.end())
+	return true;
+  else
 	return false;
 }
 
-void Agent::addGroup(int group)
+int
+Agent::getMacroFactorMultipler()
 {
-	groups.insert(group);
+  return macroFactorMultiple;
 }
 
-bool Agent::checkGroup(int group)
+void
+Agent::setMacroFactorMultipler(int multipler)
 {
-	auto itr = groups.find(group);
-
-	if(itr != groups.end())
-		return true;
-	else return false;
+  macroFactorMultiple = multipler;
 }
 
-int Agent::getMacroFactorMultipler()
+void
+Agent::distroEEvent(std::unique_ptr<EventQueue::eEvent> event)
 {
-    return macroFactorMultiple;
+  //sector->eEventsOutbox.push_back(std::move(event));
 }
 
-void Agent::setMacroFactorMultipler(int multipler)
+std::unique_ptr<EventQueue::iEvent>
+Agent::processEvent(EventQueue::eEvent *event)
 {
-    macroFactorMultiple = multipler;
+  return NULL;
 }
 
-void Agent::distroEEvent(std::unique_ptr<EventQueue::eEvent> event)
+std::unique_ptr<EventQueue::eEvent>
+Agent::handleEvent(std::unique_ptr<EventQueue::iEvent> eventPtr)
 {
-    //sector->eEventsOutbox.push_back(std::move(event));
+  return NULL;
 }
 
-
-std::unique_ptr<EventQueue::iEvent> Agent::processEvent(EventQueue::eEvent* event)
+bool
+Agent::operator==(Agent &other) const
 {
-	return NULL;
+  return (this->ID == other.getID());
 }
 
-std::unique_ptr<EventQueue::eEvent> Agent::handleEvent(std::unique_ptr<EventQueue::iEvent> eventPtr)
+bool
+Agent::operator!=(Agent &other) const
 {
-    return NULL;
-}
-
-bool Agent::operator==(Agent &other) const
-{
-	return (this->ID == other.getID());
-}
-
-bool Agent::operator!=(Agent &other) const
-{
-	return !(*this == other);
+  return !(*this == other);
 }
 
 

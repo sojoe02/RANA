@@ -78,7 +78,7 @@ function CleanUp()
 		file = io.open("11_overall_stats_"..value1.speed..".csv", "w")
 		file:write("id("..value1.speed.."),".. "calls(" ..value1.speed..")\n")
 --
---	say(Utility.serializeTable(agent_table))
+--	agentSay(Utility.serializeTable(agent_table))
 
 		for key,value in pairs(ids) do
 			if agent_table[value].movement_speed == value1.speed then

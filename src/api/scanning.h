@@ -4,21 +4,25 @@
 #include <unordered_map>
 #include <mutex>
 
-#include "src/utility.h"
+#include "utility.h"
 
+class Scanning {
+ public:
+  Scanning();
 
-class Scanning
-{
-public:
-    Scanning();
-    static void reset();
-    static MatriceInt radialMask(int radius);
-    static void edgeMask();
+  static void
+  reset();
 
-private:
+  static MatriceInt
+  radialMask(int radius);
 
-    static std::unordered_map<int, MatriceInt> radialMasks;
-    static std::mutex mutex;
+  static void
+  edgeMask();
+
+ private:
+
+  static std::unordered_map<int, MatriceInt> radialMasks;
+  static std::mutex mutex;
 };
 
 #endif // SCANNING_H

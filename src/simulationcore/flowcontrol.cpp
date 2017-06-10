@@ -25,24 +25,30 @@
 #include <thread>
 #include <time.h>
 
+#include "ID.h"
+#include "api/gridmovement.h"
+#include "api/phys.h"
+#include "api/scanning.h"
+#include "api/shared.h"
+#include "communication/outbound.h"
 #include "flowcontrol.h"
 #include "interfacer.h"
-#include "../ID.h"
-#include "../api/phys.h"
-#include "../api/gridmovement.h"
-#include "../api/shared.h"
-#include "../output.h"
-#include "../api/scanning.h"
 
 using std::chrono::duration_cast;
 using std::chrono::milliseconds;
 using std::chrono::seconds;
 using std::chrono::steady_clock;
 
-FlowControl::FlowControl(Control *control)
-    :control(control), mapGenerated(false),masteragent(new Supervisor()), stop(false), fetchPositions(false),
-      agentAmount(0),luaFilename(""),storePositions(true),
-      positionFilename("_positionData.pos")
+FlowControl::FlowControl(Control* control)
+    : control(control)
+    , mapGenerated(false)
+    , supervisor(new Supervisor())
+    , stop(false)
+    , fetchPositions(false)
+    , agentAmount(0)
+    , luaFilename("")
+    , storePositions(true)
+    , positionFilename("_positionData.pos")
 {
     //Phys::seedMersenne();
     //file = std::ofstream(positionFilename.c_str(),std::ofstream::out| std::ofstream::trunc);
@@ -52,9 +58,10 @@ FlowControl::FlowControl(Control *control)
 FlowControl::~FlowControl()
 {
     //ID::resetSystem();
-    Phys::setCTime(0);
-    delete masteragent;
+    //Phys::setCTime(0);
+    delete supervisor;
 }
+
 /**
  * Checks if an environment has been generated.
  * @return bool false if there is not environment, true if there is.
@@ -69,8 +76,7 @@ bool FlowControl::checkEnvPresence()
  * Upon environment generation the sectors will be placed, autons will be
  * assigned to a sector and placed within it's parameters.
  */
-void FlowControl::generateEnvironment(double width, double height, int threads,
-                                      int agentAmount, double timeResolution, int macroFactor, std::string filename)
+void FlowControl::generateEnvironment(double width, double height, int threads, int agentAmount, double timeResolution, int macroFactor, std::string filename)
 {
 
     //srand(time(0));
@@ -80,18 +86,19 @@ void FlowControl::generateEnvironment(double width, double height, int threads,
 
     macroResolution = macroFactor * timeResolution;
 
-    Output::KillSimulation = false;
+    Interfacer::KillSimulation.store(false);
 
     ID::resetSystem();
-    Phys::setTimeRes(timeResolution);
-    Phys::setCTime(0);
-    Phys::setMacroFactor(macroFactor);
-    Phys::setEnvironment(width, height);
+    //TODO determine where we set the timeresolutions and current simulation time, during runtime. (who is the master of record?)
+    //Phys::setTimeRes(timeResolution);
+    //Phys::setCTime(0);
+    //Phys::setMacroFactor(macroFactor);
+    //Phys::setEnvironment(width, height);
     Shared::initShared();
-    Interfacer::initInterfacer(masteragent);
+    Interfacer::initInterfacer(supervisor);
     //Scanning::edgeMask();
 
-    masteragent->generateMap(width,height,threads,timeResolution, macroResolution);
+    supervisor->generateMap(width, height, threads, timeResolution, macroResolution);
 
     mapWidth = width;
     mapHeight = height;
@@ -99,7 +106,7 @@ void FlowControl::generateEnvironment(double width, double height, int threads,
     agentAmount = agentAmount;
     luaFilename = filename;
 
-    masteragent->populateSystem(0, 0, agentAmount, filename);
+    supervisor->populateSystem(0, 0, agentAmount, filename);
 
     retrievePopPos();
     mapGenerated = true;
@@ -109,12 +116,10 @@ void FlowControl::populateSystem()
 {
     //srand(time(0));
     //Phys::seedMersenne();
-    masteragent->populateSystem(0, 0, agentAmount, luaFilename);
+    supervisor->populateSystem(0, 0, agentAmount, luaFilename);
     retrievePopPos();
     mapGenerated = true;
-    Output::Inst()->enableRunBotton(true);
 }
-
 
 /**
  * Retrieval of auton positions.
@@ -124,32 +129,31 @@ void FlowControl::populateSystem()
  */
 void FlowControl::retrievePopPos()
 {
+    //  std::list<agentInfo> agentPositions = supervisor->retrievePopPos();
 
-    std::list<agentInfo> agentPositions = masteragent->retrievePopPos();
+    //  control->refreshPopPos(agentPositions);
 
-    control->refreshPopPos(agentPositions);
+    //  if(Output::RunSimulation.load())
+    //	{
+    //	  if(storePositions == true)
+    //		{
 
-    if(Output::RunSimulation.load())
-    {
-        if(storePositions == true )
-        {
+    //		  //std::ofstream file(positionFilename.c_str(),std::ofstream::out | std::ofstream::app);
+    //		  for(const auto &apos : agentPositions)
+    //			{
 
-            //std::ofstream file(positionFilename.c_str(),std::ofstream::out | std::ofstream::app);
-            for(const auto &apos : agentPositions)
-            {
+    //			  agentTmu agenttmu;
+    //			  agenttmu.x = apos.x;
+    //			  agenttmu.y = apos.y;
+    //			  agenttmu.id = apos.id;
+    //			  agenttmu.tmu = cMacroStep;
+    //			  //Output::Inst()->kprintf("id %d, posx %d, posY %d",agenttmu.info.id, agenttmu.info.x, agenttmu.info.y);
 
-                agentTmu agenttmu;
-                agenttmu.x = apos.x;
-                agenttmu.y = apos.y;
-                agenttmu.id = apos.id;
-                agenttmu.tmu = cMacroStep;
-                //Output::Inst()->kprintf("id %d, posx %d, posY %d",agenttmu.info.id, agenttmu.info.x, agenttmu.info.y);
-
-                file.write(reinterpret_cast<char*>(&agenttmu), sizeof(agentTmu));
-            }
-            //file.close();
-        }
-    }
+    //			  file.write(reinterpret_cast<char *>(&agenttmu), sizeof(agentTmu));
+    //			}
+    //		  //file.close();
+    //		}
+    //	}
 }
 
 void FlowControl::toggleLiveView(bool enable)
@@ -166,22 +170,22 @@ void FlowControl::toggleLiveView(bool enable)
  */
 void FlowControl::runSimulation(int time)
 {
-    std::string positionFilePath = Output::Inst()->RanaDir;
-    positionFilePath.append("/");
-    positionFilePath.append(positionFilename.c_str());
+    //  std::string positionFilePath = Output::Inst()->RanaDir;//TODO fix the RanaDir problem.
+    //  positionFilePath.append("/");
+    //  positionFilePath.append(positionFilename.c_str());
 
-    if(remove(positionFilePath.c_str()) != 0)
-    {
-        Output::Inst()->kprintf("Position file does not exist");
-    }
+    //  if(remove(positionFilePath.c_str()) != 0)
+    //	{
+    //      Outbound::Inst()->simOutput("Position file does not exist");
+    //	}
 
-    file.open(positionFilePath.c_str(),std::ofstream::out | std::ofstream::app | std::ofstream::binary);
+    //  file.open(positionFilePath.c_str(), std::ofstream::out | std::ofstream::app | std::ofstream::binary);
 
     stop = false;
-    Output::Inst()->kprintf("Running Simulation of: %i[s], with resolution of %f \n",time, timeResolution);
-    Output::RunSimulation = true;
+    Outbound::Inst()->simOutput("Running Simulation of: %i[s], with resolution of %f \n", time, timeResolution);
+    Interfacer::RunSimulation.store(true);
 
-    unsigned long long iterations = (double)time/timeResolution;
+    unsigned long long iterations = (double)time / timeResolution;
 
     auto start = steady_clock::now();
     auto start2 = steady_clock::now();
@@ -190,51 +194,44 @@ void FlowControl::runSimulation(int time)
     //unsigned long long run_time = 0;
     cMacroStep = 0;
     cMicroStep = ULLONG_MAX;
-    unsigned long long i = 0;//, j = 0;
+    unsigned long long i = 0; //, j = 0;
 
-    for(i = 0; i < iterations;)
-    {
-        if(Output::KillSimulation.load() == true)
+    for (i = 0; i < iterations;) {
+        if (Interfacer::KillSimulation.load() == true)
             return;
 
+        //Phys::setCTime(i);
 
-        Phys::setCTime(i);
-
-        if(i == cMicroStep && cMicroStep != ULLONG_MAX)
-        {
-            masteragent->microStep(i);
+        if (i == cMicroStep && cMicroStep != ULLONG_MAX) {
+            supervisor->microStep(i);
             //Output::Inst()->kprintf("i is now %lld", i);
         }
 
-        if(i == cMacroStep)
-        {
-            masteragent->macroStep(i);
+        if (i == cMacroStep) {
+            supervisor->macroStep(i);
             cMacroStep += macroFactor;
-            int delay = Output::DelayValue.load();
-            if(delay != 0)
-            {
-                std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-            }
-            if(cMacroStep % (int)Phys::getMacroFactor() == 0)
-            {
+            //int delay = Output::DelayValue.load();//TODO set delay
+            //		  if(delay != 0)
+            //			{
+            //			  std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+            //			}
+            if (cMacroStep % (int)Phys::getMacroFactor() == 0) {
                 retrievePopPos();
             }
         }
 
         i = cMacroStep;
-        cMicroStep = masteragent->getNextMicroTmu();
+        cMicroStep = supervisor->getNextMicroTmu();
 
-        if( i > cMicroStep)
-        {
+        if (i > cMicroStep) {
             i = cMicroStep;
         }
 
         //		//Update the status and progress bar screens:
         end = steady_clock::now();
-        if(duration_cast<milliseconds>(end-start).count() > 100)
-        {
-            masteragent->printStatus();
-            Output::Inst()->progressBar(cMacroStep,iterations);
+        if (duration_cast<milliseconds>(end - start).count() > 100) {
+            supervisor->printStatus();
+            Outbound::Inst()->progressBar(cMacroStep, iterations);
 
             //int delay = Output::DelayValue.load();
             //std::this_thread::sleep_for(std::chrono::milliseconds(5));
@@ -247,23 +244,23 @@ void FlowControl::runSimulation(int time)
 
             start = end;
         }
-        if(stop.load() == true || Output::RunSimulation==false)
-        {
-            Output::Inst()->kprintf("Stopping simulator at microstep %llu \n", i);
+        if (stop.load() == true || Interfacer::RunSimulation.load() == false) {
+            Outbound::Inst()->simOutput("Stopping simulator at microstep %llu \n", i);
             break;
         }
     }
 
     retrievePopPos();
-    masteragent->simDone();
-    masteragent->printStatus();
-    Output::Inst()->progressBar(i,iterations);
+    supervisor->simDone();
+    supervisor->printStatus();
+    Outbound::Inst()->progressBar(i, iterations);
 
-    Output::RUNTIME = i;
+    //Output::RUNTIME = i;//TODO determine where the current runtime is stored.
 
     auto endsim = steady_clock::now();
-    duration_cast<seconds>(start2-endsim).count();
-    Output::Inst()->kprintf("Simulation run took:\t %llu[s] of computing time\n", duration_cast<seconds>(endsim - start2).count());
+    duration_cast<seconds>(start2 - endsim).count();
+    Outbound::Inst()
+        ->simOutput("Simulation run took:\t %llu[s] of computing time\n", duration_cast<seconds>(endsim - start2).count());
     file.close();
 }
 
@@ -282,5 +279,5 @@ void FlowControl::stopSimulation()
  */
 void FlowControl::saveExternalEvents(std::string filename)
 {
-    masteragent->saveExternalEvents(filename);
+    supervisor->saveExternalEvents(filename);
 }

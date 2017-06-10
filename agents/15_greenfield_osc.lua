@@ -100,7 +100,7 @@ function takeStep()
 	end
 
 	if Tn >= Tt then
-		--say("PRC Oscillator "..ID.." Emitting signal at time: ".. Core.time().."[s]")
+		--agentSay("PRC Oscillator "..ID.." Emitting signal at time: ".. Core.time().."[s]")
 		Event.emit{description="Signal"}
 		table.insert(Olevels, Core.time()..",".. (Tn-r)/(Tt) ..",call")
 		Tt = T + Stat.randomMean(e, 0)

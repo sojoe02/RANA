@@ -25,10 +25,10 @@ set(version_file "${CMAKE_CURRENT_BINARY_DIR}/version.cpp")
 find_package(PkgConfig REQUIRED)
 
 pkg_search_module(LIBZMQ REQUIRED libzmq)
-#pkg_search_module(LUAJIT REQUIRED luajit)
+pkg_search_module(LUAJIT REQUIRED luajit)
 
 
-set(CMAKE_CXX_FLAGS "-std=c++14")
+set(CMAKE_CXX_FLAGS "-std=c++14 -pthread")
 
 
 ADD_SUBDIRECTORY(src)

@@ -23,50 +23,53 @@
 #ifndef ID_H
 #define ID_H
 
-class ID
-{
-	public :
+class ID {
+ public :
 
-        static int generateAgentID()
-        {
-			ID::aID++;
-			return ID::aID;
-		}
+  static int
+  generateAgentID()
+  {
+	ID::aID++;
+	return ID::aID;
+  }
 
-        static int generatesectorID()
-        {
-			ID::nID++;
-			return ID::nID;
-		}
+  static int
+  generatesectorID()
+  {
+	ID::nID++;
+	return ID::nID;
+  }
 
-        static unsigned long long generateEventID()
-        {
-			ID::eID++;
-			return ID::eID;
-		}
+  static unsigned long long
+  generateEventID()
+  {
+	ID::eID++;
+	return ID::eID;
+  }
 
-        static unsigned long long incrementTime()
-        {
-			ID::tmu++;
-			return ID::tmu;
-		}
+  static unsigned long long
+  incrementTime()
+  {
+	ID::tmu++;
+	return ID::tmu;
+  }
 
-        static void resetSystem()
-        {
-			ID::aID = 0;
-			ID::nID = 0;
-			ID::eID = 0;
-			ID::tmu = 0;
-		}
+  static void
+  resetSystem()
+  {
+	ID::aID = 0;
+	ID::nID = 0;
+	ID::eID = 0;
+	ID::tmu = 0;
+  }
 
-	private : 
-		static int aID;
-		static unsigned long long eID;
-		static unsigned long long tmu;
-		static unsigned long long nID;
+ private :
+  static int aID;
+  static unsigned long long eID;
+  static unsigned long long tmu;
+  static unsigned long long nID;
 
 };
-
 
 #endif // ID_H
 

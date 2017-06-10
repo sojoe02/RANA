@@ -31,54 +31,49 @@
 
 #define SSTR(x) dynamic_cast<std::ostringstream & >( (std::ostringstream() << std::dec << x) ).str();
 
-
-template <class T>
-bool util_toNumber(T& t,const std::string& s,std::ios_base& (*f)(std::ios_base&))
+template<class T>
+bool
+util_toNumber(T &t, const std::string &s, std::ios_base &(*f)(std::ios_base &))
 {
-    std::istringstream iss(s);
-    return !(iss >> f >> t).fail();
+  std::istringstream iss(s);
+  return !(iss >> f >> t).fail();
 }
 
-struct rgba
-{
-    int red = 255;
-    int green = 255;
-    int blue = 255;
-    int alpha = 255;
+struct rgba {
+	int red = 255;
+	int green = 255;
+	int blue = 255;
+	int alpha = 255;
 };
 
-struct agentInfo
-{
-    double x;
-    double y;
-    double z;
-    int id;
-    rgba color;
+struct agentInfo {
+	double x;
+	double y;
+	double z;
+	int id;
+	rgba color;
 
-    double radius;
-    double mass;
-    double charge;
+	double radius;
+	double mass;
+	double charge;
 
-    double angle;
-    //std::string filename;
+	double angle;
+	//std::string filename;
 };
 
-struct agentTmu
-{
-    int x;
-    int y;
-    int id;
-    unsigned long long tmu;
+struct agentTmu {
+	int x;
+	int y;
+	int id;
+	unsigned long long tmu;
 };
 
-struct agentPosition
-{
-    int x;
-    int y;
+struct agentPosition {
+	int x;
+	int y;
 };
 
-typedef std::vector< std::vector<int> > MatriceInt;
-typedef std::vector< std::map<int, double>> EdgeAngles;
-
+typedef std::vector<std::vector<int> > MatriceInt;
+typedef std::vector<std::map<int, double>> EdgeAngles;
 
 #endif // UTILITY_H

@@ -68,7 +68,7 @@ function initializeAgent()
 
         --positionX = Stat.randomMean(ENV_WIDTH/4,ENV_WIDTH/2)
         --positionY = Stat.randomMean(ENV_HEIGHT/4,ENV_HEIGHT/2)
-        --say("Free "..ID.." x "..positionX.." y "..positionY)
+        --agentSay("Free "..ID.." x "..positionX.." y "..positionY)
 
 	Tt = T + Stat.randomMean(e,0)
 

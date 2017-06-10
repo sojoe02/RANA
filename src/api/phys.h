@@ -47,52 +47,70 @@
 #include <random>
 #include <chrono>
 
-class Phys
-{
-	public:
-		Phys(){}
+class Phys {
+ public:
+  Phys()
+  {}
 
-        static double getTimeRes();
-        static int getMacroFactor();
-        static void setMacroFactor(int macroFactor);
-        static void setCTime(unsigned long long ctime);
+  static double
+  getTimeRes();
 
-		static unsigned long long speedOfEvent(double x_origin, double x_dest
-											   ,double y_origin, double y_dest
-											   ,double propagationSpeed);
+  static int
+  getMacroFactor();
 
-		static unsigned long long speedOfEvent(double x_origin, double x_dest
-											   , double y_origin, double y_dest
-											   , double z_origin, double z_dest
-											   , double propagationSpeed);
+  static void
+  setMacroFactor(int macroFactor);
 
-		static unsigned long long getCTime();
-		static void incTime();
-		static void setTimeRes(double timeResolution);
+  static void
+  setCTime(unsigned long long ctime);
 
-		static void seedMersenne();
+  static unsigned long long
+  speedOfEvent(double x_origin, double x_dest, double y_origin, double y_dest, double propagationSpeed);
 
-		static double getMersenneFloat(double min, double max);
-		static int64_t getMersenneInteger(int64_t min, int64_t max);
+  static unsigned long long
+  speedOfEvent(double x_origin, double x_dest, double y_origin, double y_dest, double z_origin, double z_dest, double propagationSpeed);
 
-		static void setScale(double scale){Phys::scale = scale;}
-		static double getScale(){return Phys::scale;}
+  static unsigned long long
+  getCTime();
 
-private:
+  static void
+  incTime();
 
-		static double env_x;
-		static double env_y;
+  static void
+  setTimeRes(double timeResolution);
 
-		static int macroFactor;
-		static double timeResolution;
-		static unsigned long long c_timeStep;
+  static void
+  seedMersenne();
 
-		//random distribution 0-INT_MAX
-        static std::uniform_int_distribution<int64_t> int_dist;
-		typedef std::mt19937_64 MyRNG;
-        static std::mt19937_64 rng;
+  static double
+  getMersenneFloat(double min, double max);
 
-		static double scale;
+  static int64_t
+  getMersenneInteger(int64_t min, int64_t max);
+
+  static void
+  setScale(double scale)
+  { Phys::scale = scale; }
+
+  static double
+  getScale()
+  { return Phys::scale; }
+
+ private:
+
+  static double env_x;
+  static double env_y;
+
+  static int macroFactor;
+  static double timeResolution;
+  static unsigned long long c_timeStep;
+
+  //random distribution 0-INT_MAX
+  static std::uniform_int_distribution<int64_t> int_dist;
+  typedef std::mt19937_64 MyRNG;
+  static std::mt19937_64 rng;
+
+  static double scale;
 };
 
 #endif // PHYS_H

@@ -26,28 +26,40 @@
 #include <mutex>
 #include <unordered_map>
 
-class Outbound
-{
-public:
-	static Outbound* Inst();
+class Outbound {
+ public:
+  static Outbound *
+  Inst();
 
-	void say(std::string msg);
-	void say(const char* msg, ...);
-	void shout(const char* msg, ...);
+  void
+  simOutput(const char *msg, ...){};
 
-    void updateStatus(unsigned long long internalEvents, unsigned long long externalEvents);
-    void progressBar(unsigned long long current, unsigned long long maximum);
-    void updatePosition(int id, double x, double y);
+  void
+  agentSay(std::string msg);
 
-private:
+  void
+  agentSay(const char *msg, ...);
 
-	std::unordered_map<std::string, std::string> messages;
+  void
+  agentShout(const char *msg, ...);
 
+  void
+  updateStatus(unsigned long long internalEvents, unsigned long long externalEvents);
 
-	Outbound();
-	static Outbound* outbound;
-	static std::mutex autonMutex;
+  void
+  progressBar(unsigned long long current, unsigned long long maximum);
 
+  void
+  updatePosition(int id, double x, double y);
+
+ private:
+
+  std::unordered_map<std::string, std::string> messages;
+
+  Outbound();
+
+  static Outbound *outbound;
+  static std::mutex autonMutex;
 
 };
 

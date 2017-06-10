@@ -63,7 +63,7 @@ call_frequency = 500 --emit placement event once every .5 second.
 -- Initialization of the agent.
 function InitializeAgent()
 	
-	say("Agent #: " .. ID .. " has been initialized")
+	agentSay("Agent #: " .. ID .. " has been initialized")
 	
 	ColorRed = 200
 	ColorBlue = 0

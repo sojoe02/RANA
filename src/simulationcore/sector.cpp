@@ -1,22 +1,24 @@
 //--begin_license--
 //
-//Copyright 	2013 	Søren Vissing Jørgensen.
-//				2014-2016	Søren Vissing Jørgensen, Center for Bio-Robotics, SDU, MMMI.
+// Copyright 	2013 	Søren Vissing Jørgensen.
+//				2014-2016	Søren Vissing Jørgensen, Center
+// for
+// Bio-Robotics, SDU, MMMI.
 //
-//This file is part of RANA.
+// This file is part of RANA.
 //
-//RANA is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
+// RANA is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
 //(at your option) any later version.
 //
-//RANA is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//GNU General Public License for more details.
+// RANA is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 //
-//You should have received a copy of the GNU General Public License
-//along with RANA.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU General Public License
+// along with RANA.  If not, see <http://www.gnu.org/licenses/>.
 //
 //--end_license--
 
@@ -26,39 +28,48 @@
 #include <time.h>
 #include <utility>
 
-#include "lua.hpp"
 #include "lauxlib.h"
+#include "lua.hpp"
 #include "lualib.h"
 
-#include "src/ID.h"
-#include "src/output.h"
-#include "src/api/phys.h"
-#include "src/simulationcore/sector.h"
-#include "src/simulationcore/interfacer.h"
-#include "src/simulationcore/supervisor.h"
+#include "ID.h"
+#include "api/phys.h"
+#include "communication/outbound.h"
+#include "simulationcore/interfacer.h"
+#include "simulationcore/sector.h"
+#include "simulationcore/supervisor.h"
 
-Sector::Sector(double posX, double posY, double width, double height, Supervisor* supervisor, int id)
-	:initAmount(0),supervisor(supervisor), posX(posX), posY(posY),width(width),height(height),id(id)
+Sector::Sector(double posX,
+    double posY,
+    double width,
+    double height,
+    Supervisor* supervisor,
+    int id)
+    : initAmount(0)
+    , supervisor(supervisor)
+    , posX(posX)
+    , posY(posY)
+    , width(width)
+    , height(height)
+    , id(id)
 {
-
 }
 
 Sector::~Sector()
 {
 }
 
-void Sector::populate(int agentSize ,std::string filename, int agentType)
+void Sector::populate(int agentSize, std::string filename, int agentType)
 {
-    for(int i=0; i<agentSize; i++)
-    {
-        if(Output::KillSimulation.load())
-        {
+    for (int i = 0; i < agentSize; i++) {
+        if (Interfacer::KillSimulation.load()) {
             return;
         }
-        double xtmp = Phys::getMersenneFloat(0,width);
-        double ytmp = Phys::getMersenneFloat(0,height);
+        double xtmp = Phys::getMersenneFloat(0, width);
+        double ytmp = Phys::getMersenneFloat(0, height);
 
-        std::shared_ptr<AgentLuaInterface> luaPtr = std::make_shared<AgentLuaInterface>(ID::generateAgentID(), xtmp, ytmp, 1, this, filename);
+        std::shared_ptr<AgentLuaInterface> luaPtr = std::make_shared<AgentLuaInterface>(
+            ID::generateAgentID(), xtmp, ytmp, 1, this, filename);
 
         luaAgents.insert(std::make_pair(luaPtr->getID(), luaPtr));
         Interfacer::addLuaAgentPtr(luaPtr);
@@ -69,66 +80,59 @@ void Sector::populate(int agentSize ,std::string filename, int agentType)
 
 /**
  * Get the X and Y positions of all actors
- * Retrieves the information from all actors, writes the information to the lists given.
- * @param agentinfo address of array that holds the info needed for graphic rendering.
+ * Retrieves the information from all actors, writes the information to the
+ * lists given.
+ * @param agentinfo address of array that holds the info needed for graphic
+ * rendering.
  */
-void Sector::retrievePopPos(std::list<agentInfo> &infolist){
-    for(const auto &lua : luaAgents)
-    {
-		if(supervisor->removedIDs.find(lua.second->getID()) == supervisor->removedIDs.end())
-        {
+void Sector::retrievePopPos(std::list<agentInfo>& infolist)
+{
+    for (const auto& lua : luaAgents) {
+        if (supervisor->removedIDs.find(lua.second->getID()) == supervisor->removedIDs.end()) {
             agentInfo info = lua.second->getAgentInfo();
-            //info.id = lua.second->getID();
-            //info.y = lua.second->getPosY();
-            //info.x = lua.second->getPosX();
+            // info.id = lua.second->getID();
+            // info.y = lua.second->getPosY();
+            // info.x = lua.second->getPosX();
             infolist.push_back(info);
         }
     }
 }
 
-
 /**
  * Event initiation phase
  * Queries all autons on wether they are going create be an event or not, if
  * an event is initated it will be added the supervisors eventqueue.
- * @param macroResolution the resolution of the macrostep (microStepRes * macroFactor)
+ * @param macroResolution the resolution of the macrostep (microStepRes *
+ * macroFactor)
  */
 void Sector::takeStepPhase(unsigned long long tmu)
 {
-    for(const auto &lua : luaAgents)
-    {
+    for (const auto& lua : luaAgents) {
         int macroFactorMultipler = lua.second->getMacroFactorMultipler();
 
-        if(macroFactorMultipler > 0 && tmu%(macroFactorMultipler*Phys::getMacroFactor()) == 0 )
-        {
+        if (macroFactorMultipler > 0 && tmu % (macroFactorMultipler * Phys::getMacroFactor()) == 0) {
             std::unique_ptr<EventQueue::eEvent> eevent = lua.second->takeStep();
 
-            if(eevent != NULL)
-            {
-				supervisor->receiveEEventPtr(std::move(eevent));
+            if (eevent != NULL) {
+                supervisor->receiveEEventPtr(std::move(eevent));
             }
         }
     }
 
-    if(!removalIDs.empty())
-    {
-        //remove all autons set for removal
-        for(const auto &r : removalIDs)
-        {
+    if (!removalIDs.empty()) {
+        // remove all autons set for removal
+        for (const auto& r : removalIDs) {
             auto itrLua = luaAgents.find(r);
-            if(itrLua != luaAgents.end())
-            {
+            if (itrLua != luaAgents.end()) {
                 luaAgents.erase(r);
             }
         }
         removalIDs.clear();
     }
 
-    for(const auto &agent : newAgents)
-    {
-        luaAgents.insert(std::make_pair(agent->getID(),agent));
+    for (const auto& agent : newAgents) {
+        luaAgents.insert(std::make_pair(agent->getID(), agent));
         agent->InitializeAgent();
-
     }
     newAgents.clear();
 }
@@ -140,16 +144,13 @@ void Sector::takeStepPhase(unsigned long long tmu)
  */
 void Sector::distroPhase(const EventQueue::eEvent* event)
 {
-    for(const auto &lua : luaAgents)
-    {
-        if(event->originID != lua.second->getID() && (event->targetGroup == 0 || lua.second->checkGroup(event->targetGroup) == true))
-        {
+    for (const auto& lua : luaAgents) {
+        if (event->originID != lua.second->getID() && (event->targetGroup == 0 || lua.second->checkGroup(event->targetGroup) == true)) {
             std::unique_ptr<EventQueue::iEvent> ieventPtr = lua.second->processEvent(event);
 
-            if(ieventPtr != NULL)
-            {
-				supervisor->incrementEEventCounter(event->id);
-				supervisor->receiveIEventPtr(std::move(ieventPtr));
+            if (ieventPtr != NULL) {
+                supervisor->incrementEEventCounter(event->id);
+                supervisor->receiveIEventPtr(std::move(ieventPtr));
             }
         }
     }
@@ -157,49 +158,46 @@ void Sector::distroPhase(const EventQueue::eEvent* event)
 
 void Sector::simDone()
 {
-    for(auto itlua = luaAgents.begin(); itlua !=luaAgents.end(); itlua++)
-    {
+    for (auto itlua = luaAgents.begin(); itlua != luaAgents.end(); itlua++) {
         itlua->second->simDone();
     }
 }
 
-//perform an event for an auton in question:
+// perform an event for an auton in question:
 void Sector::performEvent(std::unique_ptr<EventQueue::eEvent> event)
 {
-	supervisor->receiveEEventPtr(std::move(event));
+    supervisor->receiveEEventPtr(std::move(event));
 }
 
-
-int Sector::addAgent(double x, double y, double z, std::string filename, std::string type)
+int Sector::addAgent(double x,
+    double y,
+    double z,
+    std::string filename,
+    std::string type)
 {
     int id = ID::generateAgentID();
 
-	if(type.compare("Lua") == 0)
-	{
+    if (type.compare("Lua") == 0) {
         std::shared_ptr<AgentLuaInterface> luaPtr = std::make_shared<AgentLuaInterface>(id, x, y, 1, this, filename);
 
-        if(Output::SimRunning)
-        {
+        if (Interfacer::SimRunning.load()) {
             newAgents.push_back(luaPtr);
-        }
-        else
-        {
-            luaAgents.insert(std::make_pair(luaPtr->getID(),luaPtr));
+        } else {
+            luaAgents.insert(std::make_pair(luaPtr->getID(), luaPtr));
             luaPtr->InitializeAgent();
         }
     }
 
-	return id;
+    return id;
 }
 
 bool Sector::removeAgent(int arg_id)
 {
     auto luaItr = luaAgents.find(arg_id);
-    if(luaItr != luaAgents.end())
-	{
-		luaItr->second->setRemoved();
-		removalIDs.push_back(arg_id);
-		return true;
+    if (luaItr != luaAgents.end()) {
+        luaItr->second->setRemoved();
+        removalIDs.push_back(arg_id);
+        return true;
     }
 
     return false;

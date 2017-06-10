@@ -29,33 +29,46 @@
 
 typedef std::list<int> pList;
 
-class GridMovement
-{
-public:
-    GridMovement(){}
+class GridMovement {
+ public:
+  GridMovement()
+  {}
 
-    static void initGrid(int scale);
-    static void addPos(int x, int y, int id);
-    static void updatePos(int oldX, int oldY, int newX, int newY, int id);
-    static bool checkCollision(int x, int y);
-    static pList checkPosition(int x, int y);
+  static void
+  initGrid(int scale);
 
+  static void
+  addPos(int x, int y, int id);
 
-	static void clearGrid();
-    static void removePos(int id);
+  static void
+  updatePos(int oldX, int oldY, int newX, int newY, int id);
 
-    static double getScale();
-    static bool updateIfFree(int oldX, int oldY, int newX, int newY, int id);
+  static bool
+  checkCollision(int x, int y);
 
-private:
-    //maps that contain the amount of agents at a givin x,y position
-	static std::unordered_map<std::string, pList> *posMap;
-    static std::shared_timed_mutex gridMutex;
+  static pList
+  checkPosition(int x, int y);
 
-    static int width;
-    static int height;
-    static double scale;
+  static void
+  clearGrid();
 
+  static void
+  removePos(int id);
+
+  static double
+  getScale();
+
+  static bool
+  updateIfFree(int oldX, int oldY, int newX, int newY, int id);
+
+ private:
+  //maps that contain the amount of agents at a givin x,y position
+  static std::unordered_map<std::string, pList> *posMap;
+  static std::shared_timed_mutex gridMutex;
+
+  static int width;
+  static int height;
+  static double scale;
 
 };
 

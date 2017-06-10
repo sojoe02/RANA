@@ -31,29 +31,42 @@
 #include <vector>
 #include <shared_mutex>
 
-typedef std::vector< std::vector<int> > MatriceInt;
+typedef std::vector<std::vector<int> > MatriceInt;
 
 class MainWindow;
-class MapHandler
-{
-public:
 
-    MapHandler(MainWindow *parent);
-    static void setImage(QImage *argImage);
-    static rgba getPixelInfo(int argX, int argY);
-    static bool setPixelInfo(int argX, int argY, rgba argValue);
-    static MatriceInt drawCircle(int radius, char channel, int posX, int posY);
-    static bool checkAndChange(int argX, int argY, rgba check_color, rgba change_color);
+class MapHandler {
+ public:
 
-signals:
+  MapHandler(MainWindow *parent);
 
-    void map_changed();
+  static void
+  setImage(QImage *argImage);
 
-private:
-    static QImage *image;
-    static MainWindow *parent;
-    static std::unordered_map<int, MatriceInt> radialMasks;
-    static std::shared_timed_mutex mapMutex;
+  static rgba
+  getPixelInfo(int argX, int argY);
+
+  static bool
+  setPixelInfo(int argX, int argY, rgba argValue);
+
+  static MatriceInt
+  drawCircle(int radius, char channel, int posX, int posY);
+
+  static bool
+  checkAndChange(int argX, int argY, rgba check_color, rgba change_color);
+
+  signals
+	  :
+
+  void
+
+  map_changed();
+
+ private:
+  static QImage *image;
+  static MainWindow *parent;
+  static std::unordered_map<int, MatriceInt> radialMasks;
+  static std::shared_timed_mutex mapMutex;
 };
 
 #endif // MAPHANDLER_H

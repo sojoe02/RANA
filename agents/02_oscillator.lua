@@ -90,7 +90,7 @@ function TakeStep()
 		Tt = T + Stat.randomMean(e, 0)
 		Tn = 0
 		table.insert(Olevels, Core.time()..",".. 0)
-		--	say("Oscillator #"..ID.." Emitting signal at time: ".. Core.time().."[s]")
+		--	agentSay("Oscillator #"..ID.." Emitting signal at time: ".. Core.time().."[s]")
 		peaked = false
 	end
 

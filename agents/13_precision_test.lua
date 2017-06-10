@@ -96,7 +96,7 @@ function takeStep()
 	
 	if starting == true then
 		Event.emit{speed=400}
-		say("Time: "..Core.time().." Count: " ..count)
+		agentSay("Time: "..Core.time().." Count: " ..count)
 		starting = false
 	end
 
