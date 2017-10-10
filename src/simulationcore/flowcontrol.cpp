@@ -33,6 +33,7 @@
 #include "../api/shared.h"
 #include "../output.h"
 #include "../api/scanning.h"
+#include "src/simulationcore/parameterspace.h"
 
 using std::chrono::duration_cast;
 using std::chrono::milliseconds;
@@ -47,6 +48,8 @@ FlowControl::FlowControl(Control *control)
     //Phys::seedMersenne();
     //file = std::ofstream(positionFilename.c_str(),std::ofstream::out| std::ofstream::trunc);
     //file.open(positionFilename.c_str(),std::ofstream::out | std::ofstream::binary | std::ofstream::trunc);
+
+
 }
 
 FlowControl::~FlowControl()
@@ -72,7 +75,6 @@ bool FlowControl::checkEnvPresence()
 void FlowControl::generateEnvironment(double width, double height, int threads,
                                       int agentAmount, double timeResolution, int macroFactor, std::string filename)
 {
-
     //srand(time(0));
     //Phys::seedMersenne();
     this->timeResolution = timeResolution;
@@ -87,22 +89,25 @@ void FlowControl::generateEnvironment(double width, double height, int threads,
     Phys::setCTime(0);
     Phys::setMacroFactor(macroFactor);
     Phys::setEnvironment(width, height);
-    Shared::initShared();
+    //Shared::initShared();
     Interfacer::initInterfacer(masteragent);
     //Scanning::edgeMask();
 
+    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
     masteragent->generateMap(width,height,threads,timeResolution, macroResolution);
-
+    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
     mapWidth = width;
     mapHeight = height;
-
+    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
     agentAmount = agentAmount;
     luaFilename = filename;
-
+    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
     masteragent->populateSystem(0, 0, agentAmount, filename);
-
+    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
     retrievePopPos();
+    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
     mapGenerated = true;
+    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
 }
 
 void FlowControl::populateSystem()
@@ -112,9 +117,8 @@ void FlowControl::populateSystem()
     masteragent->populateSystem(0, 0, agentAmount, luaFilename);
     retrievePopPos();
     mapGenerated = true;
-    Output::Inst()->enableRunBotton(true);
+    //Output::Inst()->enableRunBotton(true);
 }
-
 
 /**
  * Retrieval of auton positions.
@@ -169,43 +173,37 @@ void FlowControl::runSimulation(int time)
     std::string positionFilePath = Output::Inst()->RanaDir;
     positionFilePath.append("/");
     positionFilePath.append(positionFilename.c_str());
-
     if(remove(positionFilePath.c_str()) != 0)
     {
         Output::Inst()->kprintf("Position file does not exist");
     }
-
     file.open(positionFilePath.c_str(),std::ofstream::out | std::ofstream::app | std::ofstream::binary);
-
     stop = false;
     Output::Inst()->kprintf("Running Simulation of: %i[s], with resolution of %f \n",time, timeResolution);
     Output::RunSimulation = true;
-
     unsigned long long iterations = (double)time/timeResolution;
-
     auto start = steady_clock::now();
     auto start2 = steady_clock::now();
     auto end = steady_clock::now();
-
     //unsigned long long run_time = 0;
     cMacroStep = 0;
     cMicroStep = ULLONG_MAX;
     unsigned long long i = 0;//, j = 0;
-
     for(i = 0; i < iterations;)
     {
         if(Output::KillSimulation.load() == true)
+        {
             return;
-
+        }
 
         Phys::setCTime(i);
+
 
         if(i == cMicroStep && cMicroStep != ULLONG_MAX)
         {
             masteragent->microStep(i);
             //Output::Inst()->kprintf("i is now %lld", i);
         }
-
         if(i == cMacroStep)
         {
             masteragent->macroStep(i);
@@ -231,9 +229,12 @@ void FlowControl::runSimulation(int time)
 
         //		//Update the status and progress bar screens:
         end = steady_clock::now();
+
         if(duration_cast<milliseconds>(end-start).count() > 100)
         {
+
             masteragent->printStatus();
+
             Output::Inst()->progressBar(cMacroStep,iterations);
 
             //int delay = Output::DelayValue.load();
@@ -246,12 +247,15 @@ void FlowControl::runSimulation(int time)
             //}
 
             start = end;
+
         }
+
         if(stop.load() == true || Output::RunSimulation==false)
         {
             Output::Inst()->kprintf("Stopping simulator at microstep %llu \n", i);
             break;
         }
+
     }
 
     retrievePopPos();
@@ -265,6 +269,7 @@ void FlowControl::runSimulation(int time)
     duration_cast<seconds>(start2-endsim).count();
     Output::Inst()->kprintf("Simulation run took:\t %llu[s] of computing time\n", duration_cast<seconds>(endsim - start2).count());
     file.close();
+
 }
 
 /**

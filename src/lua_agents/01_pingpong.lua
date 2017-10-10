@@ -43,15 +43,19 @@
 
 -- Import valid Rana lua libraries.
 Event = require "ranalib_event"
-Shared = require "ranalib_shared"	
+Shared = require "ranalib_shared"
 Stat = require "ranalib_statistic"
 Move = require "ranalib_movement"
 
 n = 1
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
-function InitializeAgent()
-        --say("Agent #: " .. ID .. " has been initialized")
+function _InitializeAgent()
+        print("hello")
+        say("Agent #: " .. ID .. " has been initialized")
+
+        print("Agent #: " .. ID .. " has been initialized")
+        --print(Shared.getString("test"))
 
 	if ID == 1 then
 		PositionX = ENV_WIDTH/2
@@ -85,7 +89,7 @@ function takeStep()
         n = n + 1
 
 	if Stat.randomInteger(1,1/STEP_RESOLUTION) <= 1 then
-		--say("Agent:"..ID.." is emiting ping")
+                --say("Agent:"..ID.." is emiting ping")
 	 	Event.emit{speed=343,description="ping",table={msg="I am agent "..ID}}
 	end
 
@@ -93,6 +97,7 @@ end
 
 function cleanUp()
         --l_debug("Agent #: " .. ID .. " is done\n")
+
 end
 
 function fibonacci(n)
@@ -113,4 +118,8 @@ function fibonacci_tail(n)
     end
  
     return f(1,1,n)
+end
+
+function luaTesat()
+    print("hello")
 end

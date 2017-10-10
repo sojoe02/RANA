@@ -24,18 +24,23 @@
 #include <string>
 
 #include "src/ID.h"
+#include "src/cli.h"
 #include "src/mainwindow.h"
 #include "src/api/phys.h"
 #include "src/api/gridmovement.h"
 #include "src/output.h"
+
+#include "src/parser.h"
 
 int ID::aID = 0;
 unsigned long long ID::eID = 0;
 unsigned long long ID::tmu = 0;
 unsigned long long ID::nID = 0;
 
-int main(int argc, char *argv[])
+int main(int argc, char **argv)
 {
+    parser p(argc, argv);
+
     //srand(time(0));
     Phys::seedMersenne();
     Output::DelayValue = 0;
@@ -44,13 +49,21 @@ int main(int argc, char *argv[])
 
     qDebug() << Phys::getMersenneInteger(1, RAND_MAX) << Phys::getMersenneInteger(1, RAND_MAX) << Phys::getMersenneFloat(1, RAND_MAX) <<Phys::getMersenneInteger(1, RAND_MAX) ;
 
-
     QApplication a(argc, argv);
-    MainWindow *w = new MainWindow();
 
-    Output::Inst()->setMainWindow(w);
-
-    w->show();
+    if(p.startProgram())
+    {
+        if(p.startGui()){
+            std::cout << "Start with gui" << std::endl;
+            MainWindow *w = new MainWindow();
+            Output::Inst()->setMainWindow(w);
+            w->show();
+        }else
+        {
+            std::cout << "Start without gui - " << p.getFile() << std::endl;
+            Cli *c = new Cli(p.getFile());
+        }
+    }
 
     return a.exec();
 }

@@ -47,8 +47,7 @@ public:
 
 
 	void populateSystem(int listenerSize, int screamerSize,
-						int LUASize, std::string filename);
-
+                        int LUASize, std::string filename);
 
 	void microStep(unsigned long long tmu);
 	void macroStep(unsigned long long tmu);
@@ -78,6 +77,7 @@ public:
     void setSimulationType(int numberOfAgents);
 
 private:
+    bool checkLuaFileType( std::string );
 
     std::vector<Sector*> sectors;
     std::vector<std::thread*> threads;

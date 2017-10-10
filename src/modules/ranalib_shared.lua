@@ -11,15 +11,20 @@ local valueCheck = false
 -- Example: API.shareTable("agent1",{myX, myY, myID}, true)
 function RanaLibShared.storeTable(key, table, check)
 
+
+
 	local check = check or valueCheck
 	local tableString
 
 	if check==true then
 
-		if type(table)=="table" and type(key)~="table" then
-			tableString = utility.serializeTable(table)
-			l_addSharedString(key, tableString) 
+                if type(table)=="table" and type(key)~="table" then
+                        tableString = utility.serializeTable(table)
+                        print("shit")
+                        l_addSharedString(key, tableString)
+                        print("shit")
 		else 
+                        print("test2")
 			l_debug("Failure to store table, table and/or key is not of correct type")			
 			l_stopSimulation()
 		end
@@ -67,7 +72,7 @@ function RanaLibShared.storeString(key, string, check)
 end
 
 -- Retrieve a shared string from the central string register.
-function RanaLibShared.getString(key)	
+function RanaLibShared.getString(key)
 	return l_getSharedString(key)
 end
 

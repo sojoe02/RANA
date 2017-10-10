@@ -28,10 +28,14 @@ Runner::Runner(){}
 void Runner::doWork(FlowControl *agentDomain, unsigned long long runTime)
 {
     if( agentDomain != NULL && runTime != 0 ){
-        agentDomain->runSimulation(runTime);
+        if( runTime != 0 ){
+            agentDomain->runSimulation(runTime);
+            Output::Inst()->kprintf("RUNNING SIMULATION");
+        } else{
+            Output::Inst()->kprintf("No Runtime defined");
+        }
     } else{
-
-		Output::Inst()->kprintf("No Agentdomain and/or Runtime not defined");
+        Output::Inst()->kprintf("No Agentdomain defined");
     }
     emit simulationDone();
 }

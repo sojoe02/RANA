@@ -23,6 +23,7 @@
 #define SHARED_H
 
 #include <string>
+#include <vector>
 #include <unordered_map>
 #include <shared_mutex>
 
@@ -37,15 +38,20 @@ public:
 	static std::string getString(std::string key);
 	static void addString(std::string key, std::string value);
 
+    static std::vector<std::string> getStringVector(std::string key);
+    static void addStringVector(std::string key, std::vector<std::string> value);
+
 	static void initShared();
 
 private:
 
     static std::shared_timed_mutex numberMutex;
     static std::shared_timed_mutex stringMutex;
+    static std::shared_timed_mutex stringVectorMutex;
 
 	static std::unordered_map<std::string, double> sharedNumbers;
 	static std::unordered_map<std::string, std::string> sharedStrings;
+    static std::unordered_map<std::string, std::vector<std::string>> sharedStringVectors;
 
 };
 

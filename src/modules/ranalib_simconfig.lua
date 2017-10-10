@@ -3,7 +3,7 @@ simname = "_simconfig.data"
 parname = "_parameters.data"
 
 currentSimulation = 1           --  Current simulation
-totalIterations = 5             --  The total number of simulations
+totalIterations = 1             --  The total number of simulations
 currentExperiments = 1          --  Current experiment
 numOfExperiments = 1            --  How many simulations with the same parameters do we want
 

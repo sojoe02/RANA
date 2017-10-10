@@ -13,7 +13,9 @@ TARGET = Rana_qt
 TEMPLATE = app
 
 SOURCES += src/main.cpp\
+    src/cli.cpp \
     src/mainwindow.cpp \
+    src/parser.cpp \
     src/output.cpp \
     src/control.cpp \
     src/graphics/agentItem.cpp \
@@ -38,9 +40,12 @@ SOURCES += src/main.cpp\
     src/simulationcore/agents/agent.cpp \
     src/simulationcore/agents/agentinterface.cpp \
     src/simulationcore/agents/agentluainterface.cpp \
-    src/simulationcore/eventqueue.cpp
+    src/simulationcore/eventqueue.cpp \
+    src/simulationcore/parameterspace.cpp
 
-HEADERS += src\mainwindow.h \
+HEADERS += src/cli.h \
+    src/mainwindow.h \
+    src/parser.h \
     src/ID.h \
     src/utility.h \
     src/output.h \
@@ -67,7 +72,8 @@ HEADERS += src\mainwindow.h \
     src/simulationcore/agents/agent.h \
     src/simulationcore/agents/agentinterface.h \
     src/simulationcore/agents/agentluainterface.h \
-    src/simulationcore/eventqueue.h
+    src/simulationcore/eventqueue.h \
+    src/simulationcore/parameterspace.h
 
 FORMS   += ui/mainwindow.ui \
     ui/eventdialog.ui \
@@ -95,6 +101,8 @@ unix: RCC_DIR = ./BUILD/rcc/
 unix: OBJECTS_DIR = ./BUILD/obj/
 unix: MOC_DIR = ./BUILD/moc/
 unix: UI_DIR = ./BUILD/ui/
+
+unix: LIBS += -largtable2
 
 macx: QMAKE_CXXFLAGS += -std=c++14 -mmacosx-version-min=10.7
 
@@ -162,5 +170,8 @@ DISTFILES += \
     src/modules/ranalib_physics.lua \
     src/modules/wrapper_auxiliary.lua \
     src/modules/ranalib_variable.lua \
-    src/modules/ranalib_simconfig.lua
+    src/modules/test_file_back.lua \
+    src/modules/test_file_input.lua \
+    src/modules/ranalib_simconfig.lua \
+
 

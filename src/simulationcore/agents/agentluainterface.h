@@ -92,10 +92,12 @@ public:
     static int l_updatePositionIfFree(lua_State *L);
 
     //Shared values.
-    static int l_getSharedNumber(lua_State *L);
     static int l_addSharedNumber(lua_State *L);
+    static int l_getSharedNumber(lua_State *L);
     static int l_addSharedString(lua_State *L);
     static int l_getSharedString(lua_State *L);
+    static int l_getParameterNumber(lua_State *L);
+    static int l_getParameterString(lua_State *L);
 
     //Simulation core.
     static int l_stopSimulation(lua_State *L);

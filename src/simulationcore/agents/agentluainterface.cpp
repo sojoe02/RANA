@@ -43,29 +43,36 @@
 #include "src/api/scanning.h"
 #include "src/simulationcore/interfacer.h"
 #include "src/simulationcore/agents/agentluainterface.h"
+#include "src/simulationcore/parameterspace.h"
 
 AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double posZ, Sector *sector, std::string filename)
     :Agent(ID,posX,posY,posZ,sector),destinationX(posX),destinationY(posY),speed(1),moving(false),gridmove(false),
     filename(filename),nofile(false),removed(false),L(NULL)
 {
+    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
     //Output::Inst()->kprintf("%f,%f", posX, posY);
     desc = "LUA";
     color.red=255;
     color.green=255;
     color.blue=0;
-    Output::Inst()->addGraphicAgent(ID,-1,-1,color,0);
 
     //Setup up the LUA stack:
     L = luaL_newstate();
     if(L == NULL)
     {
+        std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
         Output::Inst()->kprintf("<b><font color=\"brown\">A new Agent cannot be initialized. Lua(%s) is out of memory, Killing simulation</font></b></>", LUA_VERSION);
+        std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
         Output::KillSimulation.store(true);
+        std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
         removed = true;
+        std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
     }
     else
     {
+        std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
         luaL_openlibs(L);
+        std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
 
         // Register the path to the Rana specific lua modules
         lua_getglobal(L, "package");
@@ -184,6 +191,8 @@ AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double po
         lua_register(L, "l_addSharedNumber",l_addSharedNumber);
         lua_register(L, "l_getSharedString", l_getSharedString);
         lua_register(L, "l_addSharedString", l_addSharedString);
+        lua_register(L, "l_getParameterNumber", l_getParameterNumber);
+        lua_register(L, "l_getParameterString", l_getParameterString);
 
         //Simulation core.
         lua_register(L, "l_getAgentPath", l_getAgentPath);
@@ -228,6 +237,7 @@ AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double po
         lua_settop(L,0);
     }
 
+    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
 
     moveFactor = Phys::getMacroFactor() * Phys::getTimeRes();
 }
@@ -255,7 +265,6 @@ void AgentLuaInterface::InitializeAgent()
     lua_settop(L,0);
     try
     {
-        //init the LUA frog:
         lua_getglobal(L, "_InitializeAgent");
         //Call the initAgent function (3 arguments, 0 results):
         if(lua_pcall(L,0,0,0)!=LUA_OK)
@@ -1281,6 +1290,35 @@ int AgentLuaInterface::l_getSharedString(lua_State *L)
 {
     std::string key = lua_tostring(L, -1);
     std::string value = Shared::getString(key);
+
+    lua_pushstring(L, value.c_str());
+
+    return 1;
+
+}
+
+int AgentLuaInterface::l_getParameterNumber(lua_State *L)
+{
+    std::string key = lua_tostring(L, -1);
+    //Output::Inst()->kprintf(key.c_str());
+
+    double value = Parameterspace::getNumber(key);
+
+    if (value == LLONG_MIN)
+    {
+        lua_pushstring(L, "no_value");
+    } else
+    {
+        lua_pushnumber(L, value);
+    }
+    return 1;
+
+}
+
+int AgentLuaInterface::l_getParameterString(lua_State *L)
+{
+    std::string key = lua_tostring(L, -1);
+    std::string value = Parameterspace::getString(key);
 
     lua_pushstring(L, value.c_str());
 

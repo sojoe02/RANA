@@ -34,6 +34,7 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
+#include "src/cli.h"
 #include "src/mainwindow.h"
 #include "src/utility.h"
 #include "src/runner.h"
@@ -41,6 +42,7 @@
 
 class Runner;
 class FlowControl;
+class Cli;
 class MainWindow;
 class Control : public QObject
 {
@@ -48,8 +50,15 @@ class Control : public QObject
 
     //  Public methods
     public:
+        Control(Cli* cli, std::string _file);
         Control(MainWindow* mainwindow);
         ~Control();
+
+        /**
+         * @brief initialSetup
+         * Initialises LUA for the control.
+         */
+        void initialSetup();
 
         /**
         * @brief setEnvironmentVariables
@@ -111,6 +120,7 @@ class Control : public QObject
     //  Private Attributes
     private:
         FlowControl *agentDomain;
+        Cli *cli;
         MainWindow *mainwindow;
         Runner *runner;
         QThread runThread;

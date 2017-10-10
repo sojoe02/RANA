@@ -40,31 +40,36 @@
 Sector::Sector(double posX, double posY, double width, double height, Supervisor* master, int id)
     :initAmount(0),master(master), posX(posX), posY(posY),width(width),height(height),id(id)
 {
-
 }
 
 Sector::~Sector()
 {
 }
 
-void Sector::populate(int agentSize ,std::string filename, int agentType)
+void Sector::populate(int agentSize, std::string filename, int agentType)
 {
+    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
     for(int i=0; i<agentSize; i++)
     {
+        std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
         if(Output::KillSimulation.load())
         {
             return;
         }
+        std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
         double xtmp = Phys::getMersenneFloat(0,width);
         double ytmp = Phys::getMersenneFloat(0,height);
-
+        std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
         std::shared_ptr<AgentLuaInterface> luaPtr = std::make_shared<AgentLuaInterface>(ID::generateAgentID(), xtmp, ytmp, 1, this, filename);
-
+        std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
         luaAgents.insert(std::make_pair(luaPtr->getID(), luaPtr));
+        std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
         Interfacer::addLuaAgentPtr(luaPtr);
-
+        std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
         luaPtr->InitializeAgent();
+        std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
     }
+    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
 }
 
 /**

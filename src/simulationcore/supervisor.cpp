@@ -139,6 +139,84 @@ std::list<agentInfo> Supervisor::retrievePopPos()
     return agentinfo;
 }
 
+bool Supervisor::checkLuaFileType( std::string filename )
+{
+    /**
+     * Quickly load lua stuff into stack, and check whether the parsed file, is a simulation conf, or a lua agent.
+    **/
+
+    lua_State* L = luaL_newstate();
+    luaL_openlibs(L);
+    lua_getglobal(L, "package");
+    lua_getfield(L, -1, "path");
+    std::string cur_path = lua_tostring(L, -1);
+    std::string module_path = Output::Inst()->RanaDir;
+    module_path.append("/src/modules/?.lua");
+    cur_path.append(";");
+    cur_path.append(module_path);
+    cur_path.append(";");
+    cur_path.append(Output::Inst()->AgentPath);
+    cur_path.append("?.lua");
+    lua_pop(L,1);
+    lua_pushstring(L, cur_path.c_str());
+    lua_setfield(L,-2,"path");
+    lua_pop(L,1);
+
+    std::string auxLib = Output::Inst()->RanaDir;
+    auxLib.append("/src/modules/auxiliary.lua");
+
+    std::string settingsPath = filename;
+    settingsPath.erase(settingsPath.end()-4,settingsPath.end());
+    settingsPath.append("_settings.lua");
+
+    if(luaL_loadfile(L, auxLib.c_str()) || lua_pcall(L,0,0,0)){
+        std::cout << "\n\n\tSUPERVISOR - Can't load Aux\n\n" << std::endl;
+    }
+
+    lua_getglobal(L, "_InitializeAgent");
+    std::cout << "\tisFunction = " << lua_isfunction(L, -1) << "\n";
+    if( lua_isfunction(L, -1) )
+    {
+        return true; // File type agent
+    }
+    else
+    {
+        return false; // File type sim conf.
+    }
+
+/*
+        if( luaL_loadfile(L, filename.c_str()) || lua_pcall(L,0,0,0) )
+        {
+            std::cout << "\n\n\tSUPERVISOR - Could not open file: " << filename << "\n\n" << std::endl;
+        }
+        else
+        {
+            std::cout << "\n\n\tSUPERVISOR - Could open file: " << filename << "\n\n" << std::endl;
+
+            try
+            {
+                //  Check if there is a "initializeAgent"-function.
+                lua_getglobal(L, "luaTest");
+                std::cout << "\tisFunction = " << lua_isfunction(L, -1) << "\n";
+
+                if(lua_pcall(L,0,0,0)!=LUA_OK)
+                {
+                    std::cout << "\tFUNCTION _InitializeAgent DOESN'T EXSISTS\n\n" << std::endl;
+                }
+                else
+                {
+                    std::cout << "\tFUNCTION _InitializeAgent EXSISTS\n\n" << std::endl;
+                }
+            }
+            catch(std::exception& e)
+            {
+                std::cout << "\tFUNCTION _InitializeAgent DOESN'T EXSISTS - Exception\n\n" << std::endl;
+            }
+        }
+*/
+}
+
+
 /**
  * Populate the system.
  * Determines the number of Agents pr sector, assigns them to their respective sector and
@@ -152,29 +230,39 @@ std::list<agentInfo> Supervisor::retrievePopPos()
 void Supervisor::populateSystem(int listenerSize, int screamerSize, int LUASize, std::string filename)
 {
     std::vector<int> LUAVector;
-
     for(uint i = 0; i < sectors.size(); i++)
     {
         LUAVector.push_back(0);
     }
-
     autonAmount = LUASize;
     agentFilename = filename;
-
     uint j = 0;
     for(int i = 0; i<LUASize; i++, j++)
     {
         if(i % sectors.size() == 0) j = 0;
         LUAVector.at(j)++;
     }
-    //Output::Inst()->kdebug("working here! %i, %i", LUAVector.size(), LUAVector.at(0));
-    j = 0;
-    for(auto itr = LUAVector.begin(); itr != LUAVector.end(); ++itr, j++)
-    {
-        Sector *sector = sectors.at(j);
-        //Output::Inst()->kdebug("Working not here %i", *itr);
-        sector->populate(*itr, filename, simulationType);
+
+    /**
+      Before adding agents, check if the filepath, is agent, or "sim file"
+    **/
+
+    if (checkLuaFileType( filename ) ){
+        /**
+            Load agent normally
+        */
+        j = 0;
+        for(auto itr = LUAVector.begin(); itr != LUAVector.end(); ++itr, j++)
+        {
+            Sector *sector = sectors.at(j);
+            sector->populate(*itr, filename, simulationType);
+        }
+    }else{
+        /**
+            Load all the individual agents, and the correct amount of them.
+        */
     }
+
 
 }
 

@@ -71,16 +71,14 @@ void Output::kprintf(const char* msg, ...)
     //lock.lock();
     va_list args;
     va_start(args, msg);
-
     char buffer[4096] = {};
     vsprintf(buffer, msg, args);
-
     QString string(buffer);
-
-	qDebug() << buffer;
-
-	mainWindow->write_regularOutput(string);
-
+    qDebug() << buffer;
+    if(mainWindow != NULL)
+    {
+        mainWindow->write_regularOutput(string);
+    }
     va_end(args);
     //lock.unlock();
 }
@@ -103,8 +101,10 @@ void Output::kdebug(const char* msg, ...)
 
     qDebug() << buffer;
 
-    mainWindow->write_output(string);
-
+    if(mainWindow != NULL)
+    {
+        mainWindow->write_output(string);
+    }
     va_end(args);
     //lock.unlock();
 }
@@ -120,7 +120,11 @@ void Output::kdebug(const char* msg, ...)
  */
 void Output::updateStatus(unsigned long long internalEvents, unsigned long long externalEvents)
 {
-	mainWindow->write_status(internalEvents, externalEvents);
+    if(mainWindow != NULL)
+    {
+        mainWindow->write_status(internalEvents, externalEvents);
+
+    }
 }
 
 /**
@@ -131,8 +135,11 @@ void Output::updateStatus(unsigned long long internalEvents, unsigned long long 
  */
 void Output::progressBar(unsigned long long current, unsigned long long maximum)
 {
-    int progress = (current * 100)/maximum;
-    mainWindow->advanceProgess(progress);
+    if(mainWindow != NULL)
+    {
+        int progress = (current * 100)/maximum;
+        mainWindow->advanceProgess(progress);
+    }
 }
 
 /**
@@ -143,13 +150,19 @@ void Output::progressBar(unsigned long long current, unsigned long long maximum)
  */
 void Output::ppprogressbar(int current, int maximum)
 {
-	int progress = (current * 100)/maximum;
-	mainWindow->advancePPProgess(progress);
+    if(mainWindow != NULL)
+    {
+        int progress = (current * 100)/maximum;
+        mainWindow->advancePPProgess(progress);
+    }
 }
 
 void Output::setEventSceneRect(int x, int y)
 {
-	mainWindow->setEventSceneRect(x, y);
+    if(mainWindow != NULL)
+    {
+        mainWindow->setEventSceneRect(x, y);
+    }
 }
 
 void Output::setMainWindow(MainWindow *mainwindow)
@@ -171,7 +184,10 @@ void Output::ppprintf(const char *msg,...)
 
 	QString string(buffer);
 
-	mainWindow->write_PPOutput(string);
+    if(mainWindow != NULL)
+    {
+        mainWindow->write_PPOutput(string);
+    }
 
 	va_end(args);
 }
@@ -182,18 +198,27 @@ void Output::ppprintf(const char *msg,...)
  */
 void Output::updateZvalue(QString string)
 {
-	Output::mainWindow->writeZValue(string);
+    if(mainWindow != NULL)
+    {
+        Output::mainWindow->writeZValue(string);
+    }
 }
 
 void Output::removeGraphicAgent(int Id)
 {
-    mainWindow->removeGraphicAgent(Id);
+    if(mainWindow != NULL)
+    {
+        mainWindow->removeGraphicAgent(Id);
+    }
 }
 
 void Output::addGraphicAgent(int Id, double posX, double posY, rgba color, double angle)
 {
-    std::lock_guard<std::mutex> guard(autonMutex);
-    mainWindow->addGraphicAgent(Id, int(posX)/Phys::getScale(), int(posY)/Phys::getScale(), color, angle);
+    if(mainWindow != NULL)
+    {
+        std::lock_guard<std::mutex> guard(autonMutex);
+        mainWindow->addGraphicAgent(Id, int(posX)/Phys::getScale(), int(posY)/Phys::getScale(), color, angle);
+    }
 }
 
 /*
@@ -205,6 +230,8 @@ void Output::changeGraphicAgentColor(int id, int r, int g, int b, int alpha)
 
 void Output::enableRunBotton(bool enabled)
 {
-    mainWindow->enableRunButton(enabled);
-
+    if(mainWindow != NULL)
+    {
+        mainWindow->enableRunButton(enabled);
+    }
 }

@@ -27,8 +27,10 @@
 
 std::unordered_map<std::string, double> Shared::sharedNumbers;
 std::unordered_map<std::string, std::string> Shared::sharedStrings;
+std::unordered_map<std::string, std::vector<std::string>> Shared::sharedStringVectors;
 std::shared_timed_mutex Shared::numberMutex;
 std::shared_timed_mutex Shared::stringMutex;
+std::shared_timed_mutex Shared::stringVectorMutex;
 
 //Shared::Shared()
 //{
@@ -51,8 +53,7 @@ void Shared::initShared()
 
 void Shared::addNumber(std::string key, double value)
 {
-    std::lock_guard<std::shared_timed_mutex>
-            writerLock(numberMutex);
+    std::lock_guard<std::shared_timed_mutex> writerLock(numberMutex);
 
     sharedNumbers[key] = value;
     /*if(sharedNumbers.find(key) == sharedNumbers.end())
@@ -67,8 +68,7 @@ void Shared::addNumber(std::string key, double value)
 
 double Shared::getNumber(std::string key)
 {
-    std::shared_lock<std::shared_timed_mutex>
-            readerLock(numberMutex);
+    std::shared_lock<std::shared_timed_mutex> readerLock(numberMutex);
 
 	auto sharedItr = sharedNumbers.find(key);
 
@@ -81,12 +81,10 @@ double Shared::getNumber(std::string key)
 
 void Shared::addString(std::string key, std::string value)
 {
-
-
-    std::lock_guard<std::shared_timed_mutex>
-            writerLock(stringMutex);
+    std::lock_guard<std::shared_timed_mutex> writerLock(stringMutex);
 
     sharedStrings[key] = value;
+
     //Output::Inst()->kprintf(value.c_str());
 
     /*if(sharedStrings.find(key) == sharedStrings.end())
@@ -100,14 +98,32 @@ void Shared::addString(std::string key, std::string value)
 
 std::string Shared::getString(std::string key)
 {
-    std::shared_lock<std::shared_timed_mutex>
-            writerLock(stringMutex);
+    std::shared_lock<std::shared_timed_mutex> readerLock(stringMutex);
 
 	auto sharedItr = sharedStrings.find(key);
 
 	if(sharedItr != sharedStrings.end())
 	{
 		return sharedItr->second;
-	} else return "";
+    } else return "";
+}
+/*
+void Shared::addStringVector(std::string key, std::vector<std::string> value)
+{
+    std::lock_guard<std::shared_timed_mutex> writerLock(stringVectorMutex);
+
+    sharedStringVectors[key] = value;
 }
 
+std::vector<std::string> Shared::getStringVector(std::string key)
+{
+    std::shared_lock<std::shared_timed_mutex> readerLock(stringVectorMutex);
+
+    auto sharedItr = sharedStringVectors.find(key);
+
+    if(sharedItr != sharedStringVectors.end())
+    {
+        return sharedItr->second;
+    } else return "";
+}
+*/

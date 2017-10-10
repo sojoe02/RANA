@@ -31,8 +31,11 @@ function _InitializeAgent()
         if InitializeAgent ~= nil then
                 InitializeAgent()
         elseif initializeAgent ~= nil then
+                Initializeagent()
+        elseif initializeAgent ~= nil then
                 initializeAgent()
-                --say("Agent #: "..ID.. " has been initialized")
+        elseif initializeAgent ~= nil then
+                initializegent()
         end
 end
 
