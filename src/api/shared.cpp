@@ -27,10 +27,11 @@
 
 std::unordered_map<std::string, double> Shared::sharedNumbers;
 std::unordered_map<std::string, std::string> Shared::sharedStrings;
-std::unordered_map<std::string, std::vector<std::string>> Shared::sharedStringVectors;
 std::shared_timed_mutex Shared::numberMutex;
 std::shared_timed_mutex Shared::stringMutex;
-std::shared_timed_mutex Shared::stringVectorMutex;
+
+std::unordered_map<std::string, agentPathNum> Shared::sharedAgents;
+std::shared_timed_mutex Shared::agentMutex;
 
 //Shared::Shared()
 //{
@@ -38,17 +39,8 @@ std::shared_timed_mutex Shared::stringVectorMutex;
 
 void Shared::initShared()
 {
-	//if (sharedNumbers != NULL)
-	//{
 	sharedNumbers.clear();
-	sharedStrings.clear();
-	//sharedNumbers;
-	//	delete sharedStrings;
-	//} else
-	//{
-	//	sharedNumbers = new std::unordered_map<std::string, double>();
-	//	sharedStrings = new std::unordered_map<std::string, std::string()>;
-	//}
+    sharedStrings.clear();
 }
 
 void Shared::addNumber(std::string key, double value)
@@ -56,14 +48,6 @@ void Shared::addNumber(std::string key, double value)
     std::lock_guard<std::shared_timed_mutex> writerLock(numberMutex);
 
     sharedNumbers[key] = value;
-    /*if(sharedNumbers.find(key) == sharedNumbers.end())
-		sharedNumbers.insert(std::pair<std::string, double>(key, value));
-	else
-	{
-		sharedNumbers.erase(key);
-		sharedNumbers.insert(std::pair<std::string, double>(key, value));
-    }*/
-
 }
 
 double Shared::getNumber(std::string key)
@@ -84,16 +68,6 @@ void Shared::addString(std::string key, std::string value)
     std::lock_guard<std::shared_timed_mutex> writerLock(stringMutex);
 
     sharedStrings[key] = value;
-
-    //Output::Inst()->kprintf(value.c_str());
-
-    /*if(sharedStrings.find(key) == sharedStrings.end())
-		sharedStrings.insert(std::pair<std::string, std::string>(key, value));
-	else
-	{
-		sharedStrings.erase(key);
-		sharedStrings.insert(std::pair<std::string, std::string>(key, value));
-    }*/
 }
 
 std::string Shared::getString(std::string key)
@@ -107,23 +81,50 @@ std::string Shared::getString(std::string key)
 		return sharedItr->second;
     } else return "";
 }
-/*
-void Shared::addStringVector(std::string key, std::vector<std::string> value)
-{
-    std::lock_guard<std::shared_timed_mutex> writerLock(stringVectorMutex);
 
-    sharedStringVectors[key] = value;
+void Shared::addAgentPathNum(std::string key, agentPathNum value)
+{
+    std::lock_guard<std::shared_timed_mutex> writerLock(agentMutex);
+
+    sharedAgents[key] = value;
 }
 
-std::vector<std::string> Shared::getStringVector(std::string key)
+agentPathNum Shared::getAgentPathNum(std::string key)
 {
-    std::shared_lock<std::shared_timed_mutex> readerLock(stringVectorMutex);
+    std::shared_lock<std::shared_timed_mutex> readerLock(agentMutex);
 
-    auto sharedItr = sharedStringVectors.find(key);
+    auto sharedItr = sharedAgents.find(key);
 
-    if(sharedItr != sharedStringVectors.end())
+    if(sharedItr != sharedAgents.end())
     {
         return sharedItr->second;
-    } else return "";
+    };
 }
-*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

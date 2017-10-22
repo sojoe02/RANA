@@ -1,24 +1,25 @@
 --  Import tables, agents, sim, and param.
---require ("test_file_input")
+local utility = require "ranalib_utility"
+local Shared = require "ranalib_shared"
+
 
 --  Set local tables used
 local simParam = {}
 local paramOrderedKeys = {}
 local agentOrderedKeys = {}
 
-local _inputFilePath
-
-local function paramForLoop(table, numInTable, maxNumInTable)
+local function _testParamForLoop(table, numInTable, maxNumInTable)
 
     --  Base case
     if numInTable > maxNumInTable then
 
         for index, value in ipairs(simParam) do
-            io.write(value, ' ')
+            Shared.storeNumber(index, value)
+            io.write(value, ' ')    --  TODO: Outcomment
         end
-        io.write('\n')
+        io.write('\n')  --  TODO: Outcomment
 
-        -- Do co-rutine, and run simulation with parameters.
+        coroutine.yield()
 
         return
     end
@@ -28,7 +29,7 @@ local function paramForLoop(table, numInTable, maxNumInTable)
     if #v == 2 then
         for p = v[1], v[2] do
             simParam[numInTable] = p
-            paramForLoop(table, numInTable+1, maxNumInTable)
+            _testParamForLoop(table, numInTable+1, maxNumInTable)
         end
     elseif #v == 3 then
         if v[3] > v[2] then
@@ -37,29 +38,47 @@ local function paramForLoop(table, numInTable, maxNumInTable)
 
         for p = v[1], v[2], v[3] do
             simParam[numInTable] = p
-            paramForLoop(table, numInTable+1, maxNumInTable)
+            _testParamForLoop(table, numInTable+1, maxNumInTable)
         end
     else
         for p = 1, #v do
             simParam[numInTable] = v[p]
-            paramForLoop(table, numInTable+1, maxNumInTable)
+            _testParamForLoop(table, numInTable+1, maxNumInTable)
         end
     end
 
+    return 0
 end
 
-local function paramMain()
 
+function _testParamMain()
+
+    paramOrderedKeys = {}
     for value in pairs(param) do
         table.insert(paramOrderedKeys, value)
         print(paramOrderedKeys, value, #paramOrderedKeys)
     end
 
-    paramForLoop(param, 1, #paramOrderedKeys)
+    co = coroutine.create( function() _testParamForLoop(param, 1, #paramOrderedKeys) end)
 
+    return 0
+end
+
+function _testParamMainCo()
+    coroutine.resume(co)
+
+    if coroutine.status(co) ~= "dead" then
+        return true
+    end
+
+    return false
 end
 
 local function agentMain()
+
+    local _key = 0
+    local _path
+    local _num
 
     --  Go over all agents in file, and number of agents
     for key, value in ipairs(agents) do
@@ -67,32 +86,53 @@ local function agentMain()
 
         --  Check if it is a file path
         if type(value) == "string" then
-            io.write(value, " ")
+            _key = _key+1
+            _path = value
+            --io.write(value, " ")
 
             --  Check if there is a number of agents to initiate
             if type( select(2, next( agents, key) ) ) == "number" then
-                io.write( select(2, next( agents, key)) )
-            else    --  Instantiate 1
-                io.write( 1 )
-            end
+                _num = select(2, next( agents, key))
+                --io.write( select(2, next( agents, key)) )
 
-            io.write("\n")
+            else    --  Instantiate 1
+                _num = 1
+                --io.write( 1 )
+
+            end
+            Shared.storeAgent(_key, _path, _num)
+            --io.write("\n")
+            --print(_key, _path, _num)
         end
 
     end
 
+    Shared.storeNumber("numAgents", _key)
+
 end
 
 function _getSimulationFile(inputFilePath)
-    _inputFilePath = inputFilePath
-    print(_inputFilePath)
-    require(_inputFilePath)
+    require(inputFilePath)
+    print(inputFilePath)
+end
+
+function _checkIfInputFileIsSimulationType()
+    if type(sim) == "table" and
+        type(agents) == "table" and
+         type(param) == "table" then
+                return true
+    end
+
+    return false
 end
 
 function _testFunc()
     agentMain()
-    paramMain()
+    --paramMain() -- This is done.
 end
+
+
+
 
 
 

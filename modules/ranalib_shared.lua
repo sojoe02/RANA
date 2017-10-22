@@ -11,8 +11,6 @@ local valueCheck = false
 -- Example: API.shareTable("agent1",{myX, myY, myID}, true)
 function RanaLibShared.storeTable(key, table, check)
 
-
-
 	local check = check or valueCheck
 	local tableString
 
@@ -20,11 +18,8 @@ function RanaLibShared.storeTable(key, table, check)
 
                 if type(table)=="table" and type(key)~="table" then
                         tableString = utility.serializeTable(table)
-                        print("shit")
                         l_addSharedString(key, tableString)
-                        print("shit")
-		else 
-                        print("test2")
+                else
 			l_debug("Failure to store table, table and/or key is not of correct type")			
 			l_stopSimulation()
 		end
@@ -113,4 +108,50 @@ function RanaLibShared.checkValues(boolean)
 
 end
 
+-- Submit a shared agent to a central register available to all agents.
+-- The agent is stored in a pair form in a hashmap, using a string key as index
+-- Example: API.shareAgent("agent1",path, num)
+function RanaLibShared.storeAgent(key, path, num)
+
+        l_addSharedAgent(key, path, num)
+end
+
 return RanaLibShared
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

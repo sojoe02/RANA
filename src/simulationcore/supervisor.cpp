@@ -183,37 +183,6 @@ bool Supervisor::checkLuaFileType( std::string filename )
     {
         return false; // File type sim conf.
     }
-
-/*
-        if( luaL_loadfile(L, filename.c_str()) || lua_pcall(L,0,0,0) )
-        {
-            std::cout << "\n\n\tSUPERVISOR - Could not open file: " << filename << "\n\n" << std::endl;
-        }
-        else
-        {
-            std::cout << "\n\n\tSUPERVISOR - Could open file: " << filename << "\n\n" << std::endl;
-
-            try
-            {
-                //  Check if there is a "initializeAgent"-function.
-                lua_getglobal(L, "luaTest");
-                std::cout << "\tisFunction = " << lua_isfunction(L, -1) << "\n";
-
-                if(lua_pcall(L,0,0,0)!=LUA_OK)
-                {
-                    std::cout << "\tFUNCTION _InitializeAgent DOESN'T EXSISTS\n\n" << std::endl;
-                }
-                else
-                {
-                    std::cout << "\tFUNCTION _InitializeAgent EXSISTS\n\n" << std::endl;
-                }
-            }
-            catch(std::exception& e)
-            {
-                std::cout << "\tFUNCTION _InitializeAgent DOESN'T EXSISTS - Exception\n\n" << std::endl;
-            }
-        }
-*/
 }
 
 
@@ -247,7 +216,7 @@ void Supervisor::populateSystem(int listenerSize, int screamerSize, int LUASize,
       Before adding agents, check if the filepath, is agent, or "sim file"
     **/
 
-    if (checkLuaFileType( filename ) ){
+    if ( checkLuaFileType( filename ) ){
         /**
             Load agent normally
         */
@@ -262,7 +231,6 @@ void Supervisor::populateSystem(int listenerSize, int screamerSize, int LUASize,
             Load all the individual agents, and the correct amount of them.
         */
     }
-
 
 }
 

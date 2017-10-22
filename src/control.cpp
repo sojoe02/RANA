@@ -92,31 +92,106 @@ void Control::initialSetup()
             std::cout << "\n\n\tSim file loaded: " << simLib << std::endl;
         }
 
-        simLib = "test_file_input"; //TODO: fix generalized input
-        lua_settop(L,0);
-        lua_getglobal(L,"_getSimulationFile");
-        lua_pushstring(L,simLib.c_str());
-        if(lua_pcall(L,1,0,0)!=LUA_OK){ Output::Inst()->kprintf("Control - Lua_simconfig - Can't locate Sim file"); }
+        //  Remove .lua extension from a file, if there are no ".", just use filepath.
+        std::string rawfile;
+        size_t lastdot = agentPath.find_last_of(".");
+        if (lastdot == std::string::npos){
+            rawfile = agentPath;
+        }else{
+            rawfile = agentPath.substr(0, lastdot);
+        }
 
-        lua_settop(L,0);
-        lua_getglobal(L,"_testFunc");
-        if(lua_pcall(L,0,0,0)!=LUA_OK){ Output::Inst()->kprintf("Control - Lua_simconfig - Can't locate Sim file"); }
+        if( this->cli != NULL){
+            lua_settop(L,0);
+            lua_getglobal(L,"_getSimulationFile");
+            lua_pushstring(L,rawfile.c_str());
+            if(lua_pcall(L,1,0,0)!=LUA_OK){ Output::Inst()->kprintf("Control - Lua_simconfig - Can't locate Sim file - 1"); }
+
+            lua_settop(L,0);
+            lua_getglobal(L,"_checkIfInputFileIsSimulationType");
+            if(lua_pcall(L,0,1,0)!=LUA_OK){ Output::Inst()->kprintf("Control - Lua_simconfig - Can't locate Sim file - 2"); }
+
+            if( !lua_toboolean(L,-1) )
+            {
+                //  File is not simulation file
+                std::cout << "Error in tables in Simulation file" << std::endl;
+                exit(EXIT_FAILURE); //TODO: Skip with -force option
+            }
+            else
+            {
+                //  File is simulation file
+                lua_register(L, "l_addSharedNumber",l_addSharedNumber);
+                lua_register(L, "l_addSharedAgent",l_addSharedAgent);
+
+                lua_settop(L,0);
+                lua_getglobal(L,"_testFunc");
+                if(lua_pcall(L,0,0,0)!=LUA_OK){ Output::Inst()->kprintf("Control - Lua_simconfig - Can't locate Sim file - 3"); }
+            }
+        }
+
     }
 
-    try{
-        lua_settop(L,0);
-        lua_getglobal(L,"_getInitialCurrentSimulation");
-        if(lua_pcall(L,0,1,0)!=LUA_OK){ Output::Inst()->kprintf("Control - Lua_simconfig - Can't get current"); }
-        else{ this->currentNumberOfSimulation = lua_tonumber(L,-1); }
-        lua_settop(L,0);
-        lua_getglobal(L,"_getTotalNumberSimulation");
-        if(lua_pcall(L,0,1,0)!=LUA_OK){ Output::Inst()->kprintf("Control - Lua_simconfig - Can't get total"); }
-        else{ this->totalNumberOfSimulations = lua_tonumber(L,-1); }
-        lua_settop(L,0);
-        lua_getglobal(L,"_initializeParameterForSimulation");
-        if(lua_pcall(L,0,0,0)!=LUA_OK){ Output::Inst()->kprintf("Control - Lua_simconfig - Can't set params"); }
+    /**
+    * @brief lua_getglobal -
+    * Function that will go in and do the permutation of parameters
+    * the function will keep returning true, as long as a new permutation exists.
+    */
 
-    }catch(std::exception& e){ Output::Inst()->kprintf("Control - Exception"); }
+    lua_getglobal(L,"_testParamMain");
+    if(lua_pcall(L,0,0,0)!=LUA_OK){ Output::Inst()->kprintf("Control - Lua_simconfig - Can't locate Sim file - 4"); }
+
+    bool checkNestedFunc = true;
+    while(checkNestedFunc)
+    {
+        lua_getglobal(L,"_testParamMainCo");
+        if(lua_pcall(L,0,1,0)!=LUA_OK){ Output::Inst()->kprintf("Control - Lua_simconfig - Can't locate Sim file - 5"); }
+
+        checkNestedFunc = lua_toboolean(L,-1);
+        if (checkNestedFunc)
+        {
+            //  Run a new simulation with the new parameters.
+        }else
+        {
+            //  Just exit, all permutations of parameters done.
+        }
+    }
+
+
+/*
+    lua_getglobal(L,"_testParamMain");
+    if(lua_pcall(L,0,0,0)!=LUA_OK){ Output::Inst()->kprintf("Control - Lua_simconfig - Can't locate Sim file - 4"); }
+    for(int i = 1; i <= 18; i++)
+    {
+        lua_getglobal(L,"_testParamMainCo");
+        if(lua_pcall(L,0,1,0)!=LUA_OK){ Output::Inst()->kprintf("Control - Lua_simconfig - Can't locate Sim file - 5"); }
+
+        bool checkNestedFunc = lua_toboolean(L,-1);
+        if (checkNestedFunc) {
+            std::cout << i << " Return from Function: " << checkNestedFunc << std::endl;
+            std::cout << Shared::getNumber(std::string("1")) << " ";
+            std::cout << Shared::getNumber(std::string("2")) << " ";
+            std::cout << Shared::getNumber(std::string("3")) << " ";
+            std::cout << Shared::getNumber(std::string("4")) << std::endl;
+
+        }else{
+            std::cout << i << " Return from Function: " << checkNestedFunc << std::endl;
+        }
+
+    }
+*/
+
+    /**
+    * @brief numAgents -
+    * Function that will check if there are individual agents, and the number of them.
+    * the function will only run if there are at least 1 agent.
+    */
+    int numAgents = Shared::getNumber(std::string("numAgents"));
+    for(int i = 1; i <= numAgents; i++)
+    {
+        agentPathNum a;
+        a = Shared::getAgentPathNum(std::to_string(i));
+        std::cout << a.first << " " << a.second << std::endl;
+    }
 
     connect(this, &Control::runSimulationSignal, this, &Control::runSimulation);
 }
@@ -329,4 +404,41 @@ void Control::toggleLiveView(bool enable)
     if(agentDomain != NULL){
         agentDomain->toggleLiveView(enable);
     }
+}
+
+
+/**
+ * @brief Control::l_addSharedNumber - Are used for the simulation file to access the shared memory
+ * @param L
+ * @return
+ */
+int Control::l_addSharedNumber(lua_State *L)
+{
+    std::string key = lua_tostring(L, -2);
+    double value = lua_tonumber(L, -1);
+
+    Shared::addNumber(key, value);
+
+    return 0;
+}
+
+/**
+ * @brief Control::l_addSharedAgent - Are used for the simulation file to access the shared memory
+ * @param L
+ * @return
+ */
+int Control::l_addSharedAgent(lua_State *L)
+{
+    std::string key = lua_tostring(L, -3);
+    std::string agentPath = lua_tostring(L, -2);
+    int value = lua_tointeger(L, -1);
+
+    std::pair<std::string, int> temp(agentPath, value);
+
+
+    std::cout << key << " " << agentPath << " " << value << std::endl;
+
+    Shared::addAgentPathNum(key, temp);
+
+    return 0;
 }

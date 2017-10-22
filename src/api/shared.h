@@ -27,6 +27,8 @@
 #include <unordered_map>
 #include <shared_mutex>
 
+typedef std::pair<std::string, int> agentPathNum;
+
 class Shared
 {
 public:
@@ -38,8 +40,8 @@ public:
 	static std::string getString(std::string key);
 	static void addString(std::string key, std::string value);
 
-    static std::vector<std::string> getStringVector(std::string key);
-    static void addStringVector(std::string key, std::vector<std::string> value);
+    static agentPathNum getAgentPathNum(std::string key);
+    static void addAgentPathNum(std::string, agentPathNum);
 
 	static void initShared();
 
@@ -47,11 +49,12 @@ private:
 
     static std::shared_timed_mutex numberMutex;
     static std::shared_timed_mutex stringMutex;
-    static std::shared_timed_mutex stringVectorMutex;
 
 	static std::unordered_map<std::string, double> sharedNumbers;
-	static std::unordered_map<std::string, std::string> sharedStrings;
-    static std::unordered_map<std::string, std::vector<std::string>> sharedStringVectors;
+    static std::unordered_map<std::string, std::string> sharedStrings;
+
+    static std::shared_timed_mutex agentMutex;
+    static std::unordered_map<std::string, agentPathNum> sharedAgents;
 
 };
 

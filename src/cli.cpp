@@ -63,9 +63,9 @@ Cli::Cli(std::string _file, QWidget *parent) :
     std::cout << "2: " << Output::Inst()->AgentPath << std::endl;
     std::cout << "3: " << Output::Inst()->AgentFile << std::endl;
 
-    this->generateMap();
-    this->generateSimulation();
-    this->runSimulation();
+    //this->generateMap();
+    //this->generateSimulation();
+    //this->runSimulation();
 }
 
 Cli::~Cli()

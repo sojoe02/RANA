@@ -113,6 +113,9 @@ class Control : public QObject
         void killRunner();
         void killRunthread();
 
+        static int l_addSharedNumber( lua_State* );
+        static int l_addSharedAgent( lua_State* );
+
     //  Private slot
     private slots:
         void runSimulation();
@@ -120,8 +123,8 @@ class Control : public QObject
     //  Private Attributes
     private:
         FlowControl *agentDomain;
-        Cli *cli;
-        MainWindow *mainwindow;
+        Cli *cli = NULL;
+        MainWindow *mainwindow = NULL;
         Runner *runner;
         QThread runThread;
         QFuture<void> populateFuture;
