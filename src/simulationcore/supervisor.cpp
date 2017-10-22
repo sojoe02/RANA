@@ -35,6 +35,8 @@
 #include "src/api/phys.h"
 #include "src/simulationcore/supervisor.h"
 
+#include "../api/shared.h"
+
 #define TASK_STEP 	300
 #define TASK_STOP	400
 
@@ -139,53 +141,6 @@ std::list<agentInfo> Supervisor::retrievePopPos()
     return agentinfo;
 }
 
-bool Supervisor::checkLuaFileType( std::string filename )
-{
-    /**
-     * Quickly load lua stuff into stack, and check whether the parsed file, is a simulation conf, or a lua agent.
-    **/
-
-    lua_State* L = luaL_newstate();
-    luaL_openlibs(L);
-    lua_getglobal(L, "package");
-    lua_getfield(L, -1, "path");
-    std::string cur_path = lua_tostring(L, -1);
-    std::string module_path = Output::Inst()->RanaDir;
-    module_path.append("/src/modules/?.lua");
-    cur_path.append(";");
-    cur_path.append(module_path);
-    cur_path.append(";");
-    cur_path.append(Output::Inst()->AgentPath);
-    cur_path.append("?.lua");
-    lua_pop(L,1);
-    lua_pushstring(L, cur_path.c_str());
-    lua_setfield(L,-2,"path");
-    lua_pop(L,1);
-
-    std::string auxLib = Output::Inst()->RanaDir;
-    auxLib.append("/src/modules/auxiliary.lua");
-
-    std::string settingsPath = filename;
-    settingsPath.erase(settingsPath.end()-4,settingsPath.end());
-    settingsPath.append("_settings.lua");
-
-    if(luaL_loadfile(L, auxLib.c_str()) || lua_pcall(L,0,0,0)){
-        std::cout << "\n\n\tSUPERVISOR - Can't load Aux\n\n" << std::endl;
-    }
-
-    lua_getglobal(L, "_InitializeAgent");
-    std::cout << "\tisFunction = " << lua_isfunction(L, -1) << "\n";
-    if( lua_isfunction(L, -1) )
-    {
-        return true; // File type agent
-    }
-    else
-    {
-        return false; // File type sim conf.
-    }
-}
-
-
 /**
  * Populate the system.
  * Determines the number of Agents pr sector, assigns them to their respective sector and
@@ -203,6 +158,7 @@ void Supervisor::populateSystem(int listenerSize, int screamerSize, int LUASize,
     {
         LUAVector.push_back(0);
     }
+
     autonAmount = LUASize;
     agentFilename = filename;
     uint j = 0;
@@ -212,13 +168,14 @@ void Supervisor::populateSystem(int listenerSize, int screamerSize, int LUASize,
         LUAVector.at(j)++;
     }
 
-    /**
-      Before adding agents, check if the filepath, is agent, or "sim file"
-    **/
+    int numTypeAgents = Shared::getNumber(std::string("numAgents"));
 
-    if ( checkLuaFileType( filename ) ){
+    std::cout << numTypeAgents << std::endl;
+
+    if ( !numTypeAgents ){
         /**
-            Load agent normally
+            Load agent normally, if there are no individual agents, from a simulation file.
+            This *should* only happen in case of using the GUI
         */
         j = 0;
         for(auto itr = LUAVector.begin(); itr != LUAVector.end(); ++itr, j++)
@@ -230,7 +187,30 @@ void Supervisor::populateSystem(int listenerSize, int screamerSize, int LUASize,
         /**
             Load all the individual agents, and the correct amount of them.
         */
+        j = 0;
+        for(int i = 1; i <= numTypeAgents; i++)
+        {
+            agentPathNum a;
+            a = Shared::getAgentPathNum(std::to_string(i));
+
+            std::string _file = a.first;
+            int _num = a.second;
+
+            for(int k = 0; k < _num; k++)
+            {
+                std::cout << std::endl << "sector: " << j << " max threads: " << sectors.size() << std::endl;
+                Sector *sector = sectors.at(j);
+                sector->populate(1, _file, simulationType);
+
+                j++;
+                if(j % sectors.size() == 0) j = 0;
+            }
+        }
     }
+
+    std::cout << "END OF SUPERVISOR" << std::endl;
+
+
 
 }
 

@@ -63,8 +63,8 @@ Cli::Cli(std::string _file, QWidget *parent) :
     std::cout << "2: " << Output::Inst()->AgentPath << std::endl;
     std::cout << "3: " << Output::Inst()->AgentFile << std::endl;
 
-    //this->generateMap();
-    //this->generateSimulation();
+    this->generateMap();
+    this->generateSimulation();
     //this->runSimulation();
 }
 
@@ -109,8 +109,8 @@ void Cli::generateSimulation()
             double macroRes = 1000; //TODO: Parse option
             macroRes = (1/timeRes)/macroRes;
 
-            int threads = 4;        //TODO: Parse option
-            int agentAmount = 4;    //TODO: Parse option
+            int threads = 2;        //TODO: Parse option
+            int agentAmount = 1;    //TODO: Parse option
 
             control->setEnvironmentVariables(mapImage, threads, timeRes, macroRes, agentAmount, parsedFilePath);
         } else

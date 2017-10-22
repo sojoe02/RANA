@@ -93,21 +93,21 @@ void FlowControl::generateEnvironment(double width, double height, int threads,
     Interfacer::initInterfacer(masteragent);
     //Scanning::edgeMask();
 
-    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
+    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
     masteragent->generateMap(width,height,threads,timeResolution, macroResolution);
-    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
+    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
     mapWidth = width;
     mapHeight = height;
-    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
+    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
     agentAmount = agentAmount;
     luaFilename = filename;
-    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
-    masteragent->populateSystem(0, 0, agentAmount, filename);
-    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
+    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
+    masteragent->populateSystem(0, 0, agentAmount, filename); //TODO: Check if this is fine. So far no problem
+    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
     retrievePopPos();
-    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
+    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
     mapGenerated = true;
-    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
+    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
 }
 
 void FlowControl::populateSystem()

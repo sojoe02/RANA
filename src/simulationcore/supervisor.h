@@ -77,8 +77,6 @@ public:
     void setSimulationType(int numberOfAgents);
 
 private:
-    bool checkLuaFileType( std::string );
-
     std::vector<Sector*> sectors;
     std::vector<std::thread*> threads;
 

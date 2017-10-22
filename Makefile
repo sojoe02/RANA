@@ -126,6 +126,9 @@ OBJECTS       = BUILD/obj/main.o \
 		BUILD/obj/moc_eventrunner.o \
 		BUILD/obj/moc_helpdialog.o
 DIST          = src/lua_agents/01_pingpong.lua \
+		src/lua_agents/01_pingpong_01.lua \
+		src/lua_agents/01_pingpong_02.lua \
+		src/lua_agents/01_pingpong_03.lua \
 		src/lua_agents/02_data_collector.lua \
 		src/lua_agents/02_master.lua \
 		src/lua_agents/02_oscillator.lua \
@@ -1338,7 +1341,8 @@ BUILD/obj/supervisor.o: src/simulationcore/supervisor.cpp src/output.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
-		src/api/phys.h
+		src/api/phys.h \
+		src/api/shared.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/supervisor.o src/simulationcore/supervisor.cpp
 
 BUILD/obj/agent.o: src/simulationcore/agents/agent.cpp src/simulationcore/sector.h \

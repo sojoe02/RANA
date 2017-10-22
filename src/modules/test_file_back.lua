@@ -94,7 +94,6 @@ local function agentMain()
             if type( select(2, next( agents, key) ) ) == "number" then
                 _num = select(2, next( agents, key))
                 --io.write( select(2, next( agents, key)) )
-
             else    --  Instantiate 1
                 _num = 1
                 --io.write( 1 )
@@ -102,7 +101,7 @@ local function agentMain()
             end
             Shared.storeAgent(_key, _path, _num)
             --io.write("\n")
-            --print(_key, _path, _num)
+            print(_key, _path, _num)
         end
 
     end

@@ -57,6 +57,7 @@ function _InitializeAgent()
 		PositionX = ENV_WIDTH/2
 		PositionY = ENV_HEIGHT/2
 	end
+
         DestinationX = 1
         DestinationY = 1
         Moving = true

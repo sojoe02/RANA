@@ -125,6 +125,9 @@ RESOURCES += \
 
 DISTFILES += \
     src/lua_agents/01_pingpong.lua \
+    src/lua_agents/01_pingpong_01.lua \
+    src/lua_agents/01_pingpong_02.lua \
+    src/lua_agents/01_pingpong_03.lua \
     src/lua_agents/02_data_collector.lua \
     src/lua_agents/02_master.lua \
     src/lua_agents/02_oscillator.lua \

@@ -1,7 +1,6 @@
 agents={
-    "/home/theis/workspace/RANA/src/lua_agents/01_pingpong.lua", 4,
-    "/home/theis/workspace/RANA/src/lua_agents/05_pingpong.lua",
-    "/home/theis/workspace/RANA/src/lua_agents/08_pingpong.lua", 7,
+    "/home/theis/workspace/RANA/src/lua_agents/01_pingpong_01.lua", 2,
+    "/home/theis/workspace/RANA/src/lua_agents/01_pingpong_02.lua", 1,
 }
 
 sim={
