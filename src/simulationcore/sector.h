@@ -51,7 +51,7 @@ class Sector
         ~Sector();
 
         void generateAgent();
-        void populate(int LUASize, std::string filename, int agentType);
+        void populate(int LUASize, std::string filename);
         void takeStepPhase(unsigned long long tmu);
         //function to receive events the master, and distribute them on all local sector
         void distroPhase(const EventQueue::eEvent *event);
@@ -79,9 +79,6 @@ private:
         std::map<int,std::shared_ptr<AgentLuaInterface>> luaAgents;
         std::list<std::shared_ptr<AgentLuaInterface>> newAgents;
 
-        std::map<int,std::shared_ptr<AgentInterface>> cppAgents;
-        std::list<std::shared_ptr<AgentInterface>> newCppAgents;
-
         std::list<int> removalIDs;
 
         friend class Agent;
@@ -92,8 +89,6 @@ private:
         double width;
         double height;
         int id;
-
-        int agentType;
 };
 
 #endif // SECTOR_H

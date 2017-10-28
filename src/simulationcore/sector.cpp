@@ -46,7 +46,7 @@ Sector::~Sector()
 {
 }
 
-void Sector::populate(int agentSize, std::string filename, int agentType)
+void Sector::populate(int agentSize, std::string filename)
 {
     std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
     for(int i=0; i<agentSize; i++)

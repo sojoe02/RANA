@@ -181,7 +181,7 @@ void Supervisor::populateSystem(int listenerSize, int screamerSize, int LUASize,
         for(auto itr = LUAVector.begin(); itr != LUAVector.end(); ++itr, j++)
         {
             Sector *sector = sectors.at(j);
-            sector->populate(*itr, filename, simulationType);
+            sector->populate(*itr, filename);
         }
     }else{
         /**
@@ -205,7 +205,7 @@ void Supervisor::populateSystem(int listenerSize, int screamerSize, int LUASize,
             {
                 std::cout << std::endl << "sector: " << j << " max threads: " << sectors.size() << std::endl;
                 Sector *sector = sectors.at(j);
-                sector->populate(1, _file, simulationType);
+                sector->populate(1, _file);
 
                 j++;
                 if(j % sectors.size() == 0) j = 0;
@@ -214,8 +214,6 @@ void Supervisor::populateSystem(int listenerSize, int screamerSize, int LUASize,
     }
 
     std::cout << "END OF SUPERVISOR" << std::endl;
-
-
 
 }
 
@@ -268,46 +266,23 @@ void Supervisor::microStep(unsigned long long tmu)
     {
         auto ilist = eventQueue->getIEventList(tmu);
 
-        if( simulationType == 0 ) //LUA agents
+        for(auto &e : ilist)
         {
-            for(auto &e : ilist)
+            //Output::Inst()->kprintf("origin id is %i", event->originID);
+            if (removedIDs.find(e->originID) == removedIDs.end())
             {
-                //Output::Inst()->kprintf("origin id is %i", event->originID);
-                if (removedIDs.find(e->originID) == removedIDs.end())
-                {
-                    std::unique_ptr<EventQueue::iEvent> iEventPtr(std::move(e));
+                std::unique_ptr<EventQueue::iEvent> iEventPtr(std::move(e));
 
-                    AgentLuaInterface *luaAgent = (AgentLuaInterface*)iEventPtr->origin;
-                    eventQueue->decrementEeventCounter(iEventPtr->event->id);
+                AgentLuaInterface *luaAgent = (AgentLuaInterface*)iEventPtr->origin;
+                eventQueue->decrementEeventCounter(iEventPtr->event->id);
 
-                    std::unique_ptr<EventQueue::eEvent> eEventPtr = luaAgent->handleEvent(std::move(iEventPtr));
+                std::unique_ptr<EventQueue::eEvent> eEventPtr = luaAgent->handleEvent(std::move(iEventPtr));
 
-                    if(eEventPtr != NULL)
-                        eventQueue->insertEEvent(std::move(eEventPtr));
+                if(eEventPtr != NULL)
+                    eventQueue->insertEEvent(std::move(eEventPtr));
 
-                }
             }
         }
-        else if( simulationType == 1 ) //CPP agents
-        {
-            for(auto &e : ilist)
-            {
-                //Output::Inst()->kprintf("origin id is %i", event->originID);
-                if (removedIDs.find(e->originID) == removedIDs.end())
-                {
-                    std::unique_ptr<EventQueue::iEvent> iEventPtr(std::move(e));
-
-                    AgentInterface *cppAgent = (AgentInterface*)iEventPtr->origin;
-                    eventQueue->decrementEeventCounter(iEventPtr->event->id);
-
-                    std::unique_ptr<EventQueue::eEvent> eEventPtr = cppAgent->handleEvent(std::move(iEventPtr));
-
-                    if(eEventPtr != NULL)
-                        eventQueue->insertEEvent(std::move(eEventPtr));
-                }
-            }
-        }
-
 
     }
 
@@ -436,17 +411,3 @@ bool Supervisor::removeAgent(int arg_id)
     }
     return false;
 }
-
-//  Choose whether to use LUA or CPP agents.
-void Supervisor::setSimulationType(int numberOfAgents)
-{
-    if( numberOfAgents < 5000 )
-    {
-        simulationType = 0;
-    }
-    else
-    {
-        simulationType = 1;
-    }
-}
-

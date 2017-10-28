@@ -106,7 +106,6 @@ class Control : public QObject
 
     //  Private Methods
     private:
-        void updateLuaSimulationConfigs();
         void readyAgentDomain();
         void killAgentDomain();
         void readyRunner();
@@ -136,8 +135,6 @@ class Control : public QObject
         bool generated;
         bool generating;
 
-        int currentNumberOfSimulation = 1;
-        int totalNumberOfSimulations = 1;
         unsigned long long runTime;
 
         QImage *map;

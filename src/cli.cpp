@@ -113,7 +113,7 @@ void Cli::generateSimulation()
             double macroRes = 1000; //TODO: Parse option
             macroRes = (1/timeRes)/macroRes;
 
-            int threads = 2;        //TODO: Parse option
+            int threads = 4;        //TODO: Parse option
             int agentAmount = 1;    //TODO: Parse option
 
             control->setEnvironmentVariables(mapImage, threads, timeRes, macroRes, agentAmount, parsedFilePath);

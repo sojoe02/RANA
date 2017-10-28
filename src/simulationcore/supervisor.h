@@ -74,8 +74,6 @@ public:
 
     std::set<int> removedIDs;
 
-    void setSimulationType(int numberOfAgents);
-
 private:
     std::vector<Sector*> sectors;
     std::vector<std::thread*> threads;
@@ -112,7 +110,5 @@ private:
     static std::mutex mutexStep;
     static std::mutex mutexStepDone;
     static int task;
-
-    int simulationType;
 };
 #endif // SUPERVISOR_H
