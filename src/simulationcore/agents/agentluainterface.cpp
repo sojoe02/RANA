@@ -49,7 +49,6 @@ AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double po
     :Agent(ID,posX,posY,posZ,sector),destinationX(posX),destinationY(posY),speed(1),moving(false),gridmove(false),
     filename(filename),nofile(false),removed(false),L(NULL)
 {
-    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
     //Output::Inst()->kprintf("%f,%f", posX, posY);
     desc = "LUA";
     color.red=255;
@@ -60,19 +59,13 @@ AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double po
     L = luaL_newstate();
     if(L == NULL)
     {
-        std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
         Output::Inst()->kprintf("<b><font color=\"brown\">A new Agent cannot be initialized. Lua(%s) is out of memory, Killing simulation</font></b></>", LUA_VERSION);
-        std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
         Output::KillSimulation.store(true);
-        std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
         removed = true;
-        std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
     }
     else
     {
-        std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
         luaL_openlibs(L);
-        std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
 
         // Register the path to the Rana specific lua modules
         lua_getglobal(L, "package");
@@ -236,8 +229,6 @@ AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double po
         //Call the Initialization function for the agent
         lua_settop(L,0);
     }
-
-    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
 
     moveFactor = Phys::getMacroFactor() * Phys::getTimeRes();
 }

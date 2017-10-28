@@ -59,17 +59,9 @@ Cli::Cli(std::string _file, QWidget *parent) :
     Output::AgentFile=fi.fileName().toStdString();
     Output::AgentPath=fi.path().toStdString().append("/");
 
-    std::cout << "1: " << Output::Inst()->RanaDir << std::endl;
-    std::cout << "2: " << Output::Inst()->AgentPath << std::endl;
-    std::cout << "3: " << Output::Inst()->AgentFile << std::endl;
-
-    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
     this->generateMap();
-    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
     this->generateSimulation();
-    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
     this->runSimulation();
-    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
 }
 
 Cli::~Cli()
@@ -126,7 +118,6 @@ void Cli::generateSimulation()
         std::cout << "No map has been loaded, please do that..." << std::endl;
     }
     initializeTimer->start(400);
-    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
 
 }
 

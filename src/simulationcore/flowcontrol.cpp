@@ -49,6 +49,7 @@ FlowControl::FlowControl(Control *control)
     //file = std::ofstream(positionFilename.c_str(),std::ofstream::out| std::ofstream::trunc);
     //file.open(positionFilename.c_str(),std::ofstream::out | std::ofstream::binary | std::ofstream::trunc);
 
+    Output::Inst()->kprintf("Initiating simulation #%i",control->newSimulation());
 
 }
 
@@ -93,21 +94,14 @@ void FlowControl::generateEnvironment(double width, double height, int threads,
     Interfacer::initInterfacer(masteragent);
     //Scanning::edgeMask();
 
-    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
     masteragent->generateMap(width,height,threads,timeResolution, macroResolution);
-    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
     mapWidth = width;
     mapHeight = height;
-    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
     agentAmount = agentAmount;
     luaFilename = filename;
-    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
     masteragent->populateSystem(0, 0, agentAmount, filename); //TODO: Check if this is fine. So far no problem
-    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
     retrievePopPos();
-    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
     mapGenerated = true;
-    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
 }
 
 void FlowControl::populateSystem()
@@ -179,7 +173,7 @@ void FlowControl::runSimulation(int time)
     }
     file.open(positionFilePath.c_str(),std::ofstream::out | std::ofstream::app | std::ofstream::binary);
     stop = false;
-    Output::Inst()->kprintf("Running Simulation of: %i[s], with resolution of %f \n",time, timeResolution);
+    Output::Inst()->kprintf("Running Simulation of: %i[s], with resolution of %f",time, timeResolution);
     Output::RunSimulation = true;
     unsigned long long iterations = (double)time/timeResolution;
     auto start = steady_clock::now();
@@ -267,7 +261,7 @@ void FlowControl::runSimulation(int time)
 
     auto endsim = steady_clock::now();
     duration_cast<seconds>(start2-endsim).count();
-    Output::Inst()->kprintf("Simulation run took:\t %llu[s] of computing time\n", duration_cast<seconds>(endsim - start2).count());
+    Output::Inst()->kprintf("Simulation run took:\t %llu[s] of computing time", duration_cast<seconds>(endsim - start2).count());
     file.close();
 
 }

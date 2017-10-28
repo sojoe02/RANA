@@ -168,11 +168,9 @@ void Supervisor::populateSystem(int listenerSize, int screamerSize, int LUASize,
         LUAVector.at(j)++;
     }
 
-    int numTypeAgents = Shared::getNumber(std::string("numAgents"));
+    double numTypeAgents = Shared::getNumber(std::string("numAgents"));
 
-    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << " numTypeAgents: " << numTypeAgents << std::endl;
-
-    if ( LLONG_MIN ){
+    if ( numTypeAgents == LLONG_MIN ){
         /**
             Load agent normally, if there are no individual agents, from a simulation file.
             This *should* only happen in case of using the GUI
@@ -203,7 +201,7 @@ void Supervisor::populateSystem(int listenerSize, int screamerSize, int LUASize,
 
             for(int k = 0; k < _num; k++)
             {
-                std::cout << std::endl << "sector: " << j << " max threads: " << sectors.size() << std::endl;
+                std::cout << "sector: " << j << " - max threads: " << sectors.size() << std::endl;
                 Sector *sector = sectors.at(j);
                 sector->populate(1, _file);
 
@@ -211,9 +209,8 @@ void Supervisor::populateSystem(int listenerSize, int screamerSize, int LUASize,
                 if(j % sectors.size() == 0) j = 0;
             }
         }
+        std::cout << std::endl;
     }
-
-    std::cout << "END OF SUPERVISOR" << std::endl;
 
 }
 

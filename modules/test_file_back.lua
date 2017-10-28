@@ -15,9 +15,9 @@ local function _testParamForLoop(table, numInTable, maxNumInTable)
 
         for index, value in ipairs(simParam) do
             Shared.storeNumber(index, value)
-            io.write(value, ' ')    --  TODO: Outcomment
+            --io.write(value, ' ')    --  TODO: Outcomment
         end
-        io.write('\n')  --  TODO: Outcomment
+        --io.write('\n')  --  TODO: Outcomment
 
         coroutine.yield()
 
@@ -56,7 +56,7 @@ function _testParamMain()
     paramOrderedKeys = {}
     for value in pairs(param) do
         table.insert(paramOrderedKeys, value)
-        print(paramOrderedKeys, value, #paramOrderedKeys)
+        --print(paramOrderedKeys, value, #paramOrderedKeys)
     end
 
     co = coroutine.create( function() _testParamForLoop(param, 1, #paramOrderedKeys) end)
@@ -101,7 +101,7 @@ local function agentMain()
             end
             Shared.storeAgent(_key, _path, _num)
             --io.write("\n")
-            print(_key, _path, _num)
+            --print(_key, _path, _num)
         end
 
     end
@@ -112,7 +112,7 @@ end
 
 function _getSimulationFile(inputFilePath)
     require(inputFilePath)
-    print(inputFilePath)
+    --print(inputFilePath)
 end
 
 function _checkIfInputFileIsSimulationType()

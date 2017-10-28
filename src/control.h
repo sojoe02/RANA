@@ -96,6 +96,8 @@ class Control : public QObject
 
         void threadTest(std::string something);
 
+        int newSimulation();
+
     //  Public slot
     public slots:
         void on_simDone();
@@ -144,6 +146,7 @@ class Control : public QObject
         int agentAmount;
         std::string agentPath;
 
+        int simulationNumber = 0;
         lua_State* L;
 
     signals:

@@ -33,7 +33,7 @@
 -- ------------------------------------
 -- PositionX	 	-- Agents position in the X plane.
 -- PositionY	 	-- Agents position in the Y plane.
--- DestinationX 	-- Agents destination in the X plane. 
+-- DestinationX 	-- Agents destination in the X plane.
 -- DestinationY 	-- Agents destination in the Y plane.
 -- StepMultiple 	-- Amount of steps to skip.
 -- Speed 		-- Movement speed of the agent in meters pr. second.
@@ -53,10 +53,10 @@ n = 1
 function _InitializeAgent()
         --say("Agent #: " .. ID .. " has been initialized")
 
-	if ID == 1 then
-		PositionX = ENV_WIDTH/2
-		PositionY = ENV_HEIGHT/2
-	end
+        if ID == 1 then
+                PositionX = ENV_WIDTH/2
+                PositionY = ENV_HEIGHT/2
+        end
         DestinationX = 1
         DestinationY = 1
         Moving = true
@@ -66,15 +66,15 @@ end
 
 function HandleEvent(event)
 
-	fibonacci_tail(2000)
+        fibonacci_tail(2000)
 
-	if event.description == "ping" then
+        if event.description == "ping" then
 --			say("Agent: "..ID .." received a ping from: "..event.ID ..", saying: "..event.table.msg)
 --			Event.emit{speed=343,targetID=event.ID, description="pong"}
 
-	elseif event.description == "pong" then
+        elseif event.description == "pong" then
 --			say("Agent: "..ID.." received a pong from agent: ".. event.ID)
-	end
+        end
 
 end
 
@@ -84,10 +84,10 @@ function takeStep()
         end
         n = n + 1
 
-	if Stat.randomInteger(1,1/STEP_RESOLUTION) <= 1 then
+        if Stat.randomInteger(1,1/STEP_RESOLUTION) <= 1 then
                 --say("Agent:"..ID.." is emiting ping")
-	 	Event.emit{speed=343,description="ping",table={msg="I am agent "..ID}}
-	end
+                Event.emit{speed=343,description="ping",table={msg="I am agent "..ID}}
+        end
 
 end
 
@@ -112,7 +112,7 @@ function fibonacci_tail(n)
             return f(b, a+b, n-1)
         end
     end
- 
+
     return f(1,1,n)
 end
 
