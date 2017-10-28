@@ -128,37 +128,36 @@ void Control::initialSetup()
                 if(lua_pcall(L,0,0,0)!=LUA_OK){ Output::Inst()->kprintf("Control - Lua_simconfig - Can't locate Sim file - 3"); }
             }
 
-            /**
-            * @brief lua_getglobal -
-            * Function that will go in and do the permutation of parameters
-            * the function will keep returning true, as long as a new permutation exists.
-            */
-
             lua_getglobal(L,"_testParamMain");
             if(lua_pcall(L,0,0,0)!=LUA_OK){ Output::Inst()->kprintf("Control - Lua_simconfig - Can't locate Sim file - 4"); }
 
-            bool checkNestedFunc = true;
-            while(checkNestedFunc)
-            {
-                lua_getglobal(L,"_testParamMainCo");
-                if(lua_pcall(L,0,1,0)!=LUA_OK){ Output::Inst()->kprintf("Control - Lua_simconfig - Can't locate Sim file - 5"); }
 
-                checkNestedFunc = lua_toboolean(L,-1);
-                if (checkNestedFunc)
-                {
-                    //  Run a new simulation with the new parameters.
-                }else
-                {
-                    //  Just exit, all permutations of parameters done.
-                }
+            if(!runNewSimulation())
+            {
+                //  Ready new simulation by
+                exit(EXIT_FAILURE);
             }
+
         }
 
     }
 
-
-
     connect(this, &Control::runSimulationSignal, this, &Control::runSimulation);
+}
+
+bool Control::runNewSimulation()
+{
+    /**
+    * @brief lua_getglobal -
+    * Function that will go in and do the permutation of parameters
+    * the function will keep returning true, as long as a new permutation exists.
+    */
+    lua_getglobal(L,"_testParamMainCo");
+    if(lua_pcall(L,0,1,0)!=LUA_OK){ Output::Inst()->kprintf("Control - Lua_simconfig - Can't locate Sim file - 5"); }
+
+    //  If true; Run a new simulation with the new parameters
+    //  If false; Just exit, all permutations of parameters done.
+    return lua_toboolean(L,-1);
 }
 
 void Control::setEnvironmentVariables(QImage *map, int threads, double timeRes, double macroRes, int agentAmount, std::string agentPath)
@@ -169,8 +168,6 @@ void Control::setEnvironmentVariables(QImage *map, int threads, double timeRes, 
     this->macroRes = macroRes;
     this->agentAmount = agentAmount;
     this->agentPath = agentPath;
-
-    currentNumberOfSimulation = 1;
 
     generateEnvironment();
 }
@@ -213,7 +210,7 @@ void Control::startSimulation(unsigned long long runTime)
 void Control::runSimulation()
 {
     std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
-    generateEnvironment();
+    //generateEnvironment();
     std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
     readyRunner();
     std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
@@ -234,7 +231,9 @@ void Control::on_simDone()
 {
     std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
     killRunner();
+    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
     killAgentDomain();
+    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
     killRunthread();
     std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
     if(mainwindow != NULL)
@@ -246,27 +245,15 @@ void Control::on_simDone()
     Output::SimRunning.store(false);
     Output::Inst()->kprintf("Simulation Done\n");
     running = false;
-    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
-    if(totalNumberOfSimulations > currentNumberOfSimulation){
-        currentNumberOfSimulation++;
-        updateLuaSimulationConfigs();
-        emit runSimulationSignal();
+
+    if(cli != NULL)
+    {
+        if(runNewSimulation())
+        {
+            generateEnvironment();
+            emit runSimulationSignal();
+        }
     }
-    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
-}
-
-void Control::updateLuaSimulationConfigs()
-{
-    try{
-        lua_settop(L,0);
-        lua_getglobal(L,"_setCurrentSimulation");
-        lua_pushnumber(L, currentNumberOfSimulation);
-        if(lua_pcall(L,1,0,0)!=LUA_OK){ Output::Inst()->kprintf("Control - Lua_simconfig - Set new Simulation"); }
-        lua_settop(L,0);
-        lua_getglobal(L,"_loadNewParameters");
-        if(lua_pcall(L,0,0,0)!=LUA_OK){ Output::Inst()->kprintf("Control - Lua_simconfig - Save new parameters"); }
-    }catch(std::exception& e){ Output::Inst()->kprintf("Control - Exception"); }
-
 }
 
 void Control::readyRunner()
@@ -291,14 +278,28 @@ void Control::readyAgentDomain()
     killAgentDomain();
     std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
     agentDomain = new FlowControl(this);
-
     /**
         When readying the agent domain, serialize the parameters, the agents should use.
     **/
     std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
     agentDomain->generateEnvironment(map->width(),map->height(),threads,agentAmount,timeRes,macroRes,agentPath);
     std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
-    populateFuture = QtConcurrent::run(agentDomain, &FlowControl::populateSystem);
+    if(mainwindow != NULL){
+        populateFuture = QtConcurrent::run(agentDomain, &FlowControl::populateSystem);  //  This will run the whole agent generation a second time.
+    }
+    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
+}
+
+void Control::killRunner()
+{
+    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
+    if(runner != NULL){
+        std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
+        //delete runner;    //Got seg fault on this.
+        std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
+        runner = NULL;
+        std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
+    }
     std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << std::endl;
 }
 
@@ -307,14 +308,6 @@ void Control::killAgentDomain()
     if(agentDomain != NULL){
         delete agentDomain;
         agentDomain = NULL;
-    }
-}
-
-void Control::killRunner()
-{
-    if(runner != NULL){
-        delete runner;
-        runner = NULL;
     }
 }
 

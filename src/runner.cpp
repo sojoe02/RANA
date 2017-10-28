@@ -23,14 +23,18 @@
 #include "src/runner.h"
 #include "src/output.h"
 
+#include "api/shared.h"
+
+
 Runner::Runner(){}
 
 void Runner::doWork(FlowControl *agentDomain, unsigned long long runTime)
 {
-    if( agentDomain != NULL && runTime != 0 ){
+    if( agentDomain != NULL ){
         if( runTime != 0 ){
-            agentDomain->runSimulation(runTime);
+            std::cout << Shared::getNumber("1") << " " << Shared::getNumber("2")<< std::endl;
             Output::Inst()->kprintf("RUNNING SIMULATION");
+            agentDomain->runSimulation(runTime);
         } else{
             Output::Inst()->kprintf("No Runtime defined");
         }

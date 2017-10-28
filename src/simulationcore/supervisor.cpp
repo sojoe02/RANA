@@ -170,9 +170,9 @@ void Supervisor::populateSystem(int listenerSize, int screamerSize, int LUASize,
 
     int numTypeAgents = Shared::getNumber(std::string("numAgents"));
 
-    std::cout << numTypeAgents << std::endl;
+    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<< " " << std::this_thread::get_id() << " numTypeAgents: " << numTypeAgents << std::endl;
 
-    if ( !numTypeAgents ){
+    if ( LLONG_MIN ){
         /**
             Load agent normally, if there are no individual agents, from a simulation file.
             This *should* only happen in case of using the GUI
@@ -186,6 +186,11 @@ void Supervisor::populateSystem(int listenerSize, int screamerSize, int LUASize,
     }else{
         /**
             Load all the individual agents, and the correct amount of them.
+            Then put each individual agent, into a sector, such that they are
+            distributed evenly.
+
+            This method does not take into account, that some agents might use more
+            processing power than others. //TODO?
         */
         j = 0;
         for(int i = 1; i <= numTypeAgents; i++)

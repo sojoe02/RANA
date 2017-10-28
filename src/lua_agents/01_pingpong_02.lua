@@ -51,7 +51,7 @@ n = 1
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
 function _InitializeAgent()
-        --say("Agent #: " .. ID .. " has been initialized")
+        say("Agent #: " .. ID .. " has been initialized")
 
 	if ID == 1 then
 		PositionX = ENV_WIDTH/2
@@ -69,11 +69,11 @@ function HandleEvent(event)
 	fibonacci_tail(2000)
 
 	if event.description == "ping" then
---			say("Agent: "..ID .." received a ping from: "..event.ID ..", saying: "..event.table.msg)
---			Event.emit{speed=343,targetID=event.ID, description="pong"}
+                        --say("Agent: "..ID .." received a ping from: "..event.ID ..", saying: "..event.table.msg)
+                        Event.emit{speed=343,targetID=event.ID, description="pong"}
 
 	elseif event.description == "pong" then
---			say("Agent: "..ID.." received a pong from agent: ".. event.ID)
+                        --say("Agent: "..ID.." received a pong from agent: ".. event.ID)
 	end
 
 end

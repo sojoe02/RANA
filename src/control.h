@@ -113,6 +113,8 @@ class Control : public QObject
         void killRunner();
         void killRunthread();
 
+        bool runNewSimulation();
+
         static int l_addSharedNumber( lua_State* );
         static int l_addSharedAgent( lua_State* );
 
