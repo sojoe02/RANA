@@ -228,6 +228,10 @@ void Control::on_simDone()
             generateEnvironment();
             emit runSimulationSignal();
         }
+        else{
+            std::cout << "All simulations done" << std::endl;
+            exit(EXIT_SUCCESS);
+        }
     }
 }
 
@@ -321,6 +325,10 @@ void Control::toggleLiveView(bool enable)
     }
 }
 
+/**
+ * @brief Control::newSimulation
+ * Just used as a debug message.
+ */
 int Control::newSimulation()
 {
     return ++simulationNumber;
