@@ -34,7 +34,6 @@
 
 #include "src/simulationcore/supervisor.h"
 #include "src/simulationcore/eventqueue.h"
-#include "src/simulationcore/agents/agentinterface.h"
 #include "src/simulationcore/agents/agentluainterface.h"
 
 #include "src/utility.h"

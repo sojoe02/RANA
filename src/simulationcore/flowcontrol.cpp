@@ -33,7 +33,6 @@
 #include "../api/shared.h"
 #include "../output.h"
 #include "../api/scanning.h"
-#include "src/simulationcore/parameterspace.h"
 
 using std::chrono::duration_cast;
 using std::chrono::milliseconds;

@@ -38,10 +38,8 @@ SOURCES += src/main.cpp\
     src/simulationcore/sector.cpp \
     src/simulationcore/supervisor.cpp \
     src/simulationcore/agents/agent.cpp \
-    src/simulationcore/agents/agentinterface.cpp \
     src/simulationcore/agents/agentluainterface.cpp \
-    src/simulationcore/eventqueue.cpp \
-    src/simulationcore/parameterspace.cpp
+    src/simulationcore/eventqueue.cpp
 
 HEADERS += src/cli.h \
     src/mainwindow.h \
@@ -70,10 +68,8 @@ HEADERS += src/cli.h \
     src/simulationcore/sector.h \
     src/simulationcore/supervisor.h \
     src/simulationcore/agents/agent.h \
-    src/simulationcore/agents/agentinterface.h \
     src/simulationcore/agents/agentluainterface.h \
-    src/simulationcore/eventqueue.h \
-    src/simulationcore/parameterspace.h
+    src/simulationcore/eventqueue.h
 
 FORMS   += ui/mainwindow.ui \
     ui/eventdialog.ui \

@@ -7,7 +7,6 @@
 
 #include "src/simulationcore/agents/agent.h"
 #include "src/simulationcore/agents/agentluainterface.h"
-#include "src/simulationcore/agents/agentinterface.h"
 #include "src/simulationcore/sector.h"
 #include "src/simulationcore/supervisor.h"
 
@@ -33,8 +32,7 @@ private:
 
     static Supervisor *master;
 	static std::map<int, std::string> agentFilenames;
-	static std::map<int, std::shared_ptr<AgentLuaInterface>> agents;
-	static std::map<int, std::shared_ptr<AgentInterface>> agentsCpp;
+    static std::map<int, std::shared_ptr<AgentLuaInterface>> agents;
     static std::mutex eventMutex;
     static std::mutex agentMutex;
     static std::mutex agentPtrMutex;

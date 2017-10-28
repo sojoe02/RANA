@@ -26,7 +26,6 @@
 #include "src/output.h"
 
 #include "api/shared.h"
-#include "src/simulationcore/parameterspace.h"
 
 Control::Control(Cli* cli, std::string _file) :
     agentDomain(NULL), cli(cli), running(false),

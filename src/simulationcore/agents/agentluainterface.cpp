@@ -43,7 +43,6 @@
 #include "src/api/scanning.h"
 #include "src/simulationcore/interfacer.h"
 #include "src/simulationcore/agents/agentluainterface.h"
-#include "src/simulationcore/parameterspace.h"
 
 AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double posZ, Sector *sector, std::string filename)
     :Agent(ID,posX,posY,posZ,sector),destinationX(posX),destinationY(posY),speed(1),moving(false),gridmove(false),
@@ -184,8 +183,6 @@ AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double po
         lua_register(L, "l_addSharedNumber",l_addSharedNumber);
         lua_register(L, "l_getSharedString", l_getSharedString);
         lua_register(L, "l_addSharedString", l_addSharedString);
-        lua_register(L, "l_getParameterNumber", l_getParameterNumber);
-        lua_register(L, "l_getParameterString", l_getParameterString);
 
         //Simulation core.
         lua_register(L, "l_getAgentPath", l_getAgentPath);
@@ -1287,36 +1284,6 @@ int AgentLuaInterface::l_getSharedString(lua_State *L)
     return 1;
 
 }
-
-int AgentLuaInterface::l_getParameterNumber(lua_State *L)
-{
-    std::string key = lua_tostring(L, -1);
-    //Output::Inst()->kprintf(key.c_str());
-
-    double value = Parameterspace::getNumber(key);
-
-    if (value == LLONG_MIN)
-    {
-        lua_pushstring(L, "no_value");
-    } else
-    {
-        lua_pushnumber(L, value);
-    }
-    return 1;
-
-}
-
-int AgentLuaInterface::l_getParameterString(lua_State *L)
-{
-    std::string key = lua_tostring(L, -1);
-    std::string value = Parameterspace::getString(key);
-
-    lua_pushstring(L, value.c_str());
-
-    return 1;
-
-}
-
 
 //Simulation core.
 
