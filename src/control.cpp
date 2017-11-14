@@ -148,7 +148,10 @@ bool Control::runNewSimulation()
     * the function will keep returning true, as long as a new permutation exists.
     */
     lua_getglobal(L,"_testParamMainCo");
-    if(lua_pcall(L,0,1,0)!=LUA_OK){ Output::Inst()->kprintf("Control - Lua_simconfig - Can't locate Sim file - 5"); }
+    if(lua_pcall(L,0,1,0)!=LUA_OK){
+        Output::Inst()->kprintf("Control - Lua_simconfig - Can't locate Sim file - 5");
+        return false;
+    }
 
     //  If true; Run a new simulation with the new parameters
     //  If false; Just exit, all permutations of parameters done.

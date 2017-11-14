@@ -75,14 +75,15 @@ function _testParamMainCo()
 end
 
 local function agentMain()
+    print("hello")
 
     local _key = 0
     local _path
     local _num
 
-    --  Go over all agents in file, and number of agents
-    for key, value in ipairs(agents) do
-        --print(key, value, type(value))
+    for value = 1, #agents do
+        print(value)
+        print(agents[value])
 
         --  Check if it is a file path
         if type(value) == "string" then
@@ -91,8 +92,8 @@ local function agentMain()
             --io.write(value, " ")
 
             --  Check if there is a number of agents to initiate
-            if type( select(2, next( agents, key) ) ) == "number" then
-                _num = select(2, next( agents, key))
+            if type( agents[value+1] ) == "number" then
+                _num = agents[value+1]
                 --io.write( select(2, next( agents, key)) )
             else    --  Instantiate 1
                 _num = 1
@@ -104,9 +105,8 @@ local function agentMain()
             --print(_key, _path, _num)
         end
 
-    end
 
-    Shared.storeNumber("numAgents", _key)
+    end
 
 end
 
