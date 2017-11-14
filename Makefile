@@ -75,7 +75,9 @@ SOURCES       = src/main.cpp \
 		src/simulationcore/supervisor.cpp \
 		src/simulationcore/agents/agent.cpp \
 		src/simulationcore/agents/agentluainterface.cpp \
-		src/simulationcore/eventqueue.cpp BUILD/rcc/qrc_images.cpp \
+		src/simulationcore/eventqueue.cpp \
+		src/api/tcpserver.cpp \
+		src/api/tcpclient.cpp BUILD/rcc/qrc_images.cpp \
 		BUILD/moc/moc_cli.cpp \
 		BUILD/moc/moc_mainwindow.cpp \
 		BUILD/moc/moc_control.cpp \
@@ -112,6 +114,8 @@ OBJECTS       = BUILD/obj/main.o \
 		BUILD/obj/agent.o \
 		BUILD/obj/agentluainterface.o \
 		BUILD/obj/eventqueue.o \
+		BUILD/obj/tcpserver.o \
+		BUILD/obj/tcpclient.o \
 		BUILD/obj/qrc_images.o \
 		BUILD/obj/moc_cli.o \
 		BUILD/obj/moc_mainwindow.o \
@@ -285,13 +289,15 @@ DIST          = src/lua_agents/01_pingpong.lua \
 		src/api/phys.h \
 		src/api/scanning.h \
 		src/api/shared.h \
+		src/api/tcpserver.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
 		src/simulationcore/sector.h \
 		src/simulationcore/supervisor.h \
 		src/simulationcore/agents/agent.h \
 		src/simulationcore/agents/agentluainterface.h \
-		src/simulationcore/eventqueue.h src/main.cpp \
+		src/simulationcore/eventqueue.h \
+		src/api/tcpclient.h src/main.cpp \
 		src/cli.cpp \
 		src/mainwindow.cpp \
 		src/parser.cpp \
@@ -318,7 +324,9 @@ DIST          = src/lua_agents/01_pingpong.lua \
 		src/simulationcore/supervisor.cpp \
 		src/simulationcore/agents/agent.cpp \
 		src/simulationcore/agents/agentluainterface.cpp \
-		src/simulationcore/eventqueue.cpp
+		src/simulationcore/eventqueue.cpp \
+		src/api/tcpserver.cpp \
+		src/api/tcpclient.cpp
 QMAKE_TARGET  = Rana_qt
 DESTDIR       = #avoid trailing-slash linebreak
 TARGET        = Rana_qt
@@ -555,8 +563,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents resources/images.qrc $(DISTDIR)/
-	$(COPY_FILE) --parents src/cli.h src/mainwindow.h src/parser.h src/ID.h src/utility.h src/output.h src/control.h src/graphics/agentItem.h src/runner.h src/postprocessing/eventprocessing.h src/postprocessing/colorutility.h src/eventdialog.h src/postprocessing/graphics/zblock.h src/postprocessing/postcontrol.h src/postprocessing/eventrunner.h src/postprocessing/graphics/zmap.h src/helpdialog.h src/api/gridmovement.h src/api/maphandler.h src/api/phys.h src/api/scanning.h src/api/shared.h src/simulationcore/flowcontrol.h src/simulationcore/interfacer.h src/simulationcore/sector.h src/simulationcore/supervisor.h src/simulationcore/agents/agent.h src/simulationcore/agents/agentluainterface.h src/simulationcore/eventqueue.h $(DISTDIR)/
-	$(COPY_FILE) --parents src/main.cpp src/cli.cpp src/mainwindow.cpp src/parser.cpp src/output.cpp src/control.cpp src/graphics/agentItem.cpp src/runner.cpp src/postprocessing/eventprocessing.cpp src/postprocessing/colorutility.cpp src/eventdialog.cpp src/postprocessing/graphics/zblock.cpp src/postprocessing/postcontrol.cpp src/postprocessing/eventrunner.cpp src/postprocessing/graphics/zmap.cpp src/helpdialog.cpp src/api/gridmovement.cpp src/api/maphandler.cpp src/api/phys.cpp src/api/scanning.cpp src/api/shared.cpp src/simulationcore/flowcontrol.cpp src/simulationcore/interfacer.cpp src/simulationcore/sector.cpp src/simulationcore/supervisor.cpp src/simulationcore/agents/agent.cpp src/simulationcore/agents/agentluainterface.cpp src/simulationcore/eventqueue.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents src/cli.h src/mainwindow.h src/parser.h src/ID.h src/utility.h src/output.h src/control.h src/graphics/agentItem.h src/runner.h src/postprocessing/eventprocessing.h src/postprocessing/colorutility.h src/eventdialog.h src/postprocessing/graphics/zblock.h src/postprocessing/postcontrol.h src/postprocessing/eventrunner.h src/postprocessing/graphics/zmap.h src/helpdialog.h src/api/gridmovement.h src/api/maphandler.h src/api/phys.h src/api/scanning.h src/api/shared.h src/api/tcpserver.h src/simulationcore/flowcontrol.h src/simulationcore/interfacer.h src/simulationcore/sector.h src/simulationcore/supervisor.h src/simulationcore/agents/agent.h src/simulationcore/agents/agentluainterface.h src/simulationcore/eventqueue.h src/api/tcpclient.h $(DISTDIR)/
+	$(COPY_FILE) --parents src/main.cpp src/cli.cpp src/mainwindow.cpp src/parser.cpp src/output.cpp src/control.cpp src/graphics/agentItem.cpp src/runner.cpp src/postprocessing/eventprocessing.cpp src/postprocessing/colorutility.cpp src/eventdialog.cpp src/postprocessing/graphics/zblock.cpp src/postprocessing/postcontrol.cpp src/postprocessing/eventrunner.cpp src/postprocessing/graphics/zmap.cpp src/helpdialog.cpp src/api/gridmovement.cpp src/api/maphandler.cpp src/api/phys.cpp src/api/scanning.cpp src/api/shared.cpp src/simulationcore/flowcontrol.cpp src/simulationcore/interfacer.cpp src/simulationcore/sector.cpp src/simulationcore/supervisor.cpp src/simulationcore/agents/agent.cpp src/simulationcore/agents/agentluainterface.cpp src/simulationcore/eventqueue.cpp src/api/tcpserver.cpp src/api/tcpclient.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ui/mainwindow.ui ui/eventdialog.ui ui/about.ui $(DISTDIR)/
 
 
@@ -1365,6 +1373,12 @@ BUILD/obj/eventqueue.o: src/simulationcore/eventqueue.cpp src/ID.h \
 		src/simulationcore/interfacer.h \
 		src/api/phys.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/eventqueue.o src/simulationcore/eventqueue.cpp
+
+BUILD/obj/tcpserver.o: src/api/tcpserver.cpp src/api/tcpserver.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/tcpserver.o src/api/tcpserver.cpp
+
+BUILD/obj/tcpclient.o: src/api/tcpclient.cpp src/api/tcpclient.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/tcpclient.o src/api/tcpclient.cpp
 
 BUILD/obj/qrc_images.o: BUILD/rcc/qrc_images.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/qrc_images.o BUILD/rcc/qrc_images.cpp

@@ -75,15 +75,11 @@ function _testParamMainCo()
 end
 
 local function agentMain()
-    print("hello")
-
     local _key = 0
     local _path
     local _num
 
     for value = 1, #agents do
-        print(value)
-        print(agents[value])
 
         --  Check if it is a file path
         if type(value) == "string" then

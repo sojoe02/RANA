@@ -39,7 +39,9 @@ SOURCES += src/main.cpp\
     src/simulationcore/supervisor.cpp \
     src/simulationcore/agents/agent.cpp \
     src/simulationcore/agents/agentluainterface.cpp \
-    src/simulationcore/eventqueue.cpp
+    src/simulationcore/eventqueue.cpp \
+    src/api/tcpserver.cpp \
+    src/api/tcpclient.cpp
 
 HEADERS += src/cli.h \
     src/mainwindow.h \
@@ -63,13 +65,15 @@ HEADERS += src/cli.h \
     src/api/phys.h \
     src/api/scanning.h \
     src/api/shared.h \
+    src/api/tcpserver.h \
     src/simulationcore/flowcontrol.h \
     src/simulationcore/interfacer.h \
     src/simulationcore/sector.h \
     src/simulationcore/supervisor.h \
     src/simulationcore/agents/agent.h \
     src/simulationcore/agents/agentluainterface.h \
-    src/simulationcore/eventqueue.h
+    src/simulationcore/eventqueue.h \
+    src/api/tcpclient.h
 
 FORMS   += ui/mainwindow.ui \
     ui/eventdialog.ui \
