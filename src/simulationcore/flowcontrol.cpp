@@ -20,19 +20,7 @@
 //
 //--end_license--
 
-#include <chrono>
-#include <climits>
-#include <thread>
-#include <time.h>
-
 #include "flowcontrol.h"
-#include "interfacer.h"
-#include "../ID.h"
-#include "../api/phys.h"
-#include "../api/gridmovement.h"
-#include "../api/shared.h"
-#include "../output.h"
-#include "../api/scanning.h"
 
 using std::chrono::duration_cast;
 using std::chrono::milliseconds;
@@ -49,6 +37,11 @@ FlowControl::FlowControl(Control *control)
     //file.open(positionFilename.c_str(),std::ofstream::out | std::ofstream::binary | std::ofstream::trunc);
 
     Output::Inst()->kprintf("Initiating simulation #%i",control->newSimulation());
+
+    if(true){
+        tcp = new tcpserver;
+        tcp->setup(11999);
+    }
 
 }
 
@@ -249,6 +242,17 @@ void FlowControl::runSimulation(int time)
             break;
         }
 
+        if(true){
+
+            pthread_t t1;
+            pthread_detach(pthread_self());
+
+            if( pthread_create(&t1, NULL, &FlowControl::FlowControl_helper, this) == 0)
+            {
+                tcp->receive();
+            }
+
+        }
     }
 
     retrievePopPos();
@@ -262,8 +266,34 @@ void FlowControl::runSimulation(int time)
     duration_cast<seconds>(start2-endsim).count();
     Output::Inst()->kprintf("Simulation run took:\t %llu[s] of computing time", duration_cast<seconds>(endsim - start2).count());
     file.close();
-
 }
+
+void * FlowControl::loop()
+{
+    pthread_detach(pthread_self());
+    bool tmp_flag = true;
+    while(tmp_flag)
+    {
+        std::string str = tcp->getMessage();
+        if (str == "done\n"){
+            std::cout << "Server got: " << str << std::endl;
+            tcp->Send("Msg-01\n");
+            tcp->clean();
+            tmp_flag = false;
+        }
+        else if( str != "" )
+        {
+            std::cout << "Server got: " << str << std::endl;
+            tcp->Send("Msg-02\n");
+            tcp->clean();
+            tmp_flag = false;
+        }
+
+        sleep(1);
+    }
+    tcp->detach();
+}
+
 
 /**
  * Stop currently running simulation

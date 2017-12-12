@@ -65,7 +65,6 @@ HEADERS += src/cli.h \
     src/api/phys.h \
     src/api/scanning.h \
     src/api/shared.h \
-    src/api/tcpserver.h \
     src/simulationcore/flowcontrol.h \
     src/simulationcore/interfacer.h \
     src/simulationcore/sector.h \
@@ -73,7 +72,8 @@ HEADERS += src/cli.h \
     src/simulationcore/agents/agent.h \
     src/simulationcore/agents/agentluainterface.h \
     src/simulationcore/eventqueue.h \
-    src/api/tcpclient.h
+    src/api/tcpclient.h \
+    src/api/tcpserver.h
 
 FORMS   += ui/mainwindow.ui \
     ui/eventdialog.ui \

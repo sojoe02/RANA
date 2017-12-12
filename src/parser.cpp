@@ -31,7 +31,10 @@ parser::parser(int argc, char **argv)
     struct arg_lit  *help   = arg_lit0(NULL,"help","print this help and exit");
     struct arg_lit  *version= arg_lit0(NULL,"version","print version information and exit");
     struct arg_end  *end    = arg_end(20);
-    void* argtable[] = {thread,nogui,verbose,help,version,path,end};
+    struct arg_str  *ip     = arg_str0(NULL,"ip",NULL,"IP address for TCP connection");
+    struct arg_int  *port   = arg_int0(NULL,"port",NULL,"Port for TCP connection");
+
+    void* argtable[] = {thread,nogui,verbose,help,version,path,ip,port,end};
     arg_parse(argc,argv,argtable);
 
     if( argtable == NULL)
@@ -43,20 +46,23 @@ parser::parser(int argc, char **argv)
     {
         std::cout << "Usage: RANA" << std::endl;
         arg_print_glossary_gnu(stdout,argtable);
-        //todo: set exit bool
+        exit(EXIT_SUCCESS);
     }
 
     if(version->count > 0)
     {
         std::cout << "RANA 1.8.dev" << std::endl;
         std::cout << "September 2017" << std::endl;
-        //todo: set exit bool
+        exit(EXIT_SUCCESS);
     }
-
 
     _thread = thread->count;
     _path = *path->filename;
     _nogui = nogui->count;
+
+    _ipadd = ip->sval[0];
+    _port = port->ival[0];
+
     _verbose = verbose->count;
     _help = help->count;
     _version = version->count;

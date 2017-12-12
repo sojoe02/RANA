@@ -35,15 +35,12 @@
 #include "src/api/tcpserver.h"
 #include "src/api/tcpclient.h"
 
-
-
-
 int ID::aID = 0;
 unsigned long long ID::eID = 0;
 unsigned long long ID::tmu = 0;
 unsigned long long ID::nID = 0;
 
-
+/*
 tcpserver tcp;
 tcpclient ctcp;
 
@@ -63,10 +60,10 @@ void * loop(void * m)
     }
     tcp.detach();
 }
-
+*/
 int main(int argc, char **argv)
 {
-/*
+
     parser p(argc, argv);
 
     //srand(time(0));
@@ -74,7 +71,7 @@ int main(int argc, char **argv)
     Output::DelayValue = 0;
     Output::LegacyMode.store(false);
     GridMovement::initGrid(1);
-/*
+
     qDebug() << Phys::getMersenneInteger(1, RAND_MAX) << Phys::getMersenneInteger(1, RAND_MAX) << Phys::getMersenneFloat(1, RAND_MAX) <<Phys::getMersenneInteger(1, RAND_MAX) ;
 
     QApplication a(argc, argv);
@@ -94,11 +91,11 @@ int main(int argc, char **argv)
     }
 
     return a.exec();
-*/
 
 
 
-    if(false){
+/*
+    if(true){
         std::cout << "hello 1" << std::endl;
         pthread_t msg;
         tcp.setup(11999);
@@ -128,7 +125,7 @@ int main(int argc, char **argv)
     }
 
     std::cout << "end bend" << std::endl;
-
+*/
 
 }
 

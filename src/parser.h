@@ -44,6 +44,11 @@ private:
     std::string _path;
     bool _nogui = false;
 
+
+    int _port;
+    std::string _ipadd;
+
+
     bool _verbose = false;
     bool _help = false;
     bool _version = false;

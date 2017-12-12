@@ -23,18 +23,32 @@
 #ifndef FLOWCONTROL_H
 #define FLOWCONTROL_H
 
+#include<chrono>
+#include<climits>
+#include<time.h>
 #include<iostream>
 #include<mutex>
 #include<atomic>
 #include<sys/types.h>
 #include<stdio.h>
 #include<fstream>
+#include<thread>
 
+#include "interfacer.h"
 #include "supervisor.h"
 #include "src/simulationcore/interfacer.h"
 #include "src/mainwindow.h"
 #include "src/utility.h"
 #include "src/control.h"
+
+#include "../ID.h"
+#include "../api/phys.h"
+#include "../api/gridmovement.h"
+#include "../api/shared.h"
+#include "../output.h"
+#include "../api/scanning.h"
+
+#include "../api/tcpserver.h"
 
 class Control;
 class Supervisor;
@@ -60,6 +74,15 @@ class FlowControl
         void populateSystem();
 
     private:
+        void *loop();
+        tcpserver *tcp = NULL;
+
+        static void *FlowControl_helper(void *context)
+        {
+            return ((FlowControl *)context)->loop();
+        }
+
+
         Control *control;
         bool mapGenerated;
         Interfacer doctor;
