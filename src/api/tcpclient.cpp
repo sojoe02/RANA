@@ -2,50 +2,86 @@
 
 tcpclient::tcpclient()
 {
-    //portno = parser::getPortNo();
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    if (sockfd < 0){
-        error("ERROR opening socket");
-    }
-
-    bzero((char *) &serv_addr, sizeof(serv_addr));
-
-    serv_addr->sin_family = AF_INET;
-
-    //server = gethostbyname(parser::getHostName());
-    if(server == NULL){
-        error("ERROR, no such host");
-    }
-
-    bcopy((char *)server->h_addr, (char *)&serv_addr->sin_addr.s_addr, server->h_length);
-    serv_addr->sin_port = htons(portno);
-
-    if (connect(sockfd,(struct sockaddr *)&serv_addr,sizeof(serv_addr)) < 0){
-       error("ERROR connecting");
-    }
-
-    bzero(buffer,256);
-    n = write(sockfd,"Here is a message from client",18);
-    if (n < 0){
-        error("ERROR writing to socket");
-    }
-
-    bzero(buffer,256);
-    n = read(sockfd,buffer,255);
-    if (n < 0){
-        error("ERROR reading from socket");
-    }
-    std::cout << "Here is the message: " << buffer << std::endl;
-
+    sock = -1;
+    port = 0;
+    address = "";
 }
 
-tcpclient::~tcpclient()
+bool tcpclient::setup(std::string address , int port)
 {
-    std::cout << "RIP TCP - Client" << std::endl;
+    if(sock == -1)
+    {
+        sock = socket(AF_INET , SOCK_STREAM , 0);
+        if (sock == -1)
+        {
+                std::cout << "Could not create socket" << std::endl;
+            }
+        }
+    if(inet_addr(address.c_str()) == -1)
+    {
+            struct hostent *he;
+            struct in_addr **addr_list;
+            if ( (he = gethostbyname( address.c_str() ) ) == NULL)
+            {
+              herror("gethostbyname");
+                  std::cout<<"Failed to resolve hostname\n";
+              return false;
+            }
+        addr_list = (struct in_addr **) he->h_addr_list;
+            for(int i = 0; addr_list[i] != NULL; i++)
+            {
+                  server.sin_addr = *addr_list[i];
+              break;
+            }
+    }
+    else
+    {
+            server.sin_addr.s_addr = inet_addr( address.c_str() );
+    }
+    server.sin_family = AF_INET;
+    server.sin_port = htons( port );
+    if (connect(sock , (struct sockaddr *)&server , sizeof(server)) < 0)
+    {
+            perror("connect failed. Error");
+            return 1;
+    }
+    return true;
 }
 
-void tcpclient::error(std::string msg)
+bool tcpclient::Send(std::string data)
 {
-    std::cerr << msg << std::endl;
-    exit(EXIT_FAILURE);
+    if( send(sock , data.c_str() , strlen( data.c_str() ) , 0) < 0)
+    {
+        std::cout << "Send failed : " << data << std::endl;
+        return false;
+    }
+    return true;
+}
+
+std::string tcpclient::receive(int size)
+{
+    char buffer[4096];
+    std::string reply;
+    if( recv(sock , buffer , size, 0) < 0)// sizeof(buffer)
+    {
+        std::cout << "receive failed!" << std::endl;
+    }
+    buffer[size]='\0';
+    reply = buffer;
+    return reply;
+}
+
+std::string tcpclient::read()
+{
+    char buffer[1] = {};
+    std::string reply;
+    while (buffer[0] != '\n') {
+            if( recv(sock , buffer , sizeof(buffer) , 0) < 0)
+            {
+                std::cout << "receive failed!" << std::endl;
+                break;
+            }
+        reply += buffer[0];
+    }
+    return reply;
 }

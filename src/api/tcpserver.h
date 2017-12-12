@@ -1,41 +1,58 @@
 #ifndef TCPSERVER_H
 #define TCPSERVER_H
 
+#include <iostream>
+#include <vector>
 #include <stdio.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
+#include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
-#include <iostream>
-#include <string.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
+#include <pthread.h>
+
+#define MAXPACKETSIZE 4096
 
 class tcpserver
 {
     //  Public methods
     public:
-        tcpserver();
-        ~tcpserver();
+        void setup(int port);
+        std::string receive();
+        std::string getMessage();
+
+        void Send(std::string msg);
+        void detach();
+        void clean();
 
     //  Public attributes
     public:
+        int sockfd;//
+        int newsockfd;//
+        int pid;//
+        int n;//
+
+        pthread_t serverThread;//
+
+        char msg[ MAXPACKETSIZE ];//
+
+        static std::string Message; //
+
+        struct sockaddr_in serv_addr; //
+        struct sockaddr_in cli_addr; //
 
     //  Private methods
     private:
-        void error(std::string msg);
+        static void * Task(void * argv);
 
     //  Private attributes
     private:
-        int sockfd;
-        int newsockfd;
-        int portno;
-        socklen_t clilen;
-        int n;
 
-        char buffer[256];
-
-        struct sockaddr_in *serv_addr;
-        struct sockaddr_in *cli_addr;
 };
 
 #endif // TCPSERVER_H

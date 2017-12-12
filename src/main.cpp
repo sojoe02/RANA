@@ -32,13 +32,41 @@
 
 #include "src/parser.h"
 
+#include "src/api/tcpserver.h"
+#include "src/api/tcpclient.h"
+
+
+
+
 int ID::aID = 0;
 unsigned long long ID::eID = 0;
 unsigned long long ID::tmu = 0;
 unsigned long long ID::nID = 0;
 
+
+tcpserver tcp;
+tcpclient ctcp;
+
+void * loop(void * m)
+{
+    pthread_detach(pthread_self());
+    while(1)
+    {
+        std::string str = tcp.getMessage();
+        if( str != "" )
+        {
+            std::cout << "Message: " << str << std::endl;
+            tcp.Send("a1");
+            tcp.clean();
+        }
+        sleep(1);
+    }
+    tcp.detach();
+}
+
 int main(int argc, char **argv)
 {
+/*
     parser p(argc, argv);
 
     //srand(time(0));
@@ -46,7 +74,7 @@ int main(int argc, char **argv)
     Output::DelayValue = 0;
     Output::LegacyMode.store(false);
     GridMovement::initGrid(1);
-
+/*
     qDebug() << Phys::getMersenneInteger(1, RAND_MAX) << Phys::getMersenneInteger(1, RAND_MAX) << Phys::getMersenneFloat(1, RAND_MAX) <<Phys::getMersenneInteger(1, RAND_MAX) ;
 
     QApplication a(argc, argv);
@@ -66,4 +94,50 @@ int main(int argc, char **argv)
     }
 
     return a.exec();
+*/
+
+
+
+    if(false){
+        std::cout << "hello 1" << std::endl;
+        pthread_t msg;
+        tcp.setup(11999);
+
+        pthread_detach(pthread_self());
+        if( pthread_create(&msg, NULL, loop, (void *)0) == 0)
+        {
+            tcp.receive();
+        }
+    }else{
+        std::cout << "hello 2" << std::endl;
+
+        ctcp.setup("127.0.0.1",11999);
+        int num = 10;
+        std::cout << "Num request: " << num << std::endl;
+        for(int i = 0; i < num; i++)
+        {
+            std::string msg = "I'M SENDING A MESSAGE";
+            ctcp.Send(msg);
+            std::string rec = ctcp.receive();
+            if( rec != "" )
+            {
+                std::cout << "Server Response: " << rec << std::endl;
+            }
+            sleep(1);
+        }
+    }
+
+    std::cout << "end bend" << std::endl;
+
+
 }
+
+
+
+
+
+
+
+
+
+

@@ -1,22 +1,32 @@
 #ifndef TCPCLIENT_H
 #define TCPCLIENT_H
 
+#include <iostream>
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <vector>
+
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <unistd.h>
 
-#include <iostream>
-#include <string.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+
 
 class tcpclient
 {
     //  Public methods
     public:
         tcpclient();
-        ~tcpclient();
+
+        bool setup(std::string address, int port);
+        bool Send(std::string data);
+
+        std::string receive(int size = 4096);
+        std::string read();
 
     //  Public attributes
     public:
@@ -27,14 +37,10 @@ class tcpclient
 
     //  Private attributes
     private:
-        int sockfd;
-        int portno;
-        int n;
-
-        char buffer[256];
-
-        struct sockaddr_in *serv_addr;
-        struct hostent *server;
+        int sock;
+        std::string address;
+        int port;
+        struct sockaddr_in server;
 };
 
-#endif // TCPSERVER_H
+#endif // TCPCLIENT_H
