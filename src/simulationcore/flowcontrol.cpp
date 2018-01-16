@@ -22,6 +22,8 @@
 
 #include "flowcontrol.h"
 
+#include <thread>  //REMOVE
+
 using std::chrono::duration_cast;
 using std::chrono::milliseconds;
 using std::chrono::seconds;
@@ -242,17 +244,11 @@ void FlowControl::runSimulation(int time)
             break;
         }
 
-        if(true){
-
-            pthread_t t1;
-            pthread_detach(pthread_self());
-
-            if( pthread_create(&t1, NULL, &FlowControl::FlowControl_helper, this) == 0)
-            {
-                tcp->receive();
-            }
-
+        if(true)    //Only wrong if TCP server is used
+        {
+            tcpWaitForDoneMessage();
         }
+
     }
 
     retrievePopPos();
@@ -268,32 +264,46 @@ void FlowControl::runSimulation(int time)
     file.close();
 }
 
+void FlowControl::tcpWaitForDoneMessage()
+{
+    pthread_t t1;
+    pthread_detach(pthread_self());
+    if( pthread_create(&t1, NULL, &FlowControl::FlowControl_helper, this) == 0)
+    {
+        bool tmp_flag = true;
+        while(tmp_flag)
+        {
+            std::string str = tcp->getMessage();
+            if (str == "done\n"){
+                std::cout << "Server got: " << str << std::endl;
+                tcp->Send("Msg-01\n");
+                tcp->clean();
+                tmp_flag = false;
+            }
+            else if( str != "" )
+            {
+                std::cout << "Server got: " << str << std::endl;
+                tcp->Send("Msg-02\n");
+                tcp->clean();
+                //tmp_flag = false;
+            }
+            usleep(100);
+        }
+    }
+}
+
+/**
+ * This is a helper function which is made such that the TCP connection
+ * can utilize a thread to continiously check on messages.
+ *
+ * https://stackoverflow.com/questions/1151582/pthread-function-from-a-class
+ */
 void * FlowControl::loop()
 {
     pthread_detach(pthread_self());
-    bool tmp_flag = true;
-    while(tmp_flag)
-    {
-        std::string str = tcp->getMessage();
-        if (str == "done\n"){
-            std::cout << "Server got: " << str << std::endl;
-            tcp->Send("Msg-01\n");
-            tcp->clean();
-            tmp_flag = false;
-        }
-        else if( str != "" )
-        {
-            std::cout << "Server got: " << str << std::endl;
-            tcp->Send("Msg-02\n");
-            tcp->clean();
-            tmp_flag = false;
-        }
-
-        sleep(1);
-    }
+    tcp->receive();
     tcp->detach();
 }
-
 
 /**
  * Stop currently running simulation

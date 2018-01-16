@@ -74,6 +74,7 @@ class FlowControl
         void populateSystem();
 
     private:
+        void tcpWaitForDoneMessage();
         void *loop();
         tcpserver *tcp = NULL;
 
