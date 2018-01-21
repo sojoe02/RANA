@@ -176,5 +176,6 @@ DISTFILES += \
     src/modules/test_file_back.lua \
     src/modules/test_file_input.lua \
     src/modules/ranalib_simconfig.lua \
+    src/lua_agents/16_neuron.lua
 
 

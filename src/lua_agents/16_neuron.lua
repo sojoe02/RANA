@@ -1,4 +1,4 @@
----begin_license--
+----begin_license--
 --
 --Copyright 	2013 - 2016 	Søren Vissing Jørgensen.
 --
@@ -20,48 +20,94 @@
 ----end_license--
 
 --The following global values are set via the simulation core:
--- ------------------------------------
--- IMMUTABLES.
--- ------------------------------------
--- ID -- id of the agent.
--- STEP_RESOLUTION 	-- resolution of steps, in the simulation core.
--- EVENT_RESOLUTION	-- resolution of event distribution.
--- ENV_WIDTH -- Width of the environment in meters.
--- ENV_HEIGHT -- Height of the environment in meters.
--- ------------------------------------
--- VARIABLES.
--- ------------------------------------
--- PositionX	 	-- Agents position in the X plane.
--- PositionY	 	-- Agents position in the Y plane.
--- DestinationX 	-- Agents destination in the X plane.
--- DestinationY 	-- Agents destination in the Y plane.
--- StepMultiple 	-- Amount of steps to skip.
--- Speed 			-- Movement speed of the agent in meters pr. second.
--- Moving 			-- Denotes wether this agent is moving (default = false).
--- GridMove 		-- Is collision detection active (default = false).
--- ------------------------------------
 
--- Import Rana lua libraries.
-Event	= require "ranalib_event"
-Core	= require "ranalib_core"
-Stat	= require "ranalib_statistic"
-Shared 	= require "ranalib_shared"
-Utility = require "ranalib_utility"
-Agent 	= require "ranalib_agent"
+-- Import valid Rana lua libraries.
+Event = require "ranalib_event"
+Shared = require "ranalib_shared"
+Stat = require "ranalib_statistic"
 
-function InitializeAgent()
+current = 10;
 
+g1 = 36;
+g2 = 120;
+g3 = 0.3;
+
+E1 = -12;
+E2 = 115;
+E3 = 10.613;
+
+I_ext = 0;
+V = -10;
+
+x1 = 0;
+x2 = 0;
+x3 = 1;
+
+t = 1;
+t_curr = 1;
+tn = STEP_RESOLUTION;
+
+Alpha1 = 0;
+Alpha2 = 0;
+Alpha3 = 0;
+
+Beta1 = 0;
+Beta2 = 0;
+Beta3 = 0;
+
+file = io.open("test.csv", "w")
+
+function _InitializeAgent()
+        say("Agent #: " .. ID .. " has been initialized")
 end
 
--- Init of the lua frog, function called upon initilization of the LUA auton.
 function HandleEvent(event)
-
 end
 
-function TakeStep()
+function takeStep()
 
+    if t == 10000 then
+        I_ext = current;
+    end
+
+    Alpha1=(10-V)/(100*(math.exp((10-V)/10)-1));
+    Alpha2=(25-V)/(10*(math.exp((25-V)/10)-1));
+    Alpha3=0.07*math.exp(-V/20);
+
+    Beta1=0.125*math.exp(-V/80);
+    Beta2=4*math.exp(-V/18);
+    Beta3=1/(math.exp((30-V)/10)+1);
+
+    tau1=1/(Alpha1+Beta1);
+    tau2=1/(Alpha2+Beta2);
+    tau3=1/(Alpha3+Beta3);
+
+    x0_1 = Alpha1 * tau1;
+    x0_2 = Alpha2 * tau2;
+    x0_3 = Alpha3 * tau3;
+
+    x1 = (1-tn/tau1)*x1+tn/tau1*x0_1
+    x2 = (1-tn/tau2)*x2+tn/tau2*x0_2
+    x3 = (1-tn/tau3)*x3+tn/tau3*x0_3
+
+    gnmh1 = g1*math.pow(x1,4);
+    gnmh2 = g2*math.pow(x2,3)*x3;
+    gnmh3 = g3;
+
+    I1 = gnmh1*(V-E1)
+    I2 = gnmh2*(V-E2)
+    I3 = gnmh3*(V-E3)
+
+    V = V+tn*(I_ext-(I1+I2+I3))
+
+    file:write(V.."\n")
+
+    if t % 100 == 0 then
+        print(STEP_RESOLUTION.. ' ' ..tn.. ' ' .. t .. ' '..V)
+    end
+
+    t = t+1
 end
 
-function CleanUp()
-
+function cleanUp()
 end

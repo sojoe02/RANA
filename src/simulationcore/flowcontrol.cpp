@@ -244,7 +244,7 @@ void FlowControl::runSimulation(int time)
             break;
         }
 
-        if(true)    //Only wrong if TCP server is used
+        if(false)    //Only wrong if TCP server is used
         {
             tcpWaitForDoneMessage();
         }

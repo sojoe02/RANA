@@ -177,6 +177,7 @@ DIST          = src/lua_agents/01_pingpong.lua \
 		src/modules/test_file_back.lua \
 		src/modules/test_file_input.lua \
 		src/modules/ranalib_simconfig.lua \
+		src/lua_agents/16_neuron.lua \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/linux.conf \
