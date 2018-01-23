@@ -22,7 +22,19 @@
 
 #include "src/parser.h"
 
-parser::parser(int argc, char **argv)
+
+parser* parser::_instance = NULL;
+parser* parser::getInstance()
+{
+    if(_instance == NULL)
+        _instance = new parser(); //Not thread-safe version
+    return _instance;
+
+    //Note that _instance is *never* deleted -
+    //it exists for the entire lifetime of the program!
+}
+
+void parser::parseInputArgs(int argc, char **argv)
 {
     struct arg_int *thread  = arg_int0("t","thread",NULL,"number of threads (default is 1)");
     struct arg_file *path   = arg_filen(NULL,NULL,NULL,1,argc+2,NULL);
@@ -60,8 +72,13 @@ parser::parser(int argc, char **argv)
     _path = *path->filename;
     _nogui = nogui->count;
 
-    _ipadd = ip->sval[0];
-    _port = port->ival[0];
+    if(ip->count > 0 && port->count > 0){
+        _enableTcpConnectionFlag = true;
+        _ipadd = ip->sval[0];
+        _port = port->ival[0];
+    }
+
+    std::cout << _ipadd << " asdf " << _port << std::endl;
 
     _verbose = verbose->count;
     _help = help->count;
@@ -83,7 +100,7 @@ std::string parser::getFile()
     return _path;
 }
 
-parser::~parser()
+bool parser::enableTcpConnection()
 {
-
+    return _enableTcpConnectionFlag;
 }

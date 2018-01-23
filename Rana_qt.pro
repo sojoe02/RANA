@@ -154,6 +154,8 @@ DISTFILES += \
     src/lua_agents/15_female.lua \
     src/lua_agents/15_freerunning_osc.lua \
     src/lua_agents/15_greenfield_osc.lua \
+    src/lua_agents/16_neuron.lua \
+    src/lua_agents/17_lizard.lua \
     src/modules/auxiliary.lua \
     src/modules/lib_env_lake.lua \
     src/modules/lib_table.lua \
@@ -175,7 +177,7 @@ DISTFILES += \
     src/modules/ranalib_variable.lua \
     src/modules/test_file_back.lua \
     src/modules/test_file_input.lua \
-    src/modules/ranalib_simconfig.lua \
-    src/lua_agents/16_neuron.lua
+    src/modules/ranalib_simconfig.lua
+
 
 

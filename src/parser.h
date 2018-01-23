@@ -27,7 +27,7 @@
 #include <iostream>
 
 #include <argtable2.h>
-
+/*
 class parser
 {
 public:
@@ -36,8 +36,11 @@ public:
 
     bool startProgram();
     bool startGui();
-    std::string getFile();
 
+    std::string getFile();
+    bool enableTcpConnection();
+
+    static int testVal;
 
 private:
     int _thread = 1;
@@ -45,15 +48,46 @@ private:
     bool _nogui = false;
 
 
-    int _port;
+    int _port = 0;
     std::string _ipadd;
+    bool _enableTcpConnectionFlag = false;
 
 
     bool _verbose = false;
     bool _help = false;
     bool _version = false;
 };
+*/
+
+class parser
+{
+    public:
+        static parser* getInstance();
+        void parseInputArgs(int argc, char **argv);
+
+        bool startProgram();
+        bool startGui();
+
+        std::string getFile();
+        bool enableTcpConnection();
+
+    private:
+        static parser* _instance;
+        parser(){} //private constructor
+
+        int _thread = 4;
+        std::string _path;
+        bool _nogui = false;
 
 
+        int _port = 0;
+        std::string _ipadd;
+        bool _enableTcpConnectionFlag = false;
+
+
+        bool _verbose = false;
+        bool _help = false;
+        bool _version = false;
+};
 
 #endif // PARSER_H

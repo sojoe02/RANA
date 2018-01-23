@@ -40,7 +40,11 @@ FlowControl::FlowControl(Control *control)
 
     Output::Inst()->kprintf("Initiating simulation #%i",control->newSimulation());
 
-    if(true){
+
+    parser *p = parser::getInstance();
+    if(p->enableTcpConnection()){
+        enableTcpFlag = true;
+        std::cout << "Setting up TCP connection" << std::endl;
         tcp = new tcpserver;
         tcp->setup(11999);
     }
@@ -244,7 +248,7 @@ void FlowControl::runSimulation(int time)
             break;
         }
 
-        if(false)    //Only wrong if TCP server is used
+        if(this->enableTcpFlag)    //Only wrong if TCP server is used
         {
             tcpWaitForDoneMessage();
         }

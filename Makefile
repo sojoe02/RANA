@@ -155,6 +155,8 @@ DIST          = src/lua_agents/01_pingpong.lua \
 		src/lua_agents/15_female.lua \
 		src/lua_agents/15_freerunning_osc.lua \
 		src/lua_agents/15_greenfield_osc.lua \
+		src/lua_agents/16_neuron.lua \
+		src/lua_agents/17_lizard.lua \
 		src/modules/auxiliary.lua \
 		src/modules/lib_env_lake.lua \
 		src/modules/lib_table.lua \
@@ -177,7 +179,6 @@ DIST          = src/lua_agents/01_pingpong.lua \
 		src/modules/test_file_back.lua \
 		src/modules/test_file_input.lua \
 		src/modules/ranalib_simconfig.lua \
-		src/lua_agents/16_neuron.lua \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/linux.conf \
@@ -621,6 +622,7 @@ BUILD/moc/moc_cli.cpp: src/control.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
+		src/parser.h \
 		src/ID.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
@@ -650,6 +652,7 @@ BUILD/moc/moc_mainwindow.cpp: src/control.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
+		src/parser.h \
 		src/ID.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
@@ -679,6 +682,7 @@ BUILD/moc/moc_control.cpp: src/cli.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
+		src/parser.h \
 		src/ID.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
@@ -708,6 +712,7 @@ BUILD/moc/moc_runner.cpp: src/simulationcore/flowcontrol.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
 		src/runner.h \
+		src/parser.h \
 		src/ID.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
@@ -737,6 +742,7 @@ BUILD/moc/moc_eventdialog.cpp: src/control.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
+		src/parser.h \
 		src/ID.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
@@ -766,6 +772,7 @@ BUILD/moc/moc_postcontrol.cpp: src/postprocessing/eventrunner.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
+		src/parser.h \
 		src/ID.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
@@ -795,6 +802,7 @@ BUILD/moc/moc_eventrunner.cpp: src/postprocessing/eventprocessing.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
+		src/parser.h \
 		src/ID.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
@@ -852,13 +860,13 @@ BUILD/obj/main.o: src/main.cpp src/ID.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
+		src/parser.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
 		src/api/shared.h \
 		src/output.h \
 		src/api/scanning.h \
 		src/api/tcpserver.h \
-		src/parser.h \
 		src/api/tcpclient.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/main.o src/main.cpp
 
@@ -881,6 +889,7 @@ BUILD/obj/cli.o: src/cli.cpp src/cli.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
+		src/parser.h \
 		src/ID.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
@@ -913,6 +922,7 @@ BUILD/obj/mainwindow.o: src/mainwindow.cpp BUILD/ui/ui_mainwindow.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
+		src/parser.h \
 		src/ID.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
@@ -948,6 +958,7 @@ BUILD/obj/output.o: src/output.cpp src/output.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
+		src/parser.h \
 		src/ID.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
@@ -975,6 +986,7 @@ BUILD/obj/control.o: src/control.cpp src/control.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
+		src/parser.h \
 		src/ID.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
@@ -1007,6 +1019,7 @@ BUILD/obj/runner.o: src/runner.cpp src/runner.h \
 		src/postprocessing/graphics/zblock.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
+		src/parser.h \
 		src/ID.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
@@ -1038,6 +1051,7 @@ BUILD/obj/eventprocessing.o: src/postprocessing/eventprocessing.cpp src/api/grid
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
+		src/parser.h \
 		src/ID.h \
 		src/output.h \
 		src/api/scanning.h \
@@ -1064,6 +1078,7 @@ BUILD/obj/colorutility.o: src/postprocessing/colorutility.cpp src/postprocessing
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
+		src/parser.h \
 		src/ID.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
@@ -1093,6 +1108,7 @@ BUILD/obj/eventdialog.o: src/eventdialog.cpp BUILD/ui/ui_eventdialog.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
+		src/parser.h \
 		src/ID.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
@@ -1122,6 +1138,7 @@ BUILD/obj/zblock.o: src/postprocessing/graphics/zblock.cpp src/output.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
+		src/parser.h \
 		src/ID.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
@@ -1150,6 +1167,7 @@ BUILD/obj/postcontrol.o: src/postprocessing/postcontrol.cpp src/output.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
+		src/parser.h \
 		src/ID.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
@@ -1178,6 +1196,7 @@ BUILD/obj/eventrunner.o: src/postprocessing/eventrunner.cpp src/output.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
+		src/parser.h \
 		src/ID.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
@@ -1206,6 +1225,7 @@ BUILD/obj/zmap.o: src/postprocessing/graphics/zmap.cpp src/postprocessing/graphi
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
+		src/parser.h \
 		src/ID.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
@@ -1239,6 +1259,7 @@ BUILD/obj/gridmovement.o: src/api/gridmovement.cpp src/api/gridmovement.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
+		src/parser.h \
 		src/ID.h \
 		src/api/phys.h \
 		src/api/shared.h \
@@ -1266,6 +1287,7 @@ BUILD/obj/maphandler.o: src/api/maphandler.cpp src/output.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
+		src/parser.h \
 		src/ID.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
@@ -1296,6 +1318,7 @@ BUILD/obj/phys.o: src/api/phys.cpp src/api/phys.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
+		src/parser.h \
 		src/ID.h \
 		src/api/gridmovement.h \
 		src/api/shared.h \
@@ -1325,6 +1348,7 @@ BUILD/obj/scanning.o: src/api/scanning.cpp src/api/scanning.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
+		src/parser.h \
 		src/ID.h \
 		src/api/gridmovement.h \
 		src/api/shared.h \
@@ -1351,6 +1375,7 @@ BUILD/obj/shared.o: src/api/shared.cpp src/output.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
+		src/parser.h \
 		src/ID.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
@@ -1378,6 +1403,7 @@ BUILD/obj/flowcontrol.o: src/simulationcore/flowcontrol.cpp src/simulationcore/f
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
 		src/runner.h \
+		src/parser.h \
 		src/ID.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
@@ -1407,6 +1433,7 @@ BUILD/obj/interfacer.o: src/simulationcore/interfacer.cpp src/output.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
+		src/parser.h \
 		src/ID.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
@@ -1436,6 +1463,7 @@ BUILD/obj/sector.o: src/simulationcore/sector.cpp src/ID.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
+		src/parser.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
 		src/api/shared.h \
@@ -1463,6 +1491,7 @@ BUILD/obj/supervisor.o: src/simulationcore/supervisor.cpp src/output.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
+		src/parser.h \
 		src/ID.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
@@ -1500,6 +1529,7 @@ BUILD/obj/agentluainterface.o: src/simulationcore/agents/agentluainterface.cpp s
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
+		src/parser.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
 		src/api/shared.h \
@@ -1529,6 +1559,7 @@ BUILD/obj/eventqueue.o: src/simulationcore/eventqueue.cpp src/ID.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
+		src/parser.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
 		src/api/shared.h \

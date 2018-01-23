@@ -40,6 +40,7 @@
 #include "src/mainwindow.h"
 #include "src/utility.h"
 #include "src/control.h"
+#include "src/parser.h"
 
 #include "../ID.h"
 #include "../api/phys.h"
@@ -77,6 +78,7 @@ class FlowControl
         void tcpWaitForDoneMessage();
         void *loop();
         tcpserver *tcp = NULL;
+        bool enableTcpFlag = false;
 
         static void *FlowControl_helper(void *context)
         {

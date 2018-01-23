@@ -40,7 +40,6 @@
 #include "src/simulationcore/eventqueue.h"
 #include "src/postprocessing/colorutility.h"
 
-
 #include "eventdialog.h"
 #include "helpdialog.h"
 

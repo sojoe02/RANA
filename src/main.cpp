@@ -40,31 +40,10 @@ unsigned long long ID::eID = 0;
 unsigned long long ID::tmu = 0;
 unsigned long long ID::nID = 0;
 
-/*
-tcpserver tcp;
-tcpclient ctcp;
-
-void * loop(void * m)
-{
-    pthread_detach(pthread_self());
-    while(1)
-    {
-        std::string str = tcp.getMessage();
-        if( str != "" )
-        {
-            std::cout << "Message: " << str << std::endl;
-            tcp.Send("a1");
-            tcp.clean();
-        }
-        sleep(1);
-    }
-    tcp.detach();
-}
-*/
 int main(int argc, char **argv)
 {
-
-    parser p(argc, argv);
+    parser *p = parser::getInstance();
+    p->parseInputArgs(argc, argv);
 
     //srand(time(0));
     Phys::seedMersenne();
@@ -76,65 +55,29 @@ int main(int argc, char **argv)
 
     QApplication a(argc, argv);
 
-    if(p.startProgram())
+    if(p->startProgram())
     {
-        if(p.startGui()){
+        if(p->startGui()){
             std::cout << "Start with gui" << std::endl;
             MainWindow *w = new MainWindow();
             Output::Inst()->setMainWindow(w);
             w->show();
-        }else
-        {
-            std::cout << "Start without gui - " << p.getFile() << std::endl;
-            Cli *c = new Cli(p.getFile());
+        }else{
+            std::cout << "Start without gui - " << p->getFile() << std::endl;
+            Cli *c = new Cli(p->getFile());
         }
     }
 
     return a.exec();
-
-
-
-/*
-    if(true){
-        std::cout << "hello 1" << std::endl;
-        pthread_t msg;
-        tcp.setup(11999);
-
-        pthread_detach(pthread_self());
-        if( pthread_create(&msg, NULL, loop, (void *)0) == 0)
-        {
-            tcp.receive();
-        }
-    }else{
-        std::cout << "hello 2" << std::endl;
-
-        ctcp.setup("127.0.0.1",11999);
-        int num = 10;
-        std::cout << "Num request: " << num << std::endl;
-        for(int i = 0; i < num; i++)
-        {
-            std::string msg = "I'M SENDING A MESSAGE";
-            ctcp.Send(msg);
-            std::string rec = ctcp.receive();
-            if( rec != "" )
-            {
-                std::cout << "Server Response: " << rec << std::endl;
-            }
-            sleep(1);
-        }
-    }
-
-    std::cout << "end bend" << std::endl;
-*/
-
 }
 
-
-
-
-
-
-
-
+/*
+ * ./Rana_qt
+ * ./Rana_qt --help
+ * ./Rana_qt --nogui
+ * ./Rana_qt --nogui -f src/modules/test_file_input.lua
+ * ./Rana_qt --nogui -f src/modules/test_file_input.lua --ip 192.168.0.1 --port 11999
+ *          netcat localhost 11999
+*/
 
 
