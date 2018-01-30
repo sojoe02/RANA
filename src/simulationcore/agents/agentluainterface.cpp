@@ -1292,10 +1292,16 @@ int AgentLuaInterface::l_getSharedTcpInput(lua_State *L)
     std::vector<std::string> tmp = Shared::getTcpInputToAgent(key);
 
     std::cout << "test 1: " << key << std::endl;
+
+    lua_createtable(L, tmp.size(), 0);
+    int newTable = lua_gettop(L);
+    int index = 1;
+
     for(auto& it : tmp)
     {
-        std::cout << "test 2: " << it << std::endl;
-        lua_pushstring(L, it.c_str());
+        lua_pushstring(L, (it).c_str());
+        lua_rawseti(L, newTable, index);
+        ++index;
     }
 
     return 1;

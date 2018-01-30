@@ -120,6 +120,10 @@ std::vector<std::string> Shared::getTcpInputToAgent(std::string key)
     {
         return sharedItr->second;
     };
+
+    std::vector<std::string> a;
+    return a;
+
 }
 
 

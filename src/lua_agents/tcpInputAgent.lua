@@ -24,10 +24,11 @@
 -- Import valid Rana lua libraries.
 Shared = require "ranalib_shared"
 
+local t = 0
 local name = ''
 
 function _InitializeAgent()
-    name = "tcpAgent1"
+    name = "t1"
     print(name)
 end
 
@@ -36,7 +37,14 @@ end
 
 function takeStep()
     local tcpInput = Shared.getTcpInput(name)
-    print('test2333')
+    print(name .. " " ..#tcpInput)
+    for value = 1, #tcpInput do
+
+        print(tcpInput[value])
+
+    end
+
+    t = t+1
 end
 
 function cleanUp()

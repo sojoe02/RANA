@@ -157,6 +157,7 @@ DIST          = src/lua_agents/01_pingpong.lua \
 		src/lua_agents/15_greenfield_osc.lua \
 		src/lua_agents/16_neuron.lua \
 		src/lua_agents/17_lizard.lua \
+		src/lua_agents/tcpInputAgent.lua \
 		src/modules/auxiliary.lua \
 		src/modules/lib_env_lake.lua \
 		src/modules/lib_table.lua \
