@@ -23,12 +23,17 @@
 
 -- Import valid Rana lua libraries.
 Shared = require "ranalib_shared"
+Event = require "ranalib_event"
 
 local t = 0
 local name = ''
 
 function _InitializeAgent()
-    name = "t1"
+
+    PositionY = 50
+    PositionX = 0
+
+    name = "t1"    
     print(name)
 end
 
@@ -37,14 +42,19 @@ end
 
 function takeStep()
     local tcpInput = Shared.getTcpInput(name)
+
     print(name .. " " ..#tcpInput)
-    for value = 1, #tcpInput do
 
-        print(tcpInput[value])
-
+    if (tonumber(tcpInput[1]) == 1) then
+        print("VALUE FOR AGENT: "..name.." IS: "..tcpInput[1])
+        tcpInputAgentEvent()
     end
 
     t = t+1
+end
+
+function tcpInputAgentEvent()
+    Event.emit{speed=100,description="ping",table={msg="I am tcpAgent "..name.." with ID: "..ID}}
 end
 
 function cleanUp()

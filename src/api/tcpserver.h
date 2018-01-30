@@ -17,7 +17,7 @@
 #include <pthread.h>
 #include <thread>  //REMOVE
 
-#define MAXPACKETSIZE 4096
+#define MAXPACKETSIZE 8192
 
 class tcpserver
 {

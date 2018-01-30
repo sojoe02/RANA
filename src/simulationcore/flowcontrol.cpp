@@ -46,7 +46,7 @@ FlowControl::FlowControl(Control *control)
         enableTcpFlag = true;
         std::cout << "Setting up TCP connection" << std::endl;
         tcp = new tcpserver;
-        tcp->setup(11999);
+        tcp->setup(p->getPort());
     }
 
 }

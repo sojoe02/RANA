@@ -58,17 +58,39 @@ Beta3 = 0;
 file = io.open("test.csv", "w")
 
 function _InitializeAgent()
-        say("Agent #: " .. ID .. " has been initialized")
+
+    PositionY = 50
+    PositionX = 1
+
+    say("Agent #: " .. ID .. " has been initialized")
 end
 
 function HandleEvent(event)
+
+    if event.description == "ping" then
+        print("Agent: "..ID .." received a ping from: "..event.ID ..", saying: "..event.table.msg)
+    end
+
 end
 
 function takeStep()
 
-    if t == 10000 then
-        I_ext = current;
+    if t == 0 then
+        I_ext = 10;
     end
+    if t == 20000 then
+        I_ext = 0;
+    end
+    if t == 35000 then
+        I_ext = 10;
+    end
+    if t == 50000 then
+        I_ext = 0;
+    end
+    if t == 80000 then
+        I_ext = 10;
+    end
+
 
     Alpha1=(10-V)/(100*(math.exp((10-V)/10)-1));
     Alpha2=(25-V)/(10*(math.exp((25-V)/10)-1));

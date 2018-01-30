@@ -69,6 +69,7 @@ class parser
         bool startGui();
 
         std::string getFile();
+        int getPort(){return _port;}
         bool enableTcpConnection();
 
     private:
