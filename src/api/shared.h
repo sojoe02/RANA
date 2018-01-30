@@ -43,6 +43,9 @@ public:
     static agentPathNum getAgentPathNum(std::string key);
     static void addAgentPathNum(std::string, agentPathNum);
 
+    static std::vector<std::string> getTcpInputToAgent(std::string key);
+    static void addTcpInputToAgent(std::string, std::vector<std::string>);
+
 	static void initShared();
 
 private:
@@ -56,6 +59,8 @@ private:
     static std::shared_timed_mutex agentMutex;
     static std::unordered_map<std::string, agentPathNum> sharedAgents;
 
+    static std::shared_timed_mutex tcpInputMutex;
+    static std::unordered_map<std::string,std::vector<std::string>> tcpInput;
 };
 
 

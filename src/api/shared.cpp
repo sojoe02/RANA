@@ -32,6 +32,8 @@ std::shared_timed_mutex Shared::stringMutex;
 
 std::unordered_map<std::string, agentPathNum> Shared::sharedAgents;
 std::shared_timed_mutex Shared::agentMutex;
+std::unordered_map<std::string,std::vector<std::string>> Shared::tcpInput;
+std::shared_timed_mutex Shared::tcpInputMutex;
 
 //Shared::Shared()
 //{
@@ -101,9 +103,24 @@ agentPathNum Shared::getAgentPathNum(std::string key)
     };
 }
 
+void Shared::addTcpInputToAgent(std::string key, std::vector<std::string> value)
+{
+    std::lock_guard<std::shared_timed_mutex> writerLock(tcpInputMutex);
 
+    tcpInput[key] = value;
+}
 
+std::vector<std::string> Shared::getTcpInputToAgent(std::string key)
+{
+    std::shared_lock<std::shared_timed_mutex> readerLock(tcpInputMutex);
 
+    auto sharedItr = tcpInput.find(key);
+
+    if(sharedItr != tcpInput.end())
+    {
+        return sharedItr->second;
+    };
+}
 
 
 

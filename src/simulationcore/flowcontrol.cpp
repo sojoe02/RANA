@@ -278,15 +278,27 @@ void FlowControl::tcpWaitForDoneMessage()
         while(tmp_flag)
         {
             std::string str = tcp->getMessage();
-            if (str == "done\n"){
+            if (str == "done\n"){   
                 std::cout << "Server got: " << str << std::endl;
                 tcp->Send("Msg-01\n");
                 tcp->clean();
                 tmp_flag = false;
             }
-            else if( str != "" )
-            {
+            else if( str != "" ){
                 std::cout << "Server got: " << str << std::endl;
+                std::stringstream ss(str);
+                std::vector<std::string> result;
+
+                while( ss.good() )
+                {
+                    std::string substr;
+                    std::getline( ss, substr, ',' );
+                    result.push_back( substr );
+                }
+
+                std::string tcpInputAgentName = result.front();   //This is the name of the TCP input agent.
+                result.erase (result.begin());
+                Shared::addTcpInputToAgent(tcpInputAgentName, result);
                 tcp->Send("Msg-02\n");
                 tcp->clean();
                 //tmp_flag = false;

@@ -80,38 +80,38 @@ local function agentMain()
     local _num
 
     for value = 1, #agents do
-
         --  Check if it is a file path
-        if type(value) == "string" then
+        if type(agents[value]) == "string" then
             _key = _key+1
-            _path = value
-            --io.write(value, " ")
+            _path = agents[value]
+
+            io.write(agents[value], " ")
 
             --  Check if there is a number of agents to initiate
             if type( agents[value+1] ) == "number" then
                 _num = agents[value+1]
-                --io.write( select(2, next( agents, key)) )
+               io.write( select(2, next( agents, key)) )
             else    --  Instantiate 1
                 _num = 1
-                --io.write( 1 )
+               io.write( 1 )
 
             end
             Shared.storeAgent(_key, _path, _num)
-            --io.write("\n")
-            --print(_key, _path, _num)
+            io.write("\n")
+            print(_key, _path, _num)
         end
-
-
+        Shared.storeNumber("numAgents", _key)
     end
 
 end
 
 function _getSimulationFile(inputFilePath)
     require(inputFilePath)
-    --print(inputFilePath)
+    print(inputFilePath)
 end
 
 function _checkIfInputFileIsSimulationType()
+    print("2")
     if type(sim) == "table" and
         type(agents) == "table" and
          type(param) == "table" then

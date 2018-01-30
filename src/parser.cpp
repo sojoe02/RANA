@@ -49,11 +49,6 @@ void parser::parseInputArgs(int argc, char **argv)
     void* argtable[] = {thread,nogui,verbose,help,version,path,ip,port,end};
     arg_parse(argc,argv,argtable);
 
-    if( argtable == NULL)
-    {
-        std::cout << "insufficient memory" << std::endl;
-    }
-
     if(help->count > 0)
     {
         std::cout << "Usage: RANA" << std::endl;
@@ -76,9 +71,8 @@ void parser::parseInputArgs(int argc, char **argv)
         _enableTcpConnectionFlag = true;
         _ipadd = ip->sval[0];
         _port = port->ival[0];
+        std::cout << _ipadd << " asdf " << _port << std::endl; //TODO: Remove
     }
-
-    std::cout << _ipadd << " asdf " << _port << std::endl;
 
     _verbose = verbose->count;
     _help = help->count;

@@ -96,6 +96,7 @@ public:
     static int l_getSharedNumber(lua_State *L);
     static int l_addSharedString(lua_State *L);
     static int l_getSharedString(lua_State *L);
+    static int l_getSharedTcpInput(lua_State *L);
 
     //Simulation core.
     static int l_stopSimulation(lua_State *L);

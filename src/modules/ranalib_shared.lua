@@ -116,6 +116,11 @@ function RanaLibShared.storeAgent(key, path, num)
         l_addSharedAgent(key, path, num)
 end
 
+function RanaLibShared.getTcpInput(key)
+
+        return l_getSharedTcpInput(key)
+end
+
 return RanaLibShared
 
 

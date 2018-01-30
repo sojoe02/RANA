@@ -183,6 +183,7 @@ AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double po
         lua_register(L, "l_addSharedNumber",l_addSharedNumber);
         lua_register(L, "l_getSharedString", l_getSharedString);
         lua_register(L, "l_addSharedString", l_addSharedString);
+        lua_register(L, "l_getSharedTcpInput", l_getSharedTcpInput);
 
         //Simulation core.
         lua_register(L, "l_getAgentPath", l_getAgentPath);
@@ -1283,6 +1284,21 @@ int AgentLuaInterface::l_getSharedString(lua_State *L)
 
     return 1;
 
+}
+
+int AgentLuaInterface::l_getSharedTcpInput(lua_State *L)
+{
+    std::string key = lua_tostring(L, -1);
+    std::vector<std::string> tmp = Shared::getTcpInputToAgent(key);
+
+    std::cout << "test 1: " << key << std::endl;
+    for(auto& it : tmp)
+    {
+        std::cout << "test 2: " << it << std::endl;
+        lua_pushstring(L, it.c_str());
+    }
+
+    return 1;
 }
 
 //Simulation core.
