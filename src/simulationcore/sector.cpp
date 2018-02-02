@@ -166,23 +166,20 @@ void Sector::performEvent(std::unique_ptr<EventQueue::eEvent> event)
 }
 
 
-int Sector::addAgent(double x, double y, double z, std::string filename, std::string type)
+int Sector::addAgent(double x, double y, double z, std::string filename, int groupID = 0)
 {
     int id = ID::generateAgentID();
 
-	if(type.compare("Lua") == 0)
-	{
-        std::shared_ptr<AgentLuaInterface> luaPtr = std::make_shared<AgentLuaInterface>(id, x, y, 1, this, filename);
+    std::shared_ptr<AgentLuaInterface> luaPtr = std::make_shared<AgentLuaInterface>(id, x, y, 1, this, filename, groupID);
 
-        if(Output::SimRunning)
-        {
-            newAgents.push_back(luaPtr);
-        }
-        else
-        {
-            luaAgents.insert(std::make_pair(luaPtr->getID(),luaPtr));
-            luaPtr->InitializeAgent();
-        }
+    if(Output::SimRunning)
+    {
+        newAgents.push_back(luaPtr);
+    }
+    else
+    {
+        luaAgents.insert(std::make_pair(luaPtr->getID(),luaPtr));
+        luaPtr->InitializeAgent();
     }
 
 	return id;

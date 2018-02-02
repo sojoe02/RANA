@@ -18,11 +18,11 @@ void Interfacer::initInterfacer(Supervisor *arg_master)
 	//activesector = arg_activesector;
 }
 
-int Interfacer::addLuaAgent(double x, double y, double z, std::string path, std::string filename)
+int Interfacer::addLuaAgent(double x, double y, double z, std::string path, std::string filename, int groupID = 0)
 {
     std::lock_guard<std::mutex> guard(agentMutex);
 
-    int id = master->addAgent(x, y, z, path, filename, "Lua");
+    int id = master->addAgent(x, y, z, path, filename, groupID);
     //Output::Inst()->addGraphicAgent(id,x,y);
 
     return id;

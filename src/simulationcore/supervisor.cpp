@@ -374,7 +374,7 @@ void Supervisor::simDone()
     }
 }
 
-int Supervisor::addAgent(double x, double y, double z, std::string path, std::string filename, std::string type)
+int Supervisor::addAgent(double x, double y, double z, std::string path, std::string filename, int groupID = 0)
 {
     auto nestItr = sectors.begin();
 
@@ -385,7 +385,7 @@ int Supervisor::addAgent(double x, double y, double z, std::string path, std::st
 
     nestItr += sectorIndex;
 
-    int id = (*nestItr)->addAgent(x, y, z, path+filename, type);
+    int id = (*nestItr)->addAgent(x, y, z, path+filename, groupID);
 
     eventQueue->addAgentInfo(id, filename);
 

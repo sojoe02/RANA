@@ -47,6 +47,13 @@ Shared  = require "ranalib_shared"
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
 function InitializeAgent()
+
+    print("test1")
+    initTcpInputAgents()
+    print("test2")
+    initNeurons()
+    print("test3")
+
 end
 
 function initTcpInputAgents()
@@ -54,7 +61,10 @@ function initTcpInputAgents()
 end
 
 function initNeurons()
-    local ID = Agent.addAgent("16_neuron.lua", 20, 10)
+    print("test2.1")
+    local ID = Agent.addAgent("01_pingpong.lua", 20, 10, 2)
+    print("test2.2")
+    local ID = Agent.addAgent("01_pingpong.lua", 20, 10, 2)
 end
 
 function takeStep()

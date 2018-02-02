@@ -45,7 +45,7 @@ class Sector;
 class AgentLuaInterface : public Agent
 {
 public:
-    AgentLuaInterface(int ID, double posX, double posY, double posZ,	Sector *sector, std::string filename);
+    AgentLuaInterface(int ID, double posX, double posY, double posZ, Sector *sector, std::string filename, int groupID = 0);
     ~AgentLuaInterface();
 
     bool operator==(AgentLuaInterface &other) const;

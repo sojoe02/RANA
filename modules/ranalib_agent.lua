@@ -11,7 +11,7 @@ local currentColor = {r=255,g=255,b=255,alpha=255}
 -- @Return the ID of the added agent, or -1 if the filename is not of type string,
 -- if the filename is not present, the new agent will be in 'disabled' mode.
 -- Example: addAgent([[02_oscillator.lua]], 50, 50)
-function ranaLibAgent.addAgent(filename, posX, posY)
+function ranaLibAgent.addAgent(filename, posX, posY, groupID)
         local mapWidth, mapHeight = l_getEnvironmentSize()
         local path = l_getAgentPath()
 
@@ -19,7 +19,7 @@ function ranaLibAgent.addAgent(filename, posX, posY)
         local posY = posY or l_getRandomInteger(1,mapHeight)
 
         if type(filename) == "string" then
-                local ID = l_addAgent(posX, posY, 0, path, filename)
+                local ID = l_addAgent(posX, posY, 0, path, filename, groupID)
                 return ID
         else
                 return -1
@@ -49,7 +49,7 @@ end
 -- removed and added on the fly as needed.
 function ranaLibAgent.joinGroup(groupID)
 
-        if type(group) == "number" then
+        if type(groupID) == "number" then
                 l_addGroup(groupID,ID)
         end
 end

@@ -35,7 +35,7 @@ class Sector;
 class Agent
 {
 public:
-    Agent(int ID, double posX, double posY, double posZ, Sector *sector);
+    Agent(int ID, double posX, double posY, double posZ, Sector *sector, int groupID);
 
     virtual ~Agent(){}
 

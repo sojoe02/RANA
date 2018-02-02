@@ -44,8 +44,8 @@
 #include "src/simulationcore/interfacer.h"
 #include "src/simulationcore/agents/agentluainterface.h"
 
-AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double posZ, Sector *sector, std::string filename)
-    :Agent(ID,posX,posY,posZ,sector),destinationX(posX),destinationY(posY),speed(1),moving(false),gridmove(false),
+AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double posZ, Sector *sector, std::string filename, int groupID)
+    :Agent(ID,posX,posY,posZ,sector,groupID),destinationX(posX),destinationY(posY),speed(1),moving(false),gridmove(false),
     filename(filename),nofile(false),removed(false),L(NULL)
 {
     //Output::Inst()->kprintf("%f,%f", posX, posY);
@@ -1317,13 +1317,15 @@ int AgentLuaInterface::l_getAgentPath(lua_State *L)
 
 int AgentLuaInterface::l_addAgent(lua_State *L)
 {
-    double posX = lua_tonumber(L, -5);
-    double posY = lua_tonumber(L, -4);
-    double posZ = lua_tonumber(L, -3);
-    std::string path = lua_tostring(L, -2);
-    std::string filename = lua_tostring(L, -1);
 
-    int id = Interfacer::addLuaAgent(posX, posY, posZ, path, filename);
+    double posX = lua_tonumber(L, -6);
+    double posY = lua_tonumber(L, -5);
+    double posZ = lua_tonumber(L, -4);
+    std::string path = lua_tostring(L, -3);
+    std::string filename = lua_tostring(L, -2);
+    int groupID = lua_tonumber(L, -1);
+
+    int id = Interfacer::addLuaAgent(posX, posY, posZ, path, filename, groupID);
 
     lua_pushinteger(L, id);
 

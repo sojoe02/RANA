@@ -27,10 +27,11 @@
 #include "src/simulationcore/sector.h"
 #include "src/simulationcore/agents/agent.h"
 
-Agent::Agent(int ID, double posX, double posY, double posZ, Sector *sector)
+Agent::Agent(int ID, double posX, double posY, double posZ, Sector *sector, int groupID)
 :ID(ID), macroFactorMultiple(1), posX(posX), posY(posY), posZ(posZ), sector(sector),
   radius(0), mass(0), charge(0),angle(0)
 {
+    addGroup(groupID);
 }
 
 int Agent::getID(){
