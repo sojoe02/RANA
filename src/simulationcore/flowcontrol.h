@@ -79,6 +79,7 @@ class FlowControl
         void *loop();
         tcpserver *tcp = NULL;
         bool enableTcpFlag = false;
+        bool tcpTestFlag = false;
 
         static void *FlowControl_helper(void *context)
         {

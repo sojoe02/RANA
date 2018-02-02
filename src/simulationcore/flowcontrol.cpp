@@ -47,6 +47,10 @@ FlowControl::FlowControl(Control *control)
         std::cout << "Setting up TCP connection" << std::endl;
         tcp = new tcpserver;
         tcp->setup(p->getPort());
+
+        pthread_t t1;
+        pthread_detach(pthread_self());
+        pthread_create(&t1, NULL, &FlowControl::FlowControl_helper, this);
     }
 
 }
@@ -270,41 +274,36 @@ void FlowControl::runSimulation(int time)
 
 void FlowControl::tcpWaitForDoneMessage()
 {
-    pthread_t t1;
-    pthread_detach(pthread_self());
-    if( pthread_create(&t1, NULL, &FlowControl::FlowControl_helper, this) == 0)
+    bool tmp_flag = true;
+    while(tmp_flag)
     {
-        bool tmp_flag = true;
-        while(tmp_flag)
-        {
-            std::string str = tcp->getMessage();
-            if (str == "done\n"){   
-                std::cout << "Server got: " << str << std::endl;
-                tcp->Send("Msg-01\n");
-                tcp->clean();
-                tmp_flag = false;
-            }
-            else if( str != "" ){
-                std::cout << "Server got: " << str << std::endl;
-                std::stringstream ss(str);
-                std::vector<std::string> result;
-
-                while( ss.good() )
-                {
-                    std::string substr;
-                    std::getline( ss, substr, ',' );
-                    result.push_back( substr );
-                }
-
-                std::string tcpInputAgentName = result.front();   //This is the name of the TCP input agent.
-                result.erase (result.begin());
-                Shared::addTcpInputToAgent(tcpInputAgentName, result);
-                tcp->Send("Msg-02\n");
-                tcp->clean();
-                //tmp_flag = false;
-            }
-            usleep(100);
+        std::string str = tcp->getMessage();
+        if (str == "done\n"){
+            std::cout << "Server got: " << str << std::endl;
+            tcp->Send("Msg-01\n");
+            tcp->clean();
+            tmp_flag = false;
         }
+        else if( str != "" ){
+            std::cout << "Server got: " << str << std::endl;
+            std::stringstream ss(str);
+            std::vector<std::string> result;
+
+            while( ss.good() )
+            {
+                std::string substr;
+                std::getline( ss, substr, ',' );
+                result.push_back( substr );
+            }
+
+            std::string tcpInputAgentName = result.front();   //This is the name of the TCP input agent.
+            result.erase (result.begin());
+            Shared::addTcpInputToAgent(tcpInputAgentName, result);
+            tcp->Send("Msg-02\n");
+            tcp->clean();
+            //tmp_flag = false;
+        }
+        usleep(100);
     }
 }
 
