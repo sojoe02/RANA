@@ -279,13 +279,13 @@ void FlowControl::tcpWaitForDoneMessage()
     {
         std::string str = tcp->getMessage();
         if (str == "done\n"){
-            std::cout << "Server got: " << str << std::endl;
+            //std::cout << "Server got: " << str << std::endl;
             tcp->Send("Msg-01\n");
             tcp->clean();
             tmp_flag = false;
         }
         else if( str != "" ){
-            std::cout << "Server got: " << str << std::endl;
+            //std::cout << "Server got: " << str << std::endl;
             std::stringstream ss(str);
             std::vector<std::string> result;
 
@@ -301,7 +301,7 @@ void FlowControl::tcpWaitForDoneMessage()
             Shared::addTcpInputToAgent(tcpInputAgentName, result);
             tcp->Send("Msg-02\n");
             tcp->clean();
-            //tmp_flag = false;
+            tmp_flag = false;
         }
         usleep(100);
     }

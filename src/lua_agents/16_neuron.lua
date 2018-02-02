@@ -60,37 +60,21 @@ file = io.open("test.csv", "w")
 function _InitializeAgent()
 
     PositionY = 50
-    PositionX = 1
+    PositionX = 5
 
     say("Agent #: " .. ID .. " has been initialized")
 end
 
-function HandleEvent(event)
+function handleEvent(sourceX, sourceY, sourceID, eventDescription, eventTable)
 
-    if event.description == "ping" then
-        print("Agent: "..ID .." received a ping from: "..event.ID ..", saying: "..event.table.msg)
-    end
+    I_ext = eventTable.msg;
+    print("16_Neuron: "..I_ext.." sent time: "..eventTable.time.." arrival time: " .. t);
 
 end
 
 function takeStep()
 
-    if t == 0 then
-        I_ext = 10;
-    end
-    if t == 20000 then
-        I_ext = 0;
-    end
-    if t == 35000 then
-        I_ext = 10;
-    end
-    if t == 50000 then
-        I_ext = 0;
-    end
-    if t == 80000 then
-        I_ext = 10;
-    end
-
+    I_ext = 100;
 
     Alpha1=(10-V)/(100*(math.exp((10-V)/10)-1));
     Alpha2=(25-V)/(10*(math.exp((25-V)/10)-1));
@@ -108,9 +92,9 @@ function takeStep()
     x0_2 = Alpha2 * tau2;
     x0_3 = Alpha3 * tau3;
 
-    x1 = (1-tn/tau1)*x1+tn/tau1*x0_1
-    x2 = (1-tn/tau2)*x2+tn/tau2*x0_2
-    x3 = (1-tn/tau3)*x3+tn/tau3*x0_3
+    x1 = (1-tn/tau1)*x1+tn/tau1*x0_1;
+    x2 = (1-tn/tau2)*x2+tn/tau2*x0_2;
+    x3 = (1-tn/tau3)*x3+tn/tau3*x0_3;
 
     gnmh1 = g1*math.pow(x1,4);
     gnmh2 = g2*math.pow(x2,3)*x3;
@@ -122,13 +106,14 @@ function takeStep()
 
     V = V+tn*(I_ext-(I1+I2+I3))
 
-    file:write(V.."\n")
-
+    if t % 10 == 0 then
+        file:write(V.."\n");
+    end
     if t % 100 == 0 then
-        print(STEP_RESOLUTION.. ' ' ..tn.. ' ' .. t .. ' '..V)
+        print(STEP_RESOLUTION.. ' ' ..tn.. ' ' .. t .. ' '..V);
     end
 
-    t = t+1
+    t = t+1;
 end
 
 function cleanUp()

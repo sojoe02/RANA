@@ -28,6 +28,9 @@ Event = require "ranalib_event"
 local t = 0
 local name = ''
 
+local newValue;
+local previousValue = nil;
+
 function _InitializeAgent()
 
     PositionY = 50
@@ -41,20 +44,29 @@ function HandleEvent(event)
 end
 
 function takeStep()
-    local tcpInput = Shared.getTcpInput(name)
 
-    print(name .. " " ..#tcpInput)
+    if t % 100 == 0 then
 
-    if (tonumber(tcpInput[1]) == 1) then
-        print("VALUE FOR AGENT: "..name.." IS: "..tcpInput[1])
-        tcpInputAgentEvent()
+        local tcpInput = Shared.getTcpInput(name)
+
+        if (tonumber(tcpInput[1]) ~= nil) then
+            --print("VALUE FOR AGENT: "..name.." IS: "..tcpInput[1])
+
+            newValue = tcpInput[1]
+
+            if newValue ~= previousValue then
+                tcpInputAgentEvent(newValue)
+                previousValue = newValue
+            end
+
+        end
     end
 
     t = t+1
 end
 
-function tcpInputAgentEvent()
-    Event.emit{speed=100,description="ping",table={msg="I am tcpAgent "..name.." with ID: "..ID}}
+function tcpInputAgentEvent(value)
+    Event.emit{speed=100,description="ping",table={msg=tonumber(value),time=t}}
 end
 
 function cleanUp()
