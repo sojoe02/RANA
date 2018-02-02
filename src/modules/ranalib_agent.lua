@@ -49,7 +49,7 @@ end
 -- removed and added on the fly as needed.
 function ranaLibAgent.joinGroup(groupID)
 
-        if type(group) == "number" then
+        if type(groupID) == "number" then
                 l_addGroup(groupID,ID)
         end
 end

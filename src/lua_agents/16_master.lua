@@ -44,65 +44,22 @@
 -- Import Rana lua libraries.
 Agent   = require "ranalib_agent"
 Shared  = require "ranalib_shared"
-Stat    = require "ranalib_statistic"
-Sim     = require "ranalib_simconfig"
-Utility = require "ranalib_utility"
-
---  Data
-sim = {}
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
 function InitializeAgent()
-    -- Add the data collector agent.
-    PositionX = -1
-    PositionY = -1
-
-    agent_table = {}
-    ids = {}
-
-    initiateLayer1()
-    initiateLayer2()
-    initiateLayer3()
-
-    Shared.storeTable("agents", agent_table)
-    Shared.storeTable("ids", ids)
 end
 
-function initiateLayer1()
-    local ID = Agent.addAgent("16_neuron.lua", 50,110)
-    table.insert(ids, ID)
-    agent_table[ID]=0
-
-    local ID = Agent.addAgent("16_neuron.lua", 50,90)
-    table.insert(ids, ID)
-    agent_table[ID]=0
+function initTcpInputAgents()
+    local ID = Agent.addAgent("tcpInputAgent.lua", 100, 100)
 end
 
-function initiateLayer2()
-    local ID = Agent.addAgent("16_neuron.lua", 100,150)
-    table.insert(ids, ID)
-    agent_table[ID]=0
-
-    local ID = Agent.addAgent("16_neuron.lua", 100,100)
-    table.insert(ids, ID)
-    agent_table[ID]=0
-
-    local ID = Agent.addAgent("16_neuron.lua", 100,50)
-    table.insert(ids, ID)
-    agent_table[ID]=0
+function initNeurons()
+    local ID = Agent.addAgent("16_neuron.lua", 20, 10)
 end
-
-function initiateLayer3()
-    local ID = Agent.addAgent("16_neuron.lua", 150,100)
-    table.insert(ids, ID)
-    agent_table[ID]=0
-end
-
 
 function takeStep()
 end
 
 function cleanUp()
-    Agent.removeAgent(ID)
 end
 

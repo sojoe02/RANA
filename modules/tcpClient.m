@@ -2,7 +2,7 @@
 pause on
 clear;clc;
 
-portnr = 11995;
+portnr = 11999;
 t = tcpip('localhost', portnr,'TimeOut',1);
 fopen(t);
 
