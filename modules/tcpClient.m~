@@ -2,7 +2,7 @@
 pause on
 clear;clc;
 
-portnr = 11995;
+portnr = 11999;
 t = tcpip('localhost', portnr,'TimeOut',1);
 fopen(t);
 
@@ -11,7 +11,7 @@ dataFromRana = sentToRana(t, 't1,1')
 %%
 tmp = "t1,";
 
-for i = 1:100000
+for i = 1:101000
     if i == 1 
         tmp1 = strcat(tmp,"10");
         dataFromRana = sentToRana(t,tmp1);
@@ -37,11 +37,52 @@ for i = 1:100000
         tmp1 = strcat(tmp,"10");
         dataFromRana = sentToRana(t,tmp1);
     else
-        dataFromRana = sentToRana(t, 'done\n')
+        dataFromRana = sentToRana(t, 'done\n');
     end
 
 end
 
 %%
-data = csvread('../../test.csv');
-plot(data)
+clc;clf;clear;
+file_start = '../../test_';
+file_end = '.csv';
+
+i = 2;
+while true
+    filepath = strcat(file_start, num2str(i), file_end)
+    if exist(filepath,'file') == 0
+        break;
+    end
+    
+    data = csvread(filepath);
+    hold on
+    plot(data)
+    hold off
+    
+    i = i +1;
+end
+
+ddata = [];
+
+
+
+
+hold on 
+plot(ddata)
+hold off
+grid on
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -44,6 +44,7 @@
 -- Import Rana lua libraries.
 Agent   = require "ranalib_agent"
 Shared  = require "ranalib_shared"
+Stat	= require "ranalib_statistic"
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
 function InitializeAgent()
@@ -57,10 +58,13 @@ function initTcpInputAgents()
 end
 
 function initNeurons()
+    local ID = Agent.addAgent("../lua_agents/16_neuron.lua", Stat.randomInteger(0,100), Stat.randomInteger(0,100), {2})
+    local ID = Agent.addAgent("../lua_agents/16_neuron.lua", Stat.randomInteger(0,100), Stat.randomInteger(0,100), {3})
+    local ID = Agent.addAgent("../lua_agents/16_neuron.lua", Stat.randomInteger(0,100), Stat.randomInteger(0,100), {4})
+    local ID = Agent.addAgent("../lua_agents/16_neuron.lua", Stat.randomInteger(0,100), Stat.randomInteger(0,100), {5})
+    local ID = Agent.addAgent("../lua_agents/16_neuron.lua", Stat.randomInteger(0,100), Stat.randomInteger(0,100), {6})
 
-    local ID = Agent.addAgent("../lua_agents/01_pingpong.lua", 30, 10, {1,2})
-    local ID = Agent.addAgent("../lua_agents/01_pingpong.lua", 20, 10, {1})
-    local ID = Agent.addAgent("../lua_agents/01_pingpong.lua", 10, 10, {2})
+    local ID = Agent.addAgent("../lua_agents/16_neuron.lua", Stat.randomInteger(0,100), Stat.randomInteger(0,100), {2,3,4,5,6})
 
 end
 

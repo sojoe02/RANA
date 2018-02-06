@@ -43,5 +43,54 @@ for i = 1:101000
 end
 
 %%
-data = csvread('../../test.csv');
-plot(data)
+clc;clf;clear;
+file_start = '../../test_';
+file_end = '.csv';
+
+i = 2;
+while true
+    filepath = strcat(file_start, num2str(i), file_end);
+    if exist(filepath,'file') == 0
+        i = i -1;
+        break;
+    end    
+    
+    i = i +1;
+end
+
+for j = 2:i
+    
+    filepath = strcat(file_start, num2str(j), file_end);
+    data = csvread(filepath);
+    
+    subplot(3,3,j)
+    plot(data)
+    ylim([-20 130])
+    grid on
+
+
+end
+ddata = [];
+for i = 2:size(data,1)
+    ddata = [ddata; data(i)-data(i-1)];
+end
+
+%hold on 
+%plot(ddata)
+%hold off
+grid on
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
