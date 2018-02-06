@@ -40,9 +40,9 @@ _EmitEvent = function(speed, desc, table, targetID, targetGroup)
 		end
 	else
 		tableString = ""
-	end
+        end
 
-	l_emitEvent(ID, PositionX, PositionY, speed, desc, targetID, targetGroup, tableString, PositionZ)
+        l_emitEvent(ID, PositionX, PositionY, speed, desc, targetID, utility.serializeTable(targetGroup), tableString, PositionZ)
 end
 
 

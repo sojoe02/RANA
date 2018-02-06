@@ -65,7 +65,7 @@ class EventQueue
 			std::string desc;
 			unsigned long long activationTime;
 			int targetID;
-            int targetGroup;
+            std::vector<int> targetGroup;
 			int originID;
 			std::atomic_uint reference_count;
             eEvent() : targetGroup(0), reference_count(0){}

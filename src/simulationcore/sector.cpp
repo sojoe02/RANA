@@ -139,10 +139,22 @@ void Sector::takeStepPhase(unsigned long long tmu)
  */
 void Sector::distroPhase(const EventQueue::eEvent* event)
 {
+    bool processEvent = false;
     for(const auto &lua : luaAgents)
     {
-        if(event->originID != lua.second->getID() && (event->targetGroup == 0 || lua.second->checkGroup(event->targetGroup) == true))
-        {
+        if(event->originID != lua.second->getID()){
+            for(auto groupID : event->targetGroup){
+                if( lua.second->checkGroup(groupID) ){
+                    processEvent = true;
+                    break;
+                }
+            }
+            if( !processEvent && event->targetGroup.empty()){
+                processEvent = true;
+            }
+        }
+
+        if(processEvent){
             std::unique_ptr<EventQueue::iEvent> ieventPtr = lua.second->processEvent(event);
 
             if(ieventPtr != NULL)

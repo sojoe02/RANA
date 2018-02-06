@@ -1382,7 +1382,23 @@ int AgentLuaInterface::l_emitEvent(lua_State *L)
     sendEvent->id = ID::generateEventID();
 	sendEvent->desc = lua_tostring(L, -5);
 	sendEvent->targetID = lua_tonumber(L, -4);
-	sendEvent->targetGroup = lua_tonumber(L, -3);
+
+    std::string s = lua_tostring(L, -3);
+    if (s.find("{[") != std::string::npos){
+        std::vector<int> targetGroup;
+        std::string delimiter = ",";
+        std::string token;
+        while( token != s ){
+            token = s.substr(0,s.find_first_of(delimiter));
+            s.erase(0, s.find_first_of(delimiter) + 1);
+            std::string s2id = token;
+            s2id.erase(0,s2id.find_first_of("=]") + 2);
+            if(!std::isdigit(s2id.back())) s2id.pop_back();
+            targetGroup.push_back(std::stoi(s2id));
+        }
+        sendEvent->targetGroup = targetGroup;
+    }
+
 	sendEvent->luatable = lua_tostring(L, -2);
     sendEvent->posZ = lua_tonumber(L, -1);
 

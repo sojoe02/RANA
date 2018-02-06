@@ -58,9 +58,9 @@ end
 
 function initNeurons()
 
-    local ID = Agent.addAgent("../lua_agents/01_pingpong.lua", 30, 10, {50,60,70})
-    local ID = Agent.addAgent("../lua_agents/01_pingpong.lua", 20, 10, {60})
-    local ID = Agent.addAgent("../lua_agents/01_pingpong.lua", 10, 10, {70})
+    local ID = Agent.addAgent("../lua_agents/01_pingpong.lua", 30, 10, {1,2})
+    local ID = Agent.addAgent("../lua_agents/01_pingpong.lua", 20, 10, {1})
+    local ID = Agent.addAgent("../lua_agents/01_pingpong.lua", 10, 10, {2})
 
 end
 
