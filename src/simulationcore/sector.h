@@ -59,7 +59,7 @@ class Sector
         int initAmount;
         void simDone();
         int getID(){ return id; }
-        int addAgent(double x, double y, double z, std::string filename, int groupID);
+        std::shared_ptr<AgentLuaInterface> addAgent(double x, double y, double z, std::string filename, std::string groupID);
 
         bool removeAgent(int arg_id);
         int containsAgent(int arg_id);

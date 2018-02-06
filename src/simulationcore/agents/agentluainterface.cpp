@@ -44,7 +44,10 @@
 #include "src/simulationcore/interfacer.h"
 #include "src/simulationcore/agents/agentluainterface.h"
 
-AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double posZ, Sector *sector, std::string filename, int groupID)
+
+
+
+AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double posZ, Sector *sector, std::string filename, std::string groupID)
     :Agent(ID,posX,posY,posZ,sector,groupID),destinationX(posX),destinationY(posY),speed(1),moving(false),gridmove(false),
     filename(filename),nofile(false),removed(false),L(NULL)
 {
@@ -196,6 +199,7 @@ AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double po
         lua_register(L, "l_emitEvent", l_emitEvent);
         lua_register(L, "l_addGroup", l_addGroup);
         lua_register(L, "l_removeGroup", l_removeGroup);
+        lua_register(L, "l_memberOfGroups", l_memberOfGroups);
         lua_register(L, "l_setStepMultiplier", l_setMacroFactorMultipler);
         lua_register(L, "l_changeAgentColor", l_changeAgentColor);
 
@@ -1323,7 +1327,7 @@ int AgentLuaInterface::l_addAgent(lua_State *L)
     double posZ = lua_tonumber(L, -4);
     std::string path = lua_tostring(L, -3);
     std::string filename = lua_tostring(L, -2);
-    int groupID = lua_tonumber(L, -1);
+    std::string groupID = lua_tostring(L, -1);
 
     int id = Interfacer::addLuaAgent(posX, posY, posZ, path, filename, groupID);
 
@@ -1368,8 +1372,7 @@ int AgentLuaInterface::l_changeAgentColor(lua_State *L)
 
 int AgentLuaInterface::l_emitEvent(lua_State *L)
 {
-    std::unique_ptr<EventQueue::eEvent>
-            sendEvent(new EventQueue::eEvent());
+    std::unique_ptr<EventQueue::eEvent> sendEvent(new EventQueue::eEvent());
 
 	sendEvent->originID = lua_tonumber(L, -9);
 	sendEvent->posX	= lua_tonumber(L, -8);
@@ -1427,6 +1430,32 @@ int AgentLuaInterface::l_removeGroup(lua_State *L)
     }
 
     lua_pushboolean(L, removed);
+    return 1;
+}
+
+int AgentLuaInterface::l_memberOfGroups(lua_State *L)
+{
+    int id = lua_tonumber(L, -1);
+
+    auto autonPtr = Interfacer::getAgentPtr(id);
+    if(autonPtr != NULL)
+    {
+        std::vector<int> tmp = autonPtr->memberOfGroups();
+
+        lua_createtable(L, tmp.size(), 0);
+        int newTable = lua_gettop(L);
+        int index = 1;
+        for(auto& it : tmp)
+        {
+            lua_pushinteger(L, it);
+            lua_rawseti(L, newTable, index);
+            ++index;
+
+            std::cout << id << " " << it << std::endl;
+
+        }
+    }
+
     return 1;
 }
 

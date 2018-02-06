@@ -45,7 +45,7 @@ class Sector;
 class AgentLuaInterface : public Agent
 {
 public:
-    AgentLuaInterface(int ID, double posX, double posY, double posZ, Sector *sector, std::string filename, int groupID = 0);
+    AgentLuaInterface(int ID, double posX, double posY, double posZ, Sector *sector, std::string filename, std::string groupID = "false");
     ~AgentLuaInterface();
 
     bool operator==(AgentLuaInterface &other) const;
@@ -108,6 +108,7 @@ public:
     static int l_emitEvent(lua_State *L);
     static int l_addGroup(lua_State *L);
     static int l_removeGroup(lua_State *L);
+    static int l_memberOfGroups(lua_State *L);
     static int l_setMacroFactorMultipler(lua_State *L);
 
     static int luapanic(lua_State *L);

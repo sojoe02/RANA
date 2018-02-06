@@ -15,7 +15,7 @@ class Interfacer
 public:
     static void initInterfacer(Supervisor* arg_master);
 
-    static int addLuaAgent(double x, double y, double z, std::string path, std::string filename, int groupID);
+    static int addLuaAgent(double x, double y, double z, std::string path, std::string filename, std::string groupID);
 	static void addLuaAgentPtr(std::shared_ptr<AgentLuaInterface> luaPtr);
 	static std::shared_ptr<AgentLuaInterface> getAgentPtr(int id);
 

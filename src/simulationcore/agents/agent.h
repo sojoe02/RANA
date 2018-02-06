@@ -35,7 +35,7 @@ class Sector;
 class Agent
 {
 public:
-    Agent(int ID, double posX, double posY, double posZ, Sector *sector, int groupID);
+    Agent(int ID, double posX, double posY, double posZ, Sector *sector, std::string groupID = "false");
 
     virtual ~Agent(){}
 
@@ -62,6 +62,7 @@ public:
     bool operator==(Agent &other) const;
     bool operator!=(Agent &other) const;
 	bool checkGroup(int group);
+    std::vector<int> memberOfGroups();
 
 	int getMacroFactorMultipler();
 	void setMacroFactorMultipler(int multipler);
@@ -90,8 +91,11 @@ protected:
 	double charge;
     double angle;
 
-
     friend class Sector;
+
+private:
+    void initAddAgentToGroups(std::string groupID);
+    bool is_number(const std::string& s);
 };
 
 #endif // AGENT_H

@@ -34,6 +34,7 @@
 #include "src/utility.h"
 #include "src/api/phys.h"
 #include "src/simulationcore/supervisor.h"
+#include "src/simulationcore/agents/agentluainterface.h"
 
 #include "../api/shared.h"
 
@@ -374,7 +375,7 @@ void Supervisor::simDone()
     }
 }
 
-int Supervisor::addAgent(double x, double y, double z, std::string path, std::string filename, int groupID = 0)
+std::shared_ptr<AgentLuaInterface> Supervisor::addAgent(double x, double y, double z, std::string path, std::string filename, std::string groupID)
 {
     auto nestItr = sectors.begin();
 
@@ -385,11 +386,10 @@ int Supervisor::addAgent(double x, double y, double z, std::string path, std::st
 
     nestItr += sectorIndex;
 
-    int id = (*nestItr)->addAgent(x, y, z, path+filename, groupID);
+    std::shared_ptr<AgentLuaInterface> luaPtr = (*nestItr)->addAgent(x, y, z, path+filename, groupID);
+    eventQueue->addAgentInfo(luaPtr->getID(), filename);
 
-    eventQueue->addAgentInfo(id, filename);
-
-    return id;
+    return luaPtr;
 
 }
 

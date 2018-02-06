@@ -35,6 +35,7 @@
 #include "src/simulationcore/sector.h"
 #include "src/utility.h"
 
+class AgentLuaInterface;
 class Sector;
 class Supervisor
 {
@@ -67,7 +68,7 @@ public:
 
 	void saveExternalEvents(std::string filename);
 
-    int addAgent(double x, double y, double z, std::string path, std::string filename, int groupID);
+    std::shared_ptr<AgentLuaInterface> addAgent(double x, double y, double z, std::string path, std::string filename, std::string groupID);
 	bool removeAgent(int ID);
 
 	void simDone();

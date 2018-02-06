@@ -48,12 +48,14 @@ Sector::~Sector()
 
 void Sector::populate(int agentSize, std::string filename)
 {
+
     for(int i=0; i<agentSize; i++)
     {
         if(Output::KillSimulation.load())
         {
             return;
         }
+
         double xtmp = Phys::getMersenneFloat(0,width);
         double ytmp = Phys::getMersenneFloat(0,height);
         std::shared_ptr<AgentLuaInterface> luaPtr = std::make_shared<AgentLuaInterface>(ID::generateAgentID(), xtmp, ytmp, 1, this, filename);
@@ -61,6 +63,7 @@ void Sector::populate(int agentSize, std::string filename)
         Interfacer::addLuaAgentPtr(luaPtr);
         luaPtr->InitializeAgent();
     }
+
 }
 
 /**
@@ -123,8 +126,8 @@ void Sector::takeStepPhase(unsigned long long tmu)
     for(const auto &agent : newAgents)
     {
         luaAgents.insert(std::make_pair(agent->getID(),agent));
+        //TODO: There might need a "Interfacer::addLuaAgentPtr(luaPtr);" function here.
         agent->InitializeAgent();
-
     }
     newAgents.clear();
 }
@@ -166,10 +169,9 @@ void Sector::performEvent(std::unique_ptr<EventQueue::eEvent> event)
 }
 
 
-int Sector::addAgent(double x, double y, double z, std::string filename, int groupID = 0)
+std::shared_ptr<AgentLuaInterface> Sector::addAgent(double x, double y, double z, std::string filename, std::string groupID)
 {
     int id = ID::generateAgentID();
-
     std::shared_ptr<AgentLuaInterface> luaPtr = std::make_shared<AgentLuaInterface>(id, x, y, 1, this, filename, groupID);
 
     if(Output::SimRunning)
@@ -179,10 +181,11 @@ int Sector::addAgent(double x, double y, double z, std::string filename, int gro
     else
     {
         luaAgents.insert(std::make_pair(luaPtr->getID(),luaPtr));
+        Interfacer::addLuaAgentPtr(luaPtr);
         luaPtr->InitializeAgent();
     }
 
-	return id;
+    return luaPtr;
 }
 
 bool Sector::removeAgent(int arg_id)

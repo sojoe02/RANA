@@ -1,5 +1,5 @@
+local utility = require "ranalib_utility"
 local ranaLibAgent = {}
-
 local currentColor = {r=255,g=255,b=255,alpha=255}
 
 -- Add an agent to the simulation. This agent will only receive
@@ -19,6 +19,12 @@ function ranaLibAgent.addAgent(filename, posX, posY, groupID)
         local posY = posY or l_getRandomInteger(1,mapHeight)
 
         if type(filename) == "string" then
+                if groupID ~= nil then
+                    groupID = utility.serializeTable(groupID)
+                else
+                    groupID = "false"
+                end
+
                 local ID = l_addAgent(posX, posY, 0, path, filename, groupID)
                 return ID
         else
@@ -69,6 +75,13 @@ function ranaLibAgent.leaveGroup(groupID)
         end
 
         return success
+end
+
+-- Get a table of all the groups which the agents belongs to.
+function ranaLibAgent.getMemberOfGroups(ID)
+
+        return l_memberOfGroups(ID)
+
 end
 
 -- Sets a new step multiple of the agent

@@ -2,6 +2,7 @@
 
 #include "src/output.h"
 #include "src/simulationcore/interfacer.h"
+#include "src/simulationcore/agents/agentluainterface.h"
 
 Supervisor* Interfacer::master = NULL;
 std::map<int, std::string> Interfacer::agentFilenames;
@@ -18,14 +19,15 @@ void Interfacer::initInterfacer(Supervisor *arg_master)
 	//activesector = arg_activesector;
 }
 
-int Interfacer::addLuaAgent(double x, double y, double z, std::string path, std::string filename, int groupID = 0)
+int Interfacer::addLuaAgent(double x, double y, double z, std::string path, std::string filename, std::string groupID)
 {
     std::lock_guard<std::mutex> guard(agentMutex);
+    std::shared_ptr<AgentLuaInterface> luaPtr = master->addAgent(x, y, z, path, filename, groupID);
 
-    int id = master->addAgent(x, y, z, path, filename, groupID);
+    addLuaAgentPtr(luaPtr);
     //Output::Inst()->addGraphicAgent(id,x,y);
 
-    return id;
+    return luaPtr->getID();
 }
 
 void Interfacer::addLuaAgentPtr(std::shared_ptr<AgentLuaInterface> luaPtr)
