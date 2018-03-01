@@ -3,7 +3,7 @@
   <img src=https://raw.githubusercontent.com/sojoe02/RANA/master/images/ranalogo.png />
 </p>
 
-#Description
+# Description
 
 Rana is a multi agent system simulator that is designed and implemented to support the high precision needed to perform real-time multi agent communication simulations. This entails support for real-time agent actions and event propagation.
 
@@ -16,33 +16,33 @@ Rana can also be used to perform 'action-based' simulations and is used as cours
 An event processing tool is also featured. It allows for post processed visualization of event propagation and intensity, this allows users to observe event based emergence and determine how events has affected agent behaviour.
 
 
-#Documentation
+# Documentation
 
 Rana functionality is currently documented via the wiki (https://github.com/sojoe02/RANA/wiki).
 
-#Releases
+# Releases
 
 Releases can be grabbed on github (https://github.com/sojoe02/RANA/releases).
 
-#License
+# License
 
 Rana is distributed as Open-source via.
 * GNU GENERAL PUBLIC LICENSE Version 3 (http://www.gnu.org/licenses/gpl.html)
 
-#Technologies
+# Technologies
 
 * Simulation core, event handler and agent interface is pure C++ (newest version requires support for C++14).
 * User interface and graphic representation is written in Qt (https://www.qt.io/)
 * Run-time agent design is enabled by Lua (https://www.lua.org/) with support for Just-in-time compilation via LuaJIT (http://luajit.org/).
 
 
-#Devteam
+# Devteam
 
  Development of the Simulation core, agent interface, UI and logo: 
  
  * Søren V. Jørgensen (sojoe02@gmail.com). Center for Bio-robotics, University of Southern Denmark.
 
-#Input and Support
+# Input and Support
 
  * John Hallam
  * Yves Demazeau
