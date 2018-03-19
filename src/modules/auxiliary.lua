@@ -28,14 +28,15 @@ function _TakeStep()
 end
 
 function _InitializeAgent()
+
         if InitializeAgent ~= nil then
                 InitializeAgent()
         elseif initializeAgent ~= nil then
-                Initializeagent()
+                initializeAgent()
         elseif initializeAgent ~= nil then
                 initializeAgent()
         elseif initializeAgent ~= nil then
-                initializegent()
+                initializeAgent()
         end
 end
 

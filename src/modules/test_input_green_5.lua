@@ -1,6 +1,6 @@
 agents={
     "/home/theis/workspace/RANA/src/lua_agents/18_microphone.lua", 4,
-    "/home/theis/workspace/RANA/src/lua_agents/18_green.lua", 4,
+    "/home/theis/workspace/RANA/src/lua_agents/18_green.lua", 5,
 }
 
 sim={
@@ -16,4 +16,14 @@ param={
     {0.100,0.010,0.3001},   --s
     {0.010,0.020,0.2001},   --t
     {0.010,0.020,0.2001},   --x
+    {-4.961618},
+    {0.030737},
+    {-4.351539},
+    {0.197169},
+    {-2.772665},
+    {0.624718},
+    {-5.805653},
+    {-0.251317},
+    {-0.236169},
+    {1.500000},
 }

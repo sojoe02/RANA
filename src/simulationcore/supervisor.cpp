@@ -202,7 +202,7 @@ void Supervisor::populateSystem(int listenerSize, int screamerSize, int LUASize,
 
             for(int k = 0; k < _num; k++)
             {
-                std::cout << "sector: " << j << " - max threads: " << sectors.size() << std::endl;
+                //std::cout << "sector: " << j << " - max threads: " << sectors.size() << std::endl;
                 Sector *sector = sectors.at(j);
                 sector->populate(1, _file);
 
