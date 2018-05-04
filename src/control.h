@@ -98,6 +98,8 @@ class Control : public QObject
 
         int newSimulation();
 
+        lua_State * getControlLuaState(){ return L; }
+
     //  Public slot
     public slots:
         void on_simDone();
@@ -126,8 +128,8 @@ class Control : public QObject
     //  Private Attributes
     private:
         FlowControl *agentDomain;
-        Cli *cli = NULL;
-        MainWindow *mainwindow = NULL;
+        Cli *cli = nullptr;
+        MainWindow *mainwindow = nullptr;
         Runner *runner;
         QThread runThread;
         QFuture<void> populateFuture;

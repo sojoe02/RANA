@@ -152,7 +152,7 @@ end
 function cleanUp()
 
 	--Write the oscillation data to a csv file.
-        file = io.open("test/green_"..ID.."_"..exNum.."_"..T.."_"..e.."_"..r.."_"..y.."_"..s.."_"..t.."_"..x..".csv", "w")
+        file = io.open("test/test_11_"..Shared.getNumber(20).."_"..Shared.getNumber(19).."/green/"..ID.."_"..exNum.."_"..T.."_"..e.."_"..r.."_"..y.."_"..s.."_"..t.."_"..x..".csv", "w")
         for i,v in pairs(Olevels) do
                 file:write(i..","..v.."\n")
         end

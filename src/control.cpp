@@ -28,14 +28,14 @@
 #include "api/shared.h"
 
 Control::Control(Cli* cli, std::string _file) :
-    agentDomain(NULL), cli(cli), running(false),
+    agentDomain(nullptr), cli(cli), running(false),
     generated(false), stopped(true), generating(false), agentPath(_file)
 {
     initialSetup();
 }
 
 Control::Control(MainWindow* mainwindow) :
-    agentDomain(NULL), mainwindow(mainwindow), running(false),
+    agentDomain(nullptr), mainwindow(mainwindow), running(false),
     generated(false), stopped(true), generating(false)
 {
     initialSetup();
@@ -81,7 +81,7 @@ void Control::initialSetup()
 
         //  Load the back end simulation functions.
         std::string simLib = Output::Inst()->RanaDir;
-        simLib.append("./src/modules/test_file_back.lua");
+        simLib.append("./src/modules/lib_sim_config.lua");
 
         if( luaL_loadfile(L, simLib.c_str()) || lua_pcall(L,0,0,0) ){
             Output::Inst()->kprintf("\tsim file not found %s", simLib);
@@ -96,7 +96,7 @@ void Control::initialSetup()
             rawfile = agentPath.substr(0, lastdot);
         }
 
-        if( this->cli != NULL){
+        if( this->cli != nullptr){
             lua_settop(L,0);
             lua_getglobal(L,"_getSimulationFile");
             lua_pushstring(L,rawfile.c_str());
@@ -119,11 +119,11 @@ void Control::initialSetup()
                 lua_register(L, "l_addSharedAgent",l_addSharedAgent);
 
                 lua_settop(L,0);
-                lua_getglobal(L,"_testFunc");
+                lua_getglobal(L,"_simulationConfigMainFunction");
                 if(lua_pcall(L,0,0,0)!=LUA_OK){ Output::Inst()->kprintf("Control - Lua_simconfig - Can't locate Sim file - 3"); }
             }
 
-            lua_getglobal(L,"_testParamMain");
+            lua_getglobal(L,"_paramMain");
             if(lua_pcall(L,0,0,0)!=LUA_OK){ Output::Inst()->kprintf("Control - Lua_simconfig - Can't locate Sim file - 4"); }
 
 
@@ -147,7 +147,7 @@ bool Control::runNewSimulation()
     * Function that will go in and do the permutation of parameters
     * the function will keep returning true, as long as a new permutation exists.
     */
-    lua_getglobal(L,"_testParamMainCo");
+    lua_getglobal(L,"_paramMainCoroutine");
     if(lua_pcall(L,0,1,0)!=LUA_OK){
         Output::Inst()->kprintf("Control - Lua_simconfig - Can't locate Sim file - 5");
         return false;

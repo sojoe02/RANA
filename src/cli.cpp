@@ -45,8 +45,8 @@
 Cli::Cli(std::string _file, QWidget *parent) :
     QMainWindow(parent),
     factor(1),
-    mapImage(NULL),
-    mapItem(NULL),
+    mapImage(nullptr),
+    mapItem(nullptr),
     control(new Control(this, _file)),
     initializeTimer(new QTimer(this)),
     runTimer(new QTimer(this)),
@@ -71,12 +71,25 @@ Cli::~Cli()
 
 void Cli::generateMap()
 {
-    if(mapImage != NULL)
+    if(mapImage != nullptr)
     {
         delete mapImage;
     }
 
-    mapImage = new QImage(100,100,QImage::Format_RGB32); //TODO: Parse map size
+    lua_State * L = control->getControlLuaState();
+
+    int width = 100;
+    int height = 100;
+
+    lua_settop(L,0); lua_getglobal(L,"_getSimulationConfigurationOption"); lua_pushstring(L,"mapWidth");
+    if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Using deafult value */ }
+    if( lua_toboolean(L,1) ){ width = lua_tonumber(L,2); }
+
+    lua_settop(L,0); lua_getglobal(L,"_getSimulationConfigurationOption"); lua_pushstring(L,"mapHeight");
+    if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Use deafult value */ }
+    if( lua_toboolean(L,1) ){ height = lua_tonumber(L,2); }
+
+    mapImage = new QImage(width,height,QImage::Format_RGB32); //TODO: Parse map size
     mapImage->fill(Qt::GlobalColor::black);
 
     this->defineMap();
@@ -94,19 +107,34 @@ void Cli::generateSimulation()
     qApp->processEvents();
     GridMovement::clearGrid();
 
-    if( mapItem != NULL )
+    if( mapItem != nullptr )
     {
-        Phys::setScale(1); //TODO: Parse option
+        lua_State * L = control->getControlLuaState();
+
+        lua_settop(L,0); lua_getglobal(L,"_getSimulationConfigurationOption"); lua_pushstring(L,"mapScale");
+        if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Use deafult value */ }
+        if( lua_toboolean(L,1) ){ Phys::setScale(lua_tonumber(L,2)); }else{ Phys::setScale(1); }
 
         if(!parsedFilePath.empty())
         {
-            double exponent = 6;    //TODO: Parse option
+            int agentAmount = 1;
+            int threads = 4;
+            double exponent = 6;
             double timeRes = 1/(double)std::pow(10,exponent);
-            double macroRes = 1000; //TODO: Parse option
+            double macroRes = 1000;
             macroRes = (1/timeRes)/macroRes;
 
-            int threads = 4;        //TODO: Parse option
-            int agentAmount = 1;    //TODO: Parse option
+            lua_settop(L,0); lua_getglobal(L,"_getSimulationConfigurationOption"); lua_pushstring(L,"eDistPrecision");
+            if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Use deafult value */ }
+            if( lua_toboolean(L,1) ){ timeRes = lua_tonumber(L,2); }
+
+            lua_settop(L,0); lua_getglobal(L,"_getSimulationConfigurationOption"); lua_pushstring(L,"stepPrecision");
+            if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Using deafult value */ }
+            if( lua_toboolean(L,1) ){ macroRes = 1/lua_tonumber(L,2); }
+
+            lua_settop(L,0); lua_getglobal(L,"_getSimulationConfigurationOption"); lua_pushstring(L,"simThreads");
+            if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Use deafult value */ }
+            if( lua_toboolean(L,1) ){ threads = lua_tonumber(L,2); }
 
             control->setEnvironmentVariables(mapImage, threads, timeRes, macroRes, agentAmount, parsedFilePath);
         } else
@@ -118,7 +146,6 @@ void Cli::generateSimulation()
         std::cout << "No map has been loaded, please do that..." << std::endl;
     }
     initializeTimer->start(400);
-
 }
 
 void Cli::runSimulation()
@@ -128,10 +155,13 @@ void Cli::runSimulation()
     }
     else
     {
-        control->startSimulation(100);  //TODO: Parse option
+        lua_State * L = control->getControlLuaState();
+
+        lua_settop(L,0); lua_getglobal(L,"_getSimulationConfigurationOption"); lua_pushstring(L,"runTime");
+        if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Using deafult value */ }
+        if( lua_toboolean(L,1) ){ control->startSimulation(lua_tonumber(L,2)); }else{ control->startSimulation(100); }
     }
 }
-
 
 
 

@@ -8,7 +8,7 @@ local simParam = {}
 local paramOrderedKeys = {}
 local agentOrderedKeys = {}
 
-local function _testParamForLoop(table, numInTable, maxNumInTable)
+local function _paramForLoop(table, numInTable, maxNumInTable)
 
     --  Base case
     if numInTable > maxNumInTable then
@@ -29,7 +29,7 @@ local function _testParamForLoop(table, numInTable, maxNumInTable)
     if #v == 2 then
         for p = v[1], v[2] do
             simParam[numInTable] = p
-            _testParamForLoop(table, numInTable+1, maxNumInTable)
+            _paramForLoop(table, numInTable+1, maxNumInTable)
         end
     elseif #v == 3 then
         if v[3] > v[2] then
@@ -38,12 +38,12 @@ local function _testParamForLoop(table, numInTable, maxNumInTable)
 
         for p = v[1], v[2], v[3] do
             simParam[numInTable] = p
-            _testParamForLoop(table, numInTable+1, maxNumInTable)
+            _paramForLoop(table, numInTable+1, maxNumInTable)
         end
     else
         for p = 1, #v do
             simParam[numInTable] = v[p]
-            _testParamForLoop(table, numInTable+1, maxNumInTable)
+            _paramForLoop(table, numInTable+1, maxNumInTable)
         end
     end
 
@@ -51,7 +51,7 @@ local function _testParamForLoop(table, numInTable, maxNumInTable)
 end
 
 
-function _testParamMain()
+function _paramMain()
 
     paramOrderedKeys = {}
     for value in pairs(param) do
@@ -59,12 +59,12 @@ function _testParamMain()
         --print(paramOrderedKeys, value, #paramOrderedKeys)
     end
 
-    co = coroutine.create( function() _testParamForLoop(param, 1, #paramOrderedKeys) end)
+    co = coroutine.create( function() _paramForLoop(param, 1, #paramOrderedKeys) end)
 
     return 0
 end
 
-function _testParamMainCo()
+function _paramMainCoroutine()
     coroutine.resume(co)
 
     if coroutine.status(co) ~= "dead" then
@@ -105,9 +105,13 @@ local function agentMain()
 
 end
 
+--  Function to check if any of the simulation options are used.
+function _getSimulationConfigurationOption(key)
+    return 1,sim[key]
+end
+
 function _getSimulationFile(inputFilePath)
     require(inputFilePath)
-    --print(inputFilePath)
 end
 
 function _checkIfInputFileIsSimulationType()
@@ -120,14 +124,9 @@ function _checkIfInputFileIsSimulationType()
     return false
 end
 
-function _testFunc()
+function _simulationConfigMainFunction()
     agentMain()
-    --paramMain() -- This is done.
 end
-
-
-
-
 
 
 

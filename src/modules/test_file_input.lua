@@ -1,19 +1,15 @@
 agents={
-    "/home/theis/workspace/RANA/src/lua_agents/18_microphone.lua", 4,
-    "/home/theis/workspace/RANA/src/lua_agents/18_green.lua", 4,
 }
 
 sim={
-
+    eDistPrecision = 0.000001,
+    stepPrecision = 0.001,
+    runTime = 100,
+    mapWidth = 100,
+    mapHeight = 100,
+    mapScale = 1.0,
+    simThreads = 4,
 }
 
 param={
-    {1,1,5}, --Number of experiments per variable.
-    {0.400,0.010,0.6001},   --T
-    {0.015,0.002,0.0451},   --e
-    {0.050,0.010,0.1501},   --r
-    {0.010,0.020,0.2001},   --y
-    {0.100,0.010,0.3001},   --s
-    {0.010,0.020,0.2001},   --t
-    {0.010,0.020,0.2001},   --x
 }

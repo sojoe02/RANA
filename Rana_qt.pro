@@ -179,14 +179,32 @@ DISTFILES += \
     src/modules/ranalib_physics.lua \
     src/modules/wrapper_auxiliary.lua \
     src/modules/ranalib_variable.lua \
-    src/modules/test_file_back.lua \
     src/modules/test_file_input.lua \
-    src/modules/test_input_green_2.lua \
-    src/modules/test_input_green_3.lua \
-    src/modules/test_input_green_4.lua \
-    src/modules/test_input_green_5.lua \
-    src/modules/ranalib_simconfig.lua
-
-
+    src/modules/ranalib_simconfig.lua \
+    src/modules/test/test1_green_2.lua \
+    src/modules/test/test1_green_3.lua \
+    src/modules/test/test1_green_4.lua \
+    src/modules/test/test1_green_5.lua \
+    src/modules/test/test2_8012_green_2.lua \
+    src/modules/test/test2_8012_green_3.lua \
+    src/modules/test/test2_8012_green_4.lua \
+    src/modules/test/test2_8012_green_5.lua \
+    src/modules/test/test2_8017_green_2.lua \
+    src/modules/test/test2_8017_green_3.lua \
+    src/modules/test/test2_8017_green_4.lua \
+    src/modules/test/test2_8017_green_5.lua \
+    src/modules/test/test2_8133_green_2.lua \
+    src/modules/test/test2_8133_green_3.lua \
+    src/modules/test/test2_8133_green_4.lua \
+    src/modules/test/test2_8133_green_5.lua \
+    src/modules/test/test2_8164_green_2.lua \
+    src/modules/test/test2_8164_green_3.lua \
+    src/modules/test/test2_8164_green_4.lua \
+    src/modules/test/test2_8164_green_5.lua \
+    src/modules/test/test2_8254_green_2.lua \
+    src/modules/test/test2_8254_green_3.lua \
+    src/modules/test/test2_8254_green_4.lua \
+    src/modules/test/test2_8254_green_5.lua \
+    src/modules/lib_sim_config.lua
 
 
