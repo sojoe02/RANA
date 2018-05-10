@@ -36,7 +36,7 @@ DISTNAME      = Rana_qt1.0.0
 DISTDIR = /home/theis/workspace/RANA/BUILD/obj/Rana_qt1.0.0
 LINK          = g++
 LFLAGS        = -m64 -Wl,-O1
-LIBS          = $(SUBLIBS) -L/usr/X11R6/lib64 -largtable2 -llua5.1 -lQt5Widgets -lQt5Gui -lQt5Core -lGL -lpthread 
+LIBS          = $(SUBLIBS) -L/usr/X11R6/lib64 -largtable2 -L/usr/local/include/ -lbayesopt -lnlopt -llua5.1 -lQt5Widgets -lQt5Gui -lQt5Core -lGL -lpthread 
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -77,7 +77,8 @@ SOURCES       = src/main.cpp \
 		src/simulationcore/agents/agentluainterface.cpp \
 		src/simulationcore/eventqueue.cpp \
 		src/api/tcpserver.cpp \
-		src/api/tcpclient.cpp BUILD/rcc/qrc_images.cpp \
+		src/api/tcpclient.cpp \
+		src/bopthook.cpp BUILD/rcc/qrc_images.cpp \
 		BUILD/moc/moc_cli.cpp \
 		BUILD/moc/moc_mainwindow.cpp \
 		BUILD/moc/moc_control.cpp \
@@ -116,6 +117,7 @@ OBJECTS       = BUILD/obj/main.o \
 		BUILD/obj/eventqueue.o \
 		BUILD/obj/tcpserver.o \
 		BUILD/obj/tcpclient.o \
+		BUILD/obj/bopthook.o \
 		BUILD/obj/qrc_images.o \
 		BUILD/obj/moc_cli.o \
 		BUILD/obj/moc_mainwindow.o \
@@ -126,9 +128,6 @@ OBJECTS       = BUILD/obj/main.o \
 		BUILD/obj/moc_eventrunner.o \
 		BUILD/obj/moc_helpdialog.o
 DIST          = src/lua_agents/01_pingpong.lua \
-		src/lua_agents/01_pingpong_01.lua \
-		src/lua_agents/01_pingpong_02.lua \
-		src/lua_agents/01_pingpong_03.lua \
 		src/lua_agents/02_data_collector.lua \
 		src/lua_agents/02_master.lua \
 		src/lua_agents/02_oscillator.lua \
@@ -207,6 +206,10 @@ DIST          = src/lua_agents/01_pingpong.lua \
 		src/modules/test/test2_8254_green_4.lua \
 		src/modules/test/test2_8254_green_5.lua \
 		src/modules/lib_sim_config.lua \
+		src/lua_agents/test_2_master.lua \
+		src/lua_agents/test_1_master.lua \
+		src/lua_agents/test_3_master.lua \
+		src/lua_agents/test_4_master.lua \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/linux.conf \
@@ -327,7 +330,8 @@ DIST          = src/lua_agents/01_pingpong.lua \
 		src/simulationcore/agents/agentluainterface.h \
 		src/simulationcore/eventqueue.h \
 		src/api/tcpclient.h \
-		src/api/tcpserver.h src/main.cpp \
+		src/api/tcpserver.h \
+		src/bopthook.h src/main.cpp \
 		src/cli.cpp \
 		src/mainwindow.cpp \
 		src/parser.cpp \
@@ -356,7 +360,8 @@ DIST          = src/lua_agents/01_pingpong.lua \
 		src/simulationcore/agents/agentluainterface.cpp \
 		src/simulationcore/eventqueue.cpp \
 		src/api/tcpserver.cpp \
-		src/api/tcpclient.cpp
+		src/api/tcpclient.cpp \
+		src/bopthook.cpp
 QMAKE_TARGET  = Rana_qt
 DESTDIR       = #avoid trailing-slash linebreak
 TARGET        = Rana_qt
@@ -593,8 +598,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents resources/images.qrc $(DISTDIR)/
-	$(COPY_FILE) --parents src/cli.h src/mainwindow.h src/parser.h src/ID.h src/utility.h src/output.h src/control.h src/graphics/agentItem.h src/runner.h src/postprocessing/eventprocessing.h src/postprocessing/colorutility.h src/eventdialog.h src/postprocessing/graphics/zblock.h src/postprocessing/postcontrol.h src/postprocessing/eventrunner.h src/postprocessing/graphics/zmap.h src/helpdialog.h src/api/gridmovement.h src/api/maphandler.h src/api/phys.h src/api/scanning.h src/api/shared.h src/simulationcore/flowcontrol.h src/simulationcore/interfacer.h src/simulationcore/sector.h src/simulationcore/supervisor.h src/simulationcore/agents/agent.h src/simulationcore/agents/agentluainterface.h src/simulationcore/eventqueue.h src/api/tcpclient.h src/api/tcpserver.h $(DISTDIR)/
-	$(COPY_FILE) --parents src/main.cpp src/cli.cpp src/mainwindow.cpp src/parser.cpp src/output.cpp src/control.cpp src/graphics/agentItem.cpp src/runner.cpp src/postprocessing/eventprocessing.cpp src/postprocessing/colorutility.cpp src/eventdialog.cpp src/postprocessing/graphics/zblock.cpp src/postprocessing/postcontrol.cpp src/postprocessing/eventrunner.cpp src/postprocessing/graphics/zmap.cpp src/helpdialog.cpp src/api/gridmovement.cpp src/api/maphandler.cpp src/api/phys.cpp src/api/scanning.cpp src/api/shared.cpp src/simulationcore/flowcontrol.cpp src/simulationcore/interfacer.cpp src/simulationcore/sector.cpp src/simulationcore/supervisor.cpp src/simulationcore/agents/agent.cpp src/simulationcore/agents/agentluainterface.cpp src/simulationcore/eventqueue.cpp src/api/tcpserver.cpp src/api/tcpclient.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents src/cli.h src/mainwindow.h src/parser.h src/ID.h src/utility.h src/output.h src/control.h src/graphics/agentItem.h src/runner.h src/postprocessing/eventprocessing.h src/postprocessing/colorutility.h src/eventdialog.h src/postprocessing/graphics/zblock.h src/postprocessing/postcontrol.h src/postprocessing/eventrunner.h src/postprocessing/graphics/zmap.h src/helpdialog.h src/api/gridmovement.h src/api/maphandler.h src/api/phys.h src/api/scanning.h src/api/shared.h src/simulationcore/flowcontrol.h src/simulationcore/interfacer.h src/simulationcore/sector.h src/simulationcore/supervisor.h src/simulationcore/agents/agent.h src/simulationcore/agents/agentluainterface.h src/simulationcore/eventqueue.h src/api/tcpclient.h src/api/tcpserver.h src/bopthook.h $(DISTDIR)/
+	$(COPY_FILE) --parents src/main.cpp src/cli.cpp src/mainwindow.cpp src/parser.cpp src/output.cpp src/control.cpp src/graphics/agentItem.cpp src/runner.cpp src/postprocessing/eventprocessing.cpp src/postprocessing/colorutility.cpp src/eventdialog.cpp src/postprocessing/graphics/zblock.cpp src/postprocessing/postcontrol.cpp src/postprocessing/eventrunner.cpp src/postprocessing/graphics/zmap.cpp src/helpdialog.cpp src/api/gridmovement.cpp src/api/maphandler.cpp src/api/phys.cpp src/api/scanning.cpp src/api/shared.cpp src/simulationcore/flowcontrol.cpp src/simulationcore/interfacer.cpp src/simulationcore/sector.cpp src/simulationcore/supervisor.cpp src/simulationcore/agents/agent.cpp src/simulationcore/agents/agentluainterface.cpp src/simulationcore/eventqueue.cpp src/api/tcpserver.cpp src/api/tcpclient.cpp src/bopthook.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ui/mainwindow.ui ui/eventdialog.ui ui/about.ui $(DISTDIR)/
 
 
@@ -1600,6 +1605,9 @@ BUILD/obj/tcpserver.o: src/api/tcpserver.cpp src/api/tcpserver.h
 
 BUILD/obj/tcpclient.o: src/api/tcpclient.cpp src/api/tcpclient.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/tcpclient.o src/api/tcpclient.cpp
+
+BUILD/obj/bopthook.o: src/bopthook.cpp src/bopthook.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/bopthook.o src/bopthook.cpp
 
 BUILD/obj/qrc_images.o: BUILD/rcc/qrc_images.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/qrc_images.o BUILD/rcc/qrc_images.cpp

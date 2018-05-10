@@ -43,79 +43,38 @@
 
 -- Import valid Rana lua libraries.
 Event = require "ranalib_event"
-Shared = require "ranalib_shared"
-Stat = require "ranalib_statistic"
-Move = require "ranalib_movement"
-
-n = 1
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
 function _InitializeAgent()
-        print("Agent #: " .. ID .. " has been initialized")
 
-        if ID == 1 then
-                PositionX = ENV_WIDTH/2
-                PositionY = ENV_HEIGHT/2
-        end
-        DestinationX = 1
-        DestinationY = 1
-        Moving = true
-        Speed = 1
+    if ID == 1 then
+            PositionX = 20
+            PositionY = 20
+    end
+    if ID == 2 then
+            PositionX = 60
+            PositionY = 20
+    end
 
 end
 
 function HandleEvent(event)
 
-        fibonacci_tail(2000)
-
         if event.description == "ping" then
---			say("Agent: "..ID .." received a ping from: "..event.ID ..", saying: "..event.table.msg)
---			Event.emit{speed=343,targetID=event.ID, description="pong"}
+                            --say("Agent: "..ID .." received a ping from: "..event.ID .." saying: "..event.table.msg)
+                        Event.emit{speed=343,targetID=event.ID, description="pong"}
 
         elseif event.description == "pong" then
---			say("Agent: "..ID.." received a pong from agent: ".. event.ID)
+                            --say("Agent: "..ID.." received a pong from agent: ".. event.ID)
         end
 
 end
 
 function takeStep()
-        if n%1000 == 0 then
-            --l_debug(PositionX.." "..PositionY)
-        end
-        n = n + 1
-
-        if Stat.randomInteger(1,1/STEP_RESOLUTION) <= 1 then
-                --say("Agent:"..ID.." is emiting ping")
-                Event.emit{speed=343,description="ping",table={msg="I am agent "..ID}}
-        end
+        --print("Agent:"..ID.." is emiting ping")
+    Event.emit{speed=343,description="ping",table={msg="I am agent "..ID}}
 
 end
 
 function cleanUp()
-        l_debug("Agent #: " .. ID .. " is done\n")
-
-end
-
-function fibonacci(n)
-    if n<3 then
-        return 1
-    else
-        return fibonacci(n-1) + fibonacci(n-2)
-    end
-end
-
-function fibonacci_tail(n)
-    local function f(a, b, n)
-        if n < 3 then
-            return b
-        else
-            return f(b, a+b, n-1)
-        end
-    end
-
-    return f(1,1,n)
-end
-
-function luaTesat()
-    print("hello")
 end

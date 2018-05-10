@@ -1,4 +1,4 @@
-//--begin_license--
+﻿//--begin_license--
 //
 //Copyright 	2013 	Søren Vissing Jørgensen.
 //			2014	Søren Vissing Jørgensen, Center for Bio-Robotics, SDU, MMMI.
@@ -28,6 +28,10 @@ using std::chrono::duration_cast;
 using std::chrono::milliseconds;
 using std::chrono::seconds;
 using std::chrono::steady_clock;
+
+#include <time.h>
+#include <ctime>
+#include <fstream>
 
 FlowControl::FlowControl(Control *control)
     :control(control), mapGenerated(false),masteragent(new Supervisor()), stop(false), fetchPositions(false),
@@ -164,7 +168,7 @@ void FlowControl::toggleLiveView(bool enable)
  * update the progress bar and status window in the running panel.
  * @param time the amount of seconds the simulation will simulate.
  */
-void FlowControl::runSimulation(int time)
+void FlowControl::runSimulation(int _time)
 {
     std::string positionFilePath = Output::Inst()->RanaDir;
     positionFilePath.append("/");
@@ -175,16 +179,27 @@ void FlowControl::runSimulation(int time)
     }
     file.open(positionFilePath.c_str(),std::ofstream::out | std::ofstream::app | std::ofstream::binary);
     stop = false;
-    Output::Inst()->kprintf("Running Simulation of: %i[s], with resolution of %f",time, timeResolution);
+    Output::Inst()->kprintf("Running Simulation of: %i[s], with resolution of %f",_time, timeResolution);
     Output::RunSimulation = true;
-    unsigned long long iterations = (double)time/timeResolution;
+    unsigned long long iterations = (double)_time/timeResolution;
+
     auto start = steady_clock::now();
     auto start2 = steady_clock::now();
+    auto start3 = steady_clock::now();
     auto end = steady_clock::now();
     //unsigned long long run_time = 0;
     cMacroStep = 0;
     cMicroStep = ULLONG_MAX;
+
     unsigned long long i = 0;//, j = 0;
+
+/*
+    double previousVal = -1;
+    std::ofstream myfile;
+    myfile.open ("/home/theis/test23", std::ios::app);
+    int gggasdf = 30;
+    myfile << -1 << "\n";
+*/
     for(i = 0; i < iterations;)
     {
         if(Output::KillSimulation.load() == true)
@@ -251,13 +266,35 @@ void FlowControl::runSimulation(int time)
             Output::Inst()->kprintf("Stopping simulator at microstep %llu \n", i);
             break;
         }
-
+/*
+        if((i/1000)%gggasdf == 0){
+            if( Shared::getNumber("hello") != -1 && Shared::getNumber("hello") != previousVal){
+                previousVal = Shared::getNumber("hello");
+                double timeDelayDiff = i/double(1000000)-previousVal;
+                myfile << timeDelayDiff << "\n";
+                //std::cout << i/double(1000000) << "\t" << previousVal << "\t" << i/double(1000000)-previousVal << std::endl;
+            }
+        }
+*/
         if(this->enableTcpFlag)    //Only wrong if TCP server is used
         {
             tcpWaitForDoneMessage();
         }
-
     }
+    /*Used for timing how long simulations take.*/
+/*
+    auto end3 = steady_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end3 - start3);
+    std::cout << "Simulation run took:\t" << elapsed.count()/double(1000000) << std::endl;
+    myfile << elapsed.count()/double(1000000) << "\n";
+    myfile.close();
+*/
+    /*
+    std::ofstream myfile;
+    myfile.open ("/home/theis/test9", std::ios::app);
+    myfile << elapsed.count()/double(1000000) << "\n";
+    myfile.close();
+    */
 
     retrievePopPos();
     masteragent->simDone();

@@ -41,7 +41,8 @@ SOURCES += src/main.cpp\
     src/simulationcore/agents/agentluainterface.cpp \
     src/simulationcore/eventqueue.cpp \
     src/api/tcpserver.cpp \
-    src/api/tcpclient.cpp
+    src/api/tcpclient.cpp \
+    src/bopthook.cpp
 
 HEADERS += src/cli.h \
     src/mainwindow.h \
@@ -73,7 +74,8 @@ HEADERS += src/cli.h \
     src/simulationcore/agents/agentluainterface.h \
     src/simulationcore/eventqueue.h \
     src/api/tcpclient.h \
-    src/api/tcpserver.h
+    src/api/tcpserver.h \
+    src/bopthook.h
 
 FORMS   += ui/mainwindow.ui \
     ui/eventdialog.ui \
@@ -104,6 +106,10 @@ unix: UI_DIR = ./BUILD/ui/
 
 unix: LIBS += -largtable2
 
+#   Used for bayesopt - Hyper parameter optimazation.
+unix: LIBS += -L/usr/local/include/ -lbayesopt
+unix: LIBS += -L/usr/local/include/ -lnlopt
+
 macx: QMAKE_CXXFLAGS += -std=c++14 -mmacosx-version-min=10.7
 
 macx: LIBS += -stdlib=libc++ -mmacosx-version-min=10.7
@@ -125,9 +131,6 @@ RESOURCES += \
 
 DISTFILES += \
     src/lua_agents/01_pingpong.lua \
-    src/lua_agents/01_pingpong_01.lua \
-    src/lua_agents/01_pingpong_02.lua \
-    src/lua_agents/01_pingpong_03.lua \
     src/lua_agents/02_data_collector.lua \
     src/lua_agents/02_master.lua \
     src/lua_agents/02_oscillator.lua \
@@ -205,6 +208,8 @@ DISTFILES += \
     src/modules/test/test2_8254_green_3.lua \
     src/modules/test/test2_8254_green_4.lua \
     src/modules/test/test2_8254_green_5.lua \
-    src/modules/lib_sim_config.lua
-
-
+    src/modules/lib_sim_config.lua \
+    src/lua_agents/test_2_master.lua \
+    src/lua_agents/test_1_master.lua \
+    src/lua_agents/test_3_master.lua \
+    src/lua_agents/test_4_master.lua

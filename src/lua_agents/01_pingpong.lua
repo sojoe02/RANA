@@ -55,17 +55,22 @@ t = 1
 function _InitializeAgent()
         say("Agent #: " .. ID .. " has been initialized")
 
-	if ID == 1 then
-		PositionX = ENV_WIDTH/2
-		PositionY = ENV_HEIGHT/2
+        if ID == 2 then
+                PositionX = 20
+                PositionY = 20
 	end
-        DestinationX = 1
-        DestinationY = 1
-        Moving = true
-        Speed = 1
-
-        print("My ID, and Group numbers:")
-        groups = Agent.getMemberOfGroups(ID)
+        if ID == 3 then
+                PositionX = 60
+                PositionY = 20
+        end
+        if ID == 4 then
+                PositionX = 60
+                PositionY = 20
+        end
+        if ID == 5 then
+                PositionX = 60
+                PositionY = 60
+        end
 end
 
 function HandleEvent(event)
@@ -84,32 +89,10 @@ end
 
 function takeStep()
 
-        --[[
-        if groups ~= nil then
-            print("asdf")
-            if type(groups) == 'number' then
-                print("asdf")
-                --print(ID.." "..groups)
-            elseif type(groups) == 'table' then
-                print("asdf")
-                for value = 1, #groups do
-                    print("asdf")
-                    print(ID.. " " .. value .. " " .. groups[value])
-                end
-            end
-        end
-        ]]--
-
-
-        if n%1000 == 0 then
-            --l_debug(PositionX.." "..PositionY)
-        end
-        n = n + 1
-
 	if Stat.randomInteger(1,1/STEP_RESOLUTION) <= 1 then
                 say("Agent:"..ID.." is emiting ping")
-                --Event.emit{speed=343,description="ping",targetGroup=groups,table={msg="I am agent "..ID}}
-                Event.emit{speed=0,description="ping",targetGroup=groups,table={msg="Sent at "..t}}
+                Event.emit{speed=343,description="ping",targetGroup=groups,table={msg="Sent at "..t}}
+                --Event.emit{speed=0,description="ping",targetGroup=groups,table={msg="Sent at "..t}}
 	end
 
         t = t + 1
@@ -139,8 +122,4 @@ function fibonacci_tail(n)
     end
  
     return f(1,1,n)
-end
-
-function luaTesat()
-    print("hello")
 end

@@ -19,6 +19,7 @@
 //along with RANA.  If not, see <http://www.gnu.org/licenses/>.
 //
 //--end_license--
+
 #include <QApplication>
 #include <stdio.h>
 #include <string>
@@ -40,44 +41,167 @@ unsigned long long ID::eID = 0;
 unsigned long long ID::tmu = 0;
 unsigned long long ID::nID = 0;
 
-int main(int argc, char **argv)
+/*
+#include "bayesopt/bayesopt.hpp"
+#include <boost/numeric/ublas/assignment.hpp>
+#include <ctime>
+
+double testFunction(unsigned int n, const double *x,double *gradient, void *func_data)
 {
-    parser *p = parser::getInstance();
-    p->parseInputArgs(argc, argv);
-
-    //srand(time(0));
-    Phys::seedMersenne();
-    Output::DelayValue = 0;
-    Output::LegacyMode.store(false);
-    GridMovement::initGrid(1);
-
-    qDebug() << Phys::getMersenneInteger(1, RAND_MAX) << Phys::getMersenneInteger(1, RAND_MAX) << Phys::getMersenneFloat(1, RAND_MAX) <<Phys::getMersenneInteger(1, RAND_MAX) ;
-
-    QApplication a(argc, argv);
-
-    if(p->startProgram())
+  double f = 10.;
+  for (unsigned int i = 0; i < n; ++i)
     {
-        if(p->startGui()){
-            std::cout << "Start with gui" << std::endl;
-            MainWindow *w = new MainWindow();
-            Output::Inst()->setMainWindow(w);
-            w->show();
-        }else{
-            std::cout << "Start without gui - " << p->getFile() << std::endl;
-            Cli *c = new Cli(p->getFile());
-        }
+      f += (x[i] - .65) * (x[i] - .65);
     }
-
-    return a.exec();
+  return f;
 }
 
-/*
- * ./Rana_qt
- * ./Rana_qt --help
- * ./Rana_qt --nogui
- * ./Rana_qt --nogui -f src/modules/test_file_input.lua
- * ./Rana_qt --nogui -f src/modules/test_file_input.lua --ip 192.168.0.1 --port 11999
- *          netcat localhost 11999
+class ExampleQuadratic: public bayesopt::ContinuousModel
+{
+    public:
+        ExampleQuadratic(size_t dim,bayesopt::Parameters param):
+        ContinuousModel(dim,param) {}
+
+    double evaluateSample( const vectord &Xi ){
+        double x[100];
+        for (size_t i = 0; i < Xi.size(); ++i){
+            x[i] = Xi(i);
+        }
+        return testFunction(Xi.size(),x,nullptr,nullptr);
+    }
+
+    bool checkReachability( const vectord &query ){ return true; }
+};
+
+int main(int argc, char **argv)
+{
+    int n = 5;                   // Number of dimensions
+    clock_t start, end;
+    double diff;
+    // Common configuration
+    // See parameters.h for the available options.
+    // Some parameters did not need to be changed for default, but we have done it for
+    // illustrative purpose.
+    bayesopt::Parameters par = initialize_parameters_to_default();
+    par.kernel.name = "kSum(kSEISO,kConst)";
+    par.kernel.hp_mean <<= 1.0;
+    par.kernel.hp_std <<= 1.0;
+
+    par.mean.name = "mConst";
+    par.mean.coef_mean <<= 1.0;
+    par.mean.coef_std <<= 1.0;
+
+
+    par.surr_name = "sStudentTProcessJef";
+    par.noise = 1e-10;
+
+    par.sc_type = SC_MAP;
+    par.l_type = L_EMPIRICAL;
+
+    par.n_iterations = 100;    // Number of iterations
+    par.random_seed = 0;
+    par.n_init_samples = 15;
+    par.n_iter_relearn = 0;
+
+    ExampleQuadratic opt(n,par);
+    vectord result(n);
+
+    start = clock();
+    opt.optimize(result);
+    end = clock();
+    diff = double(end-start) / double(CLOCKS_PER_SEC);
+
+    // Results
+    std::cout << "Final result C++: " << result << std::endl;
+    std::cout << "Elapsed time in C++: " << diff << " seconds" << std::endl;
+
+}
 */
+
+/*
+int main(int argc, char **argv)
+{
+
+
+        parser *p = parser::getInstance();
+        p->parseInputArgs(argc, argv);
+
+        //srand(time(0));
+        Phys::seedMersenne();
+        Output::DelayValue = 0;
+        Output::LegacyMode.store(false);
+        GridMovement::initGrid(1);
+
+        qDebug() << Phys::getMersenneInteger(1, RAND_MAX) << Phys::getMersenneInteger(1, RAND_MAX) << Phys::getMersenneFloat(1, RAND_MAX) <<Phys::getMersenneInteger(1, RAND_MAX) ;
+
+        QApplication a(argc, argv);
+
+        if(p->startProgram())
+        {
+            if(p->startGui()){
+                std::cout << "Start with gui" << std::endl;
+                MainWindow *w = new MainWindow();
+                Output::Inst()->setMainWindow(w);
+                w->show();
+            }else{
+                std::cout << "Start without gui - " << p->getFile() << std::endl;
+                Cli *c = new Cli(p->getFile());
+            }
+        }
+
+        return a.exec();
+
+}
+*/
+
+#include "src/bopthook.h"
+
+int main()
+{
+
+
+    bayesopt::Parameters param;
+    param.l_type = L_MCMC;
+    //param.n_iterations = 10;
+
+    int n = 10;                   // Number of dimensions
+    bopthook optimizer(n, param);
+    vectord result(n);
+
+    optimizer.optimize(result);
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
