@@ -58,6 +58,9 @@ public:
     ~Cli();
     bopthook *bopt = nullptr;
 
+public slots:
+    void runBoptController();
+
 private slots:
     void defineMap();
     void generateMap();
@@ -73,6 +76,8 @@ private:
 
     QTimer *initializeTimer;
     QTimer *runTimer;
+
+    QThread boptThread;
 
 
 

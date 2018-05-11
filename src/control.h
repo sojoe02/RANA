@@ -160,6 +160,7 @@ class Control : public QObject
         void startDoWork(FlowControl *agentDomain, unsigned long long runtime);
         void runSimulationSignal();
         void simulationISDoneSignal();
+        void simulationRunBoptSignal();
 };
 
 #endif // CONTROL_H

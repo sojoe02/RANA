@@ -86,7 +86,8 @@ SOURCES       = src/main.cpp \
 		BUILD/moc/moc_eventdialog.cpp \
 		BUILD/moc/moc_postcontrol.cpp \
 		BUILD/moc/moc_eventrunner.cpp \
-		BUILD/moc/moc_helpdialog.cpp
+		BUILD/moc/moc_helpdialog.cpp \
+		BUILD/moc/moc_bopthook.cpp
 OBJECTS       = BUILD/obj/main.o \
 		BUILD/obj/cli.o \
 		BUILD/obj/mainwindow.o \
@@ -126,7 +127,8 @@ OBJECTS       = BUILD/obj/main.o \
 		BUILD/obj/moc_eventdialog.o \
 		BUILD/obj/moc_postcontrol.o \
 		BUILD/obj/moc_eventrunner.o \
-		BUILD/obj/moc_helpdialog.o
+		BUILD/obj/moc_helpdialog.o \
+		BUILD/obj/moc_bopthook.o
 DIST          = src/lua_agents/01_pingpong.lua \
 		src/lua_agents/02_data_collector.lua \
 		src/lua_agents/02_master.lua \
@@ -633,9 +635,9 @@ BUILD/rcc/qrc_images.cpp: resources/images.qrc \
 		resources/images/ranalogo.png
 	/usr/lib/x86_64-linux-gnu/qt5/bin/rcc -name images resources/images.qrc -o BUILD/rcc/qrc_images.cpp
 
-compiler_moc_header_make_all: BUILD/moc/moc_cli.cpp BUILD/moc/moc_mainwindow.cpp BUILD/moc/moc_control.cpp BUILD/moc/moc_runner.cpp BUILD/moc/moc_eventdialog.cpp BUILD/moc/moc_postcontrol.cpp BUILD/moc/moc_eventrunner.cpp BUILD/moc/moc_helpdialog.cpp
+compiler_moc_header_make_all: BUILD/moc/moc_cli.cpp BUILD/moc/moc_mainwindow.cpp BUILD/moc/moc_control.cpp BUILD/moc/moc_runner.cpp BUILD/moc/moc_eventdialog.cpp BUILD/moc/moc_postcontrol.cpp BUILD/moc/moc_eventrunner.cpp BUILD/moc/moc_helpdialog.cpp BUILD/moc/moc_bopthook.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) BUILD/moc/moc_cli.cpp BUILD/moc/moc_mainwindow.cpp BUILD/moc/moc_control.cpp BUILD/moc/moc_runner.cpp BUILD/moc/moc_eventdialog.cpp BUILD/moc/moc_postcontrol.cpp BUILD/moc/moc_eventrunner.cpp BUILD/moc/moc_helpdialog.cpp
+	-$(DEL_FILE) BUILD/moc/moc_cli.cpp BUILD/moc/moc_mainwindow.cpp BUILD/moc/moc_control.cpp BUILD/moc/moc_runner.cpp BUILD/moc/moc_eventdialog.cpp BUILD/moc/moc_postcontrol.cpp BUILD/moc/moc_eventrunner.cpp BUILD/moc/moc_helpdialog.cpp BUILD/moc/moc_bopthook.cpp
 BUILD/moc/moc_cli.cpp: src/control.h \
 		src/cli.h \
 		src/utility.h \
@@ -855,6 +857,37 @@ BUILD/moc/moc_eventrunner.cpp: src/postprocessing/eventprocessing.h \
 
 BUILD/moc/moc_helpdialog.cpp: src/helpdialog.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/theis/workspace/RANA -I/home/theis/workspace/lua51_64bit/include -I/usr/include/lua5.1 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/helpdialog.h -o BUILD/moc/moc_helpdialog.cpp
+
+BUILD/moc/moc_bopthook.cpp: src/cli.h \
+		src/control.h \
+		src/mainwindow.h \
+		src/utility.h \
+		src/graphics/agentItem.h \
+		src/postprocessing/postcontrol.h \
+		src/postprocessing/eventrunner.h \
+		src/postprocessing/eventprocessing.h \
+		src/simulationcore/agents/agentluainterface.h \
+		src/simulationcore/sector.h \
+		src/simulationcore/supervisor.h \
+		src/simulationcore/eventqueue.h \
+		src/simulationcore/agents/agent.h \
+		src/postprocessing/graphics/zblock.h \
+		src/postprocessing/colorutility.h \
+		src/postprocessing/graphics/zmap.h \
+		src/runner.h \
+		src/simulationcore/flowcontrol.h \
+		src/simulationcore/interfacer.h \
+		src/parser.h \
+		src/ID.h \
+		src/api/phys.h \
+		src/api/gridmovement.h \
+		src/api/shared.h \
+		src/output.h \
+		src/api/scanning.h \
+		src/api/tcpserver.h \
+		src/bopthook.h \
+		src/bopthook.h
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/theis/workspace/RANA -I/home/theis/workspace/lua51_64bit/include -I/usr/include/lua5.1 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/bopthook.h -o BUILD/moc/moc_bopthook.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
@@ -1693,6 +1726,9 @@ BUILD/obj/moc_eventrunner.o: BUILD/moc/moc_eventrunner.cpp
 
 BUILD/obj/moc_helpdialog.o: BUILD/moc/moc_helpdialog.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/moc_helpdialog.o BUILD/moc/moc_helpdialog.cpp
+
+BUILD/obj/moc_bopthook.o: BUILD/moc/moc_bopthook.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/moc_bopthook.o BUILD/moc/moc_bopthook.cpp
 
 ####### Install
 

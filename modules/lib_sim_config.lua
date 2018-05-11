@@ -107,7 +107,16 @@ end
 
 --  Function to check if any of the simulation options are used.
 function _getSimulationConfigurationOption(key)
-    return 1,sim[key]
+
+    if type(sim) == "table" then
+        if sim[key] ~= nil then
+            print("hello")
+            return 1,sim[key]
+        end
+    end
+
+    return nil, nil
+
 end
 
 function _getSimulationFile(inputFilePath)

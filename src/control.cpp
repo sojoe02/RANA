@@ -48,6 +48,12 @@ Control::~Control()
 
 void Control::initialSetup()
 {
+    Output::Inst()->RanaDir = QCoreApplication::applicationDirPath().toUtf8().constData();
+    QString _agentPath = QString::fromUtf8(agentPath.c_str());
+    QFileInfo fi(_agentPath);
+    Output::AgentFile=fi.fileName().toStdString();
+    Output::AgentPath=fi.path().toStdString().append("/");
+
     L = luaL_newstate();
 
     if( L == nullptr ){
@@ -61,14 +67,14 @@ void Control::initialSetup()
         lua_getfield(L, -1, "path");
         std::string cur_path = lua_tostring(L, -1);
         std::string module_path = Output::Inst()->RanaDir;
-        module_path.append("./src/modules/?.lua");
+        module_path.append("/src/modules/?.lua");
         std::string agent_path = Output::Inst()->RanaDir;
-        agent_path.append("./src/lua_agents/?.lua");
+        agent_path.append("/src/lua_agents/?.lua");
         cur_path.append(";");
         cur_path.append(module_path);
         cur_path.append(";");
         cur_path.append(Output::Inst()->AgentPath);
-        cur_path.append(";");
+        cur_path.append("?.lua;");
         cur_path.append(agent_path);
         cur_path.append(";");
         cur_path.append("?.lua");
@@ -81,9 +87,7 @@ void Control::initialSetup()
 
         //  Load the back end simulation functions.
         std::string simLib = Output::Inst()->RanaDir;
-        simLib.append("./src/modules/lib_sim_config.lua");
-
-        std::cout << simLib << std::endl;
+        simLib.append("/src/modules/lib_sim_config.lua");
 
         if( luaL_loadfile(L, simLib.c_str()) || lua_pcall(L,0,0,0) ){
             Output::Inst()->kprintf("\tsim file not found %s", simLib);
@@ -97,8 +101,8 @@ void Control::initialSetup()
             this->rawfile = agentPath.substr(0, lastdot);
         }
     }
-
     connect(this, &Control::runSimulationSignal, this, &Control::runSimulation);
+    connect(this, &Control::simulationRunBoptSignal, cli, &Cli::runBoptController);
 }
 
 void Control::setupLuaSimulation()
@@ -225,13 +229,14 @@ void Control::on_simDone()
     if(cli != nullptr)
     {
         if (cli->bopt != nullptr){
-            if(cli->bopt->runMoreIterations()){
-                cli->bopt->stepOptimization();
+            if(runNewSimulation())
+            {
+                //  While the simulation file still runs, keep the same
                 generateEnvironment();
                 emit runSimulationSignal();
             }else{
-
-                exit(EXIT_SUCCESS);
+                //  Find a new simulation file to run.
+                emit simulationRunBoptSignal();
             }
         }else{
             if(runNewSimulation())
@@ -252,7 +257,7 @@ void Control::readyRunner()
     killRunner();
     runner = new Runner();
     runner->moveToThread(&runThread);
-    connect(this, &Control::startDoWork, runner, &Runner::doWork);
+    connect(this, &Control::startDoWork, runner, &Runner::doWork, Qt::BlockingQueuedConnection);
     connect(&runThread, &QThread::finished, runner, &QObject::deleteLater);
     connect(runner, &Runner::simulationDone, this, &Control::on_simDone);
     runThread.start();

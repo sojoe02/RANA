@@ -10,22 +10,27 @@
 #include <string.h>
 
 class Cli;
-class bopthook: public bayesopt::ContinuousModel
+class bopthook: public QObject, public bayesopt::ContinuousModel
 {
-    public:
-        bopthook(Cli *_cli, size_t dim, bayesopt::Parameters _param):ContinuousModel(dim, _param)
-        {
-            this->cli = _cli;
-        }
+    Q_OBJECT
+public:
+    bopthook(Cli *_cli, size_t dim, bayesopt::Parameters _param);
 
-        double testFunction(const double *x);
-        double evaluateSample( const vectord &Xi );
+    double testFunction(const double *x);
+    double evaluateSample( const vectord &Xi );
 
-        bool runMoreIterations();
-        bool checkReachability( const vectord &query ){ return true; }
+    bool checkReachability( const vectord &query ){ return true; }
+    std::string getNextFile();
 
-    private:
-        Cli *cli = nullptr;
+
+public slots:
+    void runSimulation();
+
+private:
+    Cli *cli = nullptr;
+
+signals:
+    void runBoptSimSignal();
 };
 
 #endif // BOPTHOOK_H

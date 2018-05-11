@@ -50,19 +50,16 @@ Cli::Cli(std::string _file, QWidget *parent) :
     runTimer(new QTimer(this)),
     parsedFilePath(_file)
 {
-    Output::Inst()->RanaDir = QCoreApplication::applicationDirPath().toUtf8().constData();
-
-    QString agentPath = QString::fromUtf8(parsedFilePath.c_str());
-    QFileInfo fi(agentPath);
-    Output::AgentFile=fi.fileName().toStdString();
-    Output::AgentPath=fi.path().toStdString().append("/");
-
+    /*
     bayesopt::Parameters param = initialize_parameters_to_default();
     param.n_init_samples = 1;
     param.n_iterations = 10;
+    param.verbose_level = 0;
 
     this->bopt = new bopthook(this, 7, param);
 
+    vectord tmp = bopt->samplePoint();
+    */
     if(this->bopt != nullptr){
 
         vectord lb(7), ub(7);
@@ -76,9 +73,10 @@ Cli::Cli(std::string _file, QWidget *parent) :
 
         bopt->setBoundingBox(lb, ub);
         bopt->initializeOptimization();
-    }
 
-    runController();
+    }else{
+        runController();
+    }
 }
 
 Cli::~Cli()
@@ -86,11 +84,22 @@ Cli::~Cli()
     std::cout << "\tCLI destructor";
 }
 
+void Cli::runBoptController()
+{
+    std::cout << __PRETTY_FUNCTION__ << " " << QThread::currentThread() << std::endl;
+
+    std::string filepath = bopt->getNextFile();
+
+    this->control = new Control(this, filepath);
+    this->control->setupLuaSimulation();
+    this->generateMap();
+    this->generateSimulation();
+    this->runSimulation();
+}
+
 void Cli::runController()
 {
-    if(this->bopt != nullptr){
-        this->control->setupLuaSimulation();
-    }
+    this->control->setupLuaSimulation();
     this->generateMap();
     this->generateSimulation();
     this->runSimulation();
