@@ -1,5 +1,5 @@
 agents={
-    "/home/theis/workspace/RANA/src/lua_agents/test_4_master.lua",
+    "/home/theis/workspace/RANA/src/lua_agents/01_pingpong.lua",
 }
 
 sim={
@@ -13,5 +13,4 @@ sim={
 }
 
 param={
-    {1,1,100},
 }

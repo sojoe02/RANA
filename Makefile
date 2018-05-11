@@ -652,6 +652,7 @@ BUILD/moc/moc_cli.cpp: src/control.h \
 		src/postprocessing/graphics/zblock.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
+		src/bopthook.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -682,6 +683,7 @@ BUILD/moc/moc_mainwindow.cpp: src/control.h \
 		src/postprocessing/graphics/zblock.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
+		src/bopthook.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -723,6 +725,7 @@ BUILD/moc/moc_control.cpp: src/cli.h \
 		src/output.h \
 		src/api/scanning.h \
 		src/api/tcpserver.h \
+		src/bopthook.h \
 		src/control.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/theis/workspace/RANA -I/home/theis/workspace/lua51_64bit/include -I/usr/include/lua5.1 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/control.h -o BUILD/moc/moc_control.cpp
 
@@ -744,6 +747,7 @@ BUILD/moc/moc_runner.cpp: src/simulationcore/flowcontrol.h \
 		src/postprocessing/graphics/zblock.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
+		src/bopthook.h \
 		src/runner.h \
 		src/parser.h \
 		src/ID.h \
@@ -772,6 +776,7 @@ BUILD/moc/moc_eventdialog.cpp: src/control.h \
 		src/postprocessing/graphics/zblock.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
+		src/bopthook.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -802,6 +807,7 @@ BUILD/moc/moc_postcontrol.cpp: src/postprocessing/eventrunner.h \
 		src/postprocessing/graphics/zblock.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
+		src/bopthook.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -832,6 +838,7 @@ BUILD/moc/moc_eventrunner.cpp: src/postprocessing/eventprocessing.h \
 		src/postprocessing/graphics/zblock.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
+		src/bopthook.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -900,6 +907,7 @@ BUILD/obj/main.o: src/main.cpp src/ID.h \
 		src/output.h \
 		src/api/scanning.h \
 		src/api/tcpserver.h \
+		src/bopthook.h \
 		src/api/tcpclient.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/main.o src/main.cpp
 
@@ -930,6 +938,7 @@ BUILD/obj/cli.o: src/cli.cpp src/cli.h \
 		src/output.h \
 		src/api/scanning.h \
 		src/api/tcpserver.h \
+		src/bopthook.h \
 		src/api/maphandler.h \
 		src/eventdialog.h \
 		src/helpdialog.h
@@ -952,6 +961,7 @@ BUILD/obj/mainwindow.o: src/mainwindow.cpp BUILD/ui/ui_mainwindow.h \
 		src/postprocessing/graphics/zblock.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
+		src/bopthook.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -988,6 +998,7 @@ BUILD/obj/output.o: src/output.cpp src/output.h \
 		src/postprocessing/graphics/zblock.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
+		src/bopthook.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1016,6 +1027,7 @@ BUILD/obj/control.o: src/control.cpp src/control.h \
 		src/postprocessing/graphics/zblock.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
+		src/bopthook.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1052,6 +1064,7 @@ BUILD/obj/runner.o: src/runner.cpp src/runner.h \
 		src/postprocessing/graphics/zblock.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
+		src/bopthook.h \
 		src/parser.h \
 		src/ID.h \
 		src/api/phys.h \
@@ -1081,6 +1094,7 @@ BUILD/obj/eventprocessing.o: src/postprocessing/eventprocessing.cpp src/api/grid
 		src/postprocessing/graphics/zblock.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
+		src/bopthook.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1108,6 +1122,7 @@ BUILD/obj/colorutility.o: src/postprocessing/colorutility.cpp src/postprocessing
 		src/simulationcore/agents/agent.h \
 		src/postprocessing/graphics/zblock.h \
 		src/postprocessing/graphics/zmap.h \
+		src/bopthook.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1138,6 +1153,7 @@ BUILD/obj/eventdialog.o: src/eventdialog.cpp BUILD/ui/ui_eventdialog.h \
 		src/postprocessing/graphics/zblock.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
+		src/bopthook.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1168,6 +1184,7 @@ BUILD/obj/zblock.o: src/postprocessing/graphics/zblock.cpp src/output.h \
 		src/postprocessing/graphics/zblock.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
+		src/bopthook.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1197,6 +1214,7 @@ BUILD/obj/postcontrol.o: src/postprocessing/postcontrol.cpp src/output.h \
 		src/postprocessing/graphics/zblock.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
+		src/bopthook.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1226,6 +1244,7 @@ BUILD/obj/eventrunner.o: src/postprocessing/eventrunner.cpp src/output.h \
 		src/postprocessing/graphics/zblock.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
+		src/bopthook.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1255,6 +1274,7 @@ BUILD/obj/zmap.o: src/postprocessing/graphics/zmap.cpp src/postprocessing/graphi
 		src/simulationcore/supervisor.h \
 		src/simulationcore/eventqueue.h \
 		src/simulationcore/agents/agent.h \
+		src/bopthook.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1289,6 +1309,7 @@ BUILD/obj/gridmovement.o: src/api/gridmovement.cpp src/api/gridmovement.h \
 		src/postprocessing/graphics/zblock.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
+		src/bopthook.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1317,6 +1338,7 @@ BUILD/obj/maphandler.o: src/api/maphandler.cpp src/output.h \
 		src/postprocessing/graphics/zblock.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
+		src/bopthook.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1348,6 +1370,7 @@ BUILD/obj/phys.o: src/api/phys.cpp src/api/phys.h \
 		src/postprocessing/graphics/zblock.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
+		src/bopthook.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1378,6 +1401,7 @@ BUILD/obj/scanning.o: src/api/scanning.cpp src/api/scanning.h \
 		src/postprocessing/graphics/zblock.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
+		src/bopthook.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1405,6 +1429,7 @@ BUILD/obj/shared.o: src/api/shared.cpp src/output.h \
 		src/postprocessing/graphics/zblock.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
+		src/bopthook.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1435,6 +1460,7 @@ BUILD/obj/flowcontrol.o: src/simulationcore/flowcontrol.cpp src/simulationcore/f
 		src/postprocessing/graphics/zblock.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
+		src/bopthook.h \
 		src/runner.h \
 		src/parser.h \
 		src/ID.h \
@@ -1463,6 +1489,7 @@ BUILD/obj/interfacer.o: src/simulationcore/interfacer.cpp src/output.h \
 		src/postprocessing/graphics/zblock.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
+		src/bopthook.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1493,6 +1520,7 @@ BUILD/obj/sector.o: src/simulationcore/sector.cpp src/ID.h \
 		src/postprocessing/graphics/zblock.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
+		src/bopthook.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1521,6 +1549,7 @@ BUILD/obj/supervisor.o: src/simulationcore/supervisor.cpp src/output.h \
 		src/postprocessing/graphics/zblock.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
+		src/bopthook.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1559,6 +1588,7 @@ BUILD/obj/agentluainterface.o: src/simulationcore/agents/agentluainterface.cpp s
 		src/postprocessing/graphics/zblock.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
+		src/bopthook.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1589,6 +1619,7 @@ BUILD/obj/eventqueue.o: src/simulationcore/eventqueue.cpp src/ID.h \
 		src/postprocessing/graphics/zblock.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
+		src/bopthook.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1606,7 +1637,34 @@ BUILD/obj/tcpserver.o: src/api/tcpserver.cpp src/api/tcpserver.h
 BUILD/obj/tcpclient.o: src/api/tcpclient.cpp src/api/tcpclient.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/tcpclient.o src/api/tcpclient.cpp
 
-BUILD/obj/bopthook.o: src/bopthook.cpp src/bopthook.h
+BUILD/obj/bopthook.o: src/bopthook.cpp src/bopthook.h \
+		src/cli.h \
+		src/control.h \
+		src/mainwindow.h \
+		src/utility.h \
+		src/graphics/agentItem.h \
+		src/postprocessing/postcontrol.h \
+		src/postprocessing/eventrunner.h \
+		src/postprocessing/eventprocessing.h \
+		src/simulationcore/agents/agentluainterface.h \
+		src/simulationcore/sector.h \
+		src/simulationcore/supervisor.h \
+		src/simulationcore/eventqueue.h \
+		src/simulationcore/agents/agent.h \
+		src/postprocessing/graphics/zblock.h \
+		src/postprocessing/colorutility.h \
+		src/postprocessing/graphics/zmap.h \
+		src/runner.h \
+		src/simulationcore/flowcontrol.h \
+		src/simulationcore/interfacer.h \
+		src/parser.h \
+		src/ID.h \
+		src/api/phys.h \
+		src/api/gridmovement.h \
+		src/api/shared.h \
+		src/output.h \
+		src/api/scanning.h \
+		src/api/tcpserver.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/bopthook.o src/bopthook.cpp
 
 BUILD/obj/qrc_images.o: BUILD/rcc/qrc_images.cpp 

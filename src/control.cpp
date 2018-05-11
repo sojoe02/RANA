@@ -50,7 +50,7 @@ void Control::initialSetup()
 {
     L = luaL_newstate();
 
-    if( L == NULL ){
+    if( L == nullptr ){
         Output::Inst()->kprintf("<b><font color=\"brown\">Simulation config cannot be initialized. Lua(%s) is out of memory, Killing simulation</font></b></>", LUA_VERSION);
         Output::KillSimulation.store(true);
     }else{
@@ -83,61 +83,61 @@ void Control::initialSetup()
         std::string simLib = Output::Inst()->RanaDir;
         simLib.append("./src/modules/lib_sim_config.lua");
 
+        std::cout << simLib << std::endl;
+
         if( luaL_loadfile(L, simLib.c_str()) || lua_pcall(L,0,0,0) ){
             Output::Inst()->kprintf("\tsim file not found %s", simLib);
         }
 
         //  Remove .lua extension from a file, if there are no ".", just use filepath.
-        std::string rawfile;
         size_t lastdot = agentPath.find_last_of(".");
         if (lastdot == std::string::npos){
-            rawfile = agentPath;
+            this->rawfile = agentPath;
         }else{
-            rawfile = agentPath.substr(0, lastdot);
+            this->rawfile = agentPath.substr(0, lastdot);
         }
-
-        if( this->cli != nullptr){
-            lua_settop(L,0);
-            lua_getglobal(L,"_getSimulationFile");
-            lua_pushstring(L,rawfile.c_str());
-            if(lua_pcall(L,1,0,0)!=LUA_OK){ Output::Inst()->kprintf("Control - Lua_simconfig - Can't locate Sim file - 1"); }
-
-            lua_settop(L,0);
-            lua_getglobal(L,"_checkIfInputFileIsSimulationType");
-            if(lua_pcall(L,0,1,0)!=LUA_OK){ Output::Inst()->kprintf("Control - Lua_simconfig - Can't locate Sim file - 2"); }
-
-            if( !lua_toboolean(L,-1) )
-            {
-                //  File is not simulation file
-                std::cout << "Error in tables in Simulation file" << std::endl;
-                exit(EXIT_FAILURE); //TODO: Skip with -force option
-            }
-            else
-            {
-                //  File is simulation file
-                lua_register(L, "l_addSharedNumber",l_addSharedNumber);
-                lua_register(L, "l_addSharedAgent",l_addSharedAgent);
-
-                lua_settop(L,0);
-                lua_getglobal(L,"_simulationConfigMainFunction");
-                if(lua_pcall(L,0,0,0)!=LUA_OK){ Output::Inst()->kprintf("Control - Lua_simconfig - Can't locate Sim file - 3"); }
-            }
-
-            lua_getglobal(L,"_paramMain");
-            if(lua_pcall(L,0,0,0)!=LUA_OK){ Output::Inst()->kprintf("Control - Lua_simconfig - Can't locate Sim file - 4"); }
-
-
-            if(!runNewSimulation())
-            {
-                //  Ready new simulation by
-                exit(EXIT_FAILURE);
-            }
-
-        }
-
     }
 
     connect(this, &Control::runSimulationSignal, this, &Control::runSimulation);
+}
+
+void Control::setupLuaSimulation()
+{
+    lua_settop(L,0);
+    lua_getglobal(L,"_getSimulationFile");
+    lua_pushstring(L,rawfile.c_str());
+    if(lua_pcall(L,1,0,0)!=LUA_OK){ Output::Inst()->kprintf("Control - Lua_simconfig - Can't locate Sim file - 1"); }
+
+    lua_settop(L,0);
+    lua_getglobal(L,"_checkIfInputFileIsSimulationType");
+    if(lua_pcall(L,0,1,0)!=LUA_OK){ Output::Inst()->kprintf("Control - Lua_simconfig - Can't locate Sim file - 2"); }
+
+    if( !lua_toboolean(L,-1) )
+    {
+        //  File is not simulation file
+        std::cout << "Error in tables in Simulation file" << std::endl;
+        exit(EXIT_FAILURE); //TODO: Skip with -force option
+    }
+    else
+    {
+        //  File is simulation file
+        lua_register(L, "l_addSharedNumber",l_addSharedNumber);
+        lua_register(L, "l_addSharedAgent",l_addSharedAgent);
+
+        lua_settop(L,0);
+        lua_getglobal(L,"_simulationConfigMainFunction");
+        if(lua_pcall(L,0,0,0)!=LUA_OK){ Output::Inst()->kprintf("Control - Lua_simconfig - Can't locate Sim file - 3"); }
+    }
+
+    lua_getglobal(L,"_paramMain");
+    if(lua_pcall(L,0,0,0)!=LUA_OK){ Output::Inst()->kprintf("Control - Lua_simconfig - Can't locate Sim file - 4"); }
+
+
+    if(!runNewSimulation())
+    {
+        //  Ready new simulation by
+        exit(EXIT_FAILURE);
+    }
 }
 
 bool Control::runNewSimulation()
@@ -198,11 +198,10 @@ void Control::startSimulation(unsigned long long runTime)
 
 void Control::runSimulation()
 {
-    //generateEnvironment();
     readyRunner();
     running = true;
     Output::SimRunning.store(true);
-    if(mainwindow != NULL)
+    if(mainwindow != nullptr)
     {
         mainwindow->changeRunButton("Stop");
     }
@@ -214,7 +213,7 @@ void Control::on_simDone()
     killRunner();
     killAgentDomain();
     killRunthread();
-    if(mainwindow != NULL)
+    if(mainwindow != nullptr)
     {
         mainwindow->changeRunButton("Run");
         mainwindow->runButtonHide();
@@ -223,16 +222,27 @@ void Control::on_simDone()
     Output::Inst()->kprintf("Simulation Done\n");
     running = false;
 
-    if(cli != NULL)
+    if(cli != nullptr)
     {
-        if(runNewSimulation())
-        {
-            generateEnvironment();
-            emit runSimulationSignal();
-        }
-        else{
-            std::cout << "All simulations done" << std::endl;
-            exit(EXIT_SUCCESS);
+        if (cli->bopt != nullptr){
+            if(cli->bopt->runMoreIterations()){
+                cli->bopt->stepOptimization();
+                generateEnvironment();
+                emit runSimulationSignal();
+            }else{
+
+                exit(EXIT_SUCCESS);
+            }
+        }else{
+            if(runNewSimulation())
+            {
+                generateEnvironment();
+                emit runSimulationSignal();
+            }
+            else{
+                std::cout << "All simulations done" << std::endl;
+                exit(EXIT_SUCCESS);
+            }
         }
     }
 }
@@ -256,24 +266,24 @@ void Control::readyAgentDomain()
         When readying the agent domain, serialize the parameters, the agents should use.
     **/
     agentDomain->generateEnvironment(map->width(),map->height(),threads,agentAmount,timeRes,macroRes,agentPath);
-    if(mainwindow != NULL){
+    if(mainwindow != nullptr){
         populateFuture = QtConcurrent::run(agentDomain, &FlowControl::populateSystem);  //  This will run the whole agent generation a second time.
     }
 }
 
 void Control::killRunner()
 {
-    if(runner != NULL){
+    if(runner != nullptr){
         //delete runner;    //Got seg fault on this.
-        runner = NULL;
+        runner = nullptr;
     }
 }
 
 void Control::killAgentDomain()
 {
-    if(agentDomain != NULL){
+    if(agentDomain != nullptr){
         delete agentDomain;
-        agentDomain = NULL;
+        agentDomain = nullptr;
     }
 }
 
@@ -294,7 +304,7 @@ void Control::threadTest(std::string something)
 
 void Control::refreshPopPos(std::list<agentInfo> infolist)
 {
-    if(mainwindow != NULL)
+    if(mainwindow != nullptr)
     {
         mainwindow->updateMap(infolist);
     }
@@ -307,7 +317,7 @@ bool Control::isRunning()
 
 bool Control::isGenerated()
 {
-    if(agentDomain!=NULL)
+    if(agentDomain != nullptr)
     {
         return true;
     }
@@ -322,7 +332,7 @@ void Control::saveEvents(QString path)
 
 void Control::toggleLiveView(bool enable)
 {
-    if(agentDomain != NULL){
+    if(agentDomain != nullptr){
         agentDomain->toggleLiveView(enable);
     }
 }

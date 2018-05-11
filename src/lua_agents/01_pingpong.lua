@@ -78,7 +78,7 @@ function HandleEvent(event)
 	fibonacci_tail(2000)
 
 	if event.description == "ping" then
-                        say("Agent: "..ID .." received a ping from: "..event.ID .." at ".. t .. " , saying: "..event.table.msg)
+                        --say("Agent: "..ID .." received a ping from: "..event.ID .." at ".. t .. " , saying: "..event.table.msg)
                         Event.emit{speed=343,targetID=event.ID, description="pong"}
 
 	elseif event.description == "pong" then
@@ -90,7 +90,7 @@ end
 function takeStep()
 
 	if Stat.randomInteger(1,1/STEP_RESOLUTION) <= 1 then
-                say("Agent:"..ID.." is emiting ping")
+                --say("Agent:"..ID.." is emiting ping")
                 Event.emit{speed=343,description="ping",targetGroup=groups,table={msg="Sent at "..t}}
                 --Event.emit{speed=0,description="ping",targetGroup=groups,table={msg="Sent at "..t}}
 	end

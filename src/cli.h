@@ -22,6 +22,8 @@
 #ifndef CLI_H
 #define CLI_H
 
+#include <ctime>
+
 #include <QMainWindow>
 #include <QWidget>
 #include <QGraphicsScene>
@@ -35,8 +37,11 @@
 #include "src/postprocessing/graphics/zblock.h"
 #include "src/postprocessing/graphics/zmap.h"
 
+#include "src/bopthook.h"
+
 typedef std::list<agentInfo> INFOLIST;
 
+class bopthook;
 class PostControl;
 class Control;
 
@@ -45,9 +50,13 @@ class Cli : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit Cli(std::string _file, QWidget *parent = 0);
+    explicit Cli(std::string _file, QWidget *parent = nullptr);
+
+    void runController();
+    bool isSimulationRunning();
 
     ~Cli();
+    bopthook *bopt = nullptr;
 
 private slots:
     void defineMap();
@@ -64,6 +73,8 @@ private:
 
     QTimer *initializeTimer;
     QTimer *runTimer;
+
+
 
 };
 

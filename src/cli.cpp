@@ -27,8 +27,6 @@
 #include <QShortcut>
 
 #include <string>
-#include <thread>
-#include <chrono>
 #include <fstream>
 
 #include "src/cli.h"
@@ -59,14 +57,43 @@ Cli::Cli(std::string _file, QWidget *parent) :
     Output::AgentFile=fi.fileName().toStdString();
     Output::AgentPath=fi.path().toStdString().append("/");
 
-    this->generateMap();
-    this->generateSimulation();
-    this->runSimulation();
+    bayesopt::Parameters param = initialize_parameters_to_default();
+    param.n_init_samples = 1;
+    param.n_iterations = 10;
+
+    this->bopt = new bopthook(this, 7, param);
+
+    if(this->bopt != nullptr){
+
+        vectord lb(7), ub(7);
+        lb[0] = 0.5; ub[0] = 1.5;
+        lb[1] = 0.0; ub[1] = 0.5;
+        lb[2] = 0.3; ub[2] = 0.3;
+        lb[3] = 0.0; ub[3] = 0.5;
+        lb[4] = 0.0; ub[4] = 0.1;
+        lb[5] = 0.0; ub[5] = 1.0;
+        lb[6] = 0.0; ub[6] = 0.1;
+
+        bopt->setBoundingBox(lb, ub);
+        bopt->initializeOptimization();
+    }
+
+    runController();
 }
 
 Cli::~Cli()
 {
     std::cout << "\tCLI destructor";
+}
+
+void Cli::runController()
+{
+    if(this->bopt != nullptr){
+        this->control->setupLuaSimulation();
+    }
+    this->generateMap();
+    this->generateSimulation();
+    this->runSimulation();
 }
 
 void Cli::generateMap()
@@ -89,7 +116,7 @@ void Cli::generateMap()
     if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Use deafult value */ }
     if( lua_toboolean(L,1) ){ height = lua_tonumber(L,2); }
 
-    mapImage = new QImage(width,height,QImage::Format_RGB32); //TODO: Parse map size
+    mapImage = new QImage(width,height,QImage::Format_RGB32);
     mapImage->fill(Qt::GlobalColor::black);
 
     this->defineMap();
@@ -150,7 +177,7 @@ void Cli::generateSimulation()
 
 void Cli::runSimulation()
 {
-    if(control->isRunning()){
+    if(isSimulationRunning()){
         control->stopSimulation();
     }
     else
@@ -163,7 +190,9 @@ void Cli::runSimulation()
     }
 }
 
-
+bool Cli::isSimulationRunning(){
+    return control->isRunning();
+}
 
 
 

@@ -40,10 +40,13 @@
 #include "src/runner.h"
 #include "src/simulationcore/flowcontrol.h"
 
+#include "src/bopthook.h"
+
 class Runner;
 class FlowControl;
 class Cli;
 class MainWindow;
+
 class Control : public QObject
 {
     Q_OBJECT
@@ -96,6 +99,7 @@ class Control : public QObject
 
         void threadTest(std::string something);
 
+        void setupLuaSimulation();
         int newSimulation();
 
         lua_State * getControlLuaState(){ return L; }
@@ -147,6 +151,7 @@ class Control : public QObject
         double macroRes;
         int agentAmount;
         std::string agentPath;
+        std::string rawfile;
 
         int simulationNumber = 0;
         lua_State* L;
@@ -154,6 +159,7 @@ class Control : public QObject
     signals:
         void startDoWork(FlowControl *agentDomain, unsigned long long runtime);
         void runSimulationSignal();
+        void simulationISDoneSignal();
 };
 
 #endif // CONTROL_H
