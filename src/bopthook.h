@@ -1,10 +1,10 @@
 #ifndef BOPTHOOK_H
 #define BOPTHOOK_H
 
-#include <iostream>
-#include "bayesopt/bayesopt.hpp"
+#include <bayesopt/bayesopt.hpp>
 #include "src/cli.h"
 
+#include <iostream>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -22,15 +22,8 @@ public:
     bool checkReachability( const vectord &query ){ return true; }
     std::string getNextFile();
 
-
-public slots:
-    void runSimulation();
-
 private:
     Cli *cli = nullptr;
-
-signals:
-    void runBoptSimSignal();
 };
 
 #endif // BOPTHOOK_H

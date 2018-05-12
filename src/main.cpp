@@ -59,6 +59,8 @@ int main(int argc, char **argv)
 
         QApplication a(argc, argv);
 
+        Cli *c = nullptr;
+
         if(p->startProgram())
         {
             if(p->startGui()){
@@ -68,11 +70,20 @@ int main(int argc, char **argv)
                 w->show();
             }else{
                 std::cout << "Start without gui - " << p->getFile() << std::endl;
+
                 Cli *c = new Cli(p->getFile());
+                std::cout << "TEST TEST TEST TEST" << std::endl;
+                c->runController();
+                std::cout << "TEST TEST TEST TEST" << std::endl;
             }
         }
 
         return a.exec();
+
+
+
+
+
 }
 
 

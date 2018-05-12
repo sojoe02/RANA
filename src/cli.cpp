@@ -29,6 +29,8 @@
 #include <string>
 #include <fstream>
 
+#include <bayesopt/parameters.hpp>
+
 #include "src/cli.h"
 #include "src/output.h"
 #include "src/api/maphandler.h"
@@ -50,16 +52,13 @@ Cli::Cli(std::string _file, QWidget *parent) :
     runTimer(new QTimer(this)),
     parsedFilePath(_file)
 {
-    /*
+/*
     bayesopt::Parameters param = initialize_parameters_to_default();
-    param.n_init_samples = 1;
+    param.n_init_samples = 5;
     param.n_iterations = 10;
     param.verbose_level = 0;
 
     this->bopt = new bopthook(this, 7, param);
-
-    vectord tmp = bopt->samplePoint();
-    */
     if(this->bopt != nullptr){
 
         vectord lb(7), ub(7);
@@ -72,15 +71,28 @@ Cli::Cli(std::string _file, QWidget *parent) :
         lb[6] = 0.0; ub[6] = 0.1;
 
         bopt->setBoundingBox(lb, ub);
-        bopt->initializeOptimization();
+
+        matrixd initParams = bopt->p1InitializeOptimization();
+        vectord testVec(7);
+
+        for (unsigned i = 0; i < initParams.size1 (); ++ i){
+            testVec(i) = initParams(i,0);
+        }
+
+        std::cout << testVec << std::endl;
+        std::cout << initParams << std::endl;
+
+        runController();
 
     }else{
         runController();
     }
+*/
 }
 
 Cli::~Cli()
 {
+    QApplication::quit();
     std::cout << "\tCLI destructor";
 }
 
@@ -99,6 +111,7 @@ void Cli::runBoptController()
 
 void Cli::runController()
 {
+    std::cout << "hello" << std::endl;
     this->control->setupLuaSimulation();
     this->generateMap();
     this->generateSimulation();

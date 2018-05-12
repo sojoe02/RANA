@@ -5,22 +5,6 @@ bopthook::bopthook(Cli *_cli, size_t dim, bayesopt::Parameters _param):
     ContinuousModel(dim, _param)
 {
     this->cli = _cli;
-
-    connect(this, &bopthook::runBoptSimSignal, cli, &Cli::runBoptController);
-    //connect(this, SIGNAL(runBoptSimSignal(std::string)), this, SLOT(runSimulation(std::string)), Qt::BlockingQueuedConnection);
-
-}
-
-double bopthook::testFunction(const double *x)
-{
-    double f = 10.;
-    x += 1;
-    return f;
-}
-
-void bopthook::runSimulation(){
-    cli->runBoptController();
-    std::cout << "Done in runSimulation" << std::endl;
 }
 
 double bopthook::evaluateSample( const vectord &Xi ){
@@ -31,18 +15,6 @@ double bopthook::evaluateSample( const vectord &Xi ){
         std::cout << Xi(i) << " ";
     }
     std::cout << "\n\tSize Vector/Dimensions: " << i << std::endl;
-
-    emit runBoptSimSignal();
-
-    //while(true);
-
-    std::cout << "TEST TEST TEST TEST FUCK FUCK FUCK" << std::endl;
-    std::cout << "TEST TEST TEST TEST FUCK FUCK FUCK" << std::endl;
-    std::cout << "TEST TEST TEST TEST FUCK FUCK FUCK" << std::endl;
-    std::cout << "TEST TEST TEST TEST FUCK FUCK FUCK" << std::endl;
-    std::cout << "TEST TEST TEST TEST FUCK FUCK FUCK" << std::endl;
-
-
 
     return true;
 }

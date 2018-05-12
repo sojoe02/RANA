@@ -15,7 +15,7 @@ CXX           = g++
 DEFINES       = -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -m64 -pipe -O2 -Wall -W -D_REENTRANT -fPIC $(DEFINES)
 CXXFLAGS      = -m64 -pipe -Wextra -Wno-unused-variable -Wno-unused-parameter -O2 -o3 -std=c++1y -Wall -W -D_REENTRANT -fPIC $(DEFINES)
-INCPATH       = -I. -I/home/theis/workspace/RANA/../lua51_64bit/include -isystem /usr/include/lua5.1 -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -IBUILD/moc -IBUILD/ui -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64
+INCPATH       = -I. -I-L/usr/local/include/ -I-lbayesopt -I-L/usr/local/include/ -I-lnlopt -I/home/theis/workspace/RANA/../lua51_64bit/include -isystem /usr/include/lua5.1 -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -IBUILD/moc -IBUILD/ui -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64
 QMAKE         = /usr/lib/x86_64-linux-gnu/qt5/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -36,7 +36,7 @@ DISTNAME      = Rana_qt1.0.0
 DISTDIR = /home/theis/workspace/RANA/BUILD/obj/Rana_qt1.0.0
 LINK          = g++
 LFLAGS        = -m64 -Wl,-O1
-LIBS          = $(SUBLIBS) -L/usr/X11R6/lib64 -largtable2 -L/usr/local/include/ -lbayesopt -lnlopt -llua5.1 -lQt5Widgets -lQt5Gui -lQt5Core -lGL -lpthread 
+LIBS          = $(SUBLIBS) -L/usr/X11R6/lib64 -largtable2 -L/usr/local/lib/ -lbayesopt -llua5.1 -lQt5Widgets -lQt5Gui -lQt5Core -lGL -lpthread 
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -667,7 +667,7 @@ BUILD/moc/moc_cli.cpp: src/control.h \
 		src/api/scanning.h \
 		src/api/tcpserver.h \
 		src/cli.h
-	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/theis/workspace/RANA -I/home/theis/workspace/lua51_64bit/include -I/usr/include/lua5.1 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/cli.h -o BUILD/moc/moc_cli.cpp
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/theis/workspace/RANA -I/home/theis/workspace/RANA/-L/usr/local/include -I/home/theis/workspace/RANA/-lbayesopt -I/home/theis/workspace/RANA/-L/usr/local/include -I/home/theis/workspace/RANA/-lnlopt -I/home/theis/workspace/lua51_64bit/include -I/usr/include/lua5.1 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/cli.h -o BUILD/moc/moc_cli.cpp
 
 BUILD/moc/moc_mainwindow.cpp: src/control.h \
 		src/cli.h \
@@ -698,7 +698,7 @@ BUILD/moc/moc_mainwindow.cpp: src/control.h \
 		src/api/scanning.h \
 		src/api/tcpserver.h \
 		src/mainwindow.h
-	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/theis/workspace/RANA -I/home/theis/workspace/lua51_64bit/include -I/usr/include/lua5.1 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/mainwindow.h -o BUILD/moc/moc_mainwindow.cpp
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/theis/workspace/RANA -I/home/theis/workspace/RANA/-L/usr/local/include -I/home/theis/workspace/RANA/-lbayesopt -I/home/theis/workspace/RANA/-L/usr/local/include -I/home/theis/workspace/RANA/-lnlopt -I/home/theis/workspace/lua51_64bit/include -I/usr/include/lua5.1 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/mainwindow.h -o BUILD/moc/moc_mainwindow.cpp
 
 BUILD/moc/moc_control.cpp: src/cli.h \
 		src/control.h \
@@ -729,7 +729,7 @@ BUILD/moc/moc_control.cpp: src/cli.h \
 		src/api/tcpserver.h \
 		src/bopthook.h \
 		src/control.h
-	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/theis/workspace/RANA -I/home/theis/workspace/lua51_64bit/include -I/usr/include/lua5.1 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/control.h -o BUILD/moc/moc_control.cpp
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/theis/workspace/RANA -I/home/theis/workspace/RANA/-L/usr/local/include -I/home/theis/workspace/RANA/-lbayesopt -I/home/theis/workspace/RANA/-L/usr/local/include -I/home/theis/workspace/RANA/-lnlopt -I/home/theis/workspace/lua51_64bit/include -I/usr/include/lua5.1 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/control.h -o BUILD/moc/moc_control.cpp
 
 BUILD/moc/moc_runner.cpp: src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -760,7 +760,7 @@ BUILD/moc/moc_runner.cpp: src/simulationcore/flowcontrol.h \
 		src/api/scanning.h \
 		src/api/tcpserver.h \
 		src/runner.h
-	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/theis/workspace/RANA -I/home/theis/workspace/lua51_64bit/include -I/usr/include/lua5.1 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/runner.h -o BUILD/moc/moc_runner.cpp
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/theis/workspace/RANA -I/home/theis/workspace/RANA/-L/usr/local/include -I/home/theis/workspace/RANA/-lbayesopt -I/home/theis/workspace/RANA/-L/usr/local/include -I/home/theis/workspace/RANA/-lnlopt -I/home/theis/workspace/lua51_64bit/include -I/usr/include/lua5.1 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/runner.h -o BUILD/moc/moc_runner.cpp
 
 BUILD/moc/moc_eventdialog.cpp: src/control.h \
 		src/cli.h \
@@ -791,7 +791,7 @@ BUILD/moc/moc_eventdialog.cpp: src/control.h \
 		src/api/scanning.h \
 		src/api/tcpserver.h \
 		src/eventdialog.h
-	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/theis/workspace/RANA -I/home/theis/workspace/lua51_64bit/include -I/usr/include/lua5.1 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/eventdialog.h -o BUILD/moc/moc_eventdialog.cpp
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/theis/workspace/RANA -I/home/theis/workspace/RANA/-L/usr/local/include -I/home/theis/workspace/RANA/-lbayesopt -I/home/theis/workspace/RANA/-L/usr/local/include -I/home/theis/workspace/RANA/-lnlopt -I/home/theis/workspace/lua51_64bit/include -I/usr/include/lua5.1 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/eventdialog.h -o BUILD/moc/moc_eventdialog.cpp
 
 BUILD/moc/moc_postcontrol.cpp: src/postprocessing/eventrunner.h \
 		src/postprocessing/eventprocessing.h \
@@ -822,7 +822,7 @@ BUILD/moc/moc_postcontrol.cpp: src/postprocessing/eventrunner.h \
 		src/api/scanning.h \
 		src/api/tcpserver.h \
 		src/postprocessing/postcontrol.h
-	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/theis/workspace/RANA -I/home/theis/workspace/lua51_64bit/include -I/usr/include/lua5.1 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/postprocessing/postcontrol.h -o BUILD/moc/moc_postcontrol.cpp
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/theis/workspace/RANA -I/home/theis/workspace/RANA/-L/usr/local/include -I/home/theis/workspace/RANA/-lbayesopt -I/home/theis/workspace/RANA/-L/usr/local/include -I/home/theis/workspace/RANA/-lnlopt -I/home/theis/workspace/lua51_64bit/include -I/usr/include/lua5.1 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/postprocessing/postcontrol.h -o BUILD/moc/moc_postcontrol.cpp
 
 BUILD/moc/moc_eventrunner.cpp: src/postprocessing/eventprocessing.h \
 		src/simulationcore/agents/agentluainterface.h \
@@ -853,10 +853,10 @@ BUILD/moc/moc_eventrunner.cpp: src/postprocessing/eventprocessing.h \
 		src/api/scanning.h \
 		src/api/tcpserver.h \
 		src/postprocessing/eventrunner.h
-	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/theis/workspace/RANA -I/home/theis/workspace/lua51_64bit/include -I/usr/include/lua5.1 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/postprocessing/eventrunner.h -o BUILD/moc/moc_eventrunner.cpp
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/theis/workspace/RANA -I/home/theis/workspace/RANA/-L/usr/local/include -I/home/theis/workspace/RANA/-lbayesopt -I/home/theis/workspace/RANA/-L/usr/local/include -I/home/theis/workspace/RANA/-lnlopt -I/home/theis/workspace/lua51_64bit/include -I/usr/include/lua5.1 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/postprocessing/eventrunner.h -o BUILD/moc/moc_eventrunner.cpp
 
 BUILD/moc/moc_helpdialog.cpp: src/helpdialog.h
-	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/theis/workspace/RANA -I/home/theis/workspace/lua51_64bit/include -I/usr/include/lua5.1 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/helpdialog.h -o BUILD/moc/moc_helpdialog.cpp
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/theis/workspace/RANA -I/home/theis/workspace/RANA/-L/usr/local/include -I/home/theis/workspace/RANA/-lbayesopt -I/home/theis/workspace/RANA/-L/usr/local/include -I/home/theis/workspace/RANA/-lnlopt -I/home/theis/workspace/lua51_64bit/include -I/usr/include/lua5.1 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/helpdialog.h -o BUILD/moc/moc_helpdialog.cpp
 
 BUILD/moc/moc_bopthook.cpp: src/cli.h \
 		src/control.h \
@@ -887,7 +887,7 @@ BUILD/moc/moc_bopthook.cpp: src/cli.h \
 		src/api/tcpserver.h \
 		src/bopthook.h \
 		src/bopthook.h
-	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/theis/workspace/RANA -I/home/theis/workspace/lua51_64bit/include -I/usr/include/lua5.1 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/bopthook.h -o BUILD/moc/moc_bopthook.cpp
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/theis/workspace/RANA -I/home/theis/workspace/RANA/-L/usr/local/include -I/home/theis/workspace/RANA/-lbayesopt -I/home/theis/workspace/RANA/-L/usr/local/include -I/home/theis/workspace/RANA/-lnlopt -I/home/theis/workspace/lua51_64bit/include -I/usr/include/lua5.1 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/bopthook.h -o BUILD/moc/moc_bopthook.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:

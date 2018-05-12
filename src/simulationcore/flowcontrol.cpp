@@ -177,6 +177,7 @@ void FlowControl::runSimulation(int _time)
     {
         Output::Inst()->kprintf("Position file does not exist");
     }
+
     file.open(positionFilePath.c_str(),std::ofstream::out | std::ofstream::app | std::ofstream::binary);
     stop = false;
     Output::Inst()->kprintf("Running Simulation of: %i[s], with resolution of %f",_time, timeResolution);

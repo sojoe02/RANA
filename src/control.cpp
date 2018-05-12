@@ -228,23 +228,16 @@ void Control::on_simDone()
 
     if(cli != nullptr)
     {
-        if (cli->bopt != nullptr){
-            if(runNewSimulation())
-            {
-                //  While the simulation file still runs, keep the same
-                generateEnvironment();
-                emit runSimulationSignal();
-            }else{
-                //  Find a new simulation file to run.
-                emit simulationRunBoptSignal();
-            }
+        if(runNewSimulation()){
+            //  While the simulation file still runs, keep the same
+            generateEnvironment();
+            emit runSimulationSignal();
         }else{
-            if(runNewSimulation())
-            {
-                generateEnvironment();
-                emit runSimulationSignal();
-            }
-            else{
+            if(cli->bopt != nullptr){
+                //  Find a new simulation file to run.
+                //emit simulationRunBoptSignal();
+                std::cout << "Deleting Control" << std::endl;
+            }else{
                 std::cout << "All simulations done" << std::endl;
                 exit(EXIT_SUCCESS);
             }
@@ -257,10 +250,11 @@ void Control::readyRunner()
     killRunner();
     runner = new Runner();
     runner->moveToThread(&runThread);
-    connect(this, &Control::startDoWork, runner, &Runner::doWork, Qt::BlockingQueuedConnection);
-    connect(&runThread, &QThread::finished, runner, &QObject::deleteLater);
+    connect(this, &Control::startDoWork, runner, &Runner::doWork);
     connect(runner, &Runner::simulationDone, this, &Control::on_simDone);
+    connect(&runThread, &QThread::finished, runner, &QObject::deleteLater);
     runThread.start();
+
 }
 
 void Control::readyAgentDomain()

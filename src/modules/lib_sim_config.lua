@@ -110,7 +110,6 @@ function _getSimulationConfigurationOption(key)
 
     if type(sim) == "table" then
         if sim[key] ~= nil then
-            print("hello")
             return 1,sim[key]
         end
     end

@@ -107,8 +107,16 @@ unix: UI_DIR = ./BUILD/ui/
 unix: LIBS += -largtable2
 
 #   Used for bayesopt - Hyper parameter optimazation.
-unix: LIBS += -L/usr/local/include/ -lbayesopt
-unix: LIBS += -L/usr/local/include/ -lnlopt
+unix: INCLUDEPATH += -L/usr/local/include/ -lbayesopt
+unix: INCLUDEPATH += -L/usr/local/include/ -lnlopt
+unix: LIBS += -L/usr/local/lib/ -lbayesopt
+
+
+#unix: LIBS += /usr/local/lib/libbayesopt.so
+#unix: LIBS += -L/home/theis/workspace/bayesopt/lib -lbayesopt
+#unix: LIBS += -L/home/theis/workspace/bayesopt/lib -lnlopt
+#unix: PRE_TARGETDEPS += /usr/local/lib/libnlopt.a
+
 
 macx: QMAKE_CXXFLAGS += -std=c++14 -mmacosx-version-min=10.7
 
