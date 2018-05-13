@@ -72,7 +72,10 @@ int main(int argc, char **argv)
                 std::cout << "Start without gui - " << p->getFile() << std::endl;
 
                 std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
-                Cli *c = new Cli(p->getFile());
+                c = new Cli(p->getFile());
+                c->runController();
+                std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
+                c = new Cli(p->getFile());
                 std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
                 c->runController();
                 std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
