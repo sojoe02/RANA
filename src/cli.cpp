@@ -20,12 +20,6 @@
 //
 //--end_license--
 
-#include <QApplication>
-#include <QtGui>
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QShortcut>
-
 #include <string>
 #include <fstream>
 
@@ -42,14 +36,12 @@
 #include "eventdialog.h"
 #include "helpdialog.h"
 
-Cli::Cli(std::string _file, QWidget *parent) :
-    QMainWindow(parent),
+Cli::Cli(std::string _file) :
     factor(1),
     mapImage(nullptr),
     mapItem(nullptr),
     control(new Control(this, _file)),
-    initializeTimer(new QTimer(this)),
-    runTimer(new QTimer(this)),
+    //runTimer(new QTimer(this)),
     parsedFilePath(_file)
 {
 /*
@@ -88,18 +80,16 @@ Cli::Cli(std::string _file, QWidget *parent) :
         runController();
     }
 */
+    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
 }
 
 Cli::~Cli()
 {
-    QApplication::quit();
     std::cout << "\tCLI destructor";
 }
 
 void Cli::runBoptController()
 {
-    std::cout << __PRETTY_FUNCTION__ << " " << QThread::currentThread() << std::endl;
-
     std::string filepath = bopt->getNextFile();
 
     this->control = new Control(this, filepath);
@@ -111,11 +101,15 @@ void Cli::runBoptController()
 
 void Cli::runController()
 {
-    std::cout << "hello" << std::endl;
+    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     this->control->setupLuaSimulation();
+    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     this->generateMap();
+    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     this->generateSimulation();
+    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     this->runSimulation();
+    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
 }
 
 void Cli::generateMap()
@@ -124,92 +118,97 @@ void Cli::generateMap()
     {
         delete mapImage;
     }
-
+std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     lua_State * L = control->getControlLuaState();
-
+std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     int width = 100;
     int height = 100;
-
+std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     lua_settop(L,0); lua_getglobal(L,"_getSimulationConfigurationOption"); lua_pushstring(L,"mapWidth");
     if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Using deafult value */ }
     if( lua_toboolean(L,1) ){ width = lua_tonumber(L,2); }
-
+std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     lua_settop(L,0); lua_getglobal(L,"_getSimulationConfigurationOption"); lua_pushstring(L,"mapHeight");
     if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Use deafult value */ }
     if( lua_toboolean(L,1) ){ height = lua_tonumber(L,2); }
-
+std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     mapImage = new QImage(width,height,QImage::Format_RGB32);
     mapImage->fill(Qt::GlobalColor::black);
-
+std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     this->defineMap();
 }
 
 void Cli::defineMap()
 {
-    mapItem = new QGraphicsPixmapItem(QPixmap::fromImage(*mapImage));
+std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
+    //mapItem = new QGraphicsPixmapItem(QPixmap::fromImage(*mapImage));
+std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     MapHandler::setImage(mapImage);
+std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     Phys::setEnvironment(mapImage->width(),mapImage->height());
+std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
 }
 
 void Cli::generateSimulation()
 {
+
     qApp->processEvents();
     GridMovement::clearGrid();
 
-    if( mapItem != nullptr )
-    {
-        lua_State * L = control->getControlLuaState();
+    lua_State * L = control->getControlLuaState();
 
-        lua_settop(L,0); lua_getglobal(L,"_getSimulationConfigurationOption"); lua_pushstring(L,"mapScale");
+    lua_settop(L,0); lua_getglobal(L,"_getSimulationConfigurationOption"); lua_pushstring(L,"mapScale");
+    if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Use deafult value */ }
+    if( lua_toboolean(L,1) ){ Phys::setScale(lua_tonumber(L,2)); }else{ Phys::setScale(1); }
+
+    if(!parsedFilePath.empty())
+    {
+        int agentAmount = 1;
+        int threads = 4;
+        double exponent = 6;
+        double timeRes = 1/(double)std::pow(10,exponent);
+        double macroRes = 1000;
+        macroRes = (1/timeRes)/macroRes;
+
+        lua_settop(L,0); lua_getglobal(L,"_getSimulationConfigurationOption"); lua_pushstring(L,"eDistPrecision");
         if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Use deafult value */ }
-        if( lua_toboolean(L,1) ){ Phys::setScale(lua_tonumber(L,2)); }else{ Phys::setScale(1); }
+        if( lua_toboolean(L,1) ){ timeRes = lua_tonumber(L,2); }
 
-        if(!parsedFilePath.empty())
-        {
-            int agentAmount = 1;
-            int threads = 4;
-            double exponent = 6;
-            double timeRes = 1/(double)std::pow(10,exponent);
-            double macroRes = 1000;
-            macroRes = (1/timeRes)/macroRes;
+        lua_settop(L,0); lua_getglobal(L,"_getSimulationConfigurationOption"); lua_pushstring(L,"stepPrecision");
+        if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Using deafult value */ }
+        if( lua_toboolean(L,1) ){ macroRes = 1/lua_tonumber(L,2); }
 
-            lua_settop(L,0); lua_getglobal(L,"_getSimulationConfigurationOption"); lua_pushstring(L,"eDistPrecision");
-            if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Use deafult value */ }
-            if( lua_toboolean(L,1) ){ timeRes = lua_tonumber(L,2); }
+        lua_settop(L,0); lua_getglobal(L,"_getSimulationConfigurationOption"); lua_pushstring(L,"simThreads");
+        if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Use deafult value */ }
+        if( lua_toboolean(L,1) ){ threads = lua_tonumber(L,2); }
 
-            lua_settop(L,0); lua_getglobal(L,"_getSimulationConfigurationOption"); lua_pushstring(L,"stepPrecision");
-            if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Using deafult value */ }
-            if( lua_toboolean(L,1) ){ macroRes = 1/lua_tonumber(L,2); }
-
-            lua_settop(L,0); lua_getglobal(L,"_getSimulationConfigurationOption"); lua_pushstring(L,"simThreads");
-            if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Use deafult value */ }
-            if( lua_toboolean(L,1) ){ threads = lua_tonumber(L,2); }
-
-            control->setEnvironmentVariables(mapImage, threads, timeRes, macroRes, agentAmount, parsedFilePath);
-        } else
-        {
-            std::cout << "Cannot generate Environment: No valid path to agent" << std::endl;
-        }
-    } else
-    {
-        std::cout << "No map has been loaded, please do that..." << std::endl;
+        control->setEnvironmentVariables(mapImage, threads, timeRes, macroRes, agentAmount, parsedFilePath);
+    }else{
+        std::cout << "Cannot generate Environment: No valid path to agent" << std::endl;
     }
-    initializeTimer->start(400);
+    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
 }
 
 void Cli::runSimulation()
 {
+    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     if(isSimulationRunning()){
+        std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
         control->stopSimulation();
+        std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     }
     else
     {
+        std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
         lua_State * L = control->getControlLuaState();
+        std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
 
         lua_settop(L,0); lua_getglobal(L,"_getSimulationConfigurationOption"); lua_pushstring(L,"runTime");
         if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Using deafult value */ }
         if( lua_toboolean(L,1) ){ control->startSimulation(lua_tonumber(L,2)); }else{ control->startSimulation(100); }
+        std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     }
+    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
 }
 
 bool Cli::isSimulationRunning(){

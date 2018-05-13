@@ -57,28 +57,29 @@ int main(int argc, char **argv)
 
         qDebug() << Phys::getMersenneInteger(1, RAND_MAX) << Phys::getMersenneInteger(1, RAND_MAX) << Phys::getMersenneFloat(1, RAND_MAX) <<Phys::getMersenneInteger(1, RAND_MAX) ;
 
-        QApplication a(argc, argv);
-
         Cli *c = nullptr;
 
         if(p->startProgram())
         {
             if(p->startGui()){
+                QApplication a(argc, argv);
                 std::cout << "Start with gui" << std::endl;
                 MainWindow *w = new MainWindow();
                 Output::Inst()->setMainWindow(w);
                 w->show();
+                return a.exec();
             }else{
                 std::cout << "Start without gui - " << p->getFile() << std::endl;
 
+                std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
                 Cli *c = new Cli(p->getFile());
-                std::cout << "TEST TEST TEST TEST" << std::endl;
+                std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
                 c->runController();
-                std::cout << "TEST TEST TEST TEST" << std::endl;
+                std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
             }
         }
 
-        return a.exec();
+
 
 
 

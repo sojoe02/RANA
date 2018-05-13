@@ -48,7 +48,11 @@ Control::~Control()
 
 void Control::initialSetup()
 {
-    Output::Inst()->RanaDir = QCoreApplication::applicationDirPath().toUtf8().constData();
+    if(mainwindow != nullptr){
+        Output::Inst()->RanaDir = QCoreApplication::applicationDirPath().toUtf8().constData();
+    }else{
+        Output::Inst()->RanaDir = QDir::currentPath().toUtf8().constData();
+    }
     QString _agentPath = QString::fromUtf8(agentPath.c_str());
     QFileInfo fi(_agentPath);
     Output::AgentFile=fi.fileName().toStdString();
@@ -89,6 +93,8 @@ void Control::initialSetup()
         std::string simLib = Output::Inst()->RanaDir;
         simLib.append("/src/modules/lib_sim_config.lua");
 
+
+
         if( luaL_loadfile(L, simLib.c_str()) || lua_pcall(L,0,0,0) ){
             Output::Inst()->kprintf("\tsim file not found %s", simLib);
         }
@@ -101,8 +107,12 @@ void Control::initialSetup()
             this->rawfile = agentPath.substr(0, lastdot);
         }
     }
-    connect(this, &Control::runSimulationSignal, this, &Control::runSimulation);
-    connect(this, &Control::simulationRunBoptSignal, cli, &Cli::runBoptController);
+
+    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
+    connect(this, &Control::runSimulationSignal, this, &Control::runSimulation, Qt::DirectConnection);
+    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
+    readyRunner();
+    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
 }
 
 void Control::setupLuaSimulation()
@@ -179,11 +189,13 @@ void Control::generateEnvironment()
     if(!running && !generating)
     {
         generating = true;
-        if(populateFuture.isRunning())
-        {
-            Output::Inst()->kprintf("A previous system was being populated, it will be cancelled\n");
-            populateFuture.cancel();
-            populateFuture.waitForFinished();
+        if(mainwindow != nullptr){
+            if(populateFuture.isRunning())
+            {
+                Output::Inst()->kprintf("A previous system was being populated, it will be cancelled\n");
+                populateFuture.cancel();
+                populateFuture.waitForFinished();
+            }
         }
         Output::KillSimulation.store(true);
         readyAgentDomain();
@@ -196,25 +208,31 @@ void Control::generateEnvironment()
 
 void Control::startSimulation(unsigned long long runTime)
 {
+    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     this->runTime = runTime;
+    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << "\t - emit runSimulationSignal" << std::endl;
     emit runSimulationSignal();
+    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << "\t - post runSimulationSignal" << std::endl;
 }
 
 void Control::runSimulation()
 {
-    readyRunner();
+    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     running = true;
+    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     Output::SimRunning.store(true);
     if(mainwindow != nullptr)
     {
         mainwindow->changeRunButton("Stop");
     }
+    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << "\t - emit startDoWork" << std::endl;
     emit startDoWork(agentDomain, runTime);
+    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << "\t - post startDoWork" << std::endl;
 }
 
 void Control::on_simDone()
 {
-    killRunner();
+    //killRunner();
     killAgentDomain();
     killRunthread();
     if(mainwindow != nullptr)
@@ -230,36 +248,34 @@ void Control::on_simDone()
     {
         if(runNewSimulation()){
             //  While the simulation file still runs, keep the same
+            std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
             generateEnvironment();
+            std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << "\t - emit runSimulationSignal" << std::endl;
             emit runSimulationSignal();
+            std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << "\t - post runSimulationSignal" << std::endl;
         }else{
-            if(cli->bopt != nullptr){
-                //  Find a new simulation file to run.
-                //emit simulationRunBoptSignal();
-                std::cout << "Deleting Control" << std::endl;
-            }else{
-                std::cout << "All simulations done" << std::endl;
-                exit(EXIT_SUCCESS);
-            }
+            std::cout << "All simulations done" << std::endl;
         }
     }
 }
 
 void Control::readyRunner()
 {
-    killRunner();
+    runner = nullptr;
     runner = new Runner();
-    runner->moveToThread(&runThread);
-    connect(this, &Control::startDoWork, runner, &Runner::doWork);
+    if(mainwindow != nullptr){
+        runner->moveToThread(&runThread);
+        connect(&runThread, &QThread::finished, runner, &QObject::deleteLater);
+        runThread.start();
+    }
     connect(runner, &Runner::simulationDone, this, &Control::on_simDone);
-    connect(&runThread, &QThread::finished, runner, &QObject::deleteLater);
-    runThread.start();
-
+    connect(this, &Control::startDoWork, runner, &Runner::doWork, Qt::DirectConnection);
 }
 
 void Control::readyAgentDomain()
 {
-    killAgentDomain();
+    //killAgentDomain();
+    agentDomain = nullptr;
     agentDomain = new FlowControl(this);
     /**
         When readying the agent domain, serialize the parameters, the agents should use.
@@ -326,7 +342,10 @@ bool Control::isGenerated()
 
 void Control::saveEvents(QString path)
 {
-    agentDomain->saveExternalEvents(path.toStdString());
+    if(mainwindow != nullptr){
+        agentDomain->saveExternalEvents(path.toStdString());
+    }
+
 }
 
 void Control::toggleLiveView(bool enable)

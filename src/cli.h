@@ -24,9 +24,7 @@
 
 #include <ctime>
 
-#include <QMainWindow>
-#include <QWidget>
-#include <QGraphicsScene>
+#include <QObject>
 #include <QList>
 #include <map>
 
@@ -49,23 +47,21 @@ class bopthook;
 class PostControl;
 class Control;
 
-class Cli : public QMainWindow
+class Cli: public QObject
 {
     Q_OBJECT
 
 public:
-    explicit Cli(std::string _file, QWidget *parent = nullptr);
+    explicit Cli(std::string _file);
+    ~Cli();
 
     void runController();
+    void runBoptController();
     bool isSimulationRunning();
 
-    ~Cli();
     bopthook *bopt = nullptr;
 
-public slots:
-    void runBoptController();
-
-private slots:
+private:
     void defineMap();
     void generateMap();
     void generateSimulation();
@@ -73,17 +69,12 @@ private slots:
 
 private:
     double factor;
-    QImage *mapImage;
     QGraphicsPixmapItem *mapItem;
+    QImage *mapImage;
     Control *control;
     std::string parsedFilePath;
 
-    QTimer *initializeTimer;
     QTimer *runTimer;
-
-    QThread boptThread;
-
-
 
 };
 
