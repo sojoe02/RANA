@@ -33,8 +33,6 @@
 
 #include "src/parser.h"
 
-#include "bayesopt/bayesopt.hpp"
-
 #include "src/api/tcpserver.h"
 #include "src/api/tcpclient.h"
 
@@ -69,16 +67,8 @@ int main(int argc, char **argv)
                 w->show();
                 return a.exec();
             }else{
-                std::cout << "Start without gui - " << p->getFile() << std::endl;
-
-                std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
-                c = new Cli(p->getFile());
-                c->runController();
-                std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
-                c = new Cli(p->getFile());
-                std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
-                c->runController();
-                std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
+                std::vector<std::string> filePaths;
+                c = new Cli("2.lua", false);
             }
         }
 

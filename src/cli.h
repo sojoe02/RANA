@@ -37,10 +37,6 @@
 
 #include "src/bopthook.h"
 
-#include <boost/numeric/ublas/vector.hpp>
-#include <boost/numeric/ublas/matrix.hpp>
-#include <boost/numeric/ublas/io.hpp>
-
 typedef std::list<agentInfo> INFOLIST;
 
 class bopthook;
@@ -52,7 +48,7 @@ class Cli: public QObject
     Q_OBJECT
 
 public:
-    explicit Cli(std::string _file);
+    Cli(std::string _file, bool flag = true);
     ~Cli();
 
     void runController();

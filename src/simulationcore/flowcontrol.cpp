@@ -170,18 +170,12 @@ void FlowControl::toggleLiveView(bool enable)
 void FlowControl::runSimulation(int _time)
 {
     if(masteragent != nullptr){
-        std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
 
         std::string positionFilePath = Output::Inst()->RanaDir;
         positionFilePath.append("/");
         positionFilePath.append(positionFilename.c_str());
         if(remove(positionFilePath.c_str()) != 0)
         {
-            std::cout << "POSITION FILE: " << positionFilePath << std::endl;
-            std::cout << "POSITION FILE: " << positionFilePath << std::endl;
-            std::cout << "POSITION FILE: " << positionFilePath << std::endl;
-            std::cout << "POSITION FILE: " << positionFilePath << std::endl;
-            std::cout << "POSITION FILE: " << positionFilePath << std::endl;
             Output::Inst()->kprintf("Position file does not exist");
         }
 

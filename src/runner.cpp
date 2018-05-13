@@ -23,30 +23,19 @@
 #include "src/runner.h"
 #include "src/output.h"
 
-Runner::Runner(){
-    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
-    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
-    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
-    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
-    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
-}
+Runner::Runner(){}
 
 void Runner::doWork(FlowControl *agentDomain, unsigned long long runTime)
 {
-    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     if( agentDomain != nullptr ){
         if( runTime != 0 ){
-            std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
             agentDomain->runSimulation(runTime);
-            std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
         } else{
             Output::Inst()->kprintf("No Runtime defined");
         }
     } else{
         Output::Inst()->kprintf("No Agentdomain defined");
     }
-    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << "\t - emit simulationDone" << std::endl;
     emit simulationDone();
-    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << "\t - post simulationDone" << std::endl;
 }
 

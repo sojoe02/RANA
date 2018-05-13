@@ -108,15 +108,13 @@ void Control::initialSetup()
         }
     }
 
-    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     connect(this, &Control::runSimulationSignal, this, &Control::runSimulation, Qt::DirectConnection);
-    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     readyRunner();
-    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
 }
 
 void Control::setupLuaSimulation()
 {
+    std::cout << std::endl << "RUNNING SIMULATION FILE: " << rawfile.c_str() << std::endl;
     lua_settop(L,0);
     lua_getglobal(L,"_getSimulationFile");
     lua_pushstring(L,rawfile.c_str());
@@ -208,35 +206,28 @@ void Control::generateEnvironment()
 
 void Control::startSimulation(unsigned long long runTime)
 {
-    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     this->runTime = runTime;
-    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << "\t - emit runSimulationSignal" << std::endl;
     emit runSimulationSignal();
-    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << "\t - post runSimulationSignal" << std::endl;
 }
 
 void Control::runSimulation()
 {
-    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     running = true;
-    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     Output::SimRunning.store(true);
     if(mainwindow != nullptr)
     {
         mainwindow->changeRunButton("Stop");
     }
-    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << "\t - emit startDoWork" << std::endl;
     emit startDoWork(agentDomain, runTime);
-    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << "\t - post startDoWork" << std::endl;
 }
 
 void Control::on_simDone()
 {
-    //killRunner();
     killAgentDomain();
     killRunthread();
     if(mainwindow != nullptr)
     {
+        killRunner();
         mainwindow->changeRunButton("Run");
         mainwindow->runButtonHide();
     }
@@ -248,11 +239,8 @@ void Control::on_simDone()
     {
         if(runNewSimulation()){
             //  While the simulation file still runs, keep the same
-            std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
             generateEnvironment();
-            std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << "\t - emit runSimulationSignal" << std::endl;
             emit runSimulationSignal();
-            std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << "\t - post runSimulationSignal" << std::endl;
         }else{
             std::cout << "All simulations done" << std::endl;
         }
@@ -274,7 +262,10 @@ void Control::readyRunner()
 
 void Control::readyAgentDomain()
 {
-    //killAgentDomain();
+    if(mainwindow != nullptr)
+    {
+        killAgentDomain();
+    }
     agentDomain = nullptr;
     agentDomain = new FlowControl(this);
     /**

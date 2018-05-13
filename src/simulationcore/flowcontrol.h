@@ -77,7 +77,7 @@ class FlowControl
     private:
         void tcpWaitForDoneMessage();
         void *loop();
-        tcpserver *tcp = NULL;
+        tcpserver *tcp = nullptr;
         bool enableTcpFlag = false;
         bool tcpTestFlag = false;
 

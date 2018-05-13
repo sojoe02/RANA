@@ -23,94 +23,105 @@
 #include <string>
 #include <fstream>
 
-#include <bayesopt/parameters.hpp>
-
 #include "src/cli.h"
 #include "src/output.h"
 #include "src/api/maphandler.h"
 #include "src/api/phys.h"
 #include "src/api/gridmovement.h"
 #include "src/simulationcore/eventqueue.h"
-#include "src/postprocessing/colorutility.h"
+
+#include <bayesopt/parameters.h>
 
 #include "eventdialog.h"
 #include "helpdialog.h"
 
-Cli::Cli(std::string _file) :
+Cli::Cli(std::string _file, bool flag ) :
     factor(1),
-    mapImage(nullptr),
     mapItem(nullptr),
-    control(new Control(this, _file)),
-    //runTimer(new QTimer(this)),
-    parsedFilePath(_file)
+    mapImage(nullptr)
 {
-/*
-    bayesopt::Parameters param = initialize_parameters_to_default();
-    param.n_init_samples = 5;
-    param.n_iterations = 10;
-    param.verbose_level = 0;
-
-    this->bopt = new bopthook(this, 7, param);
-    if(this->bopt != nullptr){
-
-        vectord lb(7), ub(7);
-        lb[0] = 0.5; ub[0] = 1.5;
-        lb[1] = 0.0; ub[1] = 0.5;
-        lb[2] = 0.3; ub[2] = 0.3;
-        lb[3] = 0.0; ub[3] = 0.5;
-        lb[4] = 0.0; ub[4] = 0.1;
-        lb[5] = 0.0; ub[5] = 1.0;
-        lb[6] = 0.0; ub[6] = 0.1;
-
-        bopt->setBoundingBox(lb, ub);
-
-        matrixd initParams = bopt->p1InitializeOptimization();
-        vectord testVec(7);
-
-        for (unsigned i = 0; i < initParams.size1 (); ++ i){
-            testVec(i) = initParams(i,0);
-        }
-
-        std::cout << testVec << std::endl;
-        std::cout << initParams << std::endl;
-
-        runController();
-
+    if(flag){
+        std::cout << "FLAG TRUE" << std::endl;
+        this->control = new Control(this, _file);
+        this->parsedFilePath = _file;
     }else{
-        runController();
+        std::cout << "FLAG FALSE" << std::endl;
+        bayesopt::Parameters param = initialize_parameters_to_default();
+        param.n_init_samples = 2;
+        param.n_iterations = 5;
+
+        size_t numParam = 5;
+
+        vectord lb(numParam), ub(numParam);
+        lb(0) = 0; ub(0) = 1;
+        lb(1) = 0; ub(1) = 1;
+        lb(2) = 0; ub(2) = 1;
+        lb(3) = 0; ub(3) = 1;
+        lb(4) = 0; ub(4) = 1;
+
+        this->bopt = new bopthook(this, numParam, param, 11200);
+        auto initParams = bopt->p1InitializeOptimization();
+        vectord initErrorResults(initParams.size1());
+
+        std::cout << initParams << std::endl;
+        std::cout << initParams.size1() << " " <<initParams.size2() << std::endl;
+
+        for( size_t rows = 0; rows < initParams.size1(); rows++){
+            vectord rowOfParam(initParams.size2());
+            for(size_t cols= 0; cols < initParams.size2(); cols++){
+                rowOfParam.insert_element(cols,initParams(rows, cols));
+            }
+
+            bopt->sentParametersViaTcp(rowOfParam);
+
+            /**
+              Run all simulation sequences here
+            **/
+            bool tmpFlag = true;
+            while(tmpFlag){
+                std::string filePath = bopt->getNextFile();
+                if(filePath != "noMoreFiles"){
+                    /**
+                        Run simulation
+                    **/
+                    std::cout << "Run simulation with - " << filePath << std::endl;
+                    //control = new Control(this, filePath);
+                    //runController();
+                }else{
+                    std::cout << "No more simulations" << std::endl;
+                    bopt->resetFilePathList();
+                    tmpFlag = false;
+                }
+            }
+            double processedError = bopt->messageSimDoneAndGetError("simsDone");
+            initErrorResults.insert_element(rows, processedError);
+        }
+        std::cout << initErrorResults << std::endl;
+        bopt->p2InitializeOptimization(initErrorResults);
+
+        for(int i = 0; i < param.n_iterations; i++){
+            auto stepParams = bopt->preStepOptimization();
+            bopt->sentParametersViaTcp(stepParams);
+            bopt->stepOptimization();
+        }
     }
-*/
-    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
 }
+
 
 Cli::~Cli()
 {
     std::cout << "\tCLI destructor";
 }
 
-void Cli::runBoptController()
-{
-    std::string filepath = bopt->getNextFile();
-
-    this->control = new Control(this, filepath);
-    this->control->setupLuaSimulation();
-    this->generateMap();
-    this->generateSimulation();
-    this->runSimulation();
-}
-
 void Cli::runController()
 {
-    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     this->control->setupLuaSimulation();
-    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     this->generateMap();
-    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     this->generateSimulation();
-    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     this->runSimulation();
-    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
 }
+
+
 
 void Cli::generateMap()
 {
@@ -118,35 +129,25 @@ void Cli::generateMap()
     {
         delete mapImage;
     }
-std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     lua_State * L = control->getControlLuaState();
-std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     int width = 100;
     int height = 100;
-std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     lua_settop(L,0); lua_getglobal(L,"_getSimulationConfigurationOption"); lua_pushstring(L,"mapWidth");
     if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Using deafult value */ }
     if( lua_toboolean(L,1) ){ width = lua_tonumber(L,2); }
-std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     lua_settop(L,0); lua_getglobal(L,"_getSimulationConfigurationOption"); lua_pushstring(L,"mapHeight");
     if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Use deafult value */ }
     if( lua_toboolean(L,1) ){ height = lua_tonumber(L,2); }
-std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     mapImage = new QImage(width,height,QImage::Format_RGB32);
     mapImage->fill(Qt::GlobalColor::black);
-std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     this->defineMap();
 }
 
 void Cli::defineMap()
 {
-std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     //mapItem = new QGraphicsPixmapItem(QPixmap::fromImage(*mapImage));
-std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     MapHandler::setImage(mapImage);
-std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     Phys::setEnvironment(mapImage->width(),mapImage->height());
-std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
 }
 
 void Cli::generateSimulation()
@@ -186,29 +187,21 @@ void Cli::generateSimulation()
     }else{
         std::cout << "Cannot generate Environment: No valid path to agent" << std::endl;
     }
-    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
 }
 
 void Cli::runSimulation()
 {
-    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     if(isSimulationRunning()){
-        std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
         control->stopSimulation();
-        std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     }
     else
     {
-        std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
         lua_State * L = control->getControlLuaState();
-        std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
 
         lua_settop(L,0); lua_getglobal(L,"_getSimulationConfigurationOption"); lua_pushstring(L,"runTime");
         if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Using deafult value */ }
         if( lua_toboolean(L,1) ){ control->startSimulation(lua_tonumber(L,2)); }else{ control->startSimulation(100); }
-        std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
     }
-    std::cout << __PRETTY_FUNCTION__ << "\t" << __LINE__ << std::endl;
 }
 
 bool Cli::isSimulationRunning(){
