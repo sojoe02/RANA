@@ -114,7 +114,7 @@ void Control::initialSetup()
 
 void Control::setupLuaSimulation()
 {
-    std::cout << std::endl << "RUNNING SIMULATION FILE: " << rawfile.c_str() << std::endl;
+    std::cout << "RUNNING SIMULATION FILE: " << rawfile.c_str() << std::endl;
     lua_settop(L,0);
     lua_getglobal(L,"_getSimulationFile");
     lua_pushstring(L,rawfile.c_str());

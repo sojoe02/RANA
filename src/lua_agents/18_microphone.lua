@@ -48,8 +48,7 @@ function initializeAgent()
             PositionY = 3+50
         end
 
-        --print("Microphone agent #: " .. ID .. " is being initialized")
-        --print(PositionX.." "..PositionY)
+        print("Microphone agent #: " .. ID .. " is being initialized at: "..PositionX.." "..PositionY)
 
 end
 
@@ -74,10 +73,10 @@ function cleanUp()
         x = Shared.getNumber(8)
 
         --Write the oscillation data to a csv file.
-        --file = io.open("test/test_11_"..Shared.getNumber(20).."_"..Shared.getNumber(19).."/mic/"..ID.."_"..exNum.."_"..T.."_"..e.."_"..r.."_"..y.."_"..s.."_"..t.."_"..x..".csv", "w")
-        --for i,v in pairs(evTable) do
-        --        file:write(i..","..v.."\n")
-        --end
+        file = io.open("test/bopt/"..Shared.getNumber(20).."_"..Shared.getNumber(19).."/mic/"..ID.."/"..exNum.."_"..T.."_"..e.."_"..r.."_"..y.."_"..s.."_"..t.."_"..x..".csv", "w")
+        for i,v in pairs(evTable) do
+                file:write(i..","..v.."\n")
+        end
         --file:close()
 
 end

@@ -1,7 +1,8 @@
 #ifndef BOPTHOOK_H
 #define BOPTHOOK_H
 
-#include <bayesopt/bayesopt.hpp>
+#include <bayesopt/include/bopt_state.hpp>
+#include <bayesopt/include/bayesopt/bayesopt.hpp>
 #include "src/cli.h"
 #include "src/api/tcpserver.h"
 
@@ -11,13 +12,13 @@
 #include <string.h>
 
 class Cli;
+class BOptState;
 class bopthook: public QObject, public bayesopt::ContinuousModel
 {
     Q_OBJECT
 public:
     bopthook(Cli *_cli, size_t dim, bayesopt::Parameters _param, int _portnumber);
 
-    double testFunction(const double *x);
     double evaluateSample( const vectord &Xi );
 
     bool checkReachability( const vectord &query ){ return true; }
@@ -27,6 +28,8 @@ public:
 
     void sentParametersViaTcp(vectord rowOfParam);
     double messageSimDoneAndGetError(std::string);
+    void sentMessageViaTcp(std::string);
+    void saveCurrentState();
 
 private:
     void setFilePathAttribute();
@@ -36,6 +39,8 @@ private:
     size_t totalNumFiles;
 
     Cli *cli = nullptr;
+
+    bayesopt::BOptState state;
 
     tcpserver *tcp = nullptr;
     void tcpWaitForDoneMessage();

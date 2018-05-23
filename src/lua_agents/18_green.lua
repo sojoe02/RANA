@@ -70,12 +70,12 @@ Shared  = require "ranalib_shared"
 -- Init of the lua frog, function called upon initilization of the LUA auton.
 function initializeAgent()
 
-        --print("Green agent #: " .. ID .. " is being initialized")
+        print("Green agent #: " .. ID .. " is being initialized")
 
         if ID == 5 then
             PositionX = Shared.getNumber(9)+50
             PositionY = Shared.getNumber(10)+50
-            --print(Shared.getNumber(1).." "..Shared.getNumber(2).." "..Shared.getNumber(3).." "..Shared.getNumber(4).." "..Shared.getNumber(5).." "..Shared.getNumber(6).." "..Shared.getNumber(7).." "..Shared.getNumber(8))
+            print(Shared.getNumber(1).." "..Shared.getNumber(2).." "..Shared.getNumber(3).." "..Shared.getNumber(4).." "..Shared.getNumber(5).." "..Shared.getNumber(6).." "..Shared.getNumber(7).." "..Shared.getNumber(8))
         elseif ID == 6 then
             PositionX = Shared.getNumber(11)+50
             PositionY = Shared.getNumber(12)+50
@@ -152,11 +152,11 @@ end
 function cleanUp()
 
 	--Write the oscillation data to a csv file.
-        --file = io.open("test/test_11_"..Shared.getNumber(20).."_"..Shared.getNumber(19).."/green/"..ID.."_"..exNum.."_"..T.."_"..e.."_"..r.."_"..y.."_"..s.."_"..t.."_"..x..".csv", "w")
-        --for i,v in pairs(Olevels) do
-        --        file:write(i..","..v.."\n")
-        --end
-        --file:close()
+        file = io.open("test/bopt/"..Shared.getNumber(20).."_"..Shared.getNumber(19).."/green/"..ID.."_"..exNum.."_"..T.."_"..e.."_"..r.."_"..y.."_"..s.."_"..t.."_"..x..".csv", "w")
+        for i,v in pairs(Olevels) do
+                file:write(i..","..v.."\n")
+        end
+        file:close()
 
 end
 

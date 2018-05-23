@@ -41,68 +41,99 @@ Cli::Cli(std::string _file, bool flag ) :
     mapImage(nullptr)
 {
     if(flag){
-        std::cout << "FLAG TRUE" << std::endl;
+        std::cout << "FLAG TRUE" << std::endl << std::endl;
         this->control = new Control(this, _file);
         this->parsedFilePath = _file;
     }else{
-        std::cout << "FLAG FALSE" << std::endl;
+        std::cout << "FLAG FALSE" << std::endl << std::endl;
         bayesopt::Parameters param = initialize_parameters_to_default();
-        param.n_init_samples = 2;
-        param.n_iterations = 5;
+        param.n_init_samples = 10;
+        param.n_iterations = 1000;
 
-        size_t numParam = 5;
+        size_t numParam = 7;
 
         vectord lb(numParam), ub(numParam);
-        lb(0) = 0; ub(0) = 1;
-        lb(1) = 0; ub(1) = 1;
-        lb(2) = 0; ub(2) = 1;
-        lb(3) = 0; ub(3) = 1;
-        lb(4) = 0; ub(4) = 1;
+        lb(0) = 0.50; ub(0) = 2.00; //  -   p2
+        lb(1) = 0.01; ub(1) = 0.10; //  -   p3
+        lb(2) = 0.00; ub(2) = 0.35; //  -   p4
+        lb(3) = 0.00; ub(3) = 0.10; //  -   p5
+        lb(4) = 0.00; ub(4) = 1.00; //  -   p6
+        lb(5) = 0.00; ub(5) = 0.10; //  -   p7
+        lb(6) = 0.00; ub(6) = 0.10; //  -   p8
 
         this->bopt = new bopthook(this, numParam, param, 11200);
-        auto initParams = bopt->p1InitializeOptimization();
-        vectord initErrorResults(initParams.size1());
+        this->bopt->setBoundingBox(lb, ub);
 
-        std::cout << initParams << std::endl;
-        std::cout << initParams.size1() << " " <<initParams.size2() << std::endl;
+        bool restoreState = true;
+        if( !restoreState ){
 
-        for( size_t rows = 0; rows < initParams.size1(); rows++){
-            vectord rowOfParam(initParams.size2());
-            for(size_t cols= 0; cols < initParams.size2(); cols++){
-                rowOfParam.insert_element(cols,initParams(rows, cols));
-            }
+            auto initParams = bopt->p1InitializeOptimization();
+            vectord initErrorResults(initParams.size1());
 
-            bopt->sentParametersViaTcp(rowOfParam);
+            std::cout << initParams << std::endl;
+            std::cout << initParams.size1() << " " <<initParams.size2() << std::endl << std::endl;
 
             /**
-              Run all simulation sequences here
+              Run the initial bayesOpt sampling
             **/
-            bool tmpFlag = true;
-            while(tmpFlag){
-                std::string filePath = bopt->getNextFile();
-                if(filePath != "noMoreFiles"){
-                    /**
-                        Run simulation
-                    **/
-                    std::cout << "Run simulation with - " << filePath << std::endl;
-                    //control = new Control(this, filePath);
-                    //runController();
-                }else{
-                    std::cout << "No more simulations" << std::endl;
-                    bopt->resetFilePathList();
-                    tmpFlag = false;
+            for( size_t rows = 0; rows < initParams.size1(); rows++){
+                vectord rowOfParam(initParams.size2());
+                for(size_t cols= 0; cols < initParams.size2(); cols++){
+                    rowOfParam.insert_element(cols,initParams(rows, cols));
                 }
-            }
-            double processedError = bopt->messageSimDoneAndGetError("simsDone");
-            initErrorResults.insert_element(rows, processedError);
-        }
-        std::cout << initErrorResults << std::endl;
-        bopt->p2InitializeOptimization(initErrorResults);
 
-        for(int i = 0; i < param.n_iterations; i++){
-            auto stepParams = bopt->preStepOptimization();
-            bopt->sentParametersViaTcp(stepParams);
+                bopt->sentParametersViaTcp(rowOfParam);
+                /**
+                  Run all simulation sequences here
+                **/
+                bool tmpFlag = true;
+                while(tmpFlag){
+                    std::string filePath = bopt->getNextFile();
+                    if(filePath != "noMoreFiles"){
+                        /**
+                            Run simulation
+                        **/
+                        std::cout <<"Run simulation with - " << filePath<< std::endl;
+                        boptRunController(filePath);
+                    }else{
+                        std::cout << "No more simulations" << std::endl << std::endl;
+                        bopt->resetFilePathList();
+                        tmpFlag = false;
+                    }
+                }
+
+                double processedError = bopt->messageSimDoneAndGetError("simsDone\n");
+                initErrorResults.insert_element(rows, processedError);
+
+                std::string doneMsg = "notDone\n";
+                bopt->sentMessageViaTcp(doneMsg);
+            }
+            std::cout << "Results from initial sampling:" << std::endl;
+            std::cout << initErrorResults << std::endl << std::endl;
+            bopt->p2InitializeOptimization(initErrorResults);
+
+        }else{
+            bayesopt::BOptState state;
+            state.loadFromFile("state_4_agent.dat", param);
+            this->bopt->restoreOptimization(state);
+        }
+
+        /**
+          Run the actual bayesOpt
+        **/
+        std::cout << "TEST: param.n_iterations" << param.n_iterations << std::endl;
+        for(int i = bopt->getCurrentIter(); i < param.n_iterations; i++){
             bopt->stepOptimization();
+            std::cout << std::endl;
+
+            std::string doneMsg;
+            if (i == param.n_iterations-1){
+                doneMsg = "allDone\n";
+            }else{
+                doneMsg = "notDone\n";
+            }
+            bopt->sentMessageViaTcp(doneMsg);
+            bopt->saveCurrentState();
         }
     }
 }
@@ -113,6 +144,13 @@ Cli::~Cli()
     std::cout << "\tCLI destructor";
 }
 
+void Cli::boptRunController(std::string fPath)
+{
+    this->control = new Control(this, fPath);
+    this->parsedFilePath = fPath;
+    this->runController();
+}
+
 void Cli::runController()
 {
     this->control->setupLuaSimulation();
@@ -120,8 +158,6 @@ void Cli::runController()
     this->generateSimulation();
     this->runSimulation();
 }
-
-
 
 void Cli::generateMap()
 {
@@ -152,7 +188,6 @@ void Cli::defineMap()
 
 void Cli::generateSimulation()
 {
-
     qApp->processEvents();
     GridMovement::clearGrid();
 

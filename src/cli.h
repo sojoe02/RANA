@@ -52,7 +52,7 @@ public:
     ~Cli();
 
     void runController();
-    void runBoptController();
+    void boptRunController(std::string);
     bool isSimulationRunning();
 
     bopthook *bopt = nullptr;
