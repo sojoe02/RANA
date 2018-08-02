@@ -112,9 +112,9 @@ void Cli::generateSimulation()
         lua_State * L = control->getControlLuaState();
 
         lua_settop(L,0); lua_getglobal(L,"_getSimulationConfigurationOption"); lua_pushstring(L,"mapScale");
-        if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Use deafult value */ }
-        if( lua_toboolean(L,1) ){ Phys::setScale(lua_tonumber(L,2)); }else{ Phys::setScale(1); }
-
+        if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Use deafult value */ 
+	        if( lua_toboolean(L,1) ){ Phys::setScale(lua_tonumber(L,2)); }else{ Phys::setScale(1); }
+	}
         if(!parsedFilePath.empty())
         {
             int agentAmount = 1;
@@ -125,16 +125,18 @@ void Cli::generateSimulation()
             macroRes = (1/timeRes)/macroRes;
 
             lua_settop(L,0); lua_getglobal(L,"_getSimulationConfigurationOption"); lua_pushstring(L,"eDistPrecision");
-            if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Use deafult value */ }
-            if( lua_toboolean(L,1) ){ timeRes = lua_tonumber(L,2); }
-
+            if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Use deafult value */ 
+            	if( lua_toboolean(L,1) ){ timeRes = lua_tonumber(L,2); }
+	    }
             lua_settop(L,0); lua_getglobal(L,"_getSimulationConfigurationOption"); lua_pushstring(L,"stepPrecision");
-            if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Using deafult value */ }
-            if( lua_toboolean(L,1) ){ macroRes = 1/lua_tonumber(L,2); }
+            if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Using deafult value */ 
+            	if( lua_toboolean(L,1) ){ macroRes = 1/lua_tonumber(L,2); }
+	    }
 
             lua_settop(L,0); lua_getglobal(L,"_getSimulationConfigurationOption"); lua_pushstring(L,"simThreads");
-            if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Use deafult value */ }
-            if( lua_toboolean(L,1) ){ threads = lua_tonumber(L,2); }
+            if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Use deafult value */ 
+            	if( lua_toboolean(L,1) ){ threads = lua_tonumber(L,2); }
+	    }
 
             control->setEnvironmentVariables(mapImage, threads, timeRes, macroRes, agentAmount, parsedFilePath);
         } else
@@ -158,8 +160,9 @@ void Cli::runSimulation()
         lua_State * L = control->getControlLuaState();
 
         lua_settop(L,0); lua_getglobal(L,"_getSimulationConfigurationOption"); lua_pushstring(L,"runTime");
-        if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Using deafult value */ }
-        if( lua_toboolean(L,1) ){ control->startSimulation(lua_tonumber(L,2)); }else{ control->startSimulation(100); }
+        if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Using deafult value */ 
+        	if( lua_toboolean(L,1) ){ control->startSimulation(lua_tonumber(L,2)); }
+	} else{ control->startSimulation(100); }
     }
 }
 
