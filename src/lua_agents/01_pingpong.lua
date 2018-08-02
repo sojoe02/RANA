@@ -64,8 +64,10 @@ function _InitializeAgent()
         Moving = true
         Speed = 1
 
-        print("My ID, and Group numbers:")
-        groups = Agent.getMemberOfGroups(ID)
+--        print("My ID, and Group numbers:")
+--        groups = Agent.getMemberOfGroups(ID)
+	  var = Shared.getNumber(1)
+	  print("GetNumber: "..var.." "..Shared.getNumber(2))
 end
 
 function HandleEvent(event)
@@ -74,7 +76,7 @@ function HandleEvent(event)
 
 	if event.description == "ping" then
                         say("Agent: "..ID .." received a ping from: "..event.ID .." at ".. t .. " , saying: "..event.table.msg)
-                        Event.emit{speed=343,targetID=event.ID, description="pong"}
+                        Event.emit{speed=0,targetID=event.ID, description="pong"}
 
 	elseif event.description == "pong" then
                         --say("Agent: "..ID.." received a pong from agent: ".. event.ID)
@@ -118,7 +120,7 @@ end
 
 function cleanUp()
         --l_debug("Agent #: " .. ID .. " is done\n")
-
+	file = "EXPLORER_"..ID.."_"..Shared.getNumber(1).."_"..Shared.getNumber(2)
 end
 
 function fibonacci(n)

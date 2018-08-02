@@ -36,8 +36,8 @@ parser* parser::getInstance()
 
 void parser::parseInputArgs(int argc, char **argv)
 {
-    struct arg_int *thread  = arg_int0("t","thread",NULL,"number of threads (default is 1)");
-    struct arg_file *path   = arg_filen(NULL,NULL,NULL,1,argc+2,NULL);
+    struct arg_int  *thread  = arg_int0("t","thread",NULL,"number of threads (default is 1)");
+    struct arg_str  *path   = arg_str0("f","file",NULL,"path to sim configfile");
     struct arg_lit  *nogui  = arg_lit0(NULL,"nogui","starts rana with cli");
     struct arg_lit  *verbose= arg_lit0("v","verbose,debug",            "verbose messages");
     struct arg_lit  *help   = arg_lit0(NULL,"help","print this help and exit");
@@ -64,14 +64,14 @@ void parser::parseInputArgs(int argc, char **argv)
     }
 
     _thread = thread->count;
-    _path = *path->filename;
+    _path = *path->sval;
+    std::cout << "path: " << _path << std::endl;
     _nogui = nogui->count;
 
     if(ip->count > 0 && port->count > 0){
         _enableTcpConnectionFlag = true;
         _ipadd = ip->sval[0];
         _port = port->ival[0];
-        std::cout << _ipadd << " asdf " << _port << std::endl; //TODO: Remove
     }
 
     _verbose = verbose->count;
