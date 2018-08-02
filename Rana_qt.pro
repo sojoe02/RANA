@@ -217,7 +217,11 @@ DISTFILES += \
     src/modules/test/test2_8254_green_4.lua \
     src/modules/test/test2_8254_green_5.lua \
     src/modules/lib_sim_config.lua \
-    src/lua_agents/test_2_master.lua \
-    src/lua_agents/test_1_master.lua \
-    src/lua_agents/test_3_master.lua \
-    src/lua_agents/test_4_master.lua
+    src/modules/lib_energy.lua \
+    src/modules/lib_move.lua \
+    src/modules/lib_msg.lua \
+    src/modules/lib_torus.lua \
+    src/lua_agents/base.lua \
+    src/lua_agents/explorer.lua \
+    src/lua_agents/master.lua \
+    src/lua_agents/transporter.lua

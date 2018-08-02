@@ -183,121 +183,134 @@ void FlowControl::runSimulation(int _time)
         stop = false;
         Output::Inst()->kprintf("Running Simulation of: %i[s], with resolution of %f",_time, timeResolution);
         Output::RunSimulation = true;
-        unsigned long long iterations = (double)_time/timeResolution;
 
-        auto start = steady_clock::now();
         auto start2 = steady_clock::now();
-        auto start3 = steady_clock::now();
-        auto end = steady_clock::now();
-        //unsigned long long run_time = 0;
-        cMacroStep = 0;
-        cMicroStep = ULLONG_MAX;
 
-        unsigned long long i = 0;//, j = 0;
+        for(int ggg = 1; ggg < 50; ggg++){
 
-    /*
-        double previousVal = -1;
-        std::ofstream myfile;
-        myfile.open ("/home/theis/test23", std::ios::app);
-        int gggasdf = 30;
-        myfile << -1 << "\n";
-    */
+            std::string fpath ("/home/theis/test_");
+            std::string middle = std::to_string(ggg);
+            std::string end (".csv");
 
-        for(i = 0; i < iterations;)
-        {
-            if(Output::KillSimulation.load() == true)
-            {
-                return;
-            }
+            std::string file = fpath + middle + end;
 
-            Phys::setCTime(i);
+            std::ofstream myfile;
+            myfile.open (file, std::ios::app);
 
+            std::cout << "Use file: " << file << std::endl;
 
-            if(i == cMicroStep && cMicroStep != ULLONG_MAX)
-            {
-                masteragent->microStep(i);
-                //Output::Inst()->kprintf("i is now %lld", i);
-            }
-            if(i == cMacroStep)
-            {
-                masteragent->macroStep(i);
-                cMacroStep += macroFactor;
-                int delay = Output::DelayValue.load();
-                if(delay != 0)
+            int tickSkipVal = ggg*10;
+
+            for(int ttt = 0; ttt < 100; ttt++){
+                std::cout << "Running TCP iteration: " << ttt << std::endl;
+                unsigned long long iterations = (double)_time/timeResolution;
+
+                auto start = steady_clock::now();
+                auto start3 = steady_clock::now();
+                auto end = steady_clock::now();
+                //unsigned long long run_time = 0;
+                cMacroStep = 0;
+                cMicroStep = ULLONG_MAX;
+
+                unsigned long long i = 0;//, j = 0;
+
+                double previousVal = -1;
+
+                myfile << -1 << "\n";
+
+                for(i = 0; i < iterations;)
                 {
-                    std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+                    if(Output::KillSimulation.load() == true)
+                    {
+                        return;
+                    }
+
+                    Phys::setCTime(i);
+
+
+                    if(i == cMicroStep && cMicroStep != ULLONG_MAX)
+                    {
+                        masteragent->microStep(i);
+                        //Output::Inst()->kprintf("i is now %lld", i);
+                    }
+                    if(i == cMacroStep)
+                    {
+                        masteragent->macroStep(i);
+                        cMacroStep += macroFactor;
+                        int delay = Output::DelayValue.load();
+                        if(delay != 0)
+                        {
+                            std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+                        }
+                        if(cMacroStep % (int)Phys::getMacroFactor() == 0)
+                        {
+                            retrievePopPos();
+                        }
+                    }
+
+                    i = cMacroStep;
+                    cMicroStep = masteragent->getNextMicroTmu();
+
+                    if( i > cMicroStep)
+                    {
+                        i = cMicroStep;
+                    }
+
+                    //		//Update the status and progress bar screens:
+                    end = steady_clock::now();
+
+                    if(duration_cast<milliseconds>(end-start).count() > 100)
+                    {
+
+                        masteragent->printStatus();
+
+                        Output::Inst()->progressBar(cMacroStep,iterations);
+
+                        //int delay = Output::DelayValue.load();
+                        //std::this_thread::sleep_for(std::chrono::milliseconds(5));
+                        //if(delay != 0)
+                        //fetchPositions.store(true);
+                        //if(fetchPositions.load())
+                        //{
+                        //   retrievePopPos();
+                        //}
+
+                        start = end;
+
+                    }
+
+                    if(stop.load() == true || Output::RunSimulation==false)
+                    {
+                        Output::Inst()->kprintf("Stopping simulator at microstep %llu \n", i);
+                        break;
+                    }
+
+                    if((i/1000)%tickSkipVal == 0){
+                        if( Shared::getNumber("hello") != -1 && Shared::getNumber("hello") != previousVal){
+                            previousVal = Shared::getNumber("hello");
+                            double timeDelayDiff = i/double(1000000)-previousVal;
+                            myfile << timeDelayDiff << ",\n";
+                            //std::cout << i/double(1000000) << "\t" << previousVal << "\t" << i/double(1000000)-previousVal << std::endl;
+                        }
+
+                        if(this->enableTcpFlag)    //Only wrong if TCP server is used
+                        {
+                            tcpWaitForDoneMessage();
+                        }
+                    }
                 }
-                if(cMacroStep % (int)Phys::getMacroFactor() == 0)
-                {
-                    retrievePopPos();
-                }
-            }
+                /*Used for timing how long simulations take.*/
 
-            i = cMacroStep;
-            cMicroStep = masteragent->getNextMicroTmu();
+                auto end3 = steady_clock::now();
+                auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end3 - start3);
+                std::cout << "Simulation run took:\t" << elapsed.count()/double(1000000) << std::endl;
+                myfile << elapsed.count()/double(1000000) << ",\n";
 
-            if( i > cMicroStep)
-            {
-                i = cMicroStep;
-            }
-
-            //		//Update the status and progress bar screens:
-            end = steady_clock::now();
-
-            if(duration_cast<milliseconds>(end-start).count() > 100)
-            {
-
-                masteragent->printStatus();
-
-                Output::Inst()->progressBar(cMacroStep,iterations);
-
-                //int delay = Output::DelayValue.load();
-                //std::this_thread::sleep_for(std::chrono::milliseconds(5));
-                //if(delay != 0)
-                //fetchPositions.store(true);
-                //if(fetchPositions.load())
-                //{
-                //   retrievePopPos();
-                //}
-
-                start = end;
 
             }
 
-            if(stop.load() == true || Output::RunSimulation==false)
-            {
-                Output::Inst()->kprintf("Stopping simulator at microstep %llu \n", i);
-                break;
-            }
-    /*
-            if((i/1000)%gggasdf == 0){
-                if( Shared::getNumber("hello") != -1 && Shared::getNumber("hello") != previousVal){
-                    previousVal = Shared::getNumber("hello");
-                    double timeDelayDiff = i/double(1000000)-previousVal;
-                    myfile << timeDelayDiff << "\n";
-                    //std::cout << i/double(1000000) << "\t" << previousVal << "\t" << i/double(1000000)-previousVal << std::endl;
-                }
-            }
-    */
-            if(this->enableTcpFlag)    //Only wrong if TCP server is used
-            {
-                tcpWaitForDoneMessage();
-            }
+            myfile.close();
         }
-        /*Used for timing how long simulations take.*/
-    /*
-        auto end3 = steady_clock::now();
-        auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end3 - start3);
-        std::cout << "Simulation run took:\t" << elapsed.count()/double(1000000) << std::endl;
-        myfile << elapsed.count()/double(1000000) << "\n";
-        myfile.close();
-    */
-        /*
-        std::ofstream myfile;
-        myfile.open ("/home/theis/test9", std::ios::app);
-        myfile << elapsed.count()/double(1000000) << "\n";
-        myfile.close();
-        */
 
         retrievePopPos();
         masteragent->simDone();

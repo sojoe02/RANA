@@ -34,8 +34,7 @@ end
 --modifies a positions color on the map. with a new RGB value
 function RanaLibMap.modifyColor(x, y, color)
 
-	l_modifyMap(x,y, color[1],color[2],color[3])
-
+        l_modifyMap(x,y, color[1],color[2],color[3])
 	--say(color[2])
 
 end

@@ -25,7 +25,14 @@ function ranaLibAgent.addAgent(filename, posX, posY, groupID)
                     groupID = "false"
                 end
 
-                local ID = l_addAgent(posX, posY, 0, path, filename, groupID)
+                local f=io.open(path..filename,"r")
+                if f~=nil then
+                    local ID = l_addAgent(posX, posY, 0, path, filename, groupID)
+                else
+                    path = "src/lua_agents/"
+                    local ID = l_addAgent(posX, posY, 0, path, filename, groupID)
+                end
+
                 return ID
         else
                 return -1

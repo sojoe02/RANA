@@ -46,7 +46,7 @@ function _CleanUp()
         elseif cleanUp ~= nil then
                 cleanUp()
         else
-                say("Agent #: "..ID.." is done")
+                --say("Agent #: "..ID.." is done")
         end
 end
 

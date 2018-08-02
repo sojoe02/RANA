@@ -47,53 +47,26 @@ Event = require "ranalib_event"
 Shared = require "ranalib_shared"
 Stat = require "ranalib_statistic"
 Move = require "ranalib_movement"
+Core = require "ranalib_core"
 
 n = 1
 t = 1
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
 function _InitializeAgent()
-        say("Agent #: " .. ID .. " has been initialized")
-
-        if ID == 2 then
-                PositionX = 20
-                PositionY = 20
-	end
-        if ID == 3 then
-                PositionX = 60
-                PositionY = 20
-        end
-        if ID == 4 then
-                PositionX = 60
-                PositionY = 20
-        end
-        if ID == 5 then
-                PositionX = 60
-                PositionY = 60
-        end
 end
 
-function HandleEvent(event)
 
-	fibonacci_tail(2000)
-
-	if event.description == "ping" then
-                        --say("Agent: "..ID .." received a ping from: "..event.ID .." at ".. t .. " , saying: "..event.table.msg)
-                        Event.emit{speed=343,targetID=event.ID, description="pong"}
-
-	elseif event.description == "pong" then
-                        --say("Agent: "..ID.." received a pong from agent: ".. event.ID)
-	end
-
-end
 
 function takeStep()
 
 	if Stat.randomInteger(1,1/STEP_RESOLUTION) <= 1 then
                 --say("Agent:"..ID.." is emiting ping")
-                Event.emit{speed=343,description="ping",targetGroup=groups,table={msg="Sent at "..t}}
+                --Event.emit{speed=343,description="ping",targetGroup=groups,table={msg="Sent at "..t}}
                 --Event.emit{speed=0,description="ping",targetGroup=groups,table={msg="Sent at "..t}}
-	end
+
+                Shared.storeNumber("hello",Core.time())
+        end
 
         t = t + 1
 

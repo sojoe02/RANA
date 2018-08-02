@@ -36,7 +36,7 @@ parser* parser::getInstance()
 
 void parser::parseInputArgs(int argc, char **argv)
 {
-    struct arg_int *thread  = arg_int0("t","thread",NULL,"number of threads (default is 1)");
+    struct arg_int  *thread  = arg_int0("t","thread",NULL,"number of threads (default is 1)");
     struct arg_file *path   = arg_filen(NULL,NULL,NULL,1,argc+2,NULL);
     struct arg_lit  *nogui  = arg_lit0(NULL,"nogui","starts rana with cli");
     struct arg_lit  *verbose= arg_lit0("v","verbose,debug",            "verbose messages");

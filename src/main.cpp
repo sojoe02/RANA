@@ -68,15 +68,9 @@ int main(int argc, char **argv)
                 return a.exec();
             }else{
                 std::vector<std::string> filePaths;
-                c = new Cli("2.lua", false);
+                c = new Cli(p->getFile(), true);
             }
         }
-
-
-
-
-
-
 
 }
 

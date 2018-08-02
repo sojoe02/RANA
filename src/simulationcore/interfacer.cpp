@@ -21,12 +21,10 @@ void Interfacer::initInterfacer(Supervisor *arg_master)
 
 int Interfacer::addLuaAgent(double x, double y, double z, std::string path, std::string filename, std::string groupID)
 {
-    std::lock_guard<std::mutex> guard(agentMutex);
+    //std::lock_guard<std::mutex> guard(agentMutex);
     std::shared_ptr<AgentLuaInterface> luaPtr = master->addAgent(x, y, z, path, filename, groupID);
-
     addLuaAgentPtr(luaPtr);
     //Output::Inst()->addGraphicAgent(id,x,y);
-
     return luaPtr->getID();
 }
 

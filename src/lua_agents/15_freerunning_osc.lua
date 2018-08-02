@@ -1,7 +1,7 @@
 ----begin_license--
 --
 --Copyright 	2013 	Søren Vissing Jørgensen.
---			2014	Søren Vissing Jørgensen, Center for Bio-Robotics, SDU, MMMI.  
+--			2014	Søren Vissing Jørgensen, Center for Bio-Robotics, SDU, MMMI.
 --
 --This file is part of RANA.
 --
@@ -21,7 +21,7 @@
 ----end_license--
 
 -- @Description:
--- This agent will oscilate between 0 and 1, with a time period. Upon peaking it will emit an event. 
+-- This agent will oscilate between 0 and 1, with a time period. Upon peaking it will emit an event.
 -- and then rapidly fall down towards zero and restart.
 --
 -- Upon receiving a signal from another oscillator it will, interrupt it's current cycle, reset
@@ -39,7 +39,6 @@
 
 -- data sets
 Olevels = {}
-sim = {}
 step = 0
 iteration = 1
 
@@ -57,55 +56,51 @@ peaked = false
 Event	= require "ranalib_event"
 Core	= require "ranalib_core"
 Stat	= require "ranalib_statistic"
-Agent 	= require "ranalib_agent"
-Utility = require "ranalib_utility"
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
 function initializeAgent()
-        --l_debug("Oscillator agent #: " .. ID .. " is being initialized")
-
-        sim = Utility.loadTable("simulation", "_parameters.data")
-
-        --positionX = Stat.randomMean(ENV_WIDTH/4,ENV_WIDTH/2)
-        --positionY = Stat.randomMean(ENV_HEIGHT/4,ENV_HEIGHT/2)
-        --say("Free "..ID.." x "..positionX.." y "..positionY)
-
-	Tt = T + Stat.randomMean(e,0)
-
+        Tt = T + Stat.randomMean(e,0)
         table.insert(Olevels, Core.time()..",".. 0)
+        l_debug("Oscillator agent #: " .. ID .. " has been initialized")
 end
 
 function takeStep()
+        flag = false
 
-	Tn = Tn + STEP_RESOLUTION
-	step = step 
+        Tn = Tn + STEP_RESOLUTION
+        step = step
 
-	if Tn >= Tt-r and peaked == false then
-		Event.emit{description="Signal"}
-		table.insert(Olevels, Core.time()..",".. 1)
-		peaked = true
-	end
+        if Tn >= Tt-r and peaked == false then
+                Event.emit{description="Signal"}
+                table.insert(Olevels, Core.time()..","..Tn..",".. 1)
+                peaked = true
+                flag = true
+        end
 
-	if Tn >= Tt then 
-		Tt = T + Stat.randomMean(e, 0)
-		Tn = 0
-		table.insert(Olevels, Core.time()..",".. 0)
+        if Tn >= Tt then
+                Tt = T + Stat.randomMean(e, 0)
+                Tn = 0
+                table.insert(Olevels, Core.time()..","..Tn..",".. 0)
 --		l_print("Interrupt Oscillator "..ID.." Emitting signal at time: ".. Core.time().."[s]")
-		peaked = false
-	end
+                peaked = false
+                flag = true
+        end
+
+        if flag == false then
+                table.insert(Olevels, Core.time()..","..Tn..",".. 0)
+        end
 
 end
 
 function cleanUp()
-        --Write the oscillation data to a csv file.
-        if ID <= 4 then --Why?
-                file = io.open("test_output/data_free_5_"..iteration.."_"..ID..".csv", "w")
-                for i,v in pairs(Olevels) do
-                        file:write(i..","..v.."\n")
-                end
-                file:close()
-        end
 
-        Agent.removeAgent(ID)
-        --l_debug("Free - Clean up for Agent " .. ID .. " is done")
+        --Write the oscillation data to a csv file.
+
+        file = io.open("03_data"..ID..".csv", "w")
+        for i,v in pairs(Olevels) do
+                file:write(i..","..v.."\n")
+        end
+        file:close()
+
+        l_debug("Agent #: " .. ID .. " is done\n")
 end

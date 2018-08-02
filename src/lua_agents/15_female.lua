@@ -1,4 +1,4 @@
----begin_license--
+----begin_license--
 --
 --Copyright 	2013 - 2016 	Søren Vissing Jørgensen.
 --
@@ -33,7 +33,7 @@
 -- ------------------------------------
 -- PositionX	 	-- Agents position in the X plane.
 -- PositionY	 	-- Agents position in the Y plane.
--- DestinationX 	-- Agents destination in the X plane. 
+-- DestinationX 	-- Agents destination in the X plane.
 -- DestinationY 	-- Agents destination in the Y plane.
 -- StepMultiple 	-- Amount of steps to skip.
 -- Speed 			-- Movement speed of the agent in meters pr. second.
@@ -48,7 +48,6 @@ Stat	= require "ranalib_statistic"
 Shared 	= require "ranalib_shared"
 Utility = require "ranalib_utility"
 Agent 	= require "ranalib_agent"
-Utility = require "ranalib_utility"
 
 x = 0.060
 beta =  x + 0.030
@@ -58,61 +57,70 @@ total_calls = 0
 synced_calls = 0
 synced = false
 
--- data sets
-sim = {}
-
 function InitializeAgent()
-        sim = Utility.loadTable("simulation", "_parameters.data")
 
-	ids = Shared.getTable("ids")
-	agent_table = Shared.getTable("agents")
+        say("Female initialized")
+        ids = Shared.getTable("ids")
+        agent_table = Shared.getTable("agents")
 
-        Agent.changeColor{r=255,b=255}
+        Agent.changeColor{r=255}
+
 end
 
 -- Init of the lua frog, function called upon initilization of the LUA auton.
 function HandleEvent(event)
-	agent_table[event.ID] = agent_table[event.ID] + 1
+        --say(Utility.serializeTable(event))
+        agent_table[event.ID] = agent_table[event.ID] + 1
 
-	if countdown > 0 then
-		synced_calls = synced_calls + 1
-		if synced == true then 
-			synced_calls = synced_calls + 1
-			synced = false
-		end
-		
-		--countdown = 0
-	else
-		--say(synced_calls)
-		synced_calls = 0
-                --say(event.ID)
-		countdown = beta
-		synced = true
-	end
+        if countdown > 0 then
+                synced_calls = synced_calls + 1
+                if synced == true then
+                        synced_calls = synced_calls + 1
+                        synced = false
+                end
 
-	total_calls = total_calls + 1
+                --countdown = 0
+        else
+                --say(synced_calls)
+                synced_calls = 0
+                say(event.ID)
+                countdown = beta
+                synced = true
+        end
+
+        total_calls = total_calls + 1
+
 end
+
 
 function TakeStep()
-	if countdown >= 0 then
-		countdown = countdown - STEP_RESOLUTION
- 	end
+        if countdown >= 0 then
+                countdown = countdown - STEP_RESOLUTION
+
+        end
 end
 
-function CleanUp()
-        file = io.open("test_output/female/other/data_female_"..sim.expIteration.."_"..sim.simIteration.."_"..ID..".csv", "w")
 
-	for key,value in pairs(ids) do
-            file:write(value ..",".. agent_table[value] .."\n")
-	end
+function CleanUp()
+
+        --Write the oscillation data to a csv file.
+        file = io.open("greenfield_stats.csv", "w")
+
+        say(Utility.serializeTable(agent_table))
+
+        for key,value in pairs(ids) do
+                        file:write(value ..",".. agent_table[value] .."\n")
+        end
+
+        file2 = io.open("/home/sojoe/box_data.csv", "a")
+
+        file2:write(synced_calls .."\n")
+
+
+        say("Total number of calls: ".. total_calls)
+        say("Number of calls within thresshold: ".. synced_calls)
 
         file:close()
+        say("Data Collection is done\n")
 
-        file2 = io.open("test_output/female/box/box_data_"..sim.expIteration.."_"..sim.simIteration.."_"..ID..".csv", "w")
-        file2:write(synced_calls .."\n")
-        file2:close()
-
-        print("Saving to: ".."test_output/female/box/box_data_"..sim.expIteration.."_"..sim.simIteration.."_"..ID..".csv\n")
-
-        Agent.removeAgent(ID)
 end

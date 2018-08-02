@@ -41,11 +41,10 @@ Cli::Cli(std::string _file, bool flag ) :
     mapImage(nullptr)
 {
     if(flag){
-        std::cout << "FLAG TRUE" << std::endl << std::endl;
         this->control = new Control(this, _file);
         this->parsedFilePath = _file;
+        this->runController();
     }else{
-        std::cout << "FLAG FALSE" << std::endl << std::endl;
         bayesopt::Parameters param = initialize_parameters_to_default();
         param.n_init_samples = 10;
         param.n_iterations = 1000;

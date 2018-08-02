@@ -208,10 +208,14 @@ DIST          = src/lua_agents/01_pingpong.lua \
 		src/modules/test/test2_8254_green_4.lua \
 		src/modules/test/test2_8254_green_5.lua \
 		src/modules/lib_sim_config.lua \
-		src/lua_agents/test_2_master.lua \
-		src/lua_agents/test_1_master.lua \
-		src/lua_agents/test_3_master.lua \
-		src/lua_agents/test_4_master.lua \
+		src/modules/lib_energy.lua \
+		src/modules/lib_move.lua \
+		src/modules/lib_msg.lua \
+		src/modules/lib_torus.lua \
+		src/lua_agents/base.lua \
+		src/lua_agents/explorer.lua \
+		src/lua_agents/master.lua \
+		src/lua_agents/transporter.lua \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/linux.conf \
@@ -655,6 +659,7 @@ BUILD/moc/moc_cli.cpp: src/control.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
 		src/bopthook.h \
+		src/api/tcpserver.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -665,7 +670,6 @@ BUILD/moc/moc_cli.cpp: src/control.h \
 		src/api/shared.h \
 		src/output.h \
 		src/api/scanning.h \
-		src/api/tcpserver.h \
 		src/cli.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/theis/workspace/RANA -I/home/theis/workspace/RANA/-L/usr/local/include -I/home/theis/workspace/RANA/-lbayesopt -I/home/theis/workspace/RANA/-L/usr/local/include -I/home/theis/workspace/RANA/-lnlopt -I/home/theis/workspace/lua51_64bit/include -I/usr/include/lua5.1 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/cli.h -o BUILD/moc/moc_cli.cpp
 
@@ -686,6 +690,7 @@ BUILD/moc/moc_mainwindow.cpp: src/control.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
 		src/bopthook.h \
+		src/api/tcpserver.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -696,7 +701,6 @@ BUILD/moc/moc_mainwindow.cpp: src/control.h \
 		src/api/shared.h \
 		src/output.h \
 		src/api/scanning.h \
-		src/api/tcpserver.h \
 		src/mainwindow.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/theis/workspace/RANA -I/home/theis/workspace/RANA/-L/usr/local/include -I/home/theis/workspace/RANA/-lbayesopt -I/home/theis/workspace/RANA/-L/usr/local/include -I/home/theis/workspace/RANA/-lnlopt -I/home/theis/workspace/lua51_64bit/include -I/usr/include/lua5.1 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/mainwindow.h -o BUILD/moc/moc_mainwindow.cpp
 
@@ -750,6 +754,7 @@ BUILD/moc/moc_runner.cpp: src/simulationcore/flowcontrol.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
 		src/bopthook.h \
+		src/api/tcpserver.h \
 		src/runner.h \
 		src/parser.h \
 		src/ID.h \
@@ -758,7 +763,6 @@ BUILD/moc/moc_runner.cpp: src/simulationcore/flowcontrol.h \
 		src/api/shared.h \
 		src/output.h \
 		src/api/scanning.h \
-		src/api/tcpserver.h \
 		src/runner.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/theis/workspace/RANA -I/home/theis/workspace/RANA/-L/usr/local/include -I/home/theis/workspace/RANA/-lbayesopt -I/home/theis/workspace/RANA/-L/usr/local/include -I/home/theis/workspace/RANA/-lnlopt -I/home/theis/workspace/lua51_64bit/include -I/usr/include/lua5.1 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/runner.h -o BUILD/moc/moc_runner.cpp
 
@@ -779,6 +783,7 @@ BUILD/moc/moc_eventdialog.cpp: src/control.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
 		src/bopthook.h \
+		src/api/tcpserver.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -789,7 +794,6 @@ BUILD/moc/moc_eventdialog.cpp: src/control.h \
 		src/api/shared.h \
 		src/output.h \
 		src/api/scanning.h \
-		src/api/tcpserver.h \
 		src/eventdialog.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/theis/workspace/RANA -I/home/theis/workspace/RANA/-L/usr/local/include -I/home/theis/workspace/RANA/-lbayesopt -I/home/theis/workspace/RANA/-L/usr/local/include -I/home/theis/workspace/RANA/-lnlopt -I/home/theis/workspace/lua51_64bit/include -I/usr/include/lua5.1 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/eventdialog.h -o BUILD/moc/moc_eventdialog.cpp
 
@@ -810,6 +814,7 @@ BUILD/moc/moc_postcontrol.cpp: src/postprocessing/eventrunner.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
 		src/bopthook.h \
+		src/api/tcpserver.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -820,7 +825,6 @@ BUILD/moc/moc_postcontrol.cpp: src/postprocessing/eventrunner.h \
 		src/api/shared.h \
 		src/output.h \
 		src/api/scanning.h \
-		src/api/tcpserver.h \
 		src/postprocessing/postcontrol.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/theis/workspace/RANA -I/home/theis/workspace/RANA/-L/usr/local/include -I/home/theis/workspace/RANA/-lbayesopt -I/home/theis/workspace/RANA/-L/usr/local/include -I/home/theis/workspace/RANA/-lnlopt -I/home/theis/workspace/lua51_64bit/include -I/usr/include/lua5.1 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/postprocessing/postcontrol.h -o BUILD/moc/moc_postcontrol.cpp
 
@@ -841,6 +845,7 @@ BUILD/moc/moc_eventrunner.cpp: src/postprocessing/eventprocessing.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
 		src/bopthook.h \
+		src/api/tcpserver.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -851,7 +856,6 @@ BUILD/moc/moc_eventrunner.cpp: src/postprocessing/eventprocessing.h \
 		src/api/shared.h \
 		src/output.h \
 		src/api/scanning.h \
-		src/api/tcpserver.h \
 		src/postprocessing/eventrunner.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/theis/workspace/RANA -I/home/theis/workspace/RANA/-L/usr/local/include -I/home/theis/workspace/RANA/-lbayesopt -I/home/theis/workspace/RANA/-L/usr/local/include -I/home/theis/workspace/RANA/-lnlopt -I/home/theis/workspace/lua51_64bit/include -I/usr/include/lua5.1 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/postprocessing/eventrunner.h -o BUILD/moc/moc_eventrunner.cpp
 
@@ -995,6 +999,7 @@ BUILD/obj/mainwindow.o: src/mainwindow.cpp BUILD/ui/ui_mainwindow.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
 		src/bopthook.h \
+		src/api/tcpserver.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1005,7 +1010,6 @@ BUILD/obj/mainwindow.o: src/mainwindow.cpp BUILD/ui/ui_mainwindow.h \
 		src/api/shared.h \
 		src/output.h \
 		src/api/scanning.h \
-		src/api/tcpserver.h \
 		src/api/maphandler.h \
 		src/eventdialog.h \
 		src/helpdialog.h
@@ -1032,6 +1036,7 @@ BUILD/obj/output.o: src/output.cpp src/output.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
 		src/bopthook.h \
+		src/api/tcpserver.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1040,8 +1045,7 @@ BUILD/obj/output.o: src/output.cpp src/output.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
 		src/api/shared.h \
-		src/api/scanning.h \
-		src/api/tcpserver.h
+		src/api/scanning.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/output.o src/output.cpp
 
 BUILD/obj/control.o: src/control.cpp src/control.h \
@@ -1061,6 +1065,7 @@ BUILD/obj/control.o: src/control.cpp src/control.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
 		src/bopthook.h \
+		src/api/tcpserver.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1070,8 +1075,7 @@ BUILD/obj/control.o: src/control.cpp src/control.h \
 		src/api/gridmovement.h \
 		src/api/shared.h \
 		src/output.h \
-		src/api/scanning.h \
-		src/api/tcpserver.h
+		src/api/scanning.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/control.o src/control.cpp
 
 BUILD/obj/agentItem.o: src/graphics/agentItem.cpp src/graphics/agentItem.h \
@@ -1098,14 +1102,14 @@ BUILD/obj/runner.o: src/runner.cpp src/runner.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
 		src/bopthook.h \
+		src/api/tcpserver.h \
 		src/parser.h \
 		src/ID.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
 		src/api/shared.h \
 		src/output.h \
-		src/api/scanning.h \
-		src/api/tcpserver.h
+		src/api/scanning.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/runner.o src/runner.cpp
 
 BUILD/obj/eventprocessing.o: src/postprocessing/eventprocessing.cpp src/api/gridmovement.h \
@@ -1128,14 +1132,14 @@ BUILD/obj/eventprocessing.o: src/postprocessing/eventprocessing.cpp src/api/grid
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
 		src/bopthook.h \
+		src/api/tcpserver.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
 		src/parser.h \
 		src/ID.h \
 		src/output.h \
-		src/api/scanning.h \
-		src/api/tcpserver.h
+		src/api/scanning.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/eventprocessing.o src/postprocessing/eventprocessing.cpp
 
 BUILD/obj/colorutility.o: src/postprocessing/colorutility.cpp src/postprocessing/colorutility.h \
@@ -1156,6 +1160,7 @@ BUILD/obj/colorutility.o: src/postprocessing/colorutility.cpp src/postprocessing
 		src/postprocessing/graphics/zblock.h \
 		src/postprocessing/graphics/zmap.h \
 		src/bopthook.h \
+		src/api/tcpserver.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1164,8 +1169,7 @@ BUILD/obj/colorutility.o: src/postprocessing/colorutility.cpp src/postprocessing
 		src/api/phys.h \
 		src/api/gridmovement.h \
 		src/api/shared.h \
-		src/api/scanning.h \
-		src/api/tcpserver.h
+		src/api/scanning.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/colorutility.o src/postprocessing/colorutility.cpp
 
 BUILD/obj/eventdialog.o: src/eventdialog.cpp BUILD/ui/ui_eventdialog.h \
@@ -1187,6 +1191,7 @@ BUILD/obj/eventdialog.o: src/eventdialog.cpp BUILD/ui/ui_eventdialog.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
 		src/bopthook.h \
+		src/api/tcpserver.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1196,8 +1201,7 @@ BUILD/obj/eventdialog.o: src/eventdialog.cpp BUILD/ui/ui_eventdialog.h \
 		src/api/gridmovement.h \
 		src/api/shared.h \
 		src/output.h \
-		src/api/scanning.h \
-		src/api/tcpserver.h
+		src/api/scanning.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/eventdialog.o src/eventdialog.cpp
 
 BUILD/obj/zblock.o: src/postprocessing/graphics/zblock.cpp src/output.h \
@@ -1218,6 +1222,7 @@ BUILD/obj/zblock.o: src/postprocessing/graphics/zblock.cpp src/output.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
 		src/bopthook.h \
+		src/api/tcpserver.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1226,8 +1231,7 @@ BUILD/obj/zblock.o: src/postprocessing/graphics/zblock.cpp src/output.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
 		src/api/shared.h \
-		src/api/scanning.h \
-		src/api/tcpserver.h
+		src/api/scanning.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/zblock.o src/postprocessing/graphics/zblock.cpp
 
 BUILD/obj/postcontrol.o: src/postprocessing/postcontrol.cpp src/output.h \
@@ -1248,6 +1252,7 @@ BUILD/obj/postcontrol.o: src/postprocessing/postcontrol.cpp src/output.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
 		src/bopthook.h \
+		src/api/tcpserver.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1256,8 +1261,7 @@ BUILD/obj/postcontrol.o: src/postprocessing/postcontrol.cpp src/output.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
 		src/api/shared.h \
-		src/api/scanning.h \
-		src/api/tcpserver.h
+		src/api/scanning.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/postcontrol.o src/postprocessing/postcontrol.cpp
 
 BUILD/obj/eventrunner.o: src/postprocessing/eventrunner.cpp src/output.h \
@@ -1278,6 +1282,7 @@ BUILD/obj/eventrunner.o: src/postprocessing/eventrunner.cpp src/output.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
 		src/bopthook.h \
+		src/api/tcpserver.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1286,8 +1291,7 @@ BUILD/obj/eventrunner.o: src/postprocessing/eventrunner.cpp src/output.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
 		src/api/shared.h \
-		src/api/scanning.h \
-		src/api/tcpserver.h
+		src/api/scanning.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/eventrunner.o src/postprocessing/eventrunner.cpp
 
 BUILD/obj/zmap.o: src/postprocessing/graphics/zmap.cpp src/postprocessing/graphics/zmap.h \
@@ -1308,6 +1312,7 @@ BUILD/obj/zmap.o: src/postprocessing/graphics/zmap.cpp src/postprocessing/graphi
 		src/simulationcore/eventqueue.h \
 		src/simulationcore/agents/agent.h \
 		src/bopthook.h \
+		src/api/tcpserver.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1316,8 +1321,7 @@ BUILD/obj/zmap.o: src/postprocessing/graphics/zmap.cpp src/postprocessing/graphi
 		src/api/phys.h \
 		src/api/gridmovement.h \
 		src/api/shared.h \
-		src/api/scanning.h \
-		src/api/tcpserver.h
+		src/api/scanning.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/zmap.o src/postprocessing/graphics/zmap.cpp
 
 BUILD/obj/helpdialog.o: src/helpdialog.cpp src/helpdialog.h \
@@ -1343,6 +1347,7 @@ BUILD/obj/gridmovement.o: src/api/gridmovement.cpp src/api/gridmovement.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
 		src/bopthook.h \
+		src/api/tcpserver.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1350,8 +1355,7 @@ BUILD/obj/gridmovement.o: src/api/gridmovement.cpp src/api/gridmovement.h \
 		src/ID.h \
 		src/api/phys.h \
 		src/api/shared.h \
-		src/api/scanning.h \
-		src/api/tcpserver.h
+		src/api/scanning.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/gridmovement.o src/api/gridmovement.cpp
 
 BUILD/obj/maphandler.o: src/api/maphandler.cpp src/output.h \
@@ -1372,6 +1376,7 @@ BUILD/obj/maphandler.o: src/api/maphandler.cpp src/output.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
 		src/bopthook.h \
+		src/api/tcpserver.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1381,7 +1386,6 @@ BUILD/obj/maphandler.o: src/api/maphandler.cpp src/output.h \
 		src/api/gridmovement.h \
 		src/api/shared.h \
 		src/api/scanning.h \
-		src/api/tcpserver.h \
 		src/api/maphandler.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/maphandler.o src/api/maphandler.cpp
 
@@ -1404,6 +1408,7 @@ BUILD/obj/phys.o: src/api/phys.cpp src/api/phys.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
 		src/bopthook.h \
+		src/api/tcpserver.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1411,8 +1416,7 @@ BUILD/obj/phys.o: src/api/phys.cpp src/api/phys.h \
 		src/ID.h \
 		src/api/gridmovement.h \
 		src/api/shared.h \
-		src/api/scanning.h \
-		src/api/tcpserver.h
+		src/api/scanning.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/phys.o src/api/phys.cpp
 
 BUILD/obj/scanning.o: src/api/scanning.cpp src/api/scanning.h \
@@ -1435,14 +1439,14 @@ BUILD/obj/scanning.o: src/api/scanning.cpp src/api/scanning.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
 		src/bopthook.h \
+		src/api/tcpserver.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
 		src/parser.h \
 		src/ID.h \
 		src/api/gridmovement.h \
-		src/api/shared.h \
-		src/api/tcpserver.h
+		src/api/shared.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/scanning.o src/api/scanning.cpp
 
 BUILD/obj/shared.o: src/api/shared.cpp src/output.h \
@@ -1463,6 +1467,7 @@ BUILD/obj/shared.o: src/api/shared.cpp src/output.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
 		src/bopthook.h \
+		src/api/tcpserver.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1471,8 +1476,7 @@ BUILD/obj/shared.o: src/api/shared.cpp src/output.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
 		src/api/shared.h \
-		src/api/scanning.h \
-		src/api/tcpserver.h
+		src/api/scanning.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/shared.o src/api/shared.cpp
 
 BUILD/obj/flowcontrol.o: src/simulationcore/flowcontrol.cpp src/simulationcore/flowcontrol.h \
@@ -1494,6 +1498,7 @@ BUILD/obj/flowcontrol.o: src/simulationcore/flowcontrol.cpp src/simulationcore/f
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
 		src/bopthook.h \
+		src/api/tcpserver.h \
 		src/runner.h \
 		src/parser.h \
 		src/ID.h \
@@ -1501,8 +1506,7 @@ BUILD/obj/flowcontrol.o: src/simulationcore/flowcontrol.cpp src/simulationcore/f
 		src/api/gridmovement.h \
 		src/api/shared.h \
 		src/output.h \
-		src/api/scanning.h \
-		src/api/tcpserver.h
+		src/api/scanning.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/flowcontrol.o src/simulationcore/flowcontrol.cpp
 
 BUILD/obj/interfacer.o: src/simulationcore/interfacer.cpp src/output.h \
@@ -1523,6 +1527,7 @@ BUILD/obj/interfacer.o: src/simulationcore/interfacer.cpp src/output.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
 		src/bopthook.h \
+		src/api/tcpserver.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1531,8 +1536,7 @@ BUILD/obj/interfacer.o: src/simulationcore/interfacer.cpp src/output.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
 		src/api/shared.h \
-		src/api/scanning.h \
-		src/api/tcpserver.h
+		src/api/scanning.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/interfacer.o src/simulationcore/interfacer.cpp
 
 BUILD/obj/sector.o: src/simulationcore/sector.cpp src/ID.h \
@@ -1554,6 +1558,7 @@ BUILD/obj/sector.o: src/simulationcore/sector.cpp src/ID.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
 		src/bopthook.h \
+		src/api/tcpserver.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1561,8 +1566,7 @@ BUILD/obj/sector.o: src/simulationcore/sector.cpp src/ID.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
 		src/api/shared.h \
-		src/api/scanning.h \
-		src/api/tcpserver.h
+		src/api/scanning.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/sector.o src/simulationcore/sector.cpp
 
 BUILD/obj/supervisor.o: src/simulationcore/supervisor.cpp src/output.h \
@@ -1583,6 +1587,7 @@ BUILD/obj/supervisor.o: src/simulationcore/supervisor.cpp src/output.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
 		src/bopthook.h \
+		src/api/tcpserver.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1591,8 +1596,7 @@ BUILD/obj/supervisor.o: src/simulationcore/supervisor.cpp src/output.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
 		src/api/shared.h \
-		src/api/scanning.h \
-		src/api/tcpserver.h
+		src/api/scanning.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/supervisor.o src/simulationcore/supervisor.cpp
 
 BUILD/obj/agent.o: src/simulationcore/agents/agent.cpp src/simulationcore/sector.h \
@@ -1622,6 +1626,7 @@ BUILD/obj/agentluainterface.o: src/simulationcore/agents/agentluainterface.cpp s
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
 		src/bopthook.h \
+		src/api/tcpserver.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1630,7 +1635,6 @@ BUILD/obj/agentluainterface.o: src/simulationcore/agents/agentluainterface.cpp s
 		src/api/gridmovement.h \
 		src/api/shared.h \
 		src/api/scanning.h \
-		src/api/tcpserver.h \
 		src/api/maphandler.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/agentluainterface.o src/simulationcore/agents/agentluainterface.cpp
 
@@ -1653,6 +1657,7 @@ BUILD/obj/eventqueue.o: src/simulationcore/eventqueue.cpp src/ID.h \
 		src/postprocessing/colorutility.h \
 		src/postprocessing/graphics/zmap.h \
 		src/bopthook.h \
+		src/api/tcpserver.h \
 		src/runner.h \
 		src/simulationcore/flowcontrol.h \
 		src/simulationcore/interfacer.h \
@@ -1660,8 +1665,7 @@ BUILD/obj/eventqueue.o: src/simulationcore/eventqueue.cpp src/ID.h \
 		src/api/phys.h \
 		src/api/gridmovement.h \
 		src/api/shared.h \
-		src/api/scanning.h \
-		src/api/tcpserver.h
+		src/api/scanning.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BUILD/obj/eventqueue.o src/simulationcore/eventqueue.cpp
 
 BUILD/obj/tcpserver.o: src/api/tcpserver.cpp src/api/tcpserver.h
