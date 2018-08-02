@@ -152,6 +152,7 @@ void Cli::generateSimulation()
 
 void Cli::runSimulation()
 {
+    double runTime = 100; 
     if(control->isRunning()){
         control->stopSimulation();
     }
@@ -160,9 +161,10 @@ void Cli::runSimulation()
         lua_State * L = control->getControlLuaState();
 
         lua_settop(L,0); lua_getglobal(L,"_getSimulationConfigurationOption"); lua_pushstring(L,"runTime");
-        if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Using deafult value */ 
-        	if( lua_toboolean(L,1) ){ control->startSimulation(lua_tonumber(L,2)); }
-	} else{ control->startSimulation(100); }
+	if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Use deafult value */ 
+		if( lua_toboolean(L,1) ){ runTime = lua_tonumber(L,2); }
+	}
+	control->startSimulation(runTime);
     }
 }
 
