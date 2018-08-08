@@ -49,10 +49,12 @@ Collision = require "ranalib_collision"
 Utility = require "ranalib_utility"
 Agent = require "ranalib_agent"
 Event = require "ranalib_event"
+Shared = require "ranalib_shared"
 
 scanMultiple = 10
 repulsionRange = 15
 call_counter = 1
+collision_callfrequency = 0
 
 
 -- Initialization of the agent.
@@ -62,8 +64,8 @@ function InitializeAgent()
 
 	Move.to{x= ENV_WIDTH/2, y= ENV_HEIGHT/2}
 
+	collision_callfrequency = Shared.getNumber("collision_callfrequency")
 	Speed = 6
-	GridMove = true
 	Moving = true
 
 end
@@ -71,7 +73,7 @@ end
 
 function TakeStep()
 
-	if call_counter == 100 then
+	if call_counter >= collision_callfrequency*1/STEP_RESOLUTION then
 		Event.emit{description="host"}
 		call_counter = 0
 	end

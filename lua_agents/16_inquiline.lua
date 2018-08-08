@@ -51,29 +51,38 @@ Agent = require "ranalib_agent"
 Event = require "ranalib_event"
 Physics = require "ranalib_physics"
 Shared = require "ranalib_shared"
+Core = require "ranalib_core"
 
 firstStep = true
 repulsed = false
 scanMultiple = 10
 repulsionRange = 0
 detectionRange = 0
+attractionRange = 0
 call_counter = 1
-call_frequency = 500 --emit placement event once every .5 second.
+collision_callfrequency = 0
+
+timeToLive = 0
+timeToLiveMax = 50
 
 -- Initialization of the agent.
 function InitializeAgent()
 	
-	say("Agent #: " .. ID .. " has been initialized")
+	say("Inquiline Agent #: " .. ID .. " has been initialized")
 	
 	ColorRed = 200
 	ColorBlue = 0
 	ColorGreen = 0
 
 	Speed = 4
-	GridMove = true
 
 	repulsionRange = Shared.getNumber("inquiline_repulsion_range")
 	detectionRange = Shared.getNumber("inquiline_detection_range")
+	attractionRange = Shared.getNumber("inquiline_attraction_range")
+	collision_callfrequency = Shared.getNumber("collision_callfrequency")
+
+        timeToLive = Stat.randomMean(5,30)
+        say("I start with an expected lifetime of ".. timeToLive .. " seconds")
 
 end
 
@@ -82,10 +91,11 @@ function HandleEvent(Event)
 	--avoiding the hosts
 	if Event.description == "host" 
 		and Physics.calcDistance{x1=Event.X, x2=PositionX, y1=Event.Y, y2=PositionY} < detectionRange 
-		and not repulsed then
+		then
+		--and not repulsed then
 
 		local new_X
-		local new_Y
+		local new_Y 
 
 		--move in opposite direction
 		if Event.X > PositionX then
@@ -103,12 +113,35 @@ function HandleEvent(Event)
 		end
 
 		repulsed = true
+		timeToLive = timeToLive - Stat.randomMean(1,2)*collision_callfrequency;
 
 		Move.to{x= new_X, y=new_Y}
 
-	end
+	elseif Event.description == "inquiline" then
 
-	
+		local new_X
+		local new_Y
+
+		--be attracted
+		if Event.X > PositionX then
+			new_X = PositionX + Stat.randomInteger(attractionRange/2,attractionRange)
+		else
+			new_X = PositionX - Stat.randomInteger(attractionRange/2,attractionRange)
+		end
+
+		if Event.Y > PositionY then
+			new_Y = PositionY + Stat.randomInteger(attractionRange/2,attractionRange)
+
+		else
+			new_Y = PositionY - Stat.randomInteger(attractionRange/2,attractionRange)
+
+		end
+
+                timeToLive = timeToLive + Stat.randomMean(.1,.2)*collision_callfrequency;
+
+		if timeToLive >= timeToLiveMax then timeToLive = timeToLiveMax end
+
+	end	
 end
 
 
@@ -116,9 +149,10 @@ function TakeStep()
 
 	if firstStep then initStep() end
 
-	call_counter = call_counter+1
+        call_counter = call_counter +1
+        timeToLive = timeToLive -1*STEP_RESOLUTION
 
-	if call_counter == 100 then
+	if call_counter >= collision_callfrequency*1/STEP_RESOLUTION then
 		Event.emit{description="inquiline"}
 		call_counter = 0
 	end
@@ -128,6 +162,16 @@ function TakeStep()
 		repulsed = false
 	end
 
+        if timeToLive <= 0 then
+            say("Inquiline agent #" .. ID .." died at the old age of  ".. Core.time())
+            Event.emit{description="inquiline_death"}
+            Agent.removeAgent(ID)
+        end
+
+end
+
+function CleanUp()
+	say("Inquiline agent has survived with a remaining 'time-to-live' of "..timeToLive.."[s]")
 end
 
 function initStep()
@@ -135,4 +179,6 @@ function initStep()
 	firstStep = false
 
 end
+
+
 

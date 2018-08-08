@@ -46,9 +46,13 @@ Agent	= require "ranalib_agent"
 Shared = require "ranalib_shared"
 -- Init of the lua frog, function called upon initilization of the LUA auton.
 inquiline_amount = 35
-host_amount = 10
-inquiline_repulsion_range = 30
+host_amount = 30
+inquiline_repulsion_range = 10
 inquiline_detection_range = 30
+inquiline_attraction_range = 10
+collision_callfrequency = .500 
+
+amountOfInquilineKilled = 0
 
 function InitializeAgent()
 	-- Add the data collector agent.
@@ -60,6 +64,8 @@ function InitializeAgent()
 
 	Shared.storeNumber("inquiline_repulsion_range", inquiline_repulsion_range)
 	Shared.storeNumber("inquiline_detection_range", inquiline_detection_range)
+	Shared.storeNumber("inquiline_attraction_range", inquiline_attraction_range)
+	Shared.storeNumber("collision_callfrequency", collision_callfrequency)
 
 	-- Load up the oscillator agents.
 	for i=1 , inquiline_amount do
@@ -77,7 +83,21 @@ function InitializeAgent()
 
 end
 
-function TakeStep()
-	Agent.removeAgent(ID)
+function HandleEvent(Event)
+
+    if Event.description == "inquiline_death" then
+
+        amountOfInquilineKilled = amountOfInquilineKilled + 1
+        --add a new inquiline to replace the one that has died.
+        local ID = Agent.addAgent("16_inquiline.lua")
+
+
+    end
+
 end
 
+function CleanUp()
+
+     shout("Amount of inquilines that has died this time around is : " .. amountOfInquilineKilled)
+
+end

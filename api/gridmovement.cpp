@@ -1,7 +1,7 @@
-//--begin_license--
+﻿//--begin_license--
 //
 //Copyright 	2013 	Søren Vissing Jørgensen.
-//			2014	Søren Vissing Jørgensen, Center for Bio-Robotics, SDU, MMMI.  
+//			2014	Søren Vissing Jørgensen, Center for Bio-Robotics, SDU, MMMI.
 //
 //This file is part of RANA.
 //
@@ -24,7 +24,7 @@
 #include "gridmovement.h"
 #include "output.h"
 
-std::unordered_map< std::string, pList > *GridMovement::posMap = NULL;
+std::unordered_map<std::string, pList>* GridMovement::posMap = NULL;
 std::shared_timed_mutex GridMovement::gridMutex;
 
 int GridMovement::width;
@@ -35,8 +35,7 @@ void GridMovement::initGrid(int scale)
 {
     std::lock_guard<std::shared_timed_mutex> writerLock(gridMutex);
 
-    if(posMap != NULL)
-    {
+    if (posMap != NULL) {
         delete posMap;
     }
 
@@ -63,173 +62,145 @@ void GridMovement::addPos(int x, int y, int id)
 
     //add id to position map:
     char buffer[64];
-    sprintf(buffer,"%i,%i",x,y);
+    sprintf(buffer, "%i,%i", x, y);
     std::string index = buffer;
 
-    if(posMap->find(index) == posMap->end() )
-    {
+    if (posMap->find(index) == posMap->end()) {
         pList tmp;
         tmp.push_back(id);
-        posMap->insert(std::pair<std::string, pList >(index,tmp));
+        posMap->insert(std::pair<std::string, pList>(index, tmp));
 
-    } else
-    {
-        pList *tmp = &posMap->find(index)->second;
+    } else {
+        pList* tmp = &posMap->find(index)->second;
         tmp->push_back(id);
     }
-
 }
 
 void GridMovement::removePos(int id)
 {
     std::lock_guard<std::shared_timed_mutex> writerLock(gridMutex);
 
-    for(auto posItr=posMap->begin(); posItr!=posMap->end(); ++posItr)
-    {
-        if(posItr != posMap->end())
-        {
-			pList *tmp = &posItr->second;
+    for (auto posItr = posMap->begin(); posItr != posMap->end(); ++posItr) {
+        if (posItr != posMap->end()) {
+            pList* tmp = &posItr->second;
 
-			for(auto it=tmp->begin(); it != tmp->end(); ++it)
-            {
-				if(it != tmp->end())
-                {
-					if(*it == id)
-                    {
+            for (auto it = tmp->begin(); it != tmp->end(); ++it) {
+                if (it != tmp->end()) {
+                    if (*it == id) {
                         //Output::Inst()->kprintf("remove something id'ish...%i,%i", *it,id);
-						tmp->remove(id);
+                        tmp->remove(id);
                         break;
                     }
                 }
             }
-            if(tmp->empty())
-            {
-               posMap->erase(posItr);
+            if (tmp->empty()) {
+                //posMap->erase(posItr);
             }
         }
     }
-
 }
 
 void GridMovement::updatePos(int oldX, int oldY, int newX, int newY, int id)
-{          
+{
     std::lock_guard<std::shared_timed_mutex> writerLock(gridMutex);
     //update the position map:
     char buffer[64];
-    sprintf(buffer,"%i,%i",oldX,oldY);
+    sprintf(buffer, "%i,%i", oldX, oldY);
     std::string index = buffer;
 
     auto posItr = posMap->find(index);
-    pList *tmp = &posItr->second;
+    pList* tmp = &posItr->second;
 
-    if(posItr != posMap->end())
-    {
-        for(auto it=tmp->begin(); it != tmp->end(); it++ )
-        {
-            if (*it == id)
-            {
+    if (posItr != posMap->end()) {
+        for (auto it = tmp->begin(); it != tmp->end(); it++) {
+            if (*it == id) {
                 tmp->remove(id);
                 break;
             }
         }
-        if(tmp->empty())
-        {
-          posMap->erase(posItr);
+        if (tmp->empty()) {
+            //posMap->erase(posItr);
         }
     }
 
-    sprintf(buffer,"%i,%i",newX,newY);
+    sprintf(buffer, "%i,%i", newX, newY);
     index = buffer;
 
-    if(posMap->find(index) == posMap->end() )
-    {
+    if (posMap->find(index) == posMap->end()) {
         pList tmp;
         tmp.push_back(id);
-        posMap->insert(std::pair<std::string, pList >(index,tmp));
-    }
-    else
-    {
-        pList *tmp = &posMap->find(index)->second;
+        posMap->insert(std::pair<std::string, pList>(index, tmp));
+    } else {
+        pList* tmp = &posMap->find(index)->second;
         tmp->push_back(id);
     }
 }
-
 
 bool GridMovement::updateIfFree(int oldX, int oldY, int newX, int newY, int id)
 {
     std::lock_guard<std::shared_timed_mutex> writerLock(gridMutex);
 
     char buffer[64];
-    sprintf(buffer,"%i,%i", oldX, oldY);
+    sprintf(buffer, "%i,%i", oldX, oldY);
     std::string index = buffer;
 
     auto posItr = posMap->find(index);
-    pList *tmp = &posItr->second;
+    pList* tmp = &posItr->second;
 
-    if(posItr != posMap->end())
-    {
+    if (posItr != posMap->end()) {
 
-        for(auto it=tmp->begin(); it != tmp->end(); it++ )
-        {
-            if (*it == id)
-            {
+        for (auto it = tmp->begin(); it != tmp->end(); it++) {
+            if (*it == id) {
                 tmp->remove(id);
                 break;
             }
         }
-        if(tmp->empty())
-        {
+        if (tmp->empty()) {
             posMap->erase(posItr);
         }
     }
 
-    sprintf(buffer,"%i,%i",newX,newY);
+    sprintf(buffer, "%i,%i", newX, newY);
     index = buffer;
 
-    if(posMap->find(index) == posMap->end() )
-    {
+    if (posMap->find(index) == posMap->end()) {
         pList tmp;
         tmp.push_back(id);
-        posMap->insert(std::pair<std::string, pList >(index,tmp));
-    }
-    else
-    {
+        posMap->insert(std::pair<std::string, pList>(index, tmp));
+    } else {
         return true;
     }
     return false;
 }
-
 
 bool GridMovement::checkCollision(int x, int y)
 {
     std::shared_lock<std::shared_timed_mutex> readerLock(gridMutex);
 
     char buffer[64];
-    sprintf(buffer, "%i,%i",x,y);
+    sprintf(buffer, "%i,%i", x, y);
     std::string index = buffer;
 
     auto positr = posMap->find(index);
 
-    if(positr == posMap->end())
-    {
+    if (positr == posMap->end()) {
         return false;
-    }else return true;
-
+    } else
+        return true;
 }
 
 pList GridMovement::checkPosition(int x, int y)
 {
     std::shared_lock<std::shared_timed_mutex> readerLock(gridMutex);
     char buffer[64];
-    sprintf(buffer,"%i,%i",x,y);
+    sprintf(buffer, "%i,%i", x, y);
     std::string index = buffer;
 
     pList tmp;
 
     auto positr = posMap->find(index);
 
-    if (positr != posMap->end())
-    {
+    if (positr != posMap->end()) {
         //Output::Inst()->kprintf("returning a list");
         return posMap->find(index)->second;
     }
