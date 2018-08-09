@@ -104,7 +104,7 @@ void GridMovement::removePos(int id)
             }
             if(tmp->empty())
             {
-               posMap->erase(posItr);
+               //posMap->erase(posItr);
             }
         }
     }
