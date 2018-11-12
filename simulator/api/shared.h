@@ -19,38 +19,36 @@
 //along with RANA.  If not, see <http://www.gnu.org/licenses/>.
 //
 //--end_license--
+#ifndef SHARED_H
+#define SHARED_H
 
-#include <stdio.h>
 #include <string>
+#include <unordered_map>
+#include <shared_mutex>
 
-#include "simulator/utility/ID.h"
-#include "simulator/api/phys.h"
-#include "simulator/output.h"
-#include "simulator/api/gridmovement.h"
+class Shared {
+public:
+    Shared();
+
+    static double getNumber(std::string key);
+
+    static void addNumber(std::string key, double value);
+
+    static std::string getString(std::string key);
+
+    static void addString(std::string key, std::string value);
+
+    static void initShared();
+
+private:
+
+    static std::shared_timed_mutex numberMutex;
+    static std::shared_timed_mutex stringMutex;
+
+    static std::unordered_map<std::string, double> sharedNumbers;
+    static std::unordered_map<std::string, std::string> sharedStrings;
+
+};
 
 
-int ID::aID = 0;
-unsigned long long ID::eID = 0;
-unsigned long long ID::tmu = 0;
-unsigned long long ID::nID = 0;
-
-
-int main(int argc, char *argv[])
-{
-    //srand(time(0));
-    Phys::seedMersenne();
-    Output::DelayValue = 0;
-	Output::LegacyMode.store(false);
-    GridMovement::initGrid(1);
-
-    //qDebug() << Phys::getMersenneInteger(1, RAND_MAX) << Phys::getMersenneInteger(1, RAND_MAX) << Phys::getMersenneFloat(1, RAND_MAX) <<Phys::getMersenneInteger(1, RAND_MAX) ;
-
-
-
-    //MainWindow *w = new MainWindow();
-
-    //Output::Inst()->setMainWindow(w);
-
-    //w->show();
-    return 0;
-}
+#endif // SHARED_H

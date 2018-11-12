@@ -19,38 +19,35 @@
 //along with RANA.  If not, see <http://www.gnu.org/licenses/>.
 //
 //--end_license--
+#ifndef MAPHANDLER_H
+#define MAPHANDLER_H
 
-#include <stdio.h>
-#include <string>
+#include "simulator/utility/utility.h"
 
-#include "simulator/utility/ID.h"
-#include "simulator/api/phys.h"
-#include "simulator/output.h"
-#include "simulator/api/gridmovement.h"
+#include <unordered_map>
+#include <vector>
+#include <shared_mutex>
 
+typedef std::vector<std::vector<int> > MatriceInt;
 
-int ID::aID = 0;
-unsigned long long ID::eID = 0;
-unsigned long long ID::tmu = 0;
-unsigned long long ID::nID = 0;
+class MapHandler {
+public:
 
+    MapHandler();
 
-int main(int argc, char *argv[])
-{
-    //srand(time(0));
-    Phys::seedMersenne();
-    Output::DelayValue = 0;
-	Output::LegacyMode.store(false);
-    GridMovement::initGrid(1);
+    //static void setImage(QImage *argImage);
+    static rgba getPixelInfo(int argX, int argY);
 
-    //qDebug() << Phys::getMersenneInteger(1, RAND_MAX) << Phys::getMersenneInteger(1, RAND_MAX) << Phys::getMersenneFloat(1, RAND_MAX) <<Phys::getMersenneInteger(1, RAND_MAX) ;
+    static bool setPixelInfo(int argX, int argY, rgba argValue);
 
+    static MatriceInt drawCircle(int radius, char channel, int posX, int posY);
 
+    static bool checkAndChange(int argX, int argY, rgba check_color, rgba change_color);
 
-    //MainWindow *w = new MainWindow();
+private:
+    //static QImage *image;
+    static std::unordered_map<int, MatriceInt> radialMasks;
+    static std::shared_timed_mutex mapMutex;
+};
 
-    //Output::Inst()->setMainWindow(w);
-
-    //w->show();
-    return 0;
-}
+#endif // MAPHANDLER_H

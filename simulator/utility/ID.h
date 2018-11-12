@@ -20,37 +20,47 @@
 //
 //--end_license--
 
-#include <stdio.h>
-#include <string>
+#ifndef ID_H
+#define ID_H
 
-#include "simulator/utility/ID.h"
-#include "simulator/api/phys.h"
-#include "simulator/output.h"
-#include "simulator/api/gridmovement.h"
+class ID {
+public :
+
+    static int generateAgentID() {
+        ID::aID++;
+        return ID::aID;
+    }
+
+    static int generatesectorID() {
+        ID::nID++;
+        return ID::nID;
+    }
+
+    static unsigned long long generateEventID() {
+        ID::eID++;
+        return ID::eID;
+    }
+
+    static unsigned long long incrementTime() {
+        ID::tmu++;
+        return ID::tmu;
+    }
+
+    static void resetSystem() {
+        ID::aID = 0;
+        ID::nID = 0;
+        ID::eID = 0;
+        ID::tmu = 0;
+    }
+
+private :
+    static int aID;
+    static unsigned long long eID;
+    static unsigned long long tmu;
+    static unsigned long long nID;
+
+};
 
 
-int ID::aID = 0;
-unsigned long long ID::eID = 0;
-unsigned long long ID::tmu = 0;
-unsigned long long ID::nID = 0;
+#endif // ID_H
 
-
-int main(int argc, char *argv[])
-{
-    //srand(time(0));
-    Phys::seedMersenne();
-    Output::DelayValue = 0;
-	Output::LegacyMode.store(false);
-    GridMovement::initGrid(1);
-
-    //qDebug() << Phys::getMersenneInteger(1, RAND_MAX) << Phys::getMersenneInteger(1, RAND_MAX) << Phys::getMersenneFloat(1, RAND_MAX) <<Phys::getMersenneInteger(1, RAND_MAX) ;
-
-
-
-    //MainWindow *w = new MainWindow();
-
-    //Output::Inst()->setMainWindow(w);
-
-    //w->show();
-    return 0;
-}

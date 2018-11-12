@@ -1,0 +1,14 @@
+//
+// Created by sojoe on 11/11/18.
+//
+
+#ifndef RANA_RANACONFIG_H_IN_H
+#define RANA_RANACONFIG_H_IN_H
+
+// clang-format off
+#define Rana_VERSION_MAJOR @Rana_VERSION_MAJOR@
+#define Rana_VERSION_MINOR @Rana_VERSION_MINOR@
+#define Rana_VERSION_FIX @Rana_VERSION_FIX@
+// clang-format on
+
+#endif //RANA_RANACONFIG_H_IN_H
