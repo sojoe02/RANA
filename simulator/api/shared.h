@@ -26,7 +26,8 @@
 #include <unordered_map>
 #include <shared_mutex>
 
-class Shared {
+class Shared
+{
 public:
     Shared();
 

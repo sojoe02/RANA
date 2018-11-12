@@ -30,13 +30,10 @@
 #include "simulator/core/flowcontrol.h"
 #include "simulator/utility/utility.h"
 
-class Runner;
-
 class FlowControl;
 
-class MainWindow;
-
-class Control {
+class Control
+{
 public:
 
     Control();
@@ -61,8 +58,10 @@ public:
      * @param agentPath path to the agent
      */
     void generateEnvironment(int threads,
-                             double timeRes, double macroRes,
-                             int agentAmount, std::string agentPath);
+                             double timeRes, int macroRes,
+                             int agentAmount, std::string agentPath,
+                             int width, int height
+    );
 
     std::list<double[3]> updatePositions();
 
@@ -82,13 +81,11 @@ public:
 
     void on_simDone();
 
-    void startDoWork(FlowControl *agentDomain, unsigned long long runtime);
+    void startDoWork(FlowControl *flowControl, unsigned long long runtime);
 
 private:
 
-    FlowControl *agentDomain;
-    MainWindow *mainwindow;
-    Runner *runner;
+    FlowControl *flowControl;
     //QThread runThread;
     //QFuture<void> populateFuture;
 

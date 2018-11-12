@@ -2,7 +2,6 @@
 #define POSTEVENTHANDLER_H
 
 
-
 class PostEventHandler
 {
 public:

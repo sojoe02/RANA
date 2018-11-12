@@ -40,7 +40,8 @@ double Phys::env_y = 0;
 double Phys::scale = 1;
 
 
-void Phys::seedMersenne() {
+void Phys::seedMersenne()
+{
     // rng.seed(std::random_device()());
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::random_device rd;
@@ -51,28 +52,34 @@ void Phys::seedMersenne() {
 }
 
 
-void Phys::incTime() {
+void Phys::incTime()
+{
     Phys::c_timeStep++;
 }
 
-void Phys::setTimeRes(double timeResolution) {
+void Phys::setTimeRes(double timeResolution)
+{
     Phys::timeResolution = timeResolution;
 }
 
-double Phys::getTimeRes() {
+double Phys::getTimeRes()
+{
     return Phys::timeResolution;
 }
 
-void Phys::setMacroFactor(int macroFactor) {
+void Phys::setMacroFactor(int macroFactor)
+{
     Phys::macroFactor = macroFactor;
 }
 
-int Phys::getMacroFactor() {
+int Phys::getMacroFactor()
+{
     return Phys::macroFactor;
 }
 
 unsigned long long Phys::speedOfSound(double x_origin, double y_origin,
-                                      double x_dest, double y_dest) {
+                                      double x_dest, double y_dest)
+{
 
     double distance = sqrt(pow((x_origin - x_dest), 2) + pow((y_origin - y_dest), 2));
 
@@ -83,7 +90,8 @@ unsigned long long Phys::speedOfSound(double x_origin, double y_origin,
 }
 
 unsigned long long Phys::speedOfEvent(double x_origin, double y_origin,
-                                      double x_dest, double y_dest, double propagationSpeed) {
+                                      double x_dest, double y_dest, double propagationSpeed)
+{
 
     double distance = sqrt(pow((x_origin - x_dest), 2) + pow((y_origin - y_dest), 2));
     double tmp = distance / (propagationSpeed * Phys::timeResolution);
@@ -93,36 +101,44 @@ unsigned long long Phys::speedOfEvent(double x_origin, double y_origin,
 }
 
 double Phys::calcDistance(double x_origin, double y_origin,
-                          double x_dest, double y_dest) {
+                          double x_dest, double y_dest)
+{
     return sqrt(pow((x_origin - x_dest), 2) + pow((y_origin - y_dest), 2));
 }
 
-unsigned long long Phys::getCTime() {
+unsigned long long Phys::getCTime()
+{
     return Phys::c_timeStep;
 }
 
-void Phys::setCTime(unsigned long long ctime) {
+void Phys::setCTime(unsigned long long ctime)
+{
     Phys::c_timeStep = ctime;
 }
 
-void Phys::setEnvironment(double x, double y) {
+void Phys::setEnvironment(double x, double y)
+{
     Phys::env_x = x;
     Phys::env_y = y;
 }
 
-double Phys::getEnvX() {
+double Phys::getEnvX()
+{
     return env_x * scale;
 }
 
-double Phys::getEnvY() {
+double Phys::getEnvY()
+{
     return env_y * scale;
 }
 
-double Phys::getEnvZ() {
+double Phys::getEnvZ()
+{
     return 1;
 }
 
-double Phys::getMersenneFloat(double min = 0, double max = 1) {
+double Phys::getMersenneFloat(double min = 0, double max = 1)
+{
     double random = ((double) Phys::int_dist(Phys::rng) / (double) LLONG_MAX);
     //double random = ((double)std::uniform_int_distribution<int64_t>()(rand()))/(double)LLONG_MAX;
     //Output::Inst()->kdebug("%f", random);
@@ -132,7 +148,8 @@ double Phys::getMersenneFloat(double min = 0, double max = 1) {
     return min + r;
 }
 
-int64_t Phys::getMersenneInteger(int64_t min = 0, int64_t max = ULLONG_MAX) {
+int64_t Phys::getMersenneInteger(int64_t min = 0, int64_t max = ULLONG_MAX)
+{
     max++;
     //return rand() %max;
     return min + Phys::int_dist(Phys::rng) % (max - min);

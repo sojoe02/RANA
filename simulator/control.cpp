@@ -24,30 +24,34 @@
 #include "output.h"
 
 Control::Control()
-        : agentDomain(NULL), running(false), generated(false), stopped(true), generating(false) {
-    //r/unThread.start();
+        : flowControl(nullptr), running(false), generated(false), stopped(true), generating(false)
+{
 }
 
-Control::~Control() {
-
+Control::~Control()
+{
 }
 
-void Control::runSimulation(unsigned long long runTime) {
+void Control::runSimulation(unsigned long long runTime)
+{
     running = true;
     //runThread.setStackSize(1024*1024*1024);
     Output::SimRunning.store(true);
-    //runner->setParameters(agentDomain, runTime);
+    //runner->setParameters(flowControl, runTime);
     //runThread->start();
 }
 
-void Control::stopSimulation() {
-    agentDomain->stopSimulation();
+void Control::stopSimulation()
+{
+    flowControl->stopSimulation();
 }
 
 void Control::generateEnvironment(int threads,
-                                  double timeRes, double macroRes,
-                                  int agentAmount, std::string agentPath) {
-    if (!running || !generating) {
+                                  double timeRes, int macroRes,
+                                  int agentAmount, std::string agentPath, int width, int height)
+{
+    if (!running || !generating)
+    {
         generating = true;
 //        if(populateFuture.isRunning())
 //        {
@@ -57,58 +61,67 @@ void Control::generateEnvironment(int threads,
 //        }
         Output::KillSimulation.store(true);
 
-        Output::Inst()->kprintf("Generating environment");
+        Output::kprintf("Generating environment");
 
-        if (agentDomain != NULL) {
+        if (flowControl != nullptr)
+        {
             //Output::Inst()->kprintf("Deleting agent domain");
-            delete agentDomain;
-            agentDomain = NULL;
+            delete flowControl;
+            flowControl = nullptr;
         }
 
-        agentDomain = new FlowControl(this);
-
-        //agentDomain->generateEnvironment(map->width(),map->height(),threads,
-        //                                 agentAmount,timeRes,macroRes,agentPath);
-        //agentDomain->populateSystem();
+        flowControl = new FlowControl(this);
+        flowControl->generateEnvironment(width, height, threads,
+                                         agentAmount, timeRes, macroRes, agentPath);
+        flowControl->populateSystem();
         //populateFuture.waitForFinished();
         //ture.waitForFinished();
         //QThread::msleep(1000);
         generating = false;
-    } else
-        Output::Inst()->kprintf("Simulation is being generating or it is running");
+    }
+    else
+        Output::kprintf("Simulation is being generating or it is running");
     //retrieve and update the positions:
 }
 
-void Control::threadTest(std::string something) {
+void Control::threadTest(std::string something)
+{
     int i = 0;
 }
 
-void Control::on_simDone() {
+void Control::on_simDone()
+{
     running = false;
     Output::SimRunning.store(false);
-    Output::Inst()->kprintf("Simulation Done");
+    Output::kprintf("Simulation Done");
 }
 
-void Control::refreshPopPos(std::list<agentInfo> infolist) {
+void Control::refreshPopPos(std::list<agentInfo> infolist)
+{
 }
 
-bool Control::isRunning() {
+bool Control::isRunning()
+{
     return running;
 }
 
-bool Control::isGenerated() {
-    if (agentDomain != NULL) {
+bool Control::isGenerated()
+{
+    if (flowControl != nullptr)
+    {
         return true;
     }
 
     return false;
 }
 
-void Control::saveEvents(std::string path) {
-    agentDomain->saveExternalEvents(path.c_str());
+void Control::saveEvents(std::string path)
+{
+    flowControl->saveExternalEvents(path.c_str());
 }
 
-void Control::toggleLiveView(bool enable) {
-    if (agentDomain != NULL)
-        agentDomain->toggleLiveView(enable);
+void Control::toggleLiveView(bool enable)
+{
+    if (flowControl != NULL)
+        flowControl->toggleLiveView(enable);
 }

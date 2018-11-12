@@ -31,7 +31,8 @@
 std::unordered_map<int, MatriceInt> MapHandler::radialMasks;
 std::shared_timed_mutex MapHandler::mapMutex;
 
-MapHandler::MapHandler() {
+MapHandler::MapHandler()
+{
 }
 
 //void MapHandler::setImage(QImage *argImage)
@@ -39,7 +40,8 @@ MapHandler::MapHandler() {
 //    MapHandler::image = argImage;
 //}
 
-rgba MapHandler::getPixelInfo(int argX, int argY) {
+rgba MapHandler::getPixelInfo(int argX, int argY)
+{
     std::shared_lock<std::shared_timed_mutex> readerLock(mapMutex);
 
     rgba values;
@@ -66,7 +68,8 @@ rgba MapHandler::getPixelInfo(int argX, int argY) {
     return values;
 }
 
-bool MapHandler::checkAndChange(int argX, int argY, rgba check_color, rgba change_color) {
+bool MapHandler::checkAndChange(int argX, int argY, rgba check_color, rgba change_color)
+{
 
 //    if(image != NULL && image->width() > argX && image->height() > argY
 //                    && argX >= 0 && argY >= 0)
@@ -90,7 +93,8 @@ bool MapHandler::checkAndChange(int argX, int argY, rgba check_color, rgba chang
     return false;
 }
 
-bool MapHandler::setPixelInfo(int argX, int argY, rgba argValue) {
+bool MapHandler::setPixelInfo(int argX, int argY, rgba argValue)
+{
 
 //    if (image != NULL && image->width() > argX && image->height() > argY
 //                    && argX >= 0 && argY >= 0)

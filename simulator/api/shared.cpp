@@ -34,7 +34,8 @@ std::shared_timed_mutex Shared::stringMutex;
 //{
 //}
 
-void Shared::initShared() {
+void Shared::initShared()
+{
     //if (sharedNumbers != NULL)
     //{
     sharedNumbers.clear();
@@ -48,7 +49,8 @@ void Shared::initShared() {
     //}
 }
 
-void Shared::addNumber(std::string key, double value) {
+void Shared::addNumber(std::string key, double value)
+{
     std::lock_guard<std::shared_timed_mutex>
             writerLock(numberMutex);
 
@@ -63,19 +65,23 @@ void Shared::addNumber(std::string key, double value) {
 
 }
 
-double Shared::getNumber(std::string key) {
+double Shared::getNumber(std::string key)
+{
     std::shared_lock<std::shared_timed_mutex>
             readerLock(numberMutex);
 
     auto sharedItr = sharedNumbers.find(key);
 
-    if (sharedItr != sharedNumbers.end()) {
+    if (sharedItr != sharedNumbers.end())
+    {
         return sharedItr->second;
 
-    } else return LLONG_MIN;
+    }
+    else return LLONG_MIN;
 }
 
-void Shared::addString(std::string key, std::string value) {
+void Shared::addString(std::string key, std::string value)
+{
 
 
     std::lock_guard<std::shared_timed_mutex>
@@ -93,14 +99,17 @@ void Shared::addString(std::string key, std::string value) {
     }*/
 }
 
-std::string Shared::getString(std::string key) {
+std::string Shared::getString(std::string key)
+{
     std::shared_lock<std::shared_timed_mutex>
             writerLock(stringMutex);
 
     auto sharedItr = sharedStrings.find(key);
 
-    if (sharedItr != sharedStrings.end()) {
+    if (sharedItr != sharedStrings.end())
+    {
         return sharedItr->second;
-    } else return "";
+    }
+    else return "";
 }
 

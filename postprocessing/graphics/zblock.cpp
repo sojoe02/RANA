@@ -56,7 +56,7 @@ void ZBlock::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event){
 
 	if(zitr == zmap.end())
 	{
-		Output::Inst()->ppprintf("No z value");
+		Output::kprintf("No z value");
 	}else
 	{
 		QString string;
@@ -64,22 +64,22 @@ void ZBlock::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event){
 		if(currentZMode == ZMode::Average)
 		{
 			QTextStream(&string)<< zitr->second.average;
-			Output::Inst()->updateZvalue(string);
+			//Output::updateZvalue(string);
 
 		}else if(currentZMode == ZMode::Cumulative)
 		{
 			QTextStream(&string)<< zitr->second.cumulative;
-			Output::Inst()->updateZvalue(string);
+			//Output::Inst()->updateZvalue(string);
 
 		}else if(currentZMode == ZMode::Frequency)
 		{
 			QTextStream(&string)<< zitr->second.frequency;
-			Output::Inst()->updateZvalue(string);
+			//Output::Inst()->updateZvalue(string);
 
 		}else if(currentZMode == ZMode::Highest)
 		{
 			QTextStream(&string)<< zitr->second.highest;
-			Output::Inst()->updateZvalue(string);
+			//Output::Inst()->updateZvalue(string);
 
 		}
 	}

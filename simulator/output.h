@@ -28,19 +28,20 @@
 
 #include "utility/utility.h"
 
-class Output {
+class Output
+{
 public:
-    static Output *Inst();
+    //static Output *Inst();
 
-    void kprintf(const char *msg, ...);
+    static void kprintf(const char *msg, ...);
 
-    void kdebug(const char *msg, ...);
+    static void kdebug(const char *msg, ...);
 
-    void updateStatus(unsigned long long internalEvents, unsigned long long externalEvents);
+    static void updateStatus(unsigned long long internalEvents, unsigned long long externalEvents);
 
-    void progressBar(unsigned long long current, unsigned long long maximum);
+    static void progressBar(unsigned long long current, unsigned long long maximum);
 
-    void updatePosition(int id, double x, double y);
+    static void updatePosition(int id, double x, double y);
 
     //void setMainWindow(MainWindow *mainwindow);
 
@@ -52,11 +53,11 @@ public:
     static std::atomic<bool> LegacyMode;
 
     //Post processing things:
-    void ppprintf(const char *msg, ...);
-
-    void ppprogressbar(int current, int maximum);
-
-    void setEventSceneRect(int x, int y);
+//    void ppprintf(const char *msg, ...);
+//
+//    void ppprogressbar(int current, int maximum);
+//
+//    void setEventSceneRect(int x, int y);
 
     static unsigned long long RUNTIME;
     static std::string AgentPath;

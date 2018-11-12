@@ -30,7 +30,8 @@
 
 typedef std::vector<std::vector<int> > MatriceInt;
 
-class MapHandler {
+class MapHandler
+{
 public:
 
     MapHandler();

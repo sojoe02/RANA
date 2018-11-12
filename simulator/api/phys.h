@@ -48,10 +48,12 @@
 #include <chrono>
 
 
-class Phys {
+class Phys
+{
 public:
 
-    Phys() {}
+    Phys()
+    {}
 
     static double getTimeRes();
 
@@ -94,9 +96,11 @@ public:
                      double desX, double desY,
                      double &newX, double &newY);
 
-    static void setScale(double scale) { Phys::scale = scale; }
+    static void setScale(double scale)
+    { Phys::scale = scale; }
 
-    static double getScale() { return Phys::scale; }
+    static double getScale()
+    { return Phys::scale; }
 
 private:
 

@@ -25,58 +25,58 @@
 #include "output.h"
 
 PostControl::PostControl(MainWindow *mainWindow)
-	: mainWindow(mainWindow), eventprocessor(NULL),
-	  runner(NULL), processing(false)
+        : mainWindow(mainWindow), eventprocessor(NULL),
+          runner(NULL), processing(false)
 {
-	runner = new EventRunner();
-	QObject::connect(runner, SIGNAL(processingDone()), this, SLOT(on_processDone()));
+    runner = new EventRunner();
+    QObject::connect(runner, SIGNAL(processingDone()), this, SLOT(on_processDone()));
 }
 
 PostControl::~PostControl()
 {
-	runner->quit();
-	runner->wait();
+    runner->quit();
+    runner->wait();
 }
 
-EventQueue::simInfo* PostControl::getEventInfo(QString path)
+EventQueue::simInfo *PostControl::getEventInfo(QString path)
 {
-	if(eventprocessor != NULL)
-		delete eventprocessor;
+    if (eventprocessor != NULL)
+        delete eventprocessor;
 
-	eventprocessor = new EventProcessing;
+    eventprocessor = new EventProcessing;
 
-	return eventprocessor->readEventInfo(path.toStdString());
+    return eventprocessor->readEventInfo(path.toStdString());
 }
 
 void PostControl::runProcessEvents(QRegExp regex, QString eventPath, int to, int from,
-								double timeResolution,QString agentPath,
-								int mapResolution, double zThresshold)
+                                   double timeResolution, QString agentPath,
+                                   int mapResolution, double zThresshold)
 {
-	ColorUtility::Init();
+    ColorUtility::Init();
 
-	processing = true;
+    processing = true;
 
-	runner->setStackSize(256*1024*1024);
-	runner->setParameters(regex, eventprocessor, eventPath, to,
-						  from, timeResolution, agentPath,
-						  mapResolution, zThresshold);
-	runner->start();
+    runner->setStackSize(256 * 1024 * 1024);
+    runner->setParameters(regex, eventprocessor, eventPath, to,
+                          from, timeResolution, agentPath,
+                          mapResolution, zThresshold);
+    runner->start();
 }
 
 bool PostControl::isProcessing()
 {
-	return processing;
+    return processing;
 }
 
 
 void PostControl::on_processDone()
 {
-	processing = false;
-	mainWindow->setProcessEventButton(true);
-	mainWindow->setupVisualTab(eventprocessor->getZBlocks());
+    processing = false;
+    mainWindow->setProcessEventButton(true);
+    mainWindow->setupVisualTab(eventprocessor->getZBlocks());
 
 
-	Output::Inst()->ppprintf("Event processing done");
+    Output::kprintf("Event processing done");
 }
 
 

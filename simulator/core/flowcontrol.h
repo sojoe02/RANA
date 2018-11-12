@@ -30,16 +30,15 @@
 #include <stdio.h>
 #include <fstream>
 
-#include "supervisor.h"
 #include "simulator/core/interfacer.h"
 #include "simulator/utility/utility.h"
-#include "simulator/control.h"
 
 class Control;
 
 class Supervisor;
 
-class FlowControl {
+class FlowControl
+{
 public:
     FlowControl(Control *control);
 

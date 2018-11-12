@@ -36,13 +36,15 @@
 
 class Agent;
 
-class EventQueue {
+class EventQueue
+{
 public:
     EventQueue();
 
     ~EventQueue();
 
-    struct simInfo {
+    struct simInfo
+    {
         char luaFileName[1024]; /*!< Filename of the lua auton thats active in this simulation*/
         unsigned long long eventAmount; /*!< Number of external events active in the simulation*/
         int numberOfAgents; /*!< Total number of autons*/
@@ -55,7 +57,8 @@ public:
     };
 
     //define the external Event:
-    struct eEvent {
+    struct eEvent
+    {
         unsigned long long id;
         double propagationSpeed;
         double posX;
@@ -69,12 +72,14 @@ public:
         int originID;
         std::atomic_uint reference_count;
 
-        eEvent() : targetGroup(0), reference_count(0) {}
+        eEvent() : targetGroup(0), reference_count(0)
+        {}
     };
 
 
     //define the internal Event:
-    struct iEvent {
+    struct iEvent
+    {
         Agent *origin;
         const eEvent *event;
         unsigned long long activationTime;
@@ -84,7 +89,8 @@ public:
     };
 
     //define the data event, precisely the same as events:
-    struct dataEvent {
+    struct dataEvent
+    {
         unsigned long long id;
         int targetID;
         unsigned long long activationTime;
@@ -97,7 +103,8 @@ public:
         char filename[256];
     };
 
-    struct autonInfo {
+    struct autonInfo
+    {
         int ID;
         int eventAmount;
         char info[1000];

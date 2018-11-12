@@ -9,7 +9,7 @@ ZMap::ZMap()
 {
 	maxLevels = ColorUtility::GetMaxZLevels();
 	minLevels = ColorUtility::GetMinZLevels();
-    Output::Inst()->ppprintf("color utility max values: %f,%f");
+    //Output::Inst()->ppprintf("color utility max values: %f,%f");
 }
 QRectF ZMap::boundingRect() const
 {

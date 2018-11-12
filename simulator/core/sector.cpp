@@ -39,15 +39,19 @@
 #include "simulator/api/phys.h"
 
 Sector::Sector(double posX, double posY, double width, double height, Supervisor *master, int id)
-        : initAmount(0), master(master), posX(posX), posY(posY), width(width), height(height), id(id) {
+        : initAmount(0), master(master), posX(posX), posY(posY), width(width), height(height), id(id)
+{
 
 }
 
-Sector::~Sector() {
+Sector::~Sector()
+{
 }
 
-void Sector::populate(int LUASize, std::string filename) {
-    for (int i = 0; i < LUASize; i++) {
+void Sector::populate(int LUASize, std::string filename)
+{
+    for (int i = 0; i < LUASize; i++)
+    {
 
         if (Output::KillSimulation.load()) return;
         double xtmp = Phys::getMersenneFloat(0, width);
@@ -69,12 +73,15 @@ void Sector::populate(int LUASize, std::string filename) {
  * Retrieves the information from all actors, writes the information to the lists given.
  * @param agentinfo address of array that holds the info needed for graphic rendering.
  */
-void Sector::retrievePopPos(std::list<agentInfo> &infolist) {
+void Sector::retrievePopPos(std::list<agentInfo> &infolist)
+{
 
-    for (const auto &lua : luaAgents) {
+    for (const auto &lua : luaAgents)
+    {
 
         if (master->removedIDs.find(lua.second->getID()) ==
-            master->removedIDs.end()) {
+            master->removedIDs.end())
+        {
             agentInfo info = lua.second->getAgentInfo();
 //			Output::Inst()->kprintf("%i,%i,%i", info.color.blue, info.color.green, info.color.red);
             //info.id = lua.second->getID();
@@ -93,34 +100,42 @@ void Sector::retrievePopPos(std::list<agentInfo> &infolist) {
  * an event is initated it will be added the masters eventqueue.
  * @param macroResolution the resolution of the macrostep (microStepRes * macroFactor)
  */
-void Sector::takeStepPhase(unsigned long long tmu) {
-    for (const auto &lua : luaAgents) {
+void Sector::takeStepPhase(unsigned long long tmu)
+{
+    for (const auto &lua : luaAgents)
+    {
         int macroFactorMultipler = lua.second->getMacroFactorMultipler();
 
         if (macroFactorMultipler > 0 &&
-            tmu % (macroFactorMultipler * Phys::getMacroFactor()) == 0) {
+            tmu % (macroFactorMultipler * Phys::getMacroFactor()) == 0)
+        {
             std::unique_ptr<EventQueue::eEvent> eevent =
                     lua.second->takeStep();
 
 
-            if (eevent != NULL) {
+            if (eevent != NULL)
+            {
                 master->receiveEEventPtr(std::move(eevent));
             }
         }
     }
 
-    if (!removalIDs.empty()) {
+    if (!removalIDs.empty())
+    {
         //remove all autons set for removal
-        for (const auto &r : removalIDs) {
+        for (const auto &r : removalIDs)
+        {
             auto itrLua = luaAgents.find(r);
-            if (itrLua != luaAgents.end()) {
+            if (itrLua != luaAgents.end())
+            {
                 luaAgents.erase(r);
             }
         }
         removalIDs.clear();
     }
 
-    for (const auto &agent : newAgents) {
+    for (const auto &agent : newAgents)
+    {
         luaAgents.insert(std::make_pair(agent->getID(), agent));
         agent->InitializeAgent();
 
@@ -134,15 +149,19 @@ void Sector::takeStepPhase(unsigned long long tmu) {
  * Recieves an eventlist from the Master to distribute among local autons
  * @param event EventQueue ptr holding external events.
  */
-void Sector::distroPhase(const EventQueue::eEvent *event) {
-    for (const auto &lua : luaAgents) {
+void Sector::distroPhase(const EventQueue::eEvent *event)
+{
+    for (const auto &lua : luaAgents)
+    {
         if (event->originID != lua.second->getID() &&
             (event->targetGroup == 0 ||
-             lua.second->checkGroup(event->targetGroup) == true)) {
+             lua.second->checkGroup(event->targetGroup) == true))
+        {
             std::unique_ptr<EventQueue::iEvent> ieventPtr =
                     lua.second->processEvent(event);
 
-            if (ieventPtr != NULL) {
+            if (ieventPtr != NULL)
+            {
                 master->incrementEEventCounter(event->id);
                 master->receiveIEventPtr(std::move(ieventPtr));
             }
@@ -150,29 +169,37 @@ void Sector::distroPhase(const EventQueue::eEvent *event) {
     }
 }
 
-void Sector::simDone() {
-    for (auto itlua = luaAgents.begin(); itlua != luaAgents.end(); itlua++) {
+void Sector::simDone()
+{
+    for (auto itlua = luaAgents.begin(); itlua != luaAgents.end(); itlua++)
+    {
         itlua->second->simDone();
     }
 }
 
 //perform an event for an auton in question:
-void Sector::performEvent(std::unique_ptr<EventQueue::eEvent> event) {
+void Sector::performEvent(std::unique_ptr<EventQueue::eEvent> event)
+{
     master->receiveEEventPtr(std::move(event));
 }
 
 
 int Sector::addAgent(double x, double y, double z,
-                     std::string filename, std::string type = "Lua") {
+                     std::string filename, std::string type = "Lua")
+{
     int id = ID::generateAgentID();
 
-    if (type.compare("Lua") == 0) {
+    if (type.compare("Lua") == 0)
+    {
         std::shared_ptr<AgentLuaInterface> luaPtr =
                 std::make_shared<AgentLuaInterface>(id, x, y, 1, this, filename);
 
-        if (Output::SimRunning) {
+        if (Output::SimRunning)
+        {
             newAgents.push_back(luaPtr);
-        } else {
+        }
+        else
+        {
             luaAgents.insert(std::make_pair(luaPtr->getID(), luaPtr));
             luaPtr->InitializeAgent();
         }
@@ -182,12 +209,15 @@ int Sector::addAgent(double x, double y, double z,
     return id;
 }
 
-bool Sector::removeAgent(int arg_id) {
+bool Sector::removeAgent(int arg_id)
+{
     auto luaItr = luaAgents.find(arg_id);
-    if (luaItr != luaAgents.end()) {
+    if (luaItr != luaAgents.end())
+    {
         luaItr->second->setRemoved();
         removalIDs.push_back(arg_id);
         return true;
-    } else return false;
+    }
+    else return false;
 
 }

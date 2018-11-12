@@ -7,7 +7,8 @@
 #include "simulator/utility/utility.h"
 
 
-class Scanning {
+class Scanning
+{
 public:
     Scanning();
 

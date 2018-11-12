@@ -41,19 +41,12 @@ std::atomic<bool> Output::SimRunning;
 std::atomic<bool> Output::LegacyMode;
 
 unsigned long long Output::RUNTIME = 0;
-std::string Output::AgentPath = "";
-std::string Output::AgentFile = "";
-std::string Output::RanaDir = "";
+//std::string Output::AgentPath = "";
+//std::string Output::AgentFile = "";
+//std::string Output::RanaDir = "";
 
-Output *Output::Inst() {
-    if (!output)
-        output = new Output();
-
-    return output;
-}
-
-
-Output::Output() {
+Output::Output()
+{
 
 }
 
@@ -64,7 +57,8 @@ Output::Output() {
  * @param msg formated string that is to written to output
  * @see MainWindow::write_regularOutput()
  */
-void Output::kprintf(const char *msg, ...) {
+void Output::kprintf(const char *msg, ...)
+{
     //lock.lock();
     va_list args;
     va_start(args, msg);
@@ -85,7 +79,8 @@ void Output::kprintf(const char *msg, ...) {
  * @see Output::kprintf()
  * @see MainWindow::write_output()
  */
-void Output::kdebug(const char *msg, ...) {
+void Output::kdebug(const char *msg, ...)
+{
     //lock.lock();
     va_list args;
     va_start(args, msg);
@@ -112,7 +107,8 @@ void Output::kdebug(const char *msg, ...) {
  * @param externalEvents total number of external events
  * @see MainWindow::on_udateStatus()
  */
-void Output::updateStatus(unsigned long long internalEvents, unsigned long long externalEvents) {
+void Output::updateStatus(unsigned long long internalEvents, unsigned long long externalEvents)
+{
     //mainWindow->write_status(internalEvents, externalEvents);
 }
 
@@ -122,8 +118,9 @@ void Output::updateStatus(unsigned long long internalEvents, unsigned long long 
  * @param maximum Final microstep
  * @see MainWindow::advanceProgess()
  */
-void Output::progressBar(unsigned long long current, unsigned long long maximum) {
-    int progress = (current * 100) / maximum;
+void Output::progressBar(unsigned long long current, unsigned long long maximum)
+{
+    int progress = static_cast<int >((current * 100LLU) / maximum);
     //mainWindow->advanceProgess(progress);
 }
 
@@ -133,52 +130,58 @@ void Output::progressBar(unsigned long long current, unsigned long long maximum)
  * @param maximum Maximun progress value
  * @see MainWindow::advancePPProgess()
  */
-void Output::ppprogressbar(int current, int maximum) {
-    int progress = (current * 100) / maximum;
-    //mainWindow->advancePPProgess(progress);
-}
-
-void Output::setEventSceneRect(int x, int y) {
-    //mainWindow->setEventSceneRect(x, y);
-}
-
-//void Output::setMainWindow(MainWindow *mainwindow)
+//void Output::ppprogressbar(int current, int maximum)
 //{
-//	Output::mainWindow = mainwindow;
+//    int progress = (current * 100) / maximum;
+//    //mainWindow->advancePPProgess(progress);
 //}
-
-/**
- * @brief Deprecated use Output::kprintf()
- * @param msg
- */
-void Output::ppprintf(const char *msg, ...) {
-
-    va_list args;
-    va_start(args, msg);
-
-    char buffer[2048] = {};
-    vsnprintf(buffer, 2047, msg, args);
-
-    //QString string(buffer);
-
-    //mainWindow->write_PPOutput(string);
-
-    va_end(args);
-}
+//
+//void Output::setEventSceneRect(int x, int y)
+//{
+//    //mainWindow->setEventSceneRect(x, y);
+//}
+//
+////void Output::setMainWindow(MainWindow *mainwindow)
+////{
+////	Output::mainWindow = mainwindow;
+////}
+//
+///**
+// * @brief Deprecated use Output::kprintf()
+// * @param msg
+// */
+//void Output::ppprintf(const char *msg, ...)
+//{
+//
+//    va_list args;
+//    va_start(args, msg);
+//
+//    char buffer[2048] = {};
+//    vsnprintf(buffer, 2047, msg, args);
+//
+//    //QString string(buffer);
+//
+//    //mainWindow->write_PPOutput(string);
+//
+//    va_end(args);
+//}
 
 /**
  * @brief Writes a string to the zvalue label, in event postprocessing.
  * @param string
  */
-void Output::updateZvalue(std::string string) {
+void Output::updateZvalue(std::string string)
+{
     //Output::mainWindow->writeZValue(string);
 }
 
-void Output::removeGraphicAgent(int Id) {
+void Output::removeGraphicAgent(int Id)
+{
     //mainWindow->removeGraphicAgent(Id);
 }
 
-void Output::addGraphicAgent(int Id, double posX, double posY, rgba color, double angle) {
+void Output::addGraphicAgent(int Id, double posX, double posY, rgba color, double angle)
+{
     std::lock_guard<std::mutex> guard(autonMutex);
     //mainWindow->addGraphicAgent(Id, int(posX)/Phys::getScale(), int(posY)/Phys::getScale(), color, angle);
 }
@@ -188,7 +191,8 @@ void Output::addGraphicAgent(int Id, double posX, double posY, rgba color, doubl
 //    mainWindow->changeGraphicAgentColor(id, r, g, b, alpha);
 //}
 
-void Output::enableRunBotton(bool enabled) {
+void Output::enableRunBotton(bool enabled)
+{
     //mainWindow->enableRunButton(enabled);
 
 }

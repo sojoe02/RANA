@@ -20,36 +20,40 @@ class EventProcessing
 {
 
 public:
-	EventProcessing();
-	~EventProcessing();
+    EventProcessing();
 
-	void resetEventProcessor();
+    ~EventProcessing();
 
-	void binEvents(QRegExp regex, std::string path, int from, int to);
+    void resetEventProcessor();
 
-	EventQueue::simInfo *readEventInfo(std::string path);
-	EventQueue::simInfo *getDataEvent();
-	void processBinnedEvents(double timeResolution, std::string path,
-							 double mapResolution, double zThresshold);
+    void binEvents(QRegExp regex, std::string path, int from, int to);
 
-	void processEvent(EventQueue::dataEvent *event, double thresshold,
-					  double mapRes, double timeRes, std::string path);
+    EventQueue::simInfo *readEventInfo(std::string path);
 
-	QHash<QString, ZBlock *> * getZBlocks();
+    EventQueue::simInfo *getDataEvent();
+
+    void processBinnedEvents(double timeResolution, std::string path,
+                             double mapResolution, double zThresshold);
+
+    void processEvent(EventQueue::dataEvent *event, double thresshold,
+                      double mapRes, double timeRes, std::string path);
+
+    QHash<QString, ZBlock *> *getZBlocks();
+
 private:
 
-	std::vector<EventQueue::dataEvent> eventbin;
-	QHash<QString, ZBlock*> *zBlocks;
-	//std::unorderd_map<>
-	EventQueue::simInfo *simInfo;
-	EventQueue::dataEvent devent;
+    std::vector<EventQueue::dataEvent> eventbin;
+    QHash<QString, ZBlock *> *zBlocks;
+    //std::unorderd_map<>
+    EventQueue::simInfo *simInfo;
+    EventQueue::dataEvent devent;
 
-	int test_number;
+    int test_number;
 
-	void recursiveZlevel(AgentLuaInterface *auton, EventQueue::dataEvent *event,
-						 QSet<QString> *visited, int x, int y, int displaceX,
-						 int displaceY, int width, int height, double mapRes,
-						 double timeRes, double thressholdZ);
+    void recursiveZlevel(AgentLuaInterface *auton, EventQueue::dataEvent *event,
+                         QSet <QString> *visited, int x, int y, int displaceX,
+                         int displaceY, int width, int height, double mapRes,
+                         double timeRes, double thressholdZ);
 
 };
 

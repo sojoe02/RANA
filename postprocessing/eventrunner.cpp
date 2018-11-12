@@ -2,39 +2,42 @@
 #include "output.h"
 
 EventRunner::EventRunner()
-	:eventprocessor(NULL)
+        : eventprocessor(NULL)
 {
 
 }
 
 void EventRunner::run()
 {
-	if(eventprocessor != NULL)
-	{
-		eventprocessor->binEvents(regex,eventPath.toStdString(),from,to);
+    if (eventprocessor != NULL)
+    {
+        eventprocessor->binEvents(regex, eventPath.toStdString(), from, to);
 
-		eventprocessor->processBinnedEvents(timeResolution, agentPath.toStdString(),
-										mapResolution,zThresshold);
+        eventprocessor->processBinnedEvents(timeResolution, agentPath.toStdString(),
+                                            mapResolution, zThresshold);
 
-	} else
-		Output::Inst()->ppprintf("parameters have not been set");
+    }
+    else
+        Output::kprintf("parameters have not been set");
 
-	emit processingDone();
+    emit processingDone();
 }
 
 
-void EventRunner::setParameters(QRegExp regex, EventProcessing *eventprocessor, QString eventPath, int from, int to, double timeResolution, QString agentPath, int mapResolution, double zThresshold)
+void EventRunner::setParameters(QRegExp regex, EventProcessing *eventprocessor, QString eventPath, int from, int to,
+                                double timeResolution, QString agentPath, int mapResolution, double zThresshold)
 {
-	Output::Inst()->kdebug("path of agent is %s,\n event are at %s", agentPath.toStdString().c_str(), eventPath.toStdString().c_str());
-	this->regex = regex;
-	this->eventprocessor = eventprocessor;
-	this->eventPath = eventPath;
-	this->from = from;
-	this->to = to;
-	this->timeResolution = timeResolution;
-	this->agentPath  = agentPath;
-	this->mapResolution = mapResolution;
-	this->zThresshold = zThresshold;
+    Output::kdebug("path of agent is %s,\n event are at %s", agentPath.toStdString().c_str(),
+                   eventPath.toStdString().c_str());
+    this->regex = regex;
+    this->eventprocessor = eventprocessor;
+    this->eventPath = eventPath;
+    this->from = from;
+    this->to = to;
+    this->timeResolution = timeResolution;
+    this->agentPath = agentPath;
+    this->mapResolution = mapResolution;
+    this->zThresshold = zThresshold;
 }
 
 

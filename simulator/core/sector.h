@@ -37,7 +37,8 @@
 
 class Supervisor;
 
-class Sector {
+class Sector
+{
 public:
     Sector(double posX, double posY, double width, double height, Supervisor *master, int id);
 
@@ -60,7 +61,8 @@ public:
 
     void simDone();
 
-    int getID() { return id; }
+    int getID()
+    { return id; }
 
     int addAgent(double x, double y, double z,
                  std::string filename, std::string type);

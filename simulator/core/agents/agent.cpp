@@ -29,31 +29,38 @@
 
 Agent::Agent(int ID, double posX, double posY, double posZ, Sector *sector)
         : ID(ID), macroFactorMultiple(1), posX(posX), posY(posY), posZ(posZ), sector(sector),
-          radius(0), mass(0), charge(0), angle(0) {
+          radius(0), mass(0), charge(0), angle(0)
+{
 
 }
 
-int Agent::getID() {
+int Agent::getID()
+{
     return ID;
 }
 
-std::string Agent::getDesc() {
+std::string Agent::getDesc()
+{
     return desc;
 }
 
-double Agent::getPosX() {
+double Agent::getPosX()
+{
     return posX;
 }
 
-double Agent::getPosY() {
+double Agent::getPosY()
+{
     return posY;
 }
 
-double Agent::getPosZ() {
+double Agent::getPosZ()
+{
     return posZ;
 }
 
-void Agent::setColor(int r, int g, int b, int a) {
+void Agent::setColor(int r, int g, int b, int a)
+{
     std::lock_guard<std::mutex> guard(mutex);
     color.red = r;
     color.green = g;
@@ -61,7 +68,8 @@ void Agent::setColor(int r, int g, int b, int a) {
     color.alpha = a;
 }
 
-agentInfo Agent::getAgentInfo() {
+agentInfo Agent::getAgentInfo()
+{
 
     agentInfo info;
 
@@ -81,21 +89,25 @@ agentInfo Agent::getAgentInfo() {
 
 }
 
-bool Agent::removeGroup(int group) {
+bool Agent::removeGroup(int group)
+{
     auto itr = groups.find(group);
 
-    if (itr != groups.end()) {
+    if (itr != groups.end())
+    {
         groups.erase(itr);
         return true;
     }
     return false;
 }
 
-void Agent::addGroup(int group) {
+void Agent::addGroup(int group)
+{
     groups.insert(group);
 }
 
-bool Agent::checkGroup(int group) {
+bool Agent::checkGroup(int group)
+{
     auto itr = groups.find(group);
 
     if (itr != groups.end())
@@ -103,32 +115,39 @@ bool Agent::checkGroup(int group) {
     else return false;
 }
 
-int Agent::getMacroFactorMultipler() {
+int Agent::getMacroFactorMultipler()
+{
     return macroFactorMultiple;
 }
 
-void Agent::setMacroFactorMultipler(int multipler) {
+void Agent::setMacroFactorMultipler(int multipler)
+{
     macroFactorMultiple = multipler;
 }
 
-void Agent::distroEEvent(std::unique_ptr<EventQueue::eEvent> event) {
+void Agent::distroEEvent(std::unique_ptr<EventQueue::eEvent> event)
+{
     //sector->eEventsOutbox.push_back(std::move(event));
 }
 
 
-std::unique_ptr<EventQueue::iEvent> Agent::processEvent(EventQueue::eEvent *event) {
+std::unique_ptr<EventQueue::iEvent> Agent::processEvent(EventQueue::eEvent *event)
+{
     return NULL;
 }
 
-std::unique_ptr<EventQueue::eEvent> Agent::handleEvent(std::unique_ptr<EventQueue::iEvent> eventPtr) {
+std::unique_ptr<EventQueue::eEvent> Agent::handleEvent(std::unique_ptr<EventQueue::iEvent> eventPtr)
+{
     return NULL;
 }
 
-bool Agent::operator==(Agent &other) const {
+bool Agent::operator==(Agent &other) const
+{
     return (this->ID == other.getID());
 }
 
-bool Agent::operator!=(Agent &other) const {
+bool Agent::operator!=(Agent &other) const
+{
     return !(*this == other);
 }
 

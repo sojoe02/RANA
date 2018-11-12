@@ -10,41 +10,55 @@
 #include "mainwindow.h"
 
 class MainWindow;
+
 class EventProcessing;
+
 class EventRunner;
+
 class PostControl : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
 
-	PostControl(MainWindow *mainWindow);
-	~PostControl();
+    PostControl(MainWindow *mainWindow);
 
-	EventQueue::simInfo* getEventInfo(QString path);
+    ~PostControl();
 
-	void runProcessEvents(QRegExp regex, QString eventPath, int to, int from,
-					   double timeResolution, QString agentPath,
-					   int mapResolution, double zThresshold);
+    EventQueue::simInfo *getEventInfo(QString path);
 
-	bool isProcessing();
+    void runProcessEvents(QRegExp regex, QString eventPath, int to, int from,
+                          double timeResolution, QString agentPath,
+                          int mapResolution, double zThresshold);
 
-public slots:
+    bool isProcessing();
 
-	void on_processDone();
+public
+    slots:
 
-signals:
+            void
 
-	void startEventProcessing(QString eventPath, int from, int to,
-							  double timeResolution,QString agentPath,
-							  int mapResolution, double zThresshold);
+    on_processDone();
+
+    signals:
+
+            void
+    startEventProcessing(QString
+    eventPath,
+    int from,
+    int to,
+    double timeResolution, QString
+    agentPath,
+    int mapResolution,
+    double zThresshold
+    );
 
 private:
 
-	MainWindow *mainWindow;
-	EventProcessing *eventprocessor;
-	EventRunner *runner;
-	bool processing;
+    MainWindow *mainWindow;
+    EventProcessing *eventprocessor;
+    EventRunner *runner;
+    bool processing;
 
 
 };

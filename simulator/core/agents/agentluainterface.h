@@ -43,15 +43,12 @@
 
 #include "agent.h"
 
-class AgentLuaInterface : public Agent {
+class AgentLuaInterface : public Agent
+{
 public:
     AgentLuaInterface(int ID, double posX, double posY, double posZ, Sector *sector, std::string filename);
 
     ~AgentLuaInterface();
-
-    bool operator==(AgentLuaInterface &other) const;
-
-    bool operator!=(AgentLuaInterface &other) const;
 
     /*******************************************
     * Lua wrapper functions
@@ -152,11 +149,9 @@ public:
 
     void InitializeAgent();
 
-    std::unique_ptr<EventQueue::iEvent>
-    processEvent(const EventQueue::eEvent *event);
+    std::unique_ptr<EventQueue::iEvent> processEvent(const EventQueue::eEvent *event);
 
-    std::unique_ptr<EventQueue::eEvent>
-    handleEvent(std::unique_ptr<EventQueue::iEvent> eventPtr);
+    std::unique_ptr<EventQueue::eEvent> handleEvent(std::unique_ptr<EventQueue::iEvent> eventPtr);
 
     std::unique_ptr<EventQueue::eEvent> takeStep();
 

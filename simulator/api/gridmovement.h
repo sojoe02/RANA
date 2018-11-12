@@ -29,9 +29,11 @@
 
 typedef std::list<int> pList;
 
-class GridMovement {
+class GridMovement
+{
 public:
-    GridMovement() {}
+    GridMovement()
+    {}
 
     static void initGrid(int scale);
 

@@ -10,7 +10,8 @@
 #include "supervisor.h"
 #include "sector.h"
 
-class Interfacer {
+class Interfacer
+{
 public:
 
     static void initInterfacer(Supervisor *arg_master);
