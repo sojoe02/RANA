@@ -1,6 +1,3 @@
-[submodule "dependencies/Lua/lua"]
-	path = dependencies/Lua/lua
-	url = https://github.com/lua/lua.git
 [submodule "dependencies/asio"]
 	path = dependencies/asio
 	url = https://github.com/chriskohlhoff/asio
