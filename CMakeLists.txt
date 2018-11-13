@@ -15,15 +15,16 @@ configure_file(
 #### include directories ####
 INCLUDE_DIRECTORIES("${PROJECT_BINARY_DIR}"
         "${PROJECT_SOURCE_DIR}"
+        "${PROJECT_SOURCE_DIR}/dependencies/asio/asio/include"
         #        simulator"
         #        "${PROJECT_SOURCE_DIR}/dependencies"
-        #        "${PROJECT_SOURCE_DIR}/webservice"
+        #        "${PROJECT_SOURCE_DIR}/service"
         )
 
 
 #### Subdirectories for local libraries ####
 add_subdirectory(simulator)
-#add_subdirectory(webservice)
+add_subdirectory(service)
 add_subdirectory(dependencies)
 
 set(CMAKE_CXX_FLAGS "-O3 -m64")
@@ -33,7 +34,9 @@ add_executable(${PROJECT_NAME} "main.cpp")
 
 target_link_libraries(${PROJECT_NAME}
         PRIVATE Simulator
-        #	    //Webservice
+        PRIVATE Service
         PRIVATE LuaIface
         PUBLIC ${CMAKE_THREAD_LIBS_INIT}
         )
+
+add_compile_definitions(ASIO_STANDALONE)

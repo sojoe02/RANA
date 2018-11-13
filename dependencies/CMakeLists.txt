@@ -1,7 +1,7 @@
 ######################################################################
 #### Scripting language Lua                                       ####
 ######################################################################
-set(LuaSourcePath "Lua/lua-5.3.5")
+set(LuaSourcePath "lua")
 
 add_custom_target(LUA_LIB
         COMMAND make linux
