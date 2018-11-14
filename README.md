@@ -3,6 +3,15 @@
   <img src=https://raw.githubusercontent.com/sojoe02/RANA/master/images/ranalogo.png />
 </p>
 
+# DISCLAIMER
+
+**Rana development has been in a bit of a hiatus, and its development branch (and branches in general) is a mess. Development is starting up again now. Rana is facing some big changes fx. Qt is going to be removed and the client part of its implementation will change codebase to something else (C# mono).**
+
+**You can follow the development of 'new Rana' in branch future.**
+
+**I will do bugfixes only in branch master.**
+
+
 # Description
 
 Rana is a multi agent system simulator that is designed and implemented to support the high precision needed to perform real-time multi agent communication simulations. This entails support for real-time agent actions and event propagation.
