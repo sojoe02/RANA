@@ -28,6 +28,8 @@
 #include "simulator/output.h"
 #include "simulator/api/gridmovement.h"
 
+#include "service/ranaservice.h"
+
 
 int ID::aID = 0;
 unsigned long long ID::eID = 0;
@@ -46,6 +48,10 @@ int main(int argc, char *argv[])
     //qDebug() << Phys::getMersenneInteger(1, RAND_MAX) << Phys::getMersenneInteger(1, RAND_MAX) << Phys::getMersenneFloat(1, RAND_MAX) <<Phys::getMersenneInteger(1, RAND_MAX) ;
 
 
+    RanaService *ranaService = new RanaService();
+
+
+    std::cout << "Rana is done, over and out!" << std::endl;
 
     //MainWindow *w = new MainWindow();
 
@@ -54,3 +60,5 @@ int main(int argc, char *argv[])
     //w->show();
     return 0;
 }
+
+

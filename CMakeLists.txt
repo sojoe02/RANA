@@ -31,11 +31,16 @@ set(CMAKE_CXX_FLAGS "-O3 -m64")
 set(CMAKE_CXX_STANDARD 14)
 
 add_executable(${PROJECT_NAME} "main.cpp")
+add_executable(TEST_TCP_CLIENT "service/testclient.cpp")
 
 target_link_libraries(${PROJECT_NAME}
-        PRIVATE Simulator
-        PRIVATE Service
+        PUBLIC Simulator
+        PUBLIC Service
         PRIVATE LuaIface
+        PUBLIC ${CMAKE_THREAD_LIBS_INIT}
+        )
+
+target_link_libraries(TEST_TCP_CLIENT
         PUBLIC ${CMAKE_THREAD_LIBS_INIT}
         )
 

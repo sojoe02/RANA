@@ -14,6 +14,7 @@
 * QMake is replaced with CMake.
 * With time Windows support will be re-added, not so sure about Mac, though it should be easy enough(now that QT is gone)
 * Main dev platform moved from qtcreator to Clion.
+* Getting rid of the AgentLua interface and replace that with a lua state pr. thread. the current situation is a mess!
 
 # Description (to be updated)
 

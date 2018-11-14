@@ -1,6 +1,12 @@
 set(SERVICE_FILES
         ranaservice.cpp
         ranaservice.h
+        ranainstance.cpp
+        ranainstance.h
+        testclient.cpp
+        testclient.h
+        testserver.cpp
+        testserver.h
         )
 
 add_library(Service

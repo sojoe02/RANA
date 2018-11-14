@@ -111,9 +111,9 @@ Supervisor::generateMap(double width, double height, int sectorAmount, double ti
         ss << i;
         id.append(ss.str());
 
-        Sector *nest = new Sector(0, 0, width, height, this, i);
+        auto *nest = new Sector(0, 0, width, height, this, i);
 
-        std::thread *t = new std::thread(Supervisor::runStepPhase, nest);
+        auto *t = new std::thread(Supervisor::runStepPhase, nest);
         threads.push_back(t);
 
         sectors.push_back(nest);
@@ -242,14 +242,14 @@ void Supervisor::microStep(unsigned long long tmu)
             {
                 std::unique_ptr<EventQueue::iEvent> iEventPtr(std::move(e));
 
-                AgentLuaInterface *luaAgent = (AgentLuaInterface *) iEventPtr->origin;
+                auto *luaAgent = (AgentLuaInterface *) iEventPtr->origin;
                 eventQueue->decrementEeventCounter(iEventPtr->event->id);
 
                 std::unique_ptr<EventQueue::eEvent> eEventPtr =
                         luaAgent->handleEvent(std::move(iEventPtr));
 
 
-                if (eEventPtr != NULL)
+                if (eEventPtr != nullptr)
                     eventQueue->insertEEvent(std::move(eEventPtr));
 
             }
@@ -335,7 +335,7 @@ void Supervisor::printStatus()
  */
 void Supervisor::saveExternalEvents(std::string filename)
 {
-    eventQueue->saveEEventData(filename, luaFilename, autonAmount, areaY, areaX);
+    eventQueue->saveEEventData(std::move(filename), luaFilename, autonAmount, areaY, areaX);
 }
 
 void Supervisor::simDone()
