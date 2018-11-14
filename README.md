@@ -5,7 +5,7 @@
 
 # DISCLAIMER
 
-**Rana development has been in a bit of a hiatus, and its development branch (and branches in general) is a mess. Development is starting up again now. Rana is facing some big changes fx. Qt is going to be removed and the client part of its implementation will change codebase to something else (C# mono) and is Lua agent implementation is going to be updated**
+**Rana development has been in a bit of a hiatus, and its development branch (and branches in general) is a mess, however development is starting up again and Rana is facing some big changes fx. Qt is going to be removed and the client part of its implementation will change codebase to something else (C# mono) and is Lua agent implementation is going to be updated**
 
 **I have made so many dumb architectual descisions in my scramble to get Rana ready for my PhD that I don't really believe that Rana is anywhere near ready for prime-time**
 
