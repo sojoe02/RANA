@@ -21,6 +21,7 @@ INCLUDE_DIRECTORIES("${PROJECT_BINARY_DIR}"
         #        "${PROJECT_SOURCE_DIR}/service"
         )
 
+add_compile_definitions(ASIO_STANDALONE)
 
 #### Subdirectories for local libraries ####
 add_subdirectory(simulator)
@@ -44,4 +45,3 @@ target_link_libraries(TEST_TCP_CLIENT
         PUBLIC ${CMAKE_THREAD_LIBS_INIT}
         )
 
-add_compile_definitions(ASIO_STANDALONE)

@@ -4,6 +4,7 @@
 
 #include "ranaservice.h"
 #include "ranainstance.h"
+#include <functional>
 
 using asio::ip::tcp;
 
