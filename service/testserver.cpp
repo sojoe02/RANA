@@ -6,10 +6,10 @@
 
 using asio::ip::tcp;
 
+
 TestServer::TestServer()
 {
-
-
+    stopService.store(false);
 }
 
 std::string TestServer::makeDayTimeString()

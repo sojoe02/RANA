@@ -7,8 +7,12 @@
 
 using asio::ip::tcp;
 
+std::atomic<bool> RanaService::stopService;
+
 RanaService::RanaService()
 {
+    stopService.store(false);
+
     std::cout << "Service starting" << std::endl;
     //asio::steady_timer t(io, asio::chrono::seconds(1));
 
@@ -19,7 +23,7 @@ RanaService::RanaService()
     try
     {
         tcp::acceptor acceptor(io, tcp::endpoint(tcp::v4(), 1301));
-        for (;;)
+        for (; stopService == false;)
         {
             tcp::socket socket(io);
             acceptor.accept(socket);

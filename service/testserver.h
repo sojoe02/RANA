@@ -8,6 +8,8 @@
 #include <asio.hpp>
 #include <string>
 
+#
+
 class TestServer
 {
 public:
@@ -15,6 +17,7 @@ public:
 
     std::string makeDayTimeString();
 
+    static std::atomic_bool stopService;
 };
 
 

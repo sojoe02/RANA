@@ -14,7 +14,7 @@ TestClient::TestClient(std::string host)
     {
         asio::io_context ioContext;
 
-        for (int i = 0; i < 50; i++)
+        for (int i = 0; i < 5; i++)
         {
             tcp::resolver resolver(ioContext);
             tcp::resolver::results_type endpoints = resolver.resolve("localhost", "1301");

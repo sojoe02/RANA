@@ -7,6 +7,7 @@
 
 #include <asio.hpp>
 #include <iostream>
+#include <atomic>
 
 class RanaService
 {
@@ -16,6 +17,8 @@ public:
     static void asyncPrint(const asio::error_code &, asio::steady_timer *t, int *count);
 
     std::string makeDayTimeString();
+
+    static std::atomic_bool stopService;
 
 private:
     asio::io_context io;
