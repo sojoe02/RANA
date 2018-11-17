@@ -7,9 +7,9 @@
 
 **This is where Rana is headed, it is nowhere near ready**
 
-* Rana as a WebService, Ranas UI will be replaced with a Restful based interface.
-* UI will be build using some easy to use web based client framework, such as Bootstrap.
-* Unity will do the graphics.
+* Hook up the Rana simulation core with a service layer, Ranas UI will be replaced with a socket based interface (udp/tcp).
+* UI will be build using some easy to use web based client framework such as bootstrap with a WebGL based rendering interface.
+* Unity will do the graphics (webGL).
 * QT will be stripped completely from the project.
 * QMake is replaced with CMake.
 * With time Windows support will be re-added, not so sure about Mac, though it should be easy enough(now that QT is gone)
