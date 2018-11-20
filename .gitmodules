@@ -1,3 +1,6 @@
 [submodule "dependencies/asio"]
 	path = dependencies/asio
 	url = https://github.com/chriskohlhoff/asio
+[submodule "dependencies/eigen-git-mirror"]
+	path = dependencies/eigen-git-mirror
+	url = https://github.com/eigenteam/eigen-git-mirror

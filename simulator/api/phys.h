@@ -52,8 +52,7 @@ class Phys
 {
 public:
 
-    Phys()
-    {}
+    Phys() = default;
 
     static double getTimeRes();
 
