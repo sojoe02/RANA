@@ -15,6 +15,7 @@ configure_file(
 #### include directories ####
 INCLUDE_DIRECTORIES("${PROJECT_BINARY_DIR}"
         "${PROJECT_SOURCE_DIR}"
+        "${PROJECT_SOURCE_DIR}/src"
         "${PROJECT_SOURCE_DIR}/dependencies/asio/asio/include"
         #        simulator"
         #        "${PROJECT_SOURCE_DIR}/dependencies"
@@ -24,15 +25,15 @@ INCLUDE_DIRECTORIES("${PROJECT_BINARY_DIR}"
 add_compile_definitions(ASIO_STANDALONE)
 
 #### Subdirectories for local libraries ####
-add_subdirectory(simulator)
-add_subdirectory(service)
+add_subdirectory(src/simulator)
+add_subdirectory(src/service)
 add_subdirectory(dependencies)
 
 set(CMAKE_CXX_FLAGS "-O3 -m64")
 set(CMAKE_CXX_STANDARD 14)
 
 add_executable(${PROJECT_NAME} "main.cpp")
-add_executable(TEST_TCP_CLIENT "service/testclient.cpp")
+add_executable(TEST_TCP_CLIENT "src/service/TestClient.cpp")
 
 target_link_libraries(${PROJECT_NAME}
         PUBLIC Simulator

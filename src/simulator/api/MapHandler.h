@@ -19,35 +19,36 @@
 //along with RANA.  If not, see <http://www.gnu.org/licenses/>.
 //
 //--end_license--
+#ifndef MAPHANDLER_H
+#define MAPHANDLER_H
 
-#include <stdio.h>
-#include <string>
+#include "src/simulator/utility/Utility.h"
 
-#include "simulator/utility/ID.h"
-#include "simulator/api/Phys.h"
-#include "simulator/Output.h"
-#include "simulator/api/GridMovement.h"
+#include <unordered_map>
+#include <vector>
+#include <shared_mutex>
 
-#include "service/RanaService.h"
+typedef std::vector<std::vector<int> > MatriceInt;
 
-
-int ID::aID = 0;
-unsigned long long ID::eID = 0;
-unsigned long long ID::tmu = 0;
-unsigned long long ID::nID = 0;
-
-
-int main(int argc, char *argv[])
+class MapHandler
 {
-    //srand(time(0));
-    Phys::seedMersenne();
-    Output::DelayValue = 0;
-    Output::LegacyMode.store(false);
-    GridMovement::initGrid(1);
-    RanaService *ranaService = new RanaService();
+public:
 
-    std::cout << "Rana is done, over and out!" << std::endl;
-    return 0;
-}
+    MapHandler();
 
+    //static void setImage(QImage *argImage);
+    static rgba getPixelInfo(int argX, int argY);
 
+    static bool setPixelInfo(int argX, int argY, rgba argValue);
+
+    static MatriceInt drawCircle(int radius, char channel, int posX, int posY);
+
+    static bool checkAndChange(int argX, int argY, rgba check_color, rgba change_color);
+
+private:
+    //static QImage *image;
+    static std::unordered_map<int, MatriceInt> radialMasks;
+    static std::shared_timed_mutex mapMutex;
+};
+
+#endif // MAPHANDLER_H
