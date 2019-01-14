@@ -37,19 +37,17 @@ class Control
 public:
 
     Control();
-
     ~Control();
 
-    bool checkEnvPresence();
+    bool startSimulation(unsigned long long runTime);
 
-    void runSimulation(unsigned long long runTime);
-
-    void stopSimulation();
+    bool stopActiveFlow();
 
     /**
      * @brief generateEnvironment
      * Generates a new environment, an environment is needed to
      * start a simulation run.
+     * @param flowId
      * @param map pointer to the loaded image map
      * @param scale amount of m2 pr pixel
      * @param timeRes microstep resolution
@@ -57,46 +55,25 @@ public:
      * @param agentAmount number of Lua agents
      * @param agentPath path to the agent
      */
-    void generateEnvironment(int flowId, int threads,
-                             double timeRes, int macroRes,
-                             int agentAmount, std::string agentPath,
-                             int width, int height
-    );
+    int generateFlow(int threads,
+                     double timeRes, int macroRes,
+                     int agentAmount, std::string agentPath,
+                     int width, int height);
 
-    std::list<double[3]> updatePositions();
+    bool isActive(int flowId);
 
-    void saveExternalEvents(std::string filename);
-
-    void refreshPopPos(std::list<agentInfo> infolist);
-
-    bool isGenerated();
-
-    bool isRunning();
-
-    void saveEvents(std::string path);
-
-    void toggleLiveView(bool enable);
-
-    void threadTest(std::string something);
-
-    void on_simDone();
-
-    void startDoWork(FlowControl *flowControl, unsigned long long runtime);
+    void saveEvents(int flowId, std::string path);
 
 private:
 
-    FlowControl *flowControl;
-    //QThread runThread;
-    //QFuture<void> populateFuture;
-
-    bool running;
+    std::list<std::thread> runningFlows;
     bool generated;
     bool stopped;
     bool generating;
+    int activeFlowId;
+    std::unique_ptr<FlowControl> activeSimulationFlow;
 
-    std::unordered_map<int, FlowControl*> activeSimulationFlows;
-
-
+    bool flowActive = false;
 };
 
 #endif // CONTROL_H

@@ -44,6 +44,7 @@ std::condition_variable Supervisor::CvStepStart;
 std::condition_variable Supervisor::CvStepDone;
 std::mutex Supervisor::mutexStep;
 std::mutex Supervisor::mutexStepDone;
+
 int Supervisor::task;
 
 Supervisor::Supervisor()
@@ -61,23 +62,13 @@ Supervisor::~Supervisor()
 
     for (const auto &s : sectors)
     {
-        s->taskPromise.set_value(TASK_STOP);
-    }
-    for (const auto &t : threads)
-    {
-        t->join();
-    }
-
-    for (const auto &s : sectors)
-    {
         delete s;
     }
 }
+
 /********************************************************
  * Simulation initialization functions.
- *
  ********************************************************/
-
 /**
  * Generates the map
  * Places all sectors at positions to fit the width and height of the map,
@@ -343,6 +334,16 @@ void Supervisor::simDone()
     for (const auto &s : sectors)
     {
         s->simDone();
+    }
+
+    for (const auto &s : sectors)
+    {
+        s->taskPromise.set_value(TASK_STOP);
+    }
+
+    for (const auto &t : threads)
+    {
+        t->join();
     }
 }
 

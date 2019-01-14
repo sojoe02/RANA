@@ -20,11 +20,14 @@
 //
 //--end_license--
 
+
+
 #include "Control.h"
 #include "Output.h"
 
+
 Control::Control()
-        : flowControl(nullptr), running(false), generated(false), stopped(true), generating(false)
+        : generated(false), stopped(true), generating(false), activeFlowId(0), activeSimulationFlow(nullptr)
 {
 }
 
@@ -32,96 +35,63 @@ Control::~Control()
 {
 }
 
-void Control::runSimulation(unsigned long long runTime)
+bool Control::startSimulation(unsigned long long runTime)
 {
-    running = true;
-    //runThread.setStackSize(1024*1024*1024);
-    Output::SimRunning.store(true);
-    //runner->setParameters(flowControl, runTime);
-    //runThread->start();
+    activeSimulationFlow->runSimulation(runTime);
+    return true;
 }
 
-void Control::stopSimulation()
+bool Control::stopActiveFlow()
 {
-    flowControl->stopSimulation();
+    //NEEDS BETTER CONTROL! like a check on whether the simulation is still running or not!
+    activeSimulationFlow->stopSimulation();
+    return true;
 }
 
-void Control::generateEnvironment(int threads,
-                                  double timeRes, int macroRes,
-                                  int agentAmount, std::string agentPath, int width, int height)
+int Control::generateFlow(int threads, double timeRes, int macroRes,
+                          int agentAmount, std::string agentPath, int width, int height)
 {
-    if (!running || !generating)
+    if (!activeSimulationFlow->flowDone || activeSimulationFlow == nullptr)
     {
-        generating = true;
-//        if(populateFuture.isRunning())
-//        {
-//            Output::Inst()->kprintf("A previous system was being populated, it will be cancelled");
-//            populateFuture.cancel();
-//            populateFuture.waitForFinished();
-//        }
-        Output::KillSimulation.store(true);
+        activeFlowId++;
 
-        Output::kprintf("Generating environment");
+        activeSimulationFlow = std::make_unique<FlowControl>();
+        activeSimulationFlow->generateEnvironment(width, height, threads,
+                                                  agentAmount, timeRes, macroRes, std::move(agentPath));
+        activeSimulationFlow->populateSystem();
 
-        if (flowControl != nullptr)
-        {
-            //Output::Inst()->kprintf("Deleting agent domain");
-            delete flowControl;
-            flowControl = nullptr;
-        }
+        flowActive = true;
 
-        flowControl = new FlowControl(this);
-        flowControl->generateEnvironment(width, height, threads,
-                                         agentAmount, timeRes, macroRes, agentPath);
-        flowControl->populateSystem();
-        //populateFuture.waitForFinished();
-        //ture.waitForFinished();
-        //QThread::msleep(1000);
-        generating = false;
+        return activeFlowId;
     }
     else
-        Output::kprintf("Simulation is being generating or it is running");
-    //retrieve and update the positions:
-}
-
-void Control::threadTest(std::string something)
-{
-    int i = 0;
-}
-
-void Control::on_simDone()
-{
-    running = false;
-    Output::SimRunning.store(false);
-    Output::kprintf("Simulation Done");
-}
-
-void Control::refreshPopPos(std::list<agentInfo> infolist)
-{
-}
-
-bool Control::isRunning()
-{
-    return running;
-}
-
-bool Control::isGenerated()
-{
-    if (flowControl != nullptr)
     {
-        return true;
+        //flow is still running.
+        return -1;
     }
+}
+
+bool Control::isActive(int flowId)
+{
+    if (activeSimulationFlow != nullptr)
+        return activeSimulationFlow->flowDone;
 
     return false;
 }
 
-void Control::saveEvents(std::string path)
+void Control::saveEvents(int flowId, std::string path)
 {
-    flowControl->saveExternalEvents(path.c_str());
+    if (activeSimulationFlow != nullptr)
+    {
+        activeSimulationFlow->saveExternalEvents(std::move(path));
+
+    }
 }
 
-void Control::toggleLiveView(bool enable)
-{
-    if (flowControl != NULL)
-        flowControl->toggleLiveView(enable);
-}
+//void Control::toggleLiveView(bool enable)
+//{
+//    if (flowControl != nullptr)
+//        flowControl->toggleLiveView(enable);
+//}
+
+

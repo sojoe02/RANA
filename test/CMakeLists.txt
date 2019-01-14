@@ -1,10 +1,12 @@
 set(TEST_FILES
-        ServiceTest.cpp
-        ServiceTest.h
+        runtime/service/ServiceTest.cpp
+        runtime/service/ServiceTest.h
+        runtime/RunTimeTesting.cpp
+        runtime/RunTimeTesting.h
         )
 
 add_library(Test
         ${TEST_FILES}
         )
 
-target_link_libraries(Simulator)
+target_link_libraries(Test Simulator Service)

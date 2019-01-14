@@ -40,7 +40,7 @@ class Supervisor;
 class FlowControl
 {
 public:
-    FlowControl(Control *control);
+    FlowControl();
 
     ~FlowControl();
 
@@ -49,7 +49,7 @@ public:
 
     void retrievePopPos();
 
-    void runSimulation(int time);
+    void runSimulation(unsigned long long time);
 
     bool checkEnvPresence();
 
@@ -63,9 +63,11 @@ public:
 
     void populateSystem();
 
+    bool flowDone;;
+
 private:
 
-    Control *control;
+    //Control *control;
     bool mapGenerated;
     Interfacer doctor;
     Supervisor *masteragent;
@@ -86,12 +88,14 @@ private:
     std::mutex stopMutex;
     std::atomic_bool fetchPositions;
 
+
     int agentAmount;
     std::string luaFilename;
 
     typedef std::list<agentInfo> onlineAgents;
     std::unordered_map<unsigned long long, onlineAgents> positionMap;
     bool storePositions;
+
     std::string positionFilename;
 
     std::ofstream file;

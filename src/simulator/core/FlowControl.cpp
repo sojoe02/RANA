@@ -39,9 +39,9 @@ using std::chrono::milliseconds;
 using std::chrono::seconds;
 using std::chrono::steady_clock;
 
-FlowControl::FlowControl(Control *control)
-        : control(control), mapGenerated(false), masteragent(new Supervisor()), stop(false), fetchPositions(false),
-          agentAmount(0), luaFilename(""), storePositions(true),
+FlowControl::FlowControl()
+        : mapGenerated(false), masteragent(new Supervisor()), stop(false), fetchPositions(false),
+          agentAmount(0), luaFilename(""), storePositions(true), flowDone(false),
           positionFilename("_positionData.pos")
 {
     //Phys::seedMersenne();
@@ -128,7 +128,7 @@ void FlowControl::retrievePopPos()
 
     std::list<agentInfo> agentPositions = masteragent->retrievePopPos();
 
-    control->refreshPopPos(agentPositions);
+    //control->refreshPopPos(agentPositions);
 
     if (Output::RunSimulation.load())
     {
@@ -165,7 +165,7 @@ void FlowControl::toggleLiveView(bool enable)
  * update the progress bar and status window in the running panel.
  * @param time the amount of seconds the simulation will simulate.
  */
-void FlowControl::runSimulation(int time)
+void FlowControl::runSimulation(unsigned long long time)
 {
 
 
@@ -259,7 +259,7 @@ void FlowControl::runSimulation(int time)
     }
 
     retrievePopPos();
-    masteragent->simDone();
+
     masteragent->printStatus();
     Output::progressBar(i, iterations);
 
@@ -271,6 +271,8 @@ void FlowControl::runSimulation(int time)
                     duration_cast<seconds>(endsim - start2).count()
     );
     file.close();
+    masteragent->simDone();
+    flowDone = true;
 }
 
 /**

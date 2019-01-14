@@ -35,7 +35,7 @@ set(SIM_FILES
         Output.h
         Output.cpp
         utility/Utility.h
-        ../../test/ServiceTest.cpp ../../test/ServiceTest.h)
+        )
 
 add_library(Simulator
         ${CORE_FILES}
