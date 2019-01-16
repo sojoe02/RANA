@@ -3,5 +3,6 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/dependencies/asio" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/dependencies/eigen-git-mirror" vcs="Git" />
   </component>
 </project>
