@@ -31,7 +31,7 @@
 #include "src/simulator/Output.h"
 #include "src/simulator/utility/ID.h"
 #include "src/simulator/api/Scanning.h"
-#include "src/simulator/Control.h"
+#include "src/simulator/control/Control.h"
 #include "Interfacer.h"
 
 using std::chrono::duration_cast;

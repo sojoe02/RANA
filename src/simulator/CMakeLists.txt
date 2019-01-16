@@ -29,8 +29,8 @@ set(API_FILES
         )
 
 set(SIM_FILES
-        Control.h
-        Control.cpp
+        control/Control.h
+        control/Control.cpp
         utility/ID.h
         Output.h
         Output.cpp

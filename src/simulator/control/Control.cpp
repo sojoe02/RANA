@@ -23,11 +23,12 @@
 
 
 #include "Control.h"
-#include "Output.h"
+#include "src/simulator/Output.h"
 
 
 Control::Control()
-        : generated(false), stopped(true), generating(false), activeFlowId(0), activeSimulationFlow(nullptr)
+        : generated(false), stopped(true), generating(false),
+          activeFlowId(0), activeSimulationFlow(nullptr), activeFlowThread(nullptr)
 {
 }
 
@@ -46,6 +47,13 @@ bool Control::stopActiveFlow()
     //NEEDS BETTER CONTROL! like a check on whether the simulation is still running or not!
     activeSimulationFlow->stopSimulation();
     return true;
+}
+
+int Control::generateFlowThread(int threads, double timeRes, int macroRes,
+                                int agentAmount, std::string flowInfo, int width, int height)
+{
+
+
 }
 
 int Control::generateFlow(int threads, double timeRes, int macroRes,

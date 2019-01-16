@@ -71,6 +71,13 @@ struct agentTmu {
     unsigned long long tmu;
 };
 
+
+struct simInfo
+{
+    std::string path;
+    std::string scriptInfo;
+};
+
 struct agentPosition {
     int x;
     int y;

@@ -43,6 +43,9 @@ public:
 
     bool stopActiveFlow();
 
+    int generateFlowThread(int threads, double timeRes, int macroRes,
+                           int agentAmount, std::string flowInfo, int width, int height);
+
     /**
      * @brief generateEnvironment
      * Generates a new environment, an environment is needed to
@@ -66,12 +69,12 @@ public:
 
 private:
 
-    std::list<std::thread> runningFlows;
     bool generated;
     bool stopped;
     bool generating;
     int activeFlowId;
     std::unique_ptr<FlowControl> activeSimulationFlow;
+    std::list<std::thread> *activeFlowThread;
 
     bool flowActive = false;
 };
