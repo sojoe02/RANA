@@ -30,7 +30,7 @@
 #include <mutex>
 
 #include "EventQueue.h"
-#include "src/simulator/Output.h"
+#include "src/observation/Output.h"
 #include "src/simulator/core/agents/Agent.h"
 #include "src/simulator/utility/ID.h"
 #include "src/simulator/api/Phys.h"

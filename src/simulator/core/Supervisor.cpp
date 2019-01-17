@@ -35,7 +35,7 @@
 #include "src/simulator/utility/Utility.h"
 #include "src/simulator/api/Phys.h"
 
-#include "src/simulator/Output.h"
+#include "src/observation/Output.h"
 
 #define TASK_STEP    300
 #define TASK_STOP    400

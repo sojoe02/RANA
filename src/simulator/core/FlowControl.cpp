@@ -28,10 +28,10 @@
 #include "src/simulator/api/Phys.h"
 #include "src/simulator/api/GridMovement.h"
 #include "src/simulator/api/Shared.h"
-#include "src/simulator/Output.h"
+#include "src/observation/Output.h"
 #include "src/simulator/utility/ID.h"
 #include "src/simulator/api/Scanning.h"
-#include "src/simulator/control/Control.h"
+#include "src/control/Control.h"
 #include "Interfacer.h"
 
 using std::chrono::duration_cast;

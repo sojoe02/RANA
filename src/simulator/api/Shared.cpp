@@ -22,7 +22,7 @@
 #include <climits>
 #include <iostream>
 
-#include "simulator/Output.h"
+#include "src/observation/Output.h"
 #include "Shared.h"
 
 std::unordered_map<std::string, double> Shared::sharedNumbers;

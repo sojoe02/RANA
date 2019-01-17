@@ -67,6 +67,12 @@ public:
 
     void saveEvents(int flowId, std::string path);
 
+    bool isGenerated() const;
+
+    bool isStopped() const;
+
+    bool isGenerating() const;
+
 private:
 
     bool generated;
@@ -75,7 +81,6 @@ private:
     int activeFlowId;
     std::unique_ptr<FlowControl> activeSimulationFlow;
     std::list<std::thread> *activeFlowThread;
-
     bool flowActive = false;
 };
 

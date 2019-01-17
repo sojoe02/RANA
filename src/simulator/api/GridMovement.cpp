@@ -22,7 +22,7 @@
 #include <stdio.h>
 
 #include "GridMovement.h"
-#include "simulator/Output.h"
+#include "src/observation/Output.h"
 
 std::unordered_map<std::string, pList> *GridMovement::posMap = NULL;
 std::shared_timed_mutex GridMovement::gridMutex;

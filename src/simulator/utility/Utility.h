@@ -60,7 +60,6 @@ struct agentInfo {
 
     double angle;
     //std::string filename;
-
 };
 
 
@@ -74,17 +73,10 @@ struct agentTmu {
 
 struct simInfo
 {
-    std::string path;
-    std::string scriptInfo;
-};
-
-struct agentPosition {
-    int x;
-    int y;
+    std::string luaChunk;
 };
 
 typedef std::vector<std::vector<int> > MatriceInt;
 typedef std::vector<std::map<int, double>> EdgeAngles;
-
 
 #endif // UTILITY_H

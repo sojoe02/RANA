@@ -32,7 +32,7 @@
 
 #include "dependencies/luascripting.h"
 
-#include "src/simulator/Output.h"
+#include "src/observation/Output.h"
 #include "src/simulator/api/GridMovement.h"
 #include "src/simulator/api/MapHandler.h"
 #include "src/simulator/api/Phys.h"

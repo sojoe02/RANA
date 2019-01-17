@@ -21,7 +21,7 @@
 //--end_license--
 #include <math.h>
 #include <climits>
-#include "simulator/Output.h"
+#include "src/observation/Output.h"
 #include "simulator/api/Phys.h"
 
 #include "MapHandler.h"

@@ -1,7 +1,7 @@
 #include <mutex>
 
 #include "Interfacer.h"
-#include "simulator/Output.h"
+#include "src/observation/Output.h"
 
 Supervisor *Interfacer::master = NULL;
 std::map<int, std::string> Interfacer::agentFilenames;

@@ -23,7 +23,7 @@
 
 
 #include "Control.h"
-#include "src/simulator/Output.h"
+#include "src/observation/Output.h"
 
 
 Control::Control()
@@ -61,6 +61,7 @@ int Control::generateFlow(int threads, double timeRes, int macroRes,
 {
     if (!activeSimulationFlow->flowDone || activeSimulationFlow == nullptr)
     {
+        generating = true;
         activeFlowId++;
 
         activeSimulationFlow = std::make_unique<FlowControl>();
@@ -69,6 +70,7 @@ int Control::generateFlow(int threads, double timeRes, int macroRes,
         activeSimulationFlow->populateSystem();
 
         flowActive = true;
+        generating = false;
 
         return activeFlowId;
     }
@@ -92,14 +94,22 @@ void Control::saveEvents(int flowId, std::string path)
     if (activeSimulationFlow != nullptr)
     {
         activeSimulationFlow->saveExternalEvents(std::move(path));
-
     }
 }
 
-//void Control::toggleLiveView(bool enable)
-//{
-//    if (flowControl != nullptr)
-//        flowControl->toggleLiveView(enable);
-//}
+bool Control::isGenerated() const
+{
+    return generated;
+}
+
+bool Control::isStopped() const
+{
+    return stopped;
+}
+
+bool Control::isGenerating() const
+{
+    return generating;
+}
 
 

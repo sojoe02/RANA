@@ -26,7 +26,7 @@
 #include <limits.h>
 
 #include "Phys.h"
-#include "simulator/Output.h"
+#include "src/observation/Output.h"
 
 
 //auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();

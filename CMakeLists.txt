@@ -27,6 +27,8 @@ add_compile_definitions(ASIO_STANDALONE)
 #### Subdirectories for local libraries ####
 add_subdirectory(src/simulator)
 add_subdirectory(src/service)
+add_subdirectory(src/control)
+add_subdirectory(src/observation)
 add_subdirectory(dependencies)
 add_subdirectory(test)
 

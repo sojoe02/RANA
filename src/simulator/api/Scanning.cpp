@@ -3,7 +3,7 @@
 #include "Phys.h"
 #include "Scanning.h"
 #include "src/simulator/utility/Utility.h"
-#include "src/simulator/Output.h"
+#include "src/observation/Output.h"
 
 std::unordered_map<int, MatriceInt> Scanning::radialMasks;
 std::mutex Scanning::mutex;

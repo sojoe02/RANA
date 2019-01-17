@@ -25,7 +25,7 @@
 
 #include "simulator/utility/ID.h"
 #include "simulator/api/Phys.h"
-#include "simulator/Output.h"
+#include "src/observation/Output.h"
 #include "simulator/api/GridMovement.h"
 
 #include "service/RanaService.h"

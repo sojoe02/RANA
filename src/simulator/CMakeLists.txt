@@ -29,11 +29,7 @@ set(API_FILES
         )
 
 set(SIM_FILES
-        control/Control.h
-        control/Control.cpp
         utility/ID.h
-        Output.h
-        Output.cpp
         utility/Utility.h
         )
 
@@ -43,4 +39,4 @@ add_library(Simulator
         ${SIM_FILES}
         )
 
-target_link_libraries(Simulator LuaIface)
+target_link_libraries(Simulator Observation LuaIface)

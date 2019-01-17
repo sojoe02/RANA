@@ -35,7 +35,7 @@
 #include "Supervisor.h"
 
 #include "src/simulator/utility/ID.h"
-#include "src/simulator/Output.h"
+#include "src/observation/Output.h"
 #include "src/simulator/api/Phys.h"
 
 Sector::Sector(double posX, double posY, double width, double height, Supervisor *master, int id)
