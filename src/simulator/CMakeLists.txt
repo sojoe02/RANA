@@ -39,4 +39,4 @@ add_library(Simulator
         ${SIM_FILES}
         )
 
-target_link_libraries(Simulator Observation LuaIface)
+target_link_libraries(Simulator Observation Globals LuaIface)

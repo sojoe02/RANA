@@ -28,6 +28,7 @@
 
 #include "src/simulator/utility/Utility.h"
 
+
 class Output
 {
 public:
@@ -40,8 +41,6 @@ public:
     static void updateStatus(unsigned long long internalEvents, unsigned long long externalEvents);
 
     static void progressBar(unsigned long long current, unsigned long long maximum);
-
-    static void updatePosition(int id, double x, double y);
 
     //void setMainWindow(MainWindow *mainwindow);
 
@@ -81,5 +80,6 @@ private:
     //static MainWindow* mainWindow;
     static std::mutex autonMutex;
 };
+
 
 #endif // OUTPUT_H

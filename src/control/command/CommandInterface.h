@@ -5,10 +5,14 @@
 #ifndef RANA_COMMANDINTERFACE_H
 #define RANA_COMMANDINTERFACE_H
 
+#include "simulator/core/FlowControl.h"
+#include "globals/RanaDefinitions.hpp"
+
 
 class CommandInterface
 {
-
+public:
+    FlowControl *generateFlow(Definitions::SimInfo simInfo);
 };
 
 

@@ -29,6 +29,7 @@ add_subdirectory(src/simulator)
 add_subdirectory(src/service)
 add_subdirectory(src/control)
 add_subdirectory(src/observation)
+add_subdirectory(src/globals)
 add_subdirectory(dependencies)
 add_subdirectory(test)
 
@@ -40,6 +41,9 @@ add_executable(${PROJECT_NAME} "main.cpp")
 target_link_libraries(${PROJECT_NAME}
         PUBLIC Simulator
         PUBLIC Service
+        PUBLIC Control
+        PUBLIC Observation
+        PUBLIC Globals
         PRIVATE LuaIface
         PUBLIC ${CMAKE_THREAD_LIBS_INIT}
         )

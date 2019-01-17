@@ -71,11 +71,6 @@ struct agentTmu {
 };
 
 
-struct simInfo
-{
-    std::string luaChunk;
-};
-
 typedef std::vector<std::vector<int> > MatriceInt;
 typedef std::vector<std::map<int, double>> EdgeAngles;
 

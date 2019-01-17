@@ -1,3 +1,5 @@
+#include <memory>
+
 //--begin_license--
 //
 //Copyright 	2013-2014 	Søren Vissing Jørgensen.
@@ -24,11 +26,12 @@
 
 #include "Control.h"
 #include "src/observation/Output.h"
+#include "src/observation/FlowVariables.h"
 
+std::unique_ptr<FlowControl> Control::simulationFlow = nullptr;
 
 Control::Control()
-        : generated(false), stopped(true), generating(false),
-          activeFlowId(0), activeSimulationFlow(nullptr), activeFlowThread(nullptr)
+        : generated(false), stopped(true), generating(false)
 {
 }
 
@@ -36,64 +39,79 @@ Control::~Control()
 {
 }
 
-bool Control::startSimulation(unsigned long long runTime)
+
+bool Control::startSimulationThread(unsigned long long runTime)
 {
-    activeSimulationFlow->runSimulation(runTime);
-    return true;
+    if (!FlowVariables::flowGenerating && FlowVariables::flowActive)
+    {
+        activeFlowThread = std::thread(startSimulation, runTime);
+        return true;
+    }
+    return false;
 }
 
-bool Control::stopActiveFlow()
+void Control::startSimulation(unsigned long long runTime)
 {
-    //NEEDS BETTER CONTROL! like a check on whether the simulation is still running or not!
-    activeSimulationFlow->stopSimulation();
-    return true;
+    simulationFlow->runSimulation(runTime);
+}
+
+bool Control::stopFlow()
+{
+    if (FlowVariables::flowRunning.load())
+    {
+        simulationFlow->stopSimulation();
+        activeFlowThread.join();
+
+        FlowVariables::flowActive.store(false);
+        FlowVariables::flowRunning.store(false);
+
+        return true;
+    }
+
+    else return false;
 }
 
 int Control::generateFlowThread(int threads, double timeRes, int macroRes,
                                 int agentAmount, std::string flowInfo, int width, int height)
 {
+    if (!FlowVariables::flowRunning && !FlowVariables::flowGenerating)
+    {
+        activeFlowThread = std::thread(generateFlow, threads, timeRes, macroRes, agentAmount, flowInfo, width, height);
+        return 0;
+    }
 
-
+    return -1;
 }
 
-int Control::generateFlow(int threads, double timeRes, int macroRes,
-                          int agentAmount, std::string agentPath, int width, int height)
+void Control::generateFlow(int threads, double timeRes, int macroRes,
+                           int agentAmount, std::string agentPath, int width, int height)
 {
-    if (!activeSimulationFlow->flowDone || activeSimulationFlow == nullptr)
+    if (!FlowVariables::flowRunning.load())
     {
-        generating = true;
-        activeFlowId++;
 
-        activeSimulationFlow = std::make_unique<FlowControl>();
-        activeSimulationFlow->generateEnvironment(width, height, threads,
-                                                  agentAmount, timeRes, macroRes, std::move(agentPath));
-        activeSimulationFlow->populateSystem();
+//        //I am not sure that this block is needed!
+//        FlowControl* flow = Control::simulationFlow.release();
+//        if(flow != nullptr)
+//            delete flow;
+//        //
+        FlowVariables::flowActive.store(true);
 
-        flowActive = true;
-        generating = false;
+        Control::simulationFlow = std::make_unique<FlowControl>();
 
-        return activeFlowId;
+        simulationFlow->generateEnvironment(width, height, threads,
+                                            agentAmount, timeRes, macroRes,
+                                            std::move(agentPath));
+        simulationFlow->populateSystem();
+
+        FlowVariables::flowGenerating.store(false);
     }
-    else
-    {
-        //flow is still running.
-        return -1;
-    }
-}
-
-bool Control::isActive(int flowId)
-{
-    if (activeSimulationFlow != nullptr)
-        return activeSimulationFlow->flowDone;
-
-    return false;
 }
 
 void Control::saveEvents(int flowId, std::string path)
 {
-    if (activeSimulationFlow != nullptr)
+    if (simulationFlow != nullptr)
     {
-        activeSimulationFlow->saveExternalEvents(std::move(path));
+        simulationFlow->saveExternalEvents(std::move(path));
     }
 }
 

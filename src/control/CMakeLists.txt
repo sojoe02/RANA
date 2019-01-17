@@ -1,10 +1,12 @@
 set(CONTROL_FILES
         Control.h
         Control.cpp
-        CommandInterface.cpp
-        CommandInterface.h
+        command/CommandInterface.cpp
+        command/CommandInterface.h
+        command/CommandLuaInterface.cpp
+        command/CommandLuaInterface.h
         )
 
 add_library(Control ${CONTROL_FILES})
 
-target_link_libraries(Control Simulator LuaIface)
+target_link_libraries(Control Simulator Globals Observation LuaIface)

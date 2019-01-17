@@ -39,9 +39,11 @@ public:
     Control();
     ~Control();
 
-    bool startSimulation(unsigned long long runTime);
+    bool startSimulationThread(unsigned long long runTime);
 
-    bool stopActiveFlow();
+    static void startSimulation(unsigned long long runTime);
+
+    bool stopFlow();
 
     int generateFlowThread(int threads, double timeRes, int macroRes,
                            int agentAmount, std::string flowInfo, int width, int height);
@@ -58,12 +60,10 @@ public:
      * @param agentAmount number of Lua agents
      * @param agentPath path to the agent
      */
-    int generateFlow(int threads,
-                     double timeRes, int macroRes,
-                     int agentAmount, std::string agentPath,
-                     int width, int height);
-
-    bool isActive(int flowId);
+    static void generateFlow(int threads,
+                             double timeRes, int macroRes,
+                             int agentAmount, std::string agentPath,
+                             int width, int height);
 
     void saveEvents(int flowId, std::string path);
 
@@ -78,10 +78,10 @@ private:
     bool generated;
     bool stopped;
     bool generating;
-    int activeFlowId;
-    std::unique_ptr<FlowControl> activeSimulationFlow;
-    std::list<std::thread> *activeFlowThread;
+    std::thread activeFlowThread;
     bool flowActive = false;
+
+    static std::unique_ptr<FlowControl> simulationFlow;
 };
 
 #endif // CONTROL_H
