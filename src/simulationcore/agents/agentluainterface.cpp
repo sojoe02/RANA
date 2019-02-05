@@ -160,6 +160,8 @@ AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double po
         lua_register(L, "l_getRandomFloat", l_getMersenneFloat);
         lua_register(L, "l_getRandomInteger", l_getMersenneInteger);
         lua_register(L, "l_getMersenneInteger", l_getMersenneInteger);
+        lua_register(L, "l_getGaussianFloat", l_getGaussianFloat);
+        lua_register(L, "l_getPoissonFloat", l_getPoissonFloat);
 
         //Map and movement.
         lua_register(L, "l_getEnvironmentSize", l_getEnvironmentSize);
@@ -794,6 +796,27 @@ int AgentLuaInterface::l_getMersenneInteger(lua_State *L)
     }
 
     lua_pushnumber(L,number);
+    return 1;
+}
+
+int AgentLuaInterface::l_getGaussianFloat(lua_State *L)
+{
+    double mean = lua_tonumber(L,-2);
+    double var = lua_tonumber(L, -1);
+
+    double number = Phys::getGaussianFloat(mean, var);
+
+    lua_pushnumber(L, number);
+    return 1;
+}
+
+int AgentLuaInterface::l_getPoissonFloat(lua_State *L)
+{
+    double mean = lua_tonumber(L,-1);
+
+    double number = Phys::getPoissonFloat(mean);
+
+    lua_pushnumber(L, number);
     return 1;
 }
 

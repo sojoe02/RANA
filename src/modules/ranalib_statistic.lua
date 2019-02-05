@@ -8,6 +8,20 @@ function ranaLibStat.randomInteger(int1, int2)
 	return l_getRandomInteger(int1,int2)
 end
 
+-- Fetch a  pseudo-random float, which follows a Gaussian distribution
+-- with given mean and variance.
+-- Precision is 64 bit.
+function ranaLibStat.gaussianFloat(mean, var)
+	return l_getGaussianFloat(mean, var)
+end
+
+-- Fetch a  pseudo-random float, which follows a Poisson distribution
+-- with given mean (expected ocurrences).
+-- Precision is 64 bit.
+function ranaLibStat.poissonFloat(mean)
+	return l_getPoissonFloat(mean)
+end
+
 -- Fetch a pseudo-random signed float between 'float1 and float2'.
 -- Precision is 64 bit.
 function ranaLibStat.randomFloat(float1, float2)
