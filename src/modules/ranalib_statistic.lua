@@ -8,6 +8,12 @@ function ranaLibStat.randomInteger(int1, int2)
 	return l_getRandomInteger(int1,int2)
 end
 
+-- Fetch a  pseudo-random int, which follows a Bernouilli distribution
+-- with given probability.
+function ranaLibStat.bernouilliInt(prob)
+	return l_getBernouilliInt(prob)
+end
+
 -- Fetch a  pseudo-random float, which follows a Gaussian distribution
 -- with given mean and variance.
 -- Precision is 64 bit.

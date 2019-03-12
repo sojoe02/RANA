@@ -154,7 +154,14 @@ int64_t Phys::getMersenneInteger(int64_t min=0, int64_t max=ULLONG_MAX)
     return min + Phys::int_dist(Phys::rng)%(max-min);
 }
 
-double  Phys::getGaussianFloat(double mean=0, double var=1)
+int Phys::getBernouilliInt(double probability=0.5)
+{
+    std::bernoulli_distribution bernouilli(probability);
+    int value = bernouilli(Phys::rng);
+    return value;
+}
+
+double Phys::getGaussianFloat(double mean=0, double var=1)
 {
     std::normal_distribution<> gauss(mean, var);
     double value = gauss(Phys::rng);

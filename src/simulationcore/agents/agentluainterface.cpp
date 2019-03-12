@@ -160,6 +160,7 @@ AgentLuaInterface::AgentLuaInterface(int ID, double posX, double posY, double po
         lua_register(L, "l_getRandomFloat", l_getMersenneFloat);
         lua_register(L, "l_getRandomInteger", l_getMersenneInteger);
         lua_register(L, "l_getMersenneInteger", l_getMersenneInteger);
+        lua_register(L, "l_getBernouilliInt", l_getBernouilliInt);
         lua_register(L, "l_getGaussianFloat", l_getGaussianFloat);
         lua_register(L, "l_getPoissonFloat", l_getPoissonFloat);
 
@@ -796,6 +797,16 @@ int AgentLuaInterface::l_getMersenneInteger(lua_State *L)
     }
 
     lua_pushnumber(L,number);
+    return 1;
+}
+
+int AgentLuaInterface::l_getBernouilliInt(lua_State *L)
+{
+    double prob = lua_tonumber(L, -1);
+
+    int value = Phys::getBernouilliInt(prob);
+    
+    lua_pushnumber(L, value);
     return 1;
 }
 
