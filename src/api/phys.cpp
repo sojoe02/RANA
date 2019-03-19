@@ -153,3 +153,29 @@ int64_t Phys::getMersenneInteger(int64_t min=0, int64_t max=ULLONG_MAX)
     //return rand() %max;
     return min + Phys::int_dist(Phys::rng)%(max-min);
 }
+
+int Phys::getBernouilliInt(double probability=0.5)
+{
+    std::bernoulli_distribution bernouilli(probability);
+    int value = bernouilli(Phys::rng);
+    return value;
+}
+
+double Phys::getGaussianFloat(double mean=0, double var=1)
+{
+    std::normal_distribution<> gauss(mean, var);
+    double value = gauss(Phys::rng);
+    return value;
+}
+
+double Phys::getPoissonFloat(int mean=1)
+{
+    double value = 0;
+    // Poisson distribution only works with positive integers.
+    if (mean > 0)
+    {
+        std::poisson_distribution<> poisson(mean);
+        value = poisson(Phys::rng);
+    }
+    return value;
+}

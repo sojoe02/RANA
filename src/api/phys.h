@@ -73,6 +73,9 @@ class Phys
 
 		static double getMersenneFloat(double min, double max);
         static int64_t getMersenneInteger(int64_t min, int64_t max);
+		static int getBernouilliInt(double probability);
+		static double getGaussianFloat(double mean, double var);
+		static double getPoissonFloat(int mean);
 
 		static void setEnvironment(double x, double y);
 

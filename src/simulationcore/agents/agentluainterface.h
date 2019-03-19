@@ -70,6 +70,9 @@ public:
     static int l_getTimeResolution(lua_State *L);
     static int l_getMersenneFloat(lua_State *L);
     static int l_getMersenneInteger(lua_State *L);
+    static int l_getBernouilliInt(lua_State *L);
+    static int l_getGaussianFloat(lua_State *L);
+    static int l_getPoissonFloat(lua_State *L);
 
     //Map and movement.
     static int l_getEnvironmentSize(lua_State *L);

@@ -43,162 +43,165 @@
 #include "helpdialog.h"
 
 Cli::Cli(std::string _file, QWidget *parent) :
-    QMainWindow(parent),
-    factor(1),
-    mapImage(nullptr),
-    mapItem(nullptr),
-    control(new Control(this, _file)),
-    initializeTimer(new QTimer(this)),
-    runTimer(new QTimer(this)),
-    parsedFilePath(_file)
+	QMainWindow(parent),
+	factor(1),
+	mapImage(nullptr),
+	mapItem(nullptr),
+	control(new Control(this, _file)),
+	initializeTimer(new QTimer(this)),
+	runTimer(new QTimer(this)),
+	parsedFilePath(_file)
 {
-    Output::Inst()->RanaDir = QCoreApplication::applicationDirPath().toUtf8().constData();
+	Output::Inst()->RanaDir = QCoreApplication::applicationDirPath().toUtf8().constData();
 
-    QString agentPath = QString::fromUtf8(parsedFilePath.c_str());
-    QFileInfo fi(agentPath);
-    Output::AgentFile=fi.fileName().toStdString();
-    Output::AgentPath=fi.path().toStdString().append("/");
+	QString agentPath = QString::fromUtf8(parsedFilePath.c_str());
+	QFileInfo fi(agentPath);
+	Output::AgentFile=fi.fileName().toStdString();
+	Output::AgentPath=fi.path().toStdString().append("/");
 
-    this->generateMap();
-    this->generateSimulation();
-    this->runSimulation();
+	this->generateMap();
+	this->generateSimulation();
+	this->runSimulation();
 }
 
 Cli::~Cli()
 {
-    std::cout << "\tCLI destructor";
+	std::cout << "\tCLI destructor";
 }
 
 void Cli::generateMap()
 {
-    if(mapImage != nullptr)
-    {
-        delete mapImage;
-    }
+	if(mapImage != nullptr)
+	{
+		delete mapImage;
+	}
 
-    lua_State * L = control->getControlLuaState();
+	lua_State * L = control->getControlLuaState();
 
-    int width = 100;
-    int height = 100;
+	int width = 100;
+	int height = 100;
 
-    lua_settop(L,0); lua_getglobal(L,"_getSimulationConfigurationOption"); lua_pushstring(L,"mapWidth");
-    if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Using deafult value */ }
-    if( lua_toboolean(L,1) ){ width = lua_tonumber(L,2); }
+	lua_settop(L, 0);
+	lua_getglobal(L, "_getSimulationConfigurationOption");
+	lua_pushstring(L, "mapWidth");
+	if(lua_pcall(L, 1, 2, 0)==LUA_OK){
+		 /* Use deafult value */
+	}
+	if( lua_toboolean(L, 1) ){
+		width = lua_tonumber(L, 2);
+	}
 
-    lua_settop(L,0); lua_getglobal(L,"_getSimulationConfigurationOption"); lua_pushstring(L,"mapHeight");
-    if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Use deafult value */ }
-    if( lua_toboolean(L,1) ){ height = lua_tonumber(L,2); }
+	lua_settop(L, 0);
+	lua_getglobal(L, "_getSimulationConfigurationOption");
+	lua_pushstring(L, "mapHeight");
+	if(lua_pcall(L, 1, 2, 0)==LUA_OK){
+		 /* Use deafult value */
+	}
+	if( lua_toboolean(L, 1) ){
+		height = lua_tonumber(L, 2);
+	}
 
-    mapImage = new QImage(width,height,QImage::Format_RGB32); //TODO: Parse map size
-    mapImage->fill(Qt::GlobalColor::black);
+	mapImage = new QImage(width, height, QImage::Format_RGB32);
+	//TODO: Parse map size
+	mapImage->fill(Qt::GlobalColor::black);
 
-    this->defineMap();
+	this->defineMap();
 }
 
 void Cli::defineMap()
 {
-    mapItem = new QGraphicsPixmapItem(QPixmap::fromImage(*mapImage));
-    MapHandler::setImage(mapImage);
-    Phys::setEnvironment(mapImage->width(),mapImage->height());
+	mapItem = new QGraphicsPixmapItem(QPixmap::fromImage(*mapImage));
+	MapHandler::setImage(mapImage);
+	Phys::setEnvironment(mapImage->width(), mapImage->height());
 }
 
 void Cli::generateSimulation()
 {
-    qApp->processEvents();
-    GridMovement::clearGrid();
+	qApp->processEvents();
+	GridMovement::clearGrid();
 
-    if( mapItem != nullptr )
-    {
-        lua_State * L = control->getControlLuaState();
+	if( mapItem!=nullptr )
+	{
+		lua_State * L = control->getControlLuaState();
 
-        lua_settop(L,0); lua_getglobal(L,"_getSimulationConfigurationOption"); lua_pushstring(L,"mapScale");
-        if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Use deafult value */ 
-	        if( lua_toboolean(L,1) ){ Phys::setScale(lua_tonumber(L,2)); }else{ Phys::setScale(1); }
+		lua_settop(L, 0);
+		lua_getglobal(L, "_getSimulationConfigurationOption");
+		lua_pushstring(L, "mapScale");
+		if(lua_pcall(L, 1, 2, 0)==LUA_OK){
+			if( lua_toboolean(L, 1) ){
+				Phys::setScale(lua_tonumber(L, 2));
+			}
+			else{
+				Phys::setScale(1);
+			}
+		}
+		if(!parsedFilePath.empty())
+		{
+			int agentAmount = 1;
+			int threads = 4;
+			double exponent = 6;
+			double timeRes = 1 / (double)std::pow(10, exponent);
+			double macroRes = 1000;
+			macroRes = (1/timeRes) / macroRes;
+
+			lua_settop(L, 0);
+			lua_getglobal(L, "_getSimulationConfigurationOption");
+			lua_pushstring(L, "eDistPrecision");
+			if(lua_pcall(L, 1, 2, 0)==LUA_OK){
+				if( lua_toboolean(L, 1) ){
+					timeRes = lua_tonumber(L, 2);
+				}
+			}
+			lua_settop(L, 0);
+			lua_getglobal(L, "_getSimulationConfigurationOption");
+			lua_pushstring(L, "stepPrecision");
+			if(lua_pcall(L, 1, 2, 0)==LUA_OK){ 
+				if( lua_toboolean(L, 1) ){
+					macroRes = 1 / lua_tonumber(L, 2);
+				}
+			}
+
+			lua_settop(L, 0);
+			lua_getglobal(L, "_getSimulationConfigurationOption");
+			lua_pushstring(L, "simThreads");
+			if(lua_pcall(L, 1, 2, 0)==LUA_OK){ 
+				if( lua_toboolean(L, 1) ){
+					threads = lua_tonumber(L, 2);
+				}
+			}
+
+			control->setEnvironmentVariables(mapImage, threads, timeRes,
+					macroRes, agentAmount, parsedFilePath);
+		} else
+		{
+			std::cout << "Cannot generate Environment: No valid path to agent"
+					<< std::endl;
+		}
+	} else
+	{
+		std::cout << "No map has been loaded, please do that..." << std::endl;
 	}
-        if(!parsedFilePath.empty())
-        {
-            int agentAmount = 1;
-            int threads = 4;
-            double exponent = 6;
-            double timeRes = 1/(double)std::pow(10,exponent);
-            double macroRes = 1000;
-            macroRes = (1/timeRes)/macroRes;
-
-            lua_settop(L,0); lua_getglobal(L,"_getSimulationConfigurationOption"); lua_pushstring(L,"eDistPrecision");
-            if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Use deafult value */ 
-            	if( lua_toboolean(L,1) ){ timeRes = lua_tonumber(L,2); }
-	    }
-            lua_settop(L,0); lua_getglobal(L,"_getSimulationConfigurationOption"); lua_pushstring(L,"stepPrecision");
-            if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Using deafult value */ 
-            	if( lua_toboolean(L,1) ){ macroRes = 1/lua_tonumber(L,2); }
-	    }
-
-            lua_settop(L,0); lua_getglobal(L,"_getSimulationConfigurationOption"); lua_pushstring(L,"simThreads");
-            if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Use deafult value */ 
-            	if( lua_toboolean(L,1) ){ threads = lua_tonumber(L,2); }
-	    }
-
-            control->setEnvironmentVariables(mapImage, threads, timeRes, macroRes, agentAmount, parsedFilePath);
-        } else
-        {
-            std::cout << "Cannot generate Environment: No valid path to agent" << std::endl;
-        }
-    } else
-    {
-        std::cout << "No map has been loaded, please do that..." << std::endl;
-    }
-    initializeTimer->start(400);
+	initializeTimer->start(400);
 }
 
 void Cli::runSimulation()
 {
-    double runTime = 100; 
-    if(control->isRunning()){
-        control->stopSimulation();
-    }
-    else
-    {
-        lua_State * L = control->getControlLuaState();
-
-        lua_settop(L,0); lua_getglobal(L,"_getSimulationConfigurationOption"); lua_pushstring(L,"runTime");
-	if(lua_pcall(L,1,2,0)!=LUA_OK){ /* Use deafult value */ 
-		if( lua_toboolean(L,1) ){ runTime = lua_tonumber(L,2); }
+	double runTime = 100; 
+	if(control->isRunning()){
+		control->stopSimulation();
 	}
-	control->startSimulation(runTime);
-    }
+	else
+	{
+		lua_State * L = control->getControlLuaState();
+
+		lua_settop(L, 0);
+		lua_getglobal(L, "_getSimulationConfigurationOption");
+		lua_pushstring(L, "runTime");
+		if(lua_pcall(L, 1, 2, 0)==LUA_OK){
+			if( lua_toboolean(L, 1) ){
+				runTime = lua_tonumber(L, 2);
+			}
+		}
+		control->startSimulation(runTime);
+	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
